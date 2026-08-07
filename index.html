@@ -1,0 +1,298 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta
+      name="description"
+      content="Kael Lab：人与 Agent 共同工作的公开方法、工程实践与交互实验场。"
+    />
+    <meta name="theme-color" content="#09110f" />
+    <title>Kael Lab — 人与 Agent 共同工作的公开实验场</title>
+    <script>document.documentElement.classList.add("js")</script>
+    <link rel="stylesheet" href="styles.css" />
+    <script src="app.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#main">跳到主要内容</a>
+    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+
+    <header class="site-header" data-header>
+      <a class="brand" href="#top" aria-label="Kael Lab 首页">
+        <span class="brand-mark" aria-hidden="true">K</span>
+        <span>
+          <strong>KAEL LAB</strong>
+          <small>Human × Agent</small>
+        </span>
+      </a>
+      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
+        <span></span><span></span><span></span>
+        <span class="sr-only">打开导航</span>
+      </button>
+      <nav id="site-nav" class="site-nav" aria-label="主要导航">
+        <a href="#methods">方法</a>
+        <a href="#meepo">Meepo</a>
+        <a href="#engineering">工程</a>
+        <a href="#lab">实验室</a>
+        <a class="nav-cta" href="#">GitHub ↗</a>
+      </nav>
+    </header>
+
+    <main id="main">
+      <section id="top" class="hero section-shell">
+        <div class="hero-copy reveal">
+          <div class="eyebrow"><span></span> PUBLIC DIGITAL SPACE · V0.1</div>
+          <h1>
+            把思想做成<br />
+            <em>可验证的体验。</em>
+          </h1>
+          <p class="hero-lead">
+            Kael Lab 是人与 Agent 共同工作的公开实验场。这里不陈列结论，
+            而是公开结论如何从来源、证据与反例中生长出来。
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#lab">进入第一个实验 <span>↓</span></a>
+            <a class="button button-ghost" href="#methods">理解这套方法</a>
+          </div>
+          <dl class="hero-stats" aria-label="首版特征">
+            <div><dt>0</dt><dd>服务端依赖</dd></div>
+            <div><dt>4</dt><dd>证据状态</dd></div>
+            <div><dt>1</dt><dd>可交互实验</dd></div>
+          </dl>
+        </div>
+
+        <div class="hero-visual reveal" aria-label="来源、证据、判断和行动的循环示意">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="orbit orbit-three"></div>
+          <div class="core">
+            <span class="core-pulse"></span>
+            <b>HUMAN</b>
+            <small>keeps sovereignty</small>
+          </div>
+          <div class="orbit-node node-source"><b>01</b><span>来源</span></div>
+          <div class="orbit-node node-evidence"><b>02</b><span>证据</span></div>
+          <div class="orbit-node node-decision"><b>03</b><span>判断</span></div>
+          <div class="orbit-node node-action"><b>04</b><span>行动</span></div>
+          <p class="visual-caption">TRACEABLE BY DESIGN</p>
+        </div>
+      </section>
+
+      <section class="manifesto section-shell reveal" aria-label="站点宣言">
+        <p>AI 不替人拥有判断。</p>
+        <p>文件不替事实拥有现实。</p>
+        <p>“已经做了”必须有可观察证据。</p>
+      </section>
+
+      <section id="methods" class="content-section section-shell">
+        <header class="section-heading reveal">
+          <span class="section-index">01 / METHODS</span>
+          <h2>从一句话，到一个<br /><em>可追溯的结果</em></h2>
+          <p>每一步都回答两个问题：这是什么性质的信息？它凭什么可以继续向下传播？</p>
+        </header>
+
+        <div class="method-chain reveal">
+          <article class="method-step">
+            <span>01</span>
+            <h3>Source</h3>
+            <p>保存原话、外部约束和真实入口，不把整理后的理解伪装成原始输入。</p>
+            <small>WHAT WAS ACTUALLY SAID</small>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article class="method-step">
+            <span>02</span>
+            <h3>Evidence</h3>
+            <p>回到当前代码、数据、文档或现实结果，标记证据强度与无法证明的范围。</p>
+            <small>WHAT CAN BE VERIFIED</small>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article class="method-step">
+            <span>03</span>
+            <h3>Decision</h3>
+            <p>把事实、推断、建议和人的决定分开，记录主要代价、反例与回退方式。</p>
+            <small>WHAT WE CHOOSE</small>
+          </article>
+          <i aria-hidden="true">→</i>
+          <article class="method-step">
+            <span>04</span>
+            <h3>Execution</h3>
+            <p>让计划、实际动作、验证证据和未完成边界各自可见，不用绿色检查冒充结果。</p>
+            <small>WHAT REALLY HAPPENED</small>
+          </article>
+        </div>
+
+        <div class="principle-grid">
+          <article class="principle-card reveal">
+            <div class="card-icon">◇</div>
+            <h3>事实有所有者</h3>
+            <p>工作项负责目标与过程，源码负责实现，运行结果负责现实。摘要只能导航，不能夺走事实主权。</p>
+          </article>
+          <article class="principle-card reveal">
+            <div class="card-icon">↺</div>
+            <h3>失败也要保留</h3>
+            <p>失败 run 不会因下一次成功而消失。它是边界的一部分，也是下一轮判断的重要输入。</p>
+          </article>
+          <article class="principle-card reveal">
+            <div class="card-icon">◎</div>
+            <h3>人保留最终判断</h3>
+            <p>Agent 可以核实、推断与建议；公开、迁移、删除和稳定知识的确认仍由人拥有。</p>
+          </article>
+        </div>
+      </section>
+
+      <section id="meepo" class="content-section meepo-section">
+        <div class="section-shell meepo-layout">
+          <header class="section-heading light reveal">
+            <span class="section-index">02 / MEEPO</span>
+            <h2>Agent 不是聊天框，<br /><em>而是一套运行责任</em></h2>
+            <p>
+              Meepo 是持续演进中的 Agent Framework / Workbench。下面不是产品截图，
+              而是一张带状态边界的概念操作台。
+            </p>
+            <div class="state-legend" aria-label="状态图例">
+              <span class="state current">CURRENT</span><span>有当前实现支撑</span>
+              <span class="state concept">CONCEPT</span><span>概念交互</span>
+              <span class="state roadmap">ROADMAP</span><span>未来方向</span>
+            </div>
+          </header>
+
+          <div class="runtime-console reveal">
+            <div class="console-topbar">
+              <span class="console-dot"></span><span class="console-dot"></span><span class="console-dot"></span>
+              <b>NEST ASSISTANT · RUN VIEW</b>
+              <small>CONCEPT MOCK</small>
+            </div>
+            <div class="console-body">
+              <div class="runtime-nav" role="tablist" aria-label="Agent 运行责任">
+                <button class="runtime-tab active" type="button" role="tab" aria-selected="true" data-runtime="identity">
+                  <span>01</span> Identity <small class="state current">CURRENT</small>
+                </button>
+                <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="context">
+                  <span>02</span> Context <small class="state current">CURRENT</small>
+                </button>
+                <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="loop">
+                  <span>03</span> Loop <small class="state roadmap">ROADMAP</small>
+                </button>
+                <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="evidence">
+                  <span>04</span> Evidence <small class="state current">CURRENT</small>
+                </button>
+                <button class="runtime-tab" type="button" role="tab" aria-selected="false" data-runtime="session">
+                  <span>05</span> Session <small class="state concept">CONCEPT</small>
+                </button>
+              </div>
+              <div class="runtime-detail" role="tabpanel" aria-live="polite">
+                <div class="detail-kicker">SELECTED RESPONSIBILITY</div>
+                <h3 data-runtime-title>Identity · 谁在回答</h3>
+                <p data-runtime-copy>明确 Agent 身份、能力边界和使用入口，让一次回答属于具体责任主体，而不是匿名聊天能力。</p>
+                <div class="detail-flow" data-runtime-flow>
+                  <span>User Intent</span><i>→</i><strong>Nest Assistant</strong><i>→</i><span>Scoped Capability</span>
+                </div>
+                <div class="detail-note">
+                  <span>VISIBLE BOUNDARY</span>
+                  <p data-runtime-note>Current 表示存在当前实现支撑，不等于完整产品验收已经完成。</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="engineering" class="content-section section-shell engineering-section">
+        <header class="section-heading reveal">
+          <span class="section-index">03 / ENGINEERING</span>
+          <h2>让数据流动，<br /><em>让责任停在边界上</em></h2>
+          <p>工程化不是增加更多层，而是让每个对象只拥有它真正需要承担的语义。</p>
+        </header>
+
+        <div class="boundary-map reveal" aria-label="数据与责任边界示意">
+          <div class="boundary-lane lane-input">
+            <span class="lane-label">INPUT</span>
+            <div class="boundary-node"><b>Request</b><small>外部输入</small></div>
+          </div>
+          <div class="boundary-arrow"><span>map</span>→</div>
+          <div class="boundary-lane lane-domain">
+            <span class="lane-label">DOMAIN</span>
+            <div class="boundary-node featured"><b>Business Meaning</b><small>规则与不变量</small></div>
+          </div>
+          <div class="boundary-arrow"><span>project</span>→</div>
+          <div class="boundary-lane lane-output">
+            <span class="lane-label">OUTPUT</span>
+            <div class="boundary-node"><b>Representation</b><small>面向消费者</small></div>
+          </div>
+        </div>
+
+        <div class="engineering-copy reveal">
+          <blockquote>“对象不是因为字段相似就应该合并，而是因为责任相同才可能共享。”</blockquote>
+          <div>
+            <h3>边界的价值，不是整齐。</h3>
+            <p>
+              输入模型承接外部变化，领域模型保存业务意义，输出模型服务具体消费者。
+              显式映射看似多了一步，却把变化成本留在了正确的位置。
+            </p>
+            <p class="source-note">公开派生说明：这是对通用工程原则的重新表达，不是任何内部项目文档的镜像。</p>
+          </div>
+        </div>
+      </section>
+
+      <section id="lab" class="content-section lab-section">
+        <div class="section-shell">
+          <header class="section-heading light reveal">
+            <span class="section-index">04 / LAB 001</span>
+            <h2>证据与判断<br /><em>分类实验</em></h2>
+            <p>读一句话，判断它在协作链中的真实性质。不是语文题——分类会决定它能否继续传播。</p>
+          </header>
+
+          <div class="evidence-lab reveal" data-evidence-lab>
+            <div class="lab-status">
+              <div><span>CASE</span><strong data-case-number>01 / 06</strong></div>
+              <div><span>SCORE</span><strong data-score>00</strong></div>
+              <div><span>BEST · THIS DEVICE</span><strong data-best>—</strong></div>
+            </div>
+            <div class="lab-progress" aria-hidden="true"><span data-lab-progress></span></div>
+            <div class="case-card">
+              <span class="case-origin" data-case-origin>用户输入</span>
+              <blockquote data-case-text>“先看 GitHub Pages 的物理限制，再评估站点能做到多大。”</blockquote>
+              <p>这句话属于哪一种信息？</p>
+            </div>
+            <div class="answer-grid" role="group" aria-label="选择信息性质">
+              <button type="button" data-answer="source"><b>A</b><span>来源 Source</span><small>实际原话或原始输入</small></button>
+              <button type="button" data-answer="fact"><b>B</b><span>事实 Fact</span><small>可回源核对的当前状态</small></button>
+              <button type="button" data-answer="inference"><b>C</b><span>推断 Inference</span><small>基于证据形成的解释</small></button>
+              <button type="button" data-answer="decision"><b>D</b><span>决定 Decision</span><small>明确选择与责任承诺</small></button>
+            </div>
+            <div class="lab-feedback" hidden data-feedback aria-live="polite">
+              <div><span data-feedback-icon>✓</span><strong data-feedback-title>判断正确</strong></div>
+              <p data-feedback-copy></p>
+              <button class="button button-primary" type="button" data-next>下一题 <span>→</span></button>
+            </div>
+            <div class="lab-complete" hidden data-complete>
+              <span>LAB COMPLETED</span>
+              <h3>你的得分：<b data-final-score>0 / 6</b></h3>
+              <p data-final-copy></p>
+              <button class="button button-primary" type="button" data-restart>再做一次 <span>↺</span></button>
+            </div>
+            <p class="local-note">成绩只保存在当前浏览器设备，可随时重置；本站没有账号和云端存储。</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="closing section-shell reveal">
+        <span class="section-index">NEXT ITERATION</span>
+        <h2>公开不是把内部搬出来，<br />而是把值得复用的部分<em>重新做对。</em></h2>
+        <p>这个站点会继续加入可操作的方法、Meepo 概念体验、工程案例和浏览器实验。</p>
+        <a class="button button-dark" href="#">查看公开仓库 <span>↗</span></a>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <div class="section-shell footer-inner">
+        <a class="brand footer-brand" href="#top">
+          <span class="brand-mark">K</span>
+          <span><strong>KAEL LAB</strong><small>Public experiments in human-agent work.</small></span>
+        </a>
+        <p>Built static-first. No tracker. No secret key. No claim without boundary.</p>
+        <p>© <span data-year></span> Kael · First public slice</p>
+      </div>
+    </footer>
+  </body>
+</html>
