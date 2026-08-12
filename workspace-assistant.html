@@ -1,0 +1,131 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="description" content="Kael Lab Workspace Assistant：多角色、多场景的未来产品交互 Mock。" />
+    <meta name="theme-color" content="#0b1210" />
+    <title>Workspace Assistant · Kael Lab AI Center</title>
+    <link rel="stylesheet" href="workspace-assistant.css" />
+    <script src="workspace-assistant.js" defer></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#assistant-main">跳到主要内容</a>
+    <div class="assistant-app">
+      <header class="assistant-topbar">
+        <a class="assistant-brand" href="./" aria-label="返回 Kael Lab AI Center">
+          <span class="assistant-brand-mark">K</span>
+          <span><strong>Workspace Assistant</strong><small>KAEL LAB · AI CENTER</small></span>
+        </a>
+        <div class="assistant-project">
+          <span class="mock-state"><i></i>CONCEPT MOCK</span>
+          <span class="project-name"><small>公开演示空间</small><strong>sample-workspace</strong></span>
+        </div>
+        <div class="assistant-top-actions">
+          <button type="button" data-reset>↻ 重置场景</button>
+          <a href="./">返回 AI Center</a>
+        </div>
+      </header>
+
+      <div class="persona-bar" aria-label="选择使用者">
+        <span>以谁的视角体验</span>
+        <button class="persona-button is-active" type="button" data-persona="newcomer" aria-pressed="true"><b>01</b>第一次接手</button>
+        <button class="persona-button" type="button" data-persona="lead" aria-pressed="false"><b>02</b>产品负责人</button>
+        <button class="persona-button" type="button" data-persona="executor" aria-pressed="false"><b>03</b>执行与审计</button>
+        <p data-persona-note>我刚进入一个复杂工作空间，不知道当前事实和下一步。</p>
+      </div>
+
+      <main id="assistant-main" class="assistant-layout">
+        <nav class="workspace-nav" aria-label="模拟工作空间">
+          <section class="workspace-block">
+            <div class="workspace-label"><span>WORKSPACE</span><small>DEMO DATA</small></div>
+            <button class="workspace-home is-active" type="button" data-nav="overview"><span>⌂</span>工作空间总览</button>
+          </section>
+
+          <section class="workspace-block work-items">
+            <div class="workspace-label"><span>工作项</span><small>2</small></div>
+            <button class="work-item is-expanded" type="button" data-work-item="r001">
+              <span><i></i><strong>R001</strong></span><small>交付体验升级</small>
+            </button>
+            <div class="work-tree" data-work-tree>
+              <button type="button" data-artifact="requirement"><span>Requirement</span><small>已审计</small></button>
+              <button class="is-current" type="button" data-artifact="solution"><span>Solution</span><small>当前</small></button>
+              <button type="button" data-artifact="execution"><span>Execution</span><small>3 steps</small></button>
+              <button type="button" data-artifact="testing"><span>Testing</span><small>待设计</small></button>
+            </div>
+            <button class="work-item" type="button" data-work-item="r002">
+              <span><i></i><strong>R002</strong></span><small>公开能力中心</small>
+            </button>
+          </section>
+
+          <section class="workspace-block utility-nav">
+            <button type="button" data-nav="todo"><span>✓</span>Todo <small>4</small></button>
+            <button type="button" data-nav="skills"><span>◇</span>Skills <small>8</small></button>
+            <button type="button" data-nav="foundation"><span>⌘</span>Foundation</button>
+          </section>
+
+          <div class="workspace-safety"><span>◇</span><p><strong>静态演示模式</strong>所有工作项、审计和执行均为浏览器内模拟，不读取或修改真实文件。</p></div>
+        </nav>
+
+        <section class="agent-panel" aria-labelledby="scenario-title">
+          <header class="agent-header">
+            <div>
+              <span class="agent-avatar" aria-hidden="true">W</span>
+              <div><h1 id="scenario-title" data-scenario-title>我不知道下一步做什么</h1><p data-scenario-subtitle>Workspace Agent 已读取模拟规则、索引和 R001 当前入口</p></div>
+            </div>
+            <span class="agent-status"><i></i>READY</span>
+          </header>
+
+          <div class="scenario-tabs" role="tablist" aria-label="使用场景">
+            <button class="scenario-tab is-active" type="button" role="tab" aria-selected="true" data-scenario="next"><span>01</span>下一步</button>
+            <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="create"><span>02</span>建工作项</button>
+            <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="correct"><span>03</span>纠正目标</button>
+            <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="decide"><span>04</span>技术决策</button>
+            <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="audit"><span>05</span>Audit</button>
+            <button class="scenario-tab" type="button" role="tab" aria-selected="false" data-scenario="codex"><span>06</span>Codex</button>
+          </div>
+
+          <div class="conversation-scroll" data-conversation-scroll>
+            <div class="conversation" aria-live="polite" data-conversation></div>
+          </div>
+
+          <footer class="assistant-composer">
+            <div class="composer-error" data-composer-error role="alert" hidden>请输入你想问的问题。</div>
+            <label for="assistant-input">继续问 Workspace Agent</label>
+            <div class="composer-box">
+              <textarea id="assistant-input" rows="2" maxlength="500" data-assistant-input placeholder="例如：我不知道下一步做什么"></textarea>
+              <div class="composer-tools">
+                <span data-context-chip>R001 · Solution · Audit</span>
+                <button type="button" data-send>发送 ↑</button>
+              </div>
+            </div>
+            <p>Mock 只匹配预设意图；不会调用模型、API、Codex 或真实 Workspace。</p>
+          </footer>
+        </section>
+
+        <aside class="context-panel" aria-label="当前上下文">
+          <header><span>CURRENT CONTEXT</span><strong data-context-title>R001 · Solution</strong></header>
+          <section class="context-section">
+            <h2>当前判断</h2>
+            <dl data-context-facts></dl>
+          </section>
+          <section class="context-section">
+            <h2>已加载 Skills</h2>
+            <div class="skill-list" data-context-skills></div>
+          </section>
+          <section class="context-section decision-section">
+            <h2>待确认决定</h2>
+            <div data-context-decisions></div>
+          </section>
+          <section class="context-section evidence-section">
+            <h2>证据边界</h2>
+            <p data-context-boundary>当前内容来自 Demo Data，只展示未来交互，不表示真实能力已经实现。</p>
+          </section>
+        </aside>
+      </main>
+      <div class="assistant-toast" data-toast role="status" aria-live="polite" hidden></div>
+    </div>
+
+    <noscript><div class="noscript-note">这个 Concept Mock 需要 JavaScript 才能切换场景；页面结构与公开边界仍可阅读。</div></noscript>
+  </body>
+</html>
