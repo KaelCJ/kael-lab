@@ -3,27 +3,72 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="description" content="Lanox：从人机协作、通用 Agent、垂直产品到 Agent Framework 的技术品牌方向。">
+  <meta name="description" content="Lanox：从人的判断、通用 Agent、垂直产品到可靠基础设施的六层技术品牌架构。">
+  <meta name="theme-color" content="#f8f7f1">
   <title>Lanox · Human-centered Agent Ecosystem</title>
-  <link rel="stylesheet" href="styles.css">
+  <link rel="stylesheet" href="../ecosystem.css">
+  <script>document.documentElement.classList.add("js")</script>
 </head>
-<body>
+<body data-view="architecture" data-theme="paper">
   <a class="skip-link" href="#main">跳到主要内容</a>
-  <header class="topbar"><a class="brand" href="../index.html"><span>L</span><strong>Lanox</strong></a><nav><a href="#architecture">架构</a><a href="#products">产品</a><a href="../help/index.html?topic=collaboration">使用帮助</a></nav><a class="back" href="../index.html">Kael Lab ↗</a></header>
-  <main id="main">
-    <section class="hero"><div><p class="eyebrow">HUMAN-CENTERED AGENT ECOSYSTEM</p><h1>让 Agent 能力，<br><em>成为产品与品牌。</em></h1><p>Lanox 把人的目标、通用 Agent 执行、垂直领域产品、Agent Framework、工程能力与基础设施组织成一套清晰的技术品牌方向。</p><div><a class="button primary" href="#architecture">查看六层架构</a><a class="button" href="../help/index.html?topic=collaboration">从使用帮助开始 →</a></div></div><aside><span>DIRECTION</span><strong>方向已经清晰，细节持续演进</strong><p>本页区分当前路径、目标方向与 Roadmap；品牌架构不等于所有模块、产品或商业结果已经实现。</p></aside></section>
-    <section class="principle-strip"><article><span>HUMAN</span><strong>人拥有目标和最终判断</strong></article><article><span>AGENT</span><strong>Agent 在授权内执行</strong></article><article><span>EVIDENCE</span><strong>结果带证据回到人</strong></article></section>
-    <section class="section" id="architecture"><header><p class="eyebrow">SIX LAYERS</p><h2>从人的目标，到可靠运行</h2><p>六层表达责任关系，不是技术清单。越靠上越接近用户价值，越靠下越提供稳定支撑。</p></header><div class="layers">
-      <article><b>L01</b><div><span class="current">CURRENT METHOD</span><h3>Kael 人机协作</h3><p>工作项承载目标，项目保存事实，Agent 执行，证据回到人的判断。</p></div><a href="../help/index.html?topic=collaboration">打开帮助 →</a></article>
-      <article><b>L02</b><div><span class="current">CURRENT + DIRECTION</span><h3>通用 Agent / Codex Workbench</h3><p>从本机 Session、Thread 与 Turn 出发，演进为可恢复、可授权、可交付的执行产品。</p></div><a href="../help/index.html?topic=workbench">打开帮助 →</a></article>
-      <article><b>L03</b><div><span class="current">PRODUCTS</span><h3>垂直领域产品</h3><p>Nest 知识库把可靠来源变成答案；创意领域 Agent 把方法变成可交付资产。</p></div><a href="../help/index.html?topic=nest">知识库帮助 →</a></article>
-      <article><b>L04</b><div><span class="direction">DIRECTION</span><h3>Lanox Agent Framework</h3><p>共享 Session、Context、Checkpoint、能力端口和执行证据，不吞并领域方法。</p></div><i>Shared runtime</i></article>
-      <article><b>L05</b><div><span class="current">ENGINEERING</span><h3>企业与领域能力</h3><p>Nest / Jugg 工程深度、知识、工具与业务方法，经真实 Agent 消费后形成复利。</p></div><i>Capabilities</i></article>
-      <article><b>L06</b><div><span class="direction">FOUNDATION</span><h3>必要基础设施</h3><p>模型、数据、运行、交付、安全与可观测，为上层产品提供稳定、成本和信任。</p></div><i>Infrastructure</i></article>
-    </div></section>
-    <section class="section products" id="products"><header><p class="eyebrow">PRODUCT PORTFOLIO</p><h2>一个品牌，三种产品价值</h2></header><div class="product-grid"><article><span>GENERAL AGENT</span><h3>Codex Workbench</h3><p>让个人执行变得可观察，并向团队化、持续运行和可信交付演进。</p><a href="../help/index.html?topic=workbench">使用路径 →</a></article><article><span>VERTICAL KNOWLEDGE</span><h3>Nest 知识库</h3><p>目录、文档、问答与来源构成可靠知识闭环；证据不足时明确停下。</p><a href="../help/index.html?topic=nest">使用路径 →</a></article><article><span>VERTICAL AGENT · BUILDING</span><h3>创意领域 Agent</h3><p>目标是把创意方法组织为可恢复、可签收、可持续生产的领域产品。</p><strong>建设中</strong></article></div></section>
-    <section class="closing"><p class="eyebrow">LANOX</p><h2>技术最终要成为，<br>人愿意使用的产品。</h2><a class="button primary" href="../help/index.html?topic=collaboration">进入交互帮助 →</a></section>
+  <header class="space-topbar">
+    <a class="space-brand" href="../index.html"><span class="space-brand-mark">L</span><span><strong>Lanox</strong><small>HUMAN-CENTERED AGENT ECOSYSTEM</small></span></a>
+    <nav class="space-nav" aria-label="生态导航"><a href="../index.html#ecosystem">Ecosystem</a><a href="../kael/">Kael</a><a href="../nest/">Jugg / Nest</a><a href="../lanox/" aria-current="page">Lanox</a></nav>
+    <a class="lab-back" href="../index.html"><span>返回</span> Kael Lab ↗</a>
+  </header>
+
+  <div class="control-deck" aria-label="页面视图与主题">
+    <div class="control-group"><span class="control-label">VIEW</span><button class="control-button" type="button" data-view-target="architecture" aria-pressed="true">ARCHITECTURE</button><button class="control-button" type="button" data-view-target="briefing" aria-pressed="false">BRIEFING</button></div>
+    <div class="control-group"><span class="control-label">THEME</span><button class="theme-button" type="button" data-theme-target="paper" aria-label="Paper 主题" aria-pressed="true"></button><button class="theme-button" type="button" data-theme-target="night" aria-label="Night 主题" aria-pressed="false"></button><button class="theme-button" type="button" data-theme-target="ice" aria-label="Ice 主题" aria-pressed="false"></button></div>
+  </div>
+
+  <main class="space-main" id="main">
+    <section class="space-hero">
+      <div class="space-hero-copy"><p class="hero-kicker">LANOX · FUTURE TECHNOLOGY BRAND</p><h1>让 Agent 能力，<br><em>成为产品与品牌。</em></h1><p>Lanox 从人的目标与判断出发，把通用 Agent、垂直领域产品、Agent Framework、企业能力和基础设施组织为一套清晰的六层架构，让技术最终进入人愿意使用、企业能够信任的产品。</p></div>
+      <aside class="hero-fact"><span class="status-chip direction">DIRECTION</span><strong>方向已经清晰，产品与能力持续演进。</strong><p>六层架构表达责任关系，不等于每个模块、产品、商业结果或基础设施能力都已经实现。</p></aside>
+    </section>
+
+    <section class="view-panel" data-view-panel="architecture" tabindex="-1" aria-labelledby="architecture-title">
+      <header class="panel-heading"><div><p class="section-kicker">SIX-LAYER ARCHITECTURE</p><h2 id="architecture-title">从人的目标，到可信运行</h2></div><p>越靠上越接近用户价值，越靠下越提供稳定支撑。安全身份与可观测效果横切所有层。点击节点查看责任与状态。</p></header>
+      <div class="architecture-workspace">
+        <div class="architecture-canvas">
+          <div class="canvas-meta"><span><b>LANOX ARCHITECTURE</b> / PUBLIC DIRECTION</span><span>SELECT A LAYER →</span></div>
+          <div class="architecture-grid lanox-map">
+            <button class="node orange is-selected" type="button" data-node data-index="L01 / HUMAN" data-title="Kael 人机协作" data-state="CURRENT METHOD" data-detail="用工作项承载目标，回源当前事实，让 Agent 在授权内执行，并把证据带回人的最终判断。" data-owner="人的目标、授权与判断" data-boundary="任何 Agent 方案都不能替代人的高影响决定。"><span class="layer-code">L01</span><span><strong>Kael 人机协作</strong><small>目标 · 工作项 · 授权 · 证据 · 人的最终判断</small></span><span class="layer-state">CURRENT METHOD</span></button>
+            <button class="node blue" type="button" data-node data-index="L02 / GENERAL AGENT" data-title="通用 Agent / Codex Workbench" data-state="CURRENT + DIRECTION" data-state-class="direction" data-detail="从工作目录、Session、Thread、Turn 和流式事件出发，演进为可恢复、可授权、可观察、可交付的通用执行产品。" data-owner="通用 Agent 产品" data-boundary="静态页面不证明真实模型、Session 或持续运行服务已经连接。"><span class="layer-code">L02</span><span><strong>通用 Agent / Codex Workbench</strong><small>本机执行 · 可观察 · 可恢复 · 持续运行方向</small></span><span class="layer-state">CURRENT + DIRECTION</span></button>
+            <button class="node purple" type="button" data-node data-index="L03 / VERTICAL PRODUCTS" data-title="垂直领域 Agent 产品" data-state="PRODUCTS" data-detail="把领域知识、方法和工作流组织成用户可理解、可操作、可签收的产品，例如可靠知识与创意交付。" data-owner="各垂直产品与领域方法" data-boundary="产品方向与 Building 项必须和当前已实现能力分开表达。"><span class="layer-code">L03</span><span><strong>垂直领域 Agent 产品</strong><small>Nest 知识库 · 创意领域 Agent · 更多行业产品</small></span><span class="layer-state">PRODUCTS</span></button>
+            <button class="node purple" type="button" data-node data-index="L04 / FRAMEWORK" data-title="Lanox Agent Framework" data-state="DIRECTION" data-state-class="direction" data-detail="为通用与垂直产品提供共享 Session、Context、Checkpoint、能力端口、执行事件与证据契约，同时保留产品方法的独立性。" data-owner="Lanox 公共 Agent Framework" data-boundary="Framework 复用运行能力，不吞并领域流程或最终宿主装配。"><span class="layer-code">L04</span><span><strong>Lanox Agent Framework</strong><small>Session · Context · Checkpoint · Ports · Evidence</small></span><span class="layer-state">DIRECTION</span></button>
+            <button class="node green" type="button" data-node data-index="L05 / CAPABILITIES" data-title="Jugg / Nest 与企业能力" data-state="ENGINEERING" data-detail="把工程深度、组件经验、知识、工具和业务方法组织为可由真实 Agent 消费的企业与领域能力。" data-owner="Jugg / Nest 与领域能力所有者" data-boundary="候选思想、组件与知识必须按当前版本和证据确认，不能用摘要替代。"><span class="layer-code">L05</span><span><strong>Jugg / Nest 与企业能力</strong><small>工程治理 · 知识资产 · 工具 · 领域方法</small></span><span class="layer-state">ENGINEERING</span></button>
+            <button class="node blue" type="button" data-node data-index="L06 / FOUNDATION" data-title="必要基础设施" data-state="FOUNDATION" data-state-class="direction" data-detail="模型、数据、运行、存储、交付、成本和平台能力，为上层产品提供稳定、性能与可持续运行基础。" data-owner="基础设施与运行平台" data-boundary="基础设施只有被产品消费并经过真实运行验证后，才形成用户价值。"><span class="layer-code">L06</span><span><strong>必要基础设施</strong><small>模型 · 数据 · 运行 · 存储 · 交付 · 成本</small></span><span class="layer-state">FOUNDATION</span></button>
+            <div class="crosscuts"><article><b>CROSSCUT A</b><strong>安全与身份</strong><p>授权、凭据、数据边界、审计和最小权限贯穿六层。</p></article><article><b>CROSSCUT B</b><strong>可观测与效果</strong><p>事件、证据、质量、成本与产品结果形成端到端反馈。</p></article></div>
+          </div>
+        </div>
+        <aside class="inspector" data-inspector aria-live="polite">
+          <div class="inspector-head"><span>LAYER INSPECTOR</span><span class="inspector-index" data-inspector-index>L01 / HUMAN</span></div>
+          <span class="status-chip" data-inspector-state>CURRENT METHOD</span><h3 data-inspector-title>Kael 人机协作</h3><p data-inspector-detail>用工作项承载目标，回源当前事实，让 Agent 在授权内执行，并把证据带回人的最终判断。</p>
+          <dl><dt>责任所有者</dt><dd data-inspector-owner>人的目标、授权与判断</dd><dt>架构边界</dt><dd data-inspector-boundary>任何 Agent 方案都不能替代人的高影响决定。</dd></dl>
+          <a class="inspector-link" href="../help/index.html?topic=collaboration">打开人机协作帮助 →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view-panel" data-view-panel="briefing" tabindex="-1" aria-labelledby="briefing-title">
+      <header class="panel-heading"><div><p class="section-kicker">BRIEFING MODE</p><h2 id="briefing-title">用六张分镜理解 Lanox</h2></div><p>从人的判断到可信运行，逐层说明品牌为什么存在、产品价值如何形成。左右方向键可翻页。</p></header>
+      <div class="briefing-shell">
+        <div class="briefing-stage">
+          <article class="brief-slide is-active" data-slide><div class="brief-slide-inner"><div><span class="slide-number">01 · HUMAN FIRST</span><h2>技术品牌的起点，<br><em>是人的真实目标。</em></h2><p>Lanox 不从模型清单开始，而从目标、授权、判断和可验证结果开始。Agent 的价值，是让人的意图更快变成可信行动。</p></div><aside class="slide-aside"><b>BRAND PRINCIPLE</b><strong>Human-centered. Agent-powered. Evidence-backed.</strong><p>人定义方向，Agent 提供执行，证据支撑判断。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">02 · GENERAL AGENT</span><h2>第一类产品，<br><em>让执行可观察。</em></h2><p>Codex Workbench 从本机工作目录与 Session 出发，组织 Thread、Turn 和流式事件，并向可恢复、可授权与持续运行演进。</p></div><aside class="slide-aside"><b>PRODUCT VALUE</b><strong>看得见正在做什么，也知道如何继续。</strong><p>停止、关闭、历史和交付边界必须清楚。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">03 · VERTICAL PRODUCTS</span><h2>第二类产品，<br><em>让领域能力可使用。</em></h2><p>Nest 知识库让答案回到可靠来源；创意领域 Agent 把创意方法变成可恢复、可签收的生产流程。更多领域产品可沿同一边界演进。</p></div><div class="slide-grid"><article><b>VERTICAL KNOWLEDGE</b><strong>Nest 知识库</strong><p>目录、文档、问答、来源与追问。</p></article><article><b>VERTICAL AGENT · BUILDING</b><strong>创意领域 Agent</strong><p>方法、生产、恢复与交付。</p></article></div></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">04 · FRAMEWORK</span><h2>共享的是运行能力，<br><em>不是产品灵魂。</em></h2><p>Agent Framework 提供 Session、Context、Checkpoint、能力端口和执行证据。领域方法、用户流程和最终装配仍属于各自产品。</p></div><aside class="slide-aside"><b>FRAMEWORK RULE</b><strong>复用基础，保留产品差异。</strong><p>Framework 不能吞并领域语义，也不能成为所有模块的组合根。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">05 · ENTERPRISE DEPTH</span><h2>工程深度，<br><em>通过真实 Agent 形成复利。</em></h2><p>Jugg / Nest 的治理、知识、组件和场景经验进入 Agent 产品，被真实任务消费、验证和回流，企业能力才从库存变成持续价值。</p></div><aside class="slide-aside"><b>COMPOUNDING LOOP</b><strong>能力 → 产品消费 → 运行证据 → 知识校准</strong><p>没有真实消费和证据，资产数量不等于产品价值。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">06 · TRUST</span><h2>最后一层竞争力，<br><em>是可以被信任。</em></h2><p>模型、数据和运行提供基础，安全身份与可观测效果横切全栈。品牌承诺最终必须落到稳定、成本、质量、证据和真实用户结果。</p><p><a class="inspector-link" href="../help/index.html?topic=collaboration">从人机协作交互帮助开始 →</a></p></div><aside class="slide-aside"><b>LANOX</b><strong>让 Agent 能力成为人愿意使用的产品。</strong><p>方向清晰，但每一项 Current 都需要当前事实支持。</p></aside></div></article>
+        </div>
+        <nav class="briefing-nav" aria-label="演讲分镜"><button type="button" data-slide-prev>← PREV</button><div class="slide-progress"><span data-slide-progress></span></div><span class="slide-page" data-slide-page>01 / 06</span><button type="button" data-slide-next>NEXT →</button><span class="key-hint">← → / PAGE UP · PAGE DOWN</span></nav>
+      </div>
+    </section>
   </main>
-  <footer><span>LANOX · PUBLIC DIRECTION</span><a href="../index.html">返回 Kael Lab</a></footer>
+
+  <footer class="space-footer"><a class="space-brand" href="../index.html"><span class="space-brand-mark">L</span><span><strong>Lanox</strong><small>PUBLIC DIRECTION</small></span></a><p>人本 · 产品化 · 工程复利 · 可信运行 · Current 与 Direction 分开表达</p><span>© <span data-year></span> KAEL LAB</span></footer>
+  <script src="../ecosystem.js"></script>
 </body>
 </html>
