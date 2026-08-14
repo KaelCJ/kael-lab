@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Meepo：从组合根、产品 Agent、公共 Framework 到 Nest 候选能力的 Agent 产品孵化实践。">
+  <meta name="theme-color" content="#f8f7f1">
+  <title>Meepo · Agent Product Incubator</title>
+  <link rel="stylesheet" href="../ecosystem.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-view="architecture" data-theme="paper">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="space-topbar">
+    <a class="space-brand" href="../index.html"><span class="space-brand-mark">M</span><span><strong>Meepo</strong><small>AGENT PRODUCT INCUBATOR</small></span></a>
+    <nav class="space-nav" aria-label="产品空间"><a href="../kael/">Kael</a><a href="../meepo/" aria-current="page">Meepo</a><a href="../nest/">Jugg / Nest</a><a href="../lanox/">Lanox</a></nav>
+    <a class="lab-back" href="../index.html"><span>返回</span> Kael Lab ↗</a>
+  </header>
+
+  <div class="control-deck" aria-label="页面视图与主题">
+    <div class="control-group"><span class="control-label">VIEW</span><button class="control-button" type="button" data-view-target="architecture" aria-pressed="true">ARCHITECTURE</button><button class="control-button" type="button" data-view-target="briefing" aria-pressed="false">BRIEFING</button></div>
+    <div class="control-group"><span class="control-label">THEME</span><button class="theme-button" type="button" data-theme-target="paper" aria-label="Paper 主题" aria-pressed="true"></button><button class="theme-button" type="button" data-theme-target="night" aria-label="Night 主题" aria-pressed="false"></button><button class="theme-button" type="button" data-theme-target="ice" aria-label="Ice 主题" aria-pressed="false"></button></div>
+  </div>
+
+  <main class="space-main" id="main">
+    <section class="space-hero">
+      <div class="space-hero-copy"><p class="hero-kicker">MEEPO · AGENT ENGINEERING PRACTICE</p><h1>让 Agent 产品，<br><em>在真实工程里长出来。</em></h1><p>Meepo 把宿主、产品 Agent、公共 Framework 与候选能力分开，让每项能力有明确装配位置、依赖方向和验证入口。页面只展示当前结构与公开概念，不连接真实运行实例。</p></div>
+      <aside class="hero-fact"><span>CURRENT PRACTICE</span><strong>产品 Agent 是价值单元，组合根负责最终装配。</strong><p>公共层不反向依赖产品；候选能力先在孵化边界验证。创意视觉产品仍处于 Building，不写成已完成。</p></aside>
+    </section>
+
+    <section class="view-panel" data-view-panel="architecture" tabindex="-1" aria-labelledby="architecture-title">
+      <header class="panel-heading"><div><p class="section-kicker">MODULE ARCHITECTURE</p><h2 id="architecture-title">四层边界，一条产品化路径</h2></div><p>从下到上看复用能力如何支撑产品；从上到下看宿主怎样选择并装配能力。点击节点查看当前状态与依赖边界。</p></header>
+      <div class="architecture-workspace">
+        <div class="architecture-canvas">
+          <div class="canvas-meta"><span><b>MEEPO MODULE MAP</b> / CURRENT WORKSPACE VIEW</span><span>SELECT A NODE →</span></div>
+          <div class="architecture-grid meepo-map">
+            <div class="map-band">L01 · COMPOSITION ROOTS / 可执行宿主与最终装配</div>
+            <button class="node orange composition is-selected" type="button" data-node data-index="L01 / SERVER" data-title="Server 组合根" data-state="CURRENT" data-detail="面向 B/S 的可执行组合根，拥有宿主入口、最终装配和 Web 运行资源。" data-owner="Server 可执行宿主" data-boundary="产品 Agent、Presentation 和公共层不得反向依赖组合根。"><b>SERVER · B/S</b><strong>Web Composition Root</strong><small>宿主入口 · 最终装配 · 公共与产品 Web 资源</small></button>
+            <button class="node orange composition" type="button" data-node data-index="L01 / DESKTOP" data-title="Desktop 组合根" data-state="CURRENT" data-detail="面向 C/S 的可执行组合根，拥有桌面宿主入口、最终装配、UI 与本机交互资源。" data-owner="Desktop 可执行宿主" data-boundary="桌面 UI 与资源属于该宿主，公共模块不读取它的私有资源。"><b>DESKTOP · C/S</b><strong>Desktop Composition Root</strong><small>桌面宿主 · 最终装配 · 本机 Workbench 体验</small></button>
+
+            <div class="map-band">L02 · PRODUCT AGENTS / 面向用户价值的产品单元</div>
+            <button class="node blue" type="button" data-node data-index="L02 / NEST ASSISTANT" data-title="Nest Assistant" data-state="CURRENT" data-detail="面向 Nest 工程与知识场景的产品 Agent，消费公共层和当前可用候选能力。" data-owner="产品 Agent 模块" data-boundary="公共 Framework 与 Nest 候选模块不得反向依赖产品 Agent。"><b>PRODUCT AGENT</b><strong>Nest Assistant</strong><small>工程问题 · 知识与能力消费</small></button>
+            <button class="node blue" type="button" data-node data-index="L02 / CODEX ASSISTANT" data-title="Nest Assistant · Codex" data-state="CURRENT" data-detail="将 Nest 场景与 Codex 执行能力组合为独立产品 Agent，保留产品层责任。" data-owner="产品 Agent 模块" data-boundary="Codex 接入不能让通用层知道具体产品流程。"><b>PRODUCT AGENT</b><strong>Nest Assistant · Codex</strong><small>场景编排 · Agent 执行</small></button>
+            <button class="node blue" type="button" data-node data-index="L02 / WORKBENCH" data-title="Codex Workbench" data-state="CURRENT" data-detail="围绕工作目录、Session、Thread、Turn 与流式事件组织本机 Agent 执行体验。" data-owner="Codex Workbench 产品 Agent" data-boundary="本页静态交互不证明真实 Codex 会话或后端已经连接。"><b>PRODUCT AGENT</b><strong>Codex Workbench</strong><small>目录 · Session · Thread · Turn · Events</small></button>
+            <button class="node purple" type="button" data-node data-index="L02 / CREATIVE" data-title="Creative Visual" data-state="BUILDING" data-state-class="building" data-detail="创意视觉领域 Agent 的产品边界已经占位，目标是把创意方法组织为可持续交付流程。" data-owner="创意视觉产品 Agent 候选" data-boundary="当前只有模块边界，不能宣传为已有 Java 实现或可运行产品。"><b>PRODUCT AGENT</b><strong>Creative Visual</strong><small>BUILDING · 垂直创意产品方向</small></button>
+
+            <div class="map-band">L03 · AGENT FRAMEWORK / 可复用的 Agent 公共层</div>
+            <button class="node green framework" type="button" data-node data-index="L03 / APPLICATION" data-title="Application" data-state="CURRENT" data-detail="组织用例、编排和应用边界，让产品流程不依赖具体基础设施实现。" data-owner="公共 Agent Framework" data-boundary="不拥有具体产品的最终用户流程。"><b>FRAMEWORK</b><strong>Application</strong><small>用例 · 编排</small></button>
+            <button class="node green framework" type="button" data-node data-index="L03 / CLIENT" data-title="Client" data-state="CURRENT" data-detail="定义外部 Agent 与模型能力的客户端契约和调用边界。" data-owner="公共 Agent Framework" data-boundary="客户端契约不泄露宿主或产品私有资源。"><b>FRAMEWORK</b><strong>Client</strong><small>能力端口</small></button>
+            <button class="node green framework" type="button" data-node data-index="L03 / INFRA" data-title="Infrastructure" data-state="CURRENT" data-detail="承载公共端口的基础设施适配，让上层依赖稳定抽象。" data-owner="公共 Agent Framework" data-boundary="具体宿主装配仍由组合根负责。"><b>FRAMEWORK</b><strong>Infrastructure</strong><small>适配 · 实现</small></button>
+            <button class="node green framework" type="button" data-node data-index="L03 / PRESENTATION" data-title="Presentation" data-state="CURRENT" data-detail="承载可复用的交互与呈现边界，不依赖 Server 或 Desktop 组合根。" data-owner="公共 Agent Framework" data-boundary="最终 Web 或桌面资源归各自宿主交付。"><b>FRAMEWORK</b><strong>Presentation</strong><small>交互边界</small></button>
+            <button class="node green framework" type="button" data-node data-index="L03 / POC" data-title="POC" data-state="CURRENT" data-detail="用于装配与能力探索的验证边界，可以按需依赖产品 Agent。" data-owner="公共验证与探索边界" data-boundary="POC 不等于正式运行时产品或组合根。"><b>FRAMEWORK</b><strong>POC</strong><small>探索 · 装配验证</small></button>
+
+            <div class="map-band">L04 · NEST CANDIDATES / 尚未独立成正式组件的孵化能力</div>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / WORKSPACE" data-title="Workspace" data-state="CANDIDATE" data-state-class="candidate" data-detail="工作区读取、定位与操作相关的独立候选组件边界。" data-owner="Nest 候选孵化层" data-boundary="候选迁入正式组件需要人的明确决定。"><b>CANDIDATE</b><strong>Workspace</strong><small>工作区能力</small></button>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / APP SERVER" data-title="Codex App Server" data-state="CANDIDATE" data-state-class="candidate" data-detail="面向 Codex App Server 的独立候选组件边界。" data-owner="Nest 候选孵化层" data-boundary="候选边界不证明正式 Nest 已拥有该组件。"><b>CANDIDATE</b><strong>App Server</strong><small>Codex App 接入</small></button>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / OPENAI" data-title="OpenAI Adapter" data-state="CANDIDATE" data-state-class="candidate" data-detail="对 OpenAI 能力的候选适配边界。" data-owner="Nest 候选孵化层" data-boundary="实际可用性取决于当前依赖、配置和运行验证。"><b>CANDIDATE</b><strong>OpenAI</strong><small>模型适配</small></button>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / ANTHROPIC" data-title="Anthropic Adapter" data-state="CANDIDATE" data-state-class="candidate" data-detail="对 Anthropic 能力的候选适配边界。" data-owner="Nest 候选孵化层" data-boundary="静态架构图不证明真实模型调用成功。"><b>CANDIDATE</b><strong>Anthropic</strong><small>模型适配</small></button>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / LANOX" data-title="Lanox Candidate" data-state="CANDIDATE" data-state-class="candidate" data-detail="面向 Lanox 方向的候选能力边界，由产品 Agent 和组合根按需消费。" data-owner="Nest 候选孵化层" data-boundary="品牌方向与正式组件仍需独立演进和验证。"><b>CANDIDATE</b><strong>Lanox</strong><small>品牌能力候选</small></button>
+            <button class="node purple candidate-layer" type="button" data-node data-index="L04 / KERNEL" data-title="Incubator Kernel" data-state="CANDIDATE" data-state-class="candidate" data-detail="为尚未独立成组件的公共候选能力提供孵化内核。" data-owner="Nest 候选孵化层" data-boundary="公共候选能力不得反向依赖具体产品 Agent。"><b>CANDIDATE</b><strong>Kernel</strong><small>孵化内核</small></button>
+          </div>
+        </div>
+        <aside class="inspector" data-inspector aria-live="polite">
+          <div class="inspector-head"><span>MODULE INSPECTOR</span><span class="inspector-index" data-inspector-index>L01 / SERVER</span></div>
+          <span class="status-chip" data-inspector-state>CURRENT</span><h3 data-inspector-title>Server 组合根</h3><p data-inspector-detail>面向 B/S 的可执行组合根，拥有宿主入口、最终装配和 Web 运行资源。</p>
+          <dl><dt>真实所有者</dt><dd data-inspector-owner>Server 可执行宿主</dd><dt>依赖边界</dt><dd data-inspector-boundary>产品 Agent、Presentation 和公共层不得反向依赖组合根。</dd></dl>
+          <a class="inspector-link" href="../help/index.html?topic=workbench">打开 Codex Workbench 帮助 →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view-panel" data-view-panel="briefing" tabindex="-1" aria-labelledby="briefing-title">
+      <header class="panel-heading"><div><p class="section-kicker">BRIEFING MODE</p><h2 id="briefing-title">从模块分化，看产品怎样长出来</h2></div><p>五张分镜沿“宿主—产品—Framework—候选能力—产品化原则”展开。左右方向键可翻页。</p></header>
+      <div class="briefing-shell">
+        <div class="briefing-stage">
+          <article class="brief-slide is-active" data-slide><div class="brief-slide-inner"><div><span class="slide-number">01 · COMPOSITION</span><h2>宿主负责装配，<br><em>不吞并产品。</em></h2><p>Server 和 Desktop 是 B/S、C/S 的可执行组合根。它们拥有入口、资源与最终装配；公共层和产品 Agent 保持独立，不依赖宿主私有实现。</p></div><aside class="slide-aside"><b>DEPENDENCY RULE</b><strong>依赖指向可复用层，最终装配留在边缘。</strong><p>这让同一个产品 Agent 可以被不同宿主选择和验证。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">02 · PRODUCTS</span><h2>产品 Agent，<br><em>才是用户价值单元。</em></h2><p>Nest Assistant、Codex 组合与 Workbench 已有当前模块；Creative Visual 代表垂直领域产品方向，但仍处于 Building。</p></div><div class="slide-grid"><article><b>CURRENT</b><strong>Nest Assistant</strong><p>工程与知识场景。</p></article><article><b>CURRENT</b><strong>Codex Workbench</strong><p>本机 Agent 执行体验。</p></article><article><b>CURRENT</b><strong>Nest × Codex</strong><p>场景与执行能力组合。</p></article><article><b>BUILDING</b><strong>Creative Visual</strong><p>垂直创意产品方向。</p></article></div></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">03 · FRAMEWORK</span><h2>共享运行能力，<br><em>不共享领域流程。</em></h2><p>Application、Client、Infrastructure、Presentation 和 POC 形成公共 Agent Framework。它们提供端口、适配与编排骨架，但不替具体产品定义用户价值。</p></div><aside class="slide-aside"><b>FRAMEWORK ROLE</b><strong>复用 Session、Context、能力端口与执行证据。</strong><p>领域方法和产品流程仍属于产品 Agent。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">04 · INCUBATION</span><h2>候选能力先验证，<br><em>再决定是否独立。</em></h2><p>Workspace、App Server、模型适配与孵化内核位于候选层。它们可以被产品消费，但迁入正式组件必须经过当前依赖与真实验证。</p></div><aside class="slide-aside"><b>CANDIDATE ≠ CURRENT</b><strong>模块存在，不等于能力已经产品化。</strong><p>依赖版本、classpath、装配和运行结果缺一不可。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">05 · PRODUCT PATH</span><h2>从候选能力，<br><em>到可签收的产品。</em></h2><p>候选能力进入 Framework 端口，产品 Agent 组织领域流程，组合根完成宿主装配，真实运行和证据最终回到工作项与人的判断。</p><p><a class="inspector-link" href="../help/index.html?topic=workbench">进入 Workbench 交互帮助 →</a></p></div><aside class="slide-aside"><b>PRODUCTIZATION</b><strong>能力 → Framework → 产品 Agent → 宿主 → 证据</strong><p>任何一层都不应冒充下一层已经完成。</p></aside></div></article>
+        </div>
+        <nav class="briefing-nav" aria-label="演讲分镜"><button type="button" data-slide-prev>← PREV</button><div class="slide-progress"><span data-slide-progress></span></div><span class="slide-page" data-slide-page>01 / 05</span><button type="button" data-slide-next>NEXT →</button><span class="key-hint">← → / PAGE UP · PAGE DOWN</span></nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="space-footer"><a class="space-brand" href="../index.html"><span class="space-brand-mark">M</span><span><strong>Meepo</strong><small>CURRENT PRACTICE</small></span></a><p>公开模块视图 · Current / Building / Candidate 分开表达 · 不连接真实运行实例</p><span>© <span data-year></span> KAEL LAB</span></footer>
+  <script src="../ecosystem.js"></script>
+</body>
+</html>
