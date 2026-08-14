@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lanox 交互帮助：人机协作、Nest 知识库与 Codex Workbench 的真实任务入口。">
+  <title>Lanox Guide · 人与 Agent 的工作入口</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+  <a class="skip-link" href="#guide-content">跳到帮助内容</a>
+  <header class="site-header">
+    <a class="brand" href="../index.html" aria-label="返回上级首页">
+      <span class="brand-mark" aria-hidden="true">L</span>
+      <span><strong>Lanox Guide</strong><small>Human × Agent</small></span>
+    </a>
+    <div class="header-meta">
+      <span class="signal"><i aria-hidden="true"></i> Public guide</span>
+      <a class="back-link" href="../index.html">返回首页 ↗</a>
+    </div>
+  </header>
+
+  <main id="guide-content">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-copy">
+        <p class="eyebrow">ONE GUIDE · THREE REAL TASKS</p>
+        <h1 id="hero-title">先知道从哪里开始，<br><em>再让 Agent 开始工作。</em></h1>
+        <p>正式协作从唯一工作项开始；知识问题从来源开始；研发执行从工作目录、Session 与 Thread 开始。这里讲入口、边界和交接，不把演示按钮冒充真实产品动作。</p>
+      </div>
+      <div class="hero-status" aria-label="内容状态说明">
+        <article><span class="status current">CURRENT</span><strong>已核对的产品路径</strong><p>只陈述当前有实现事实支撑的操作。</p></article>
+        <article><span class="status guide">INTERACTIVE GUIDE</span><strong>浏览器内演练</strong><p>按钮只改变本页状态，不会写文件或调用后端。</p></article>
+        <article><span class="status roadmap">ROADMAP</span><strong>未来方向</strong><p>尚未实现或未验证的能力不会写成 Current。</p></article>
+      </div>
+    </section>
+
+    <nav class="topic-switcher" aria-label="选择帮助主题">
+      <a href="?topic=collaboration" data-topic-link="collaboration" aria-current="page"><span>01</span><strong>人机协作</strong><small>工作项 → 授权 → 证据</small></a>
+      <a href="?topic=nest" data-topic-link="nest"><span>02</span><strong>Nest 知识库</strong><small>目录 → 提问 → 来源</small></a>
+      <a href="?topic=workbench" data-topic-link="workbench"><span>03</span><strong>Codex Workbench</strong><small>Session → Thread → Turn</small></a>
+    </nav>
+
+    <section class="topic" data-topic="collaboration" aria-labelledby="collaboration-title">
+      <header class="topic-heading">
+        <div><p class="eyebrow">01 · HUMAN–AGENT COLLABORATION</p><h2 id="collaboration-title">每一次正式协作，先绑定唯一工作项</h2></div>
+        <p>工作项不是表格审批，也不是形式目录。它把人的原话、当前需求、方案、执行和证据放进同一个可恢复上下文，让新 Session 能继续而不是重新猜。</p>
+      </header>
+
+      <div class="guide-layout">
+        <div class="journey" aria-label="人机协作五步引导">
+          <button class="guide-step is-active" type="button" data-demo="collaboration-create" data-topic-step="collaboration">
+            <span class="step-index">01</span><span><strong>创建或绑定工作项</strong><small>正式协作的第一步</small></span><i>→</i>
+          </button>
+          <button class="guide-step" type="button" data-demo="collaboration-structure" data-topic-step="collaboration">
+            <span class="step-index">02</span><span><strong>理解目录职责</strong><small>每类事实只放在它的所有者里</small></span><i>→</i>
+          </button>
+          <button class="guide-step" type="button" data-demo="collaboration-continue" data-topic-step="collaboration">
+            <span class="step-index">03</span><span><strong>继续已有工作项</strong><small>代办、代码现场或手动编号</small></span><i>→</i>
+          </button>
+          <button class="guide-step" type="button" data-demo="collaboration-authority" data-topic-step="collaboration">
+            <span class="step-index">04</span><span><strong>说清本轮授权</strong><small>查看、设计、修改、验证、发布不是一件事</small></span><i>→</i>
+          </button>
+          <button class="guide-step" type="button" data-demo="collaboration-archive" data-topic-step="collaboration">
+            <span class="step-index">05</span><span><strong>Session 太长时收口</strong><small>手动执行归档检查</small></span><i>→</i>
+          </button>
+        </div>
+
+        <aside class="demo-panel" data-demo-panel="collaboration" aria-live="polite">
+          <div class="demo-top"><span class="status guide">INTERACTIVE GUIDE</span><span data-demo-counter>STEP 01 / 05</span></div>
+          <h3 data-demo-title>创建或绑定工作项</h3>
+          <p data-demo-copy>先告诉 Agent 目标，并明确“创建工作项”。Agent 应先查现有项；同一目标已经存在时继续原编号，不重复建项。</p>
+          <div class="prompt-box"><small>可以直接这样说</small><code data-demo-prompt>为“优化知识问答来源体验”创建工作项，先查重，再整理需求和验收标准。</code><button type="button" data-copy-prompt>复制</button></div>
+          <div class="demo-preview" data-demo-preview></div>
+          <p class="demo-boundary" data-demo-boundary>创建目录不等于已获准修改产品、运行命令、提交或发布。</p>
+        </aside>
+      </div>
+
+      <section class="content-block" aria-labelledby="work-item-inside">
+        <div class="block-heading"><span>WORK ITEM ANATOMY</span><h3 id="work-item-inside">一个工作项里面有什么</h3><p>顶层按职责拆分，不按阶段堆流水账。简单任务可以很短，复杂任务继续在所属目录细分。</p></div>
+        <div class="anatomy-grid">
+          <article><b>入口</b><strong>README</strong><p>当前简介与产物导航。它告诉后来者“这个目标是什么、从哪里继续”，不复制状态和完整正文。</p></article>
+          <article><b>需求 / SOURCE</b><strong>原始需求</strong><p>保存用户原话、补充、纠正和事实来源。旧来源不因新理解而消失。</p></article>
+          <article><b>需求 / BASELINE</b><strong>当前需求</strong><p>把来源整理成范围、REQ 与验收标准；明确做什么、不做什么、谁确认。</p></article>
+          <article><b>方案</b><strong>怎样满足</strong><p>记录责任、取舍、代价、反例、影响和回退。方案获准不自动等于获准实施。</p></article>
+          <article><b>执行</b><strong>计划与实际</strong><p>把方案拆成可暂停步骤，并如实记录真实动作、偏差、失败和恢复点。</p></article>
+          <article><b>测试 / 条件目录</b><strong>怎样证明</strong><p>按对象选择静态检查、真实测试或人工确认；没有执行就明确写未执行。</p></article>
+          <article><b>产出</b><strong>给使用者的交付物</strong><p>只放实际要使用、审阅或发布的内容。文件存在、内容完成、已发布是不同事实。</p></article>
+        </div>
+      </section>
+
+      <div class="two-column">
+        <section class="content-block" aria-labelledby="continue-ways">
+          <div class="block-heading"><span>THREE WAYS TO CONTINUE</span><h3 id="continue-ways">继续工作项的三种入口</h3></div>
+          <ol class="plain-list">
+            <li><b>从代办选择</b><span>先查看进行中的工作项，再指定要继续的目标。</span><code>查看当前代办，我要继续知识问答体验那个工作项。</code></li>
+            <li><b>先看代码现场</b><span>当你只记得问题，不记得编号：先让 Agent 查看当前代码与改动，再匹配唯一工作项。</span><code>先查看当前代码和工作树，判断这个问题属于哪个已有工作项；只分析，不修改。</code></li>
+            <li><b>手动指定编号</b><span>知道编号时直接点名，最快也最准确。</span><code>继续 R&lt;编号&gt;。先回读当前需求、方案和代码事实，再告诉我下一步。</code></li>
+          </ol>
+        </section>
+        <section class="content-block" aria-labelledby="authority-levels">
+          <div class="block-heading"><span>AUTHORITY LAYERS</span><h3 id="authority-levels">把动作授权说清楚</h3></div>
+          <div class="authority-flow">
+            <span>查看</span><i>≠</i><span>设计</span><i>≠</i><span>修改</span><i>≠</i><span>验证</span><i>≠</i><span>提交</span><i>≠</i><span>发布</span>
+          </div>
+          <p class="quiet">“帮我看看”通常只授权只读分析；“直接做完并发布”才覆盖实现、检查和明确的外部发布动作。高影响或范围变化仍要停下来确认。</p>
+        </section>
+      </div>
+
+      <section class="content-block lifecycle" aria-labelledby="lifecycle-title">
+        <div class="block-heading"><span>LIFECYCLE IS NOT ONE BUTTON</span><h3 id="lifecycle-title">完成、归档、取消归档、删除</h3></div>
+        <div class="lifecycle-grid">
+          <article><strong>完成</strong><p>目标当前闭环，代办状态结束。它不自动证明质量、发布或使用者验收。</p></article>
+          <article><strong>归档</strong><p>把闭环工作项可恢复地移出活动区。归档是移动，不是删除。</p></article>
+          <article><strong>取消归档</strong><p>同一个目标需要继续时恢复原工作项，不创建竞争编号。</p></article>
+          <article><strong>删除</strong><p>物理移除且可能难以恢复，必须单独明确授权和准确目标。</p></article>
+        </div>
+        <div class="archive-callout"><span class="status current">CURRENT · MANUAL</span><div><strong>Session 承载太多内容时，手动调用 <code>$nest-archive-check</code></strong><p>它先检查本 Session 的事实是否已回写、工作项是否唯一、目录与引用是否冲突，再决定是否适合归档。它不是“清空上下文”按钮。</p></div><span class="status roadmap">ROADMAP · AUTO CHECK</span></div>
+      </section>
+    </section>
+
+    <section class="topic" data-topic="nest" aria-labelledby="nest-title">
+      <header class="topic-heading">
+        <div><p class="eyebrow">02 · VERTICAL KNOWLEDGE PRODUCT</p><h2 id="nest-title">Nest 知识库：先找到可靠材料，再让答案带着来源回来</h2></div>
+        <p>它不是“把所有文档塞给模型”。目录负责发现，多文档标签负责对照，问答负责缩短检索路径，来源负责让人判断答案是否可靠。</p>
+      </header>
+
+      <div class="guide-layout">
+        <div class="journey" aria-label="Nest 知识库六步引导">
+          <button class="guide-step is-active" type="button" data-demo="nest-browse" data-topic-step="nest"><span class="step-index">01</span><span><strong>浏览主题与目录</strong><small>先缩小问题所在范围</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="nest-open" data-topic-step="nest"><span class="step-index">02</span><span><strong>打开多文档标签</strong><small>并排保留上下文</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="nest-ask" data-topic-step="nest"><span class="step-index">03</span><span><strong>提出具体问题</strong><small>场景、现象、期望缺一不可</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="nest-source" data-topic-step="nest"><span class="step-index">04</span><span><strong>核对答案来源</strong><small>标题、片段、适用范围</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="nest-followup" data-topic-step="nest"><span class="step-index">05</span><span><strong>沿当前上下文追问</strong><small>补条件，而不是从头重来</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="nest-boundary" data-topic-step="nest"><span class="step-index">06</span><span><strong>无可靠答案时停下</strong><small>暴露证据缺口</small></span><i>→</i></button>
+        </div>
+        <aside class="demo-panel" data-demo-panel="nest" aria-live="polite">
+          <div class="demo-top"><span class="status guide">INTERACTIVE GUIDE</span><span data-demo-counter>STEP 01 / 06</span></div>
+          <h3 data-demo-title>浏览主题与目录</h3>
+          <p data-demo-copy>从领域主题进入目录，观察文档标题、层级和最近上下文。还没形成问题时，先浏览比直接问“大而全”的问题更稳。</p>
+          <div class="prompt-box"><small>示例问题</small><code data-demo-prompt>我在异步执行中丢失了上下文，应该先核对哪些机制和边界？</code><button type="button" data-copy-prompt>复制</button></div>
+          <div class="demo-preview" data-demo-preview></div>
+          <p class="demo-boundary" data-demo-boundary>目录命中只能证明材料存在，不能证明它适用于你的版本和现场。</p>
+        </aside>
+      </div>
+
+      <div class="two-column">
+        <section class="content-block" aria-labelledby="nest-good-question">
+          <div class="block-heading"><span>ASK WITH CONTEXT</span><h3 id="nest-good-question">一个可回答的问题长什么样</h3></div>
+          <div class="question-formula"><span>场景</span><i>＋</i><span>观察到的现象</span><i>＋</i><span>已经核对的内容</span><i>＋</i><span>期望结果</span></div>
+          <p class="quiet">例如：“消息消费切到线程池后 Trace 断了；主线程能看到上下文，子线程看不到；已核对入口拦截；应该先检查传播还是存储？”</p>
+        </section>
+        <section class="content-block" aria-labelledby="source-check">
+          <div class="block-heading"><span>SOURCE BEFORE CONFIDENCE</span><h3 id="source-check">答案之后必须看什么</h3></div>
+          <ul class="check-list"><li>来源文档是不是当前版本或当前主题</li><li>引用片段是否真的支持答案，而非只包含相似词</li><li>结论是事实、经验建议还是条件化推断</li><li>是否明确了不适用场景和仍需核对的现场</li></ul>
+        </section>
+      </div>
+
+      <section class="content-block boundary-card" aria-labelledby="nest-boundary-title">
+        <span class="status current">CURRENT BOUNDARY</span><div><h3 id="nest-boundary-title">没有可靠答案时，正确结果是暴露缺口</h3><p>知识库应明确“现有来源不足”“版本不明”或“需要查看代码/运行现场”，并给出下一步核对方向。生成一段流畅文字不能替代可靠证据。</p></div>
+      </section>
+    </section>
+
+    <section class="topic" data-topic="workbench" aria-labelledby="workbench-title">
+      <header class="topic-heading">
+        <div><p class="eyebrow">03 · GENERAL AGENT EXECUTION PRODUCT</p><h2 id="workbench-title">Codex Workbench：把一次执行变成可观察的 Session</h2></div>
+        <p>Workbench 不重做 Coding Agent。它提供工作目录、Session、Thread、Turn、流式事件与本机历史的产品入口，让人看得见执行正在发生什么。</p>
+      </header>
+
+      <div class="guide-layout">
+        <div class="journey" aria-label="Codex Workbench 七步引导">
+          <button class="guide-step is-active" type="button" data-demo="workbench-directory" data-topic-step="workbench"><span class="step-index">01</span><span><strong>输入绝对工作目录</strong><small>Session 的真实边界</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-session" data-topic-step="workbench"><span class="step-index">02</span><span><strong>启动 Session</strong><small>建立一个受控子进程</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-thread" data-topic-step="workbench"><span class="step-index">03</span><span><strong>创建或继续 Thread</strong><small>新目标或既有上下文</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-turn" data-topic-step="workbench"><span class="step-index">04</span><span><strong>发送 Turn</strong><small>目标、边界和期望结果</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-events" data-topic-step="workbench"><span class="step-index">05</span><span><strong>查看流式事件</strong><small>状态、文本与工具动作</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-stop" data-topic-step="workbench"><span class="step-index">06</span><span><strong>停止或关闭</strong><small>停止 Turn 与结束 Session 不同</small></span><i>→</i></button>
+          <button class="guide-step" type="button" data-demo="workbench-history" data-topic-step="workbench"><span class="step-index">07</span><span><strong>查看本机历史</strong><small>找回已有 Thread</small></span><i>→</i></button>
+        </div>
+        <aside class="demo-panel" data-demo-panel="workbench" aria-live="polite">
+          <div class="demo-top"><span class="status guide">INTERACTIVE GUIDE</span><span data-demo-counter>STEP 01 / 07</span></div>
+          <h3 data-demo-title>输入绝对工作目录</h3>
+          <p data-demo-copy>工作目录决定 Agent 能看到哪个项目现场。使用操作系统绝对路径，并在启动前确认它就是本轮要处理的仓库。</p>
+          <div class="prompt-box"><small>Turn 示例</small><code data-demo-prompt>先读取项目入口并查看当前工作树，只报告与当前目标相关的事实，不修改文件。</code><button type="button" data-copy-prompt>复制</button></div>
+          <div class="demo-preview terminal-preview" data-demo-preview></div>
+          <p class="demo-boundary" data-demo-boundary>帮助页不会读取本机目录，也不会真实启动 Session。</p>
+        </aside>
+      </div>
+
+      <section class="content-block" aria-labelledby="workbench-model">
+        <div class="block-heading"><span>MENTAL MODEL</span><h3 id="workbench-model">四个对象不要混在一起</h3></div>
+        <div class="model-grid">
+          <article><b>01</b><strong>工作目录</strong><p>Agent 读取项目事实的根。</p></article><i>→</i>
+          <article><b>02</b><strong>Session</strong><p>Workbench 管理的一次本地运行连接。</p></article><i>→</i>
+          <article><b>03</b><strong>Thread</strong><p>可以持续多轮的任务上下文。</p></article><i>→</i>
+          <article><b>04</b><strong>Turn</strong><p>人发送的一次具体输入与执行。</p></article>
+        </div>
+      </section>
+
+      <div class="two-column">
+        <section class="content-block" aria-labelledby="current-boundary">
+          <div class="block-heading"><span>CURRENT</span><h3 id="current-boundary">当前运行边界</h3></div>
+          <ul class="check-list good"><li>一个 Session 管理一个子进程</li><li>Session 内可创建或继续 Thread</li><li>Turn 事件以流式方式进入工作台</li><li>当前运行策略是 <code>read-only</code></li><li>审批策略是 <code>approval never</code></li><li>可查看本机已有历史</li></ul>
+        </section>
+        <section class="content-block" aria-labelledby="not-yet">
+          <div class="block-heading"><span>NOT SUPPORTED / NOT VERIFIED</span><h3 id="not-yet">不要从界面推断这些能力</h3></div>
+          <ul class="check-list warn"><li>文件写入与受控审批尚未支持或未验证</li><li>自动重连与进程恢复尚未支持或未验证</li><li>Thread fork、archive、delete 尚未支持或未验证</li><li>多人协作、云 Workspace 与用量计费属于 Roadmap</li></ul>
+        </section>
+      </div>
+    </section>
+
+    <section class="closing">
+      <p class="eyebrow">START WITH THE RIGHT OWNER</p>
+      <h2>目标归工作项，事实归项目，<br>证据回到人的判断。</h2>
+      <div><a class="primary-link" href="?topic=collaboration" data-topic-link="collaboration">从人机协作开始</a><a class="secondary-link" href="../index.html">返回首页</a></div>
+    </section>
+  </main>
+
+  <footer class="site-footer"><span>LANOX GUIDE · STATIC PUBLIC EDITION</span><span>无账号 · 无网络请求 · 无真实产品副作用</span></footer>
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+  <script src="app.js"></script>
+</body>
+</html>
