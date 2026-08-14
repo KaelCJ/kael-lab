@@ -1,0 +1,78 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kael：以工作项、事实回源、证据回流和人的最终判断组织人机协作。">
+  <meta name="theme-color" content="#f8f7f1">
+  <title>Kael · Human × Agent Collaboration</title>
+  <link rel="stylesheet" href="../ecosystem.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-view="architecture" data-theme="paper">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="space-topbar">
+    <a class="space-brand" href="../index.html"><span class="space-brand-mark">K</span><span><strong>Kael</strong><small>HUMAN × AGENT METHOD</small></span></a>
+    <nav class="space-nav" aria-label="产品空间"><a href="../kael/" aria-current="page">Kael</a><a href="../meepo/">Meepo</a><a href="../nest/">Jugg / Nest</a><a href="../lanox/">Lanox</a></nav>
+    <a class="lab-back" href="../index.html"><span>返回</span> Kael Lab ↗</a>
+  </header>
+
+  <div class="control-deck" aria-label="页面视图与主题">
+    <div class="control-group"><span class="control-label">VIEW</span><button class="control-button" type="button" data-view-target="architecture" aria-pressed="true">ARCHITECTURE</button><button class="control-button" type="button" data-view-target="briefing" aria-pressed="false">BRIEFING</button></div>
+    <div class="control-group"><span class="control-label">THEME</span><button class="theme-button" type="button" data-theme-target="paper" aria-label="Paper 主题" aria-pressed="true"></button><button class="theme-button" type="button" data-theme-target="night" aria-label="Night 主题" aria-pressed="false"></button><button class="theme-button" type="button" data-theme-target="ice" aria-label="Ice 主题" aria-pressed="false"></button></div>
+  </div>
+
+  <main class="space-main" id="main">
+    <section class="space-hero">
+      <div class="space-hero-copy"><p class="hero-kicker">KAEL · HUMAN-CENTERED COLLABORATION</p><h1>把一次对话，<br><em>变成可继续的协作。</em></h1><p>Kael 用唯一工作项承载目标，用真实所有者保存事实，用验证证据约束结论。Agent 加速理解和执行，人始终拥有目标、授权与最终判断。</p></div>
+      <aside class="hero-fact"><span>PUBLIC METHOD</span><strong>协作不是把决定交给 Agent。</strong><p>它把来源、事实、推断、建议、决定和执行结果放回正确位置，让下一次 Session 可以从当前事实继续。</p></aside>
+    </section>
+
+    <section class="view-panel" data-view-panel="architecture" tabindex="-1" aria-labelledby="architecture-title">
+      <header class="panel-heading"><div><p class="section-kicker">COLLABORATION ARCHITECTURE</p><h2 id="architecture-title">一个目标，两个增益环，八个动作</h2></div><p>点击任一节点查看它的责任、真实所有者和停止边界。流程可以反复迭代，但人的确认不会被 Agent 的建议替代。</p></header>
+      <div class="architecture-workspace">
+        <div class="architecture-canvas">
+          <div class="canvas-meta"><span><b>KAEL LOOP</b> / CURRENT PUBLIC METHOD</span><span>SELECT A NODE →</span></div>
+          <div class="architecture-grid kael-map">
+            <button class="node orange is-selected" type="button" data-node data-index="01 / INTENT" data-title="人提出真实目标" data-state="HUMAN OWNED" data-detail="说明要解决的问题、成功是什么、允许 Agent 做什么，以及明确不做什么。" data-owner="提出目标的人" data-boundary="目标、优先级与高影响授权不能由 Agent 自动补全。"><b>01 · INTENT</b><strong>提出目标</strong><small>问题 · 成功 · 边界 · 授权</small></button>
+            <button class="node blue" type="button" data-node data-index="02 / SOURCE" data-title="回到当前事实" data-state="FACT OWNER" data-detail="先读取当前工作区、权威入口和真实运行证据，再区分已实现、候选与推断。" data-owner="代码、项目、知识和运行结果的真实所有者" data-boundary="摘要、旧提交和聊天记忆不能替代当前事实。"><b>02 · SOURCE</b><strong>回源事实</strong><small>当前入口 · 代码 · 运行证据</small></button>
+            <button class="node green" type="button" data-node data-index="03 / WORK ITEM" data-title="绑定唯一工作项" data-state="CURRENT CONTEXT" data-detail="同一目标只使用一个工作项，把来源、需求、方案、执行、验证和交付导航放在同一上下文里。" data-owner="当前目标的工作项" data-boundary="工作项不镜像领域事实，也不为同一目标重复建项。"><b>03 · WORK ITEM</b><strong>绑定上下文</strong><small>原始需求 · 需求 · 方案 · 执行</small></button>
+            <button class="node purple" type="button" data-node data-index="04 / ACTION" data-title="Agent 在授权内行动" data-state="AGENT EXECUTION" data-detail="基于已回源事实形成方案、修改目标资产，并把范围控制在完成当前目标所必需的步骤。" data-owner="本轮被授权的执行者" data-boundary="方案建议不是用户决定；范围变化与不可逆动作需要新的明确授权。"><b>04 · ACTION</b><strong>分析与执行</strong><small>理解 · 方案 · 修改 · 最小范围</small></button>
+            <button class="node purple" type="button" data-node data-index="05 / VERIFY" data-title="按风险形成验证" data-state="EVIDENCE" data-detail="用与风险相称的静态检查、真实运行、页面观察或人工验收验证结果，并准确命名证据级别。" data-owner="当前执行与验证记录" data-boundary="文件存在、语法通过或局部检查都不能自动证明任务完成。"><b>05 · VERIFY</b><strong>执行验证</strong><small>检查 · 运行 · 观察 · 验收</small></button>
+            <button class="node blue" type="button" data-node data-index="06 / RETURN" data-title="结果与证据回流" data-state="TRACEABLE RESULT" data-detail="报告完成了什么、证据在哪里、什么失败或没有执行，以及当前证据不能证明什么。" data-owner="当前工作项的执行与测试记录" data-boundary="不能用计划、建议或历史成功覆盖本轮未完成事实。"><b>06 · RETURN</b><strong>证据回流</strong><small>结果 · 失败 · 未执行 · 不能证明</small></button>
+            <button class="node orange" type="button" data-node data-index="07 / DECIDE" data-title="人做最终判断" data-state="HUMAN DECISION" data-detail="人基于目标、代价与证据决定接受、调整、回退、继续或停止，并拥有优先级与取舍。" data-owner="有权作出决定的人" data-boundary="Agent 可以提出判断依据，但不能把建议记录为人的确认。"><b>07 · DECIDE</b><strong>确认与取舍</strong><small>接受 · 调整 · 回退 · 停止</small></button>
+            <button class="node green" type="button" data-node data-index="08 / CALIBRATE" data-title="写回并在未来校准" data-state="CROSS-TASK LEARNING" data-detail="把确认后的结果写回真实所有者；后续任务重新读取、应用并根据新证据修正，形成跨任务判断升级。" data-owner="对应项目、知识或方法的真实所有者" data-boundary="没有人的确认、来源和适用边界，候选认知不能升级为稳定知识。"><b>08 · CALIBRATE</b><strong>写回与校准</strong><small>真实所有者 · 后续应用 · 修正</small></button>
+            <div class="loop-band">
+              <article class="loop-card"><b>LOOP A · IN-TASK GAIN</b><strong>任务内增益环</strong><p>理解 → 行动 → 验证 → 修正，使当前任务越来越接近真实目标。</p></article>
+              <article class="loop-card"><b>LOOP B · JUDGMENT UPGRADE</b><strong>跨任务判断升级环</strong><p>证据 → 人确认 → 写回 → 后续重读，使判断能力在不同任务之间积累。</p></article>
+            </div>
+          </div>
+        </div>
+        <aside class="inspector" data-inspector aria-live="polite">
+          <div class="inspector-head"><span>RESPONSIBILITY INSPECTOR</span><span class="inspector-index" data-inspector-index>01 / INTENT</span></div>
+          <span class="status-chip" data-inspector-state>HUMAN OWNED</span><h3 data-inspector-title>人提出真实目标</h3><p data-inspector-detail>说明要解决的问题、成功是什么、允许 Agent 做什么，以及明确不做什么。</p>
+          <dl><dt>真实所有者</dt><dd data-inspector-owner>提出目标的人</dd><dt>停止边界</dt><dd data-inspector-boundary>目标、优先级与高影响授权不能由 Agent 自动补全。</dd></dl>
+          <a class="inspector-link" href="../help/index.html?topic=collaboration">打开工作项交互帮助 →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view-panel" data-view-panel="briefing" tabindex="-1" aria-labelledby="briefing-title">
+      <header class="panel-heading"><div><p class="section-kicker">BRIEFING MODE</p><h2 id="briefing-title">用五张分镜理解 Kael</h2></div><p>使用左右方向键、Page Up / Page Down 或底部按钮翻页。没有 JavaScript 时，全部分镜按普通文档顺序显示。</p></header>
+      <div class="briefing-shell">
+        <div class="briefing-stage">
+          <article class="brief-slide is-active" data-slide><div class="brief-slide-inner"><div><span class="slide-number">01 · THE CONTRACT</span><h2>Agent 加速执行，<br><em>人拥有判断。</em></h2><p>高质量协作不是让 Agent 替人决定，而是让 Agent 更快回源、行动和验证，让人基于更完整的证据做选择。</p></div><aside class="slide-aside"><b>NON-NEGOTIABLE</b><strong>目标、授权与最终判断始终属于人。</strong><p>Agent 的推断、排序和方案必须保留自己的来源身份。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">02 · ONE WORK ITEM</span><h2>Session 会结束，<br><em>工作项必须能继续。</em></h2><p>原始需求保存真实来源，需求说明要实现什么，方案记录关键取舍，执行保存动作，测试保存证据，产出指向最终交付。</p></div><div class="slide-grid"><article><b>SOURCE</b><strong>原始需求</strong><p>保留提出者原话与授权。</p></article><article><b>INTENT</b><strong>需求</strong><p>把目标整理成可验收要求。</p></article><article><b>DESIGN</b><strong>方案</strong><p>说明取舍、代价、边界和回退。</p></article><article><b>EVIDENCE</b><strong>执行与测试</strong><p>记录真实动作及其证明边界。</p></article></div></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">03 · IN-TASK LOOP</span><h2>一次任务里，<br><em>理解也在增长。</em></h2><p>每次验证都会暴露新的事实或偏差。Agent 将它们带回方案和实现，直到结果满足目标，或准确报告为什么还未完成。</p></div><aside class="slide-aside"><b>GAIN LOOP</b><strong>回源 → 行动 → 验证 → 修正</strong><p>局部成功不能覆盖失败；新证据必须改变下一步。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">04 · CROSS-TASK LOOP</span><h2>真正的复利，<br><em>发生在下一个任务。</em></h2><p>确认后的结论写回真实所有者。未来任务重新读取它、应用它，并用新的反例或证据修正它，判断能力才会跨 Session 保留下来。</p></div><aside class="slide-aside"><b>CALIBRATION LOOP</b><strong>证据 → 确认 → 写回 → 重读 → 修正</strong><p>聊天记忆不是长期事实，稳定知识必须有准入边界。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">05 · START HERE</span><h2>每次协作，<br><em>先找到唯一工作项。</em></h2><p>新目标先检查是否已有工作项；继续目标可以从待办、当前代码或明确编号进入；长 Session 结束前执行归档检查，让下一次从当前事实继续。</p><p><a class="inspector-link" href="../help/index.html?topic=collaboration">进入交互帮助，查看创建、继续与归档路径 →</a></p></div><aside class="slide-aside"><b>STARTING QUESTION</b><strong>这是新目标，还是已有目标的下一步？</strong><p>答案决定创建新工作项，还是回到同一个上下文继续。</p></aside></div></article>
+        </div>
+        <nav class="briefing-nav" aria-label="演讲分镜"><button type="button" data-slide-prev>← PREV</button><div class="slide-progress"><span data-slide-progress></span></div><span class="slide-page" data-slide-page>01 / 05</span><button type="button" data-slide-next>NEXT →</button><span class="key-hint">← → / PAGE UP · PAGE DOWN</span></nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="space-footer"><a class="space-brand" href="../index.html"><span class="space-brand-mark">K</span><span><strong>Kael</strong><small>PUBLIC METHOD</small></span></a><p>公开方法表达 · 人拥有最终判断 · 页面不连接真实工作区或 Agent</p><span>© <span data-year></span> KAEL LAB</span></footer>
+  <script src="../ecosystem.js"></script>
+</body>
+</html>
