@@ -1,217 +1,110 @@
 <!doctype html>
-<html lang="zh-CN">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content="Kael Lab AI Center：人与 Agent 共同工作的公开方法、产品概念与交互实验。" />
-    <meta name="theme-color" content="#09110f" />
-    <title>Kael Lab AI Center — Human × Agent</title>
-    <script>document.documentElement.classList.add("js")</script>
-    <link rel="stylesheet" href="styles.css" />
-    <script src="app.js" defer></script>
-  </head>
-  <body>
-    <a class="skip-link" href="#main">跳到主要内容</a>
-    <div class="scroll-progress" aria-hidden="true"><span></span></div>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Kael Lab：Kael、Meepo、Jugg/Nest 与 Lanox 的公开 AI 协作入口。">
+  <meta name="theme-color" content="#08100e">
+  <title>Kael Lab · AI Ecosystem</title>
+  <link rel="stylesheet" href="styles.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header" data-header>
+    <a class="brand" href="index.html"><span class="brand-mark">K</span><span><strong>Kael Lab</strong><small>AI Ecosystem</small></span></a>
+    <nav class="site-nav" aria-label="主要导航">
+      <a href="#ecosystem">生态入口</a>
+      <a href="#guides">使用帮助</a>
+      <a href="#method">协作方法</a>
+      <a href="#labs">公开实验</a>
+    </nav>
+    <a class="header-cta" href="help/index.html?topic=collaboration">开始协作 →</a>
+  </header>
 
-    <header class="site-header" data-header>
-      <a class="brand" href="#top" aria-label="Kael Lab AI Center 首页">
-        <span class="brand-mark" aria-hidden="true">K</span>
-        <span><strong>KAEL LAB</strong><small>AI Center · Human × Agent</small></span>
-      </a>
-      <button class="menu-button" type="button" aria-expanded="false" aria-controls="site-nav">
-        <span></span><span></span><span></span><span class="sr-only">打开导航</span>
-      </button>
-      <nav id="site-nav" class="site-nav" aria-label="主要导航">
-        <a href="#center">AI 中心</a>
-        <a href="#methods">协作方法</a>
-        <a href="#lab">公开实验</a>
-        <a class="nav-cta" href="workspace-assistant.html">体验 Assistant →</a>
-      </nav>
-    </header>
-
-    <main id="main">
-      <section id="top" class="hero section-shell">
-        <div class="hero-copy reveal">
-          <div class="eyebrow"><span></span>PUBLIC AI CENTER · CONCEPT V0.2</div>
-          <h1>让 AI 能力<br /><em>回到人的目标。</em></h1>
-          <p class="hero-lead">
-            Kael Lab AI Center 把人机协作方法、Workspace Assistant、Agent 工作台、
-            知识与审计能力组织成一张可探索的公开地图。
-          </p>
-          <div class="hero-actions">
-            <a class="button button-primary" href="workspace-assistant.html">体验 Workspace Assistant <span>→</span></a>
-            <a class="button button-ghost" href="#center">查看能力地图</a>
-          </div>
-          <dl class="hero-stats" aria-label="公开边界">
-            <div><dt>6</dt><dd>公开能力域</dd></div>
-            <div><dt>3</dt><dd>信息状态</dd></div>
-            <div><dt>0</dt><dd>私有业务数据</dd></div>
-          </dl>
-        </div>
-
-        <div class="center-radar reveal" aria-label="AI Center 能力关系示意">
-          <span class="radar-ring ring-a"></span><span class="radar-ring ring-b"></span>
-          <div class="radar-core"><b>HUMAN</b><small>goal · decision · trust</small></div>
-          <span class="radar-node radar-method">Method</span>
-          <span class="radar-node radar-workspace">Workspace</span>
-          <span class="radar-node radar-agent">Agent</span>
-          <span class="radar-node radar-knowledge">Knowledge</span>
-          <span class="radar-node radar-evidence">Evidence</span>
-          <span class="radar-node radar-labs">Labs</span>
-          <small class="radar-caption">CAPABILITY IS USEFUL ONLY WHEN IT SERVES A REAL GOAL</small>
-        </div>
-      </section>
-
-      <section class="truth-strip section-shell reveal" aria-label="页面信息状态">
-        <article><span class="status public">PUBLIC METHOD</span><p>已整理为公开表达的人机协作方法。</p></article>
-        <article><span class="status concept">CONCEPT MOCK</span><p>未来产品体验，不声明已经实现。</p></article>
-        <article><span class="status demo">DEMO DATA</span><p>交互数据均为脱敏模拟，不连接真实工作区。</p></article>
-      </section>
-
-      <section id="center" class="content-section center-section section-shell">
-        <header class="section-heading reveal">
-          <span class="section-index">01 / AI CENTER</span>
-          <h2>一张地图，看见<br /><em>人与 Agent 如何共事</em></h2>
-          <p>切换视角只改变关注点，不改变页面上的状态边界。点击能力域查看它服务谁、解决什么问题。</p>
-        </header>
-
-        <div class="center-toolbar reveal" role="group" aria-label="能力地图视角">
-          <button class="center-filter is-active" type="button" data-center-filter="all" aria-pressed="true"><span>00</span>全部关系</button>
-          <button class="center-filter" type="button" data-center-filter="human" aria-pressed="false"><span>01</span>人的判断</button>
-          <button class="center-filter" type="button" data-center-filter="work" aria-pressed="false"><span>02</span>工作推进</button>
-          <button class="center-filter" type="button" data-center-filter="agent" aria-pressed="false"><span>03</span>Agent 执行</button>
-          <button class="center-filter" type="button" data-center-filter="trust" aria-pressed="false"><span>04</span>证据与信任</button>
-        </div>
-        <p class="center-explanation reveal" data-center-explanation>从人的目标出发，经过工作空间、Agent 与知识能力，最终用证据回到人的判断。</p>
-
-        <div class="capability-canvas reveal">
-          <aside class="cross-plane governance">
-            <span>HUMAN PLANE</span><strong>目标与决策</strong>
-            <p>人定义目标、确认关键取舍，并保留对公开、迁移与不可逆动作的最终权力。</p>
-          </aside>
-
-          <div class="capability-stack">
-            <a class="capability-row" href="#methods" data-tags="human trust">
-              <span class="capability-index">L1</span>
-              <span class="capability-name"><strong>Human × Agent Method</strong><small>人机协作方法</small></span>
-              <span class="capability-purpose">区分来源、事实、建议、决定与行动，让协作可追溯。</span>
-              <span class="status public">PUBLIC METHOD</span>
-            </a>
-            <a class="capability-row featured" href="workspace-assistant.html" data-tags="human work agent trust">
-              <span class="capability-index">L2</span>
-              <span class="capability-name"><strong>Workspace Assistant</strong><small>工作空间引导助手</small></span>
-              <span class="capability-purpose">理解当前工作项与规则，告诉不同使用者下一步，并协调 Audit 与 Codex。</span>
-              <span class="status concept">CONCEPT MOCK</span>
-            </a>
-            <button class="capability-row" type="button" data-capability="workbench" data-tags="work agent trust">
-              <span class="capability-index">L3</span>
-              <span class="capability-name"><strong>Agent Workbench</strong><small>执行与审批工作台</small></span>
-              <span class="capability-purpose">承接任务、审批、执行事件、文件 Diff、中断与恢复。</span>
-              <span class="status concept">CONCEPT</span>
-            </button>
-            <button class="capability-row" type="button" data-capability="knowledge" data-tags="work agent">
-              <span class="capability-index">L4</span>
-              <span class="capability-name"><strong>Knowledge & Skills</strong><small>知识与技能</small></span>
-              <span class="capability-purpose">把当前规则、方法和专业知识放进正确上下文，而不是无限堆叠提示词。</span>
-              <span class="status concept">CONCEPT</span>
-            </button>
-            <button class="capability-row" type="button" data-capability="evidence" data-tags="human work trust">
-              <span class="capability-index">L5</span>
-              <span class="capability-name"><strong>Evidence & Audit</strong><small>证据与审计</small></span>
-              <span class="capability-purpose">让检查、真实结果、失败与未验证边界分别可见。</span>
-              <span class="status public">PUBLIC METHOD</span>
-            </button>
-            <a class="capability-row" href="#lab" data-tags="human agent trust">
-              <span class="capability-index">L6</span>
-              <span class="capability-name"><strong>Public Labs</strong><small>公开交互实验</small></span>
-              <span class="capability-purpose">用可操作的 Mock 和小实验验证协作认知，而不是只展示结论。</span>
-              <span class="status demo">DEMO</span>
-            </a>
-          </div>
-
-          <aside class="cross-plane evidence-plane">
-            <span>TRUST PLANE</span><strong>证据与边界</strong>
-            <p>计划、静态检查、真实结果和用户确认各自有名字；看不见的结果不冒充完成。</p>
-          </aside>
-        </div>
-
-        <div class="capability-detail reveal" aria-live="polite">
-          <span data-capability-kicker>SELECT A CAPABILITY</span>
-          <strong data-capability-title>能力之间不是上下级，而是一条协作链</strong>
-          <p data-capability-copy>人的目标进入 Workspace，Agent 消费知识与技能执行动作，Evidence 再把可观察结果交还给人判断。</p>
-        </div>
-      </section>
-
-      <section id="methods" class="content-section method-section">
-        <div class="section-shell">
-          <header class="section-heading light reveal">
-            <span class="section-index">02 / PUBLIC METHOD</span>
-            <h2>从一句话，到一个<br /><em>可追溯的结果</em></h2>
-            <p>这是 Kael Lab 已公开的方法基础：每一步都回答“这是什么信息”以及“它凭什么继续传播”。</p>
-          </header>
-          <div class="method-chain reveal">
-            <article class="method-step"><span>01</span><h3>Source</h3><p>保存原话和真实入口，不把整理后的理解伪装成原始输入。</p><small>WHAT WAS ACTUALLY SAID</small></article>
-            <i aria-hidden="true">→</i>
-            <article class="method-step"><span>02</span><h3>Evidence</h3><p>回到当前代码、数据或现实结果，标记证据强度和不能证明的范围。</p><small>WHAT CAN BE VERIFIED</small></article>
-            <i aria-hidden="true">→</i>
-            <article class="method-step"><span>03</span><h3>Decision</h3><p>把事实、推断、建议和人的决定分开，记录代价、反例与回退。</p><small>WHAT WE CHOOSE</small></article>
-            <i aria-hidden="true">→</i>
-            <article class="method-step"><span>04</span><h3>Execution</h3><p>让计划、动作、证据和未完成边界各自可见。</p><small>WHAT REALLY HAPPENED</small></article>
-          </div>
-          <div class="principle-grid">
-            <article class="principle-card reveal"><div class="card-icon">◇</div><h3>事实有所有者</h3><p>工作项负责目标与过程，源码负责实现，运行结果负责现实。摘要只能导航。</p></article>
-            <article class="principle-card reveal"><div class="card-icon">↺</div><h3>失败也要保留</h3><p>失败不会因下一次成功而消失，它是边界的一部分，也是下一轮判断的输入。</p></article>
-            <article class="principle-card reveal"><div class="card-icon">◎</div><h3>人保留最终判断</h3><p>Agent 可以核实、推断和建议；关键取舍与不可逆动作仍由人拥有。</p></article>
-          </div>
-        </div>
-      </section>
-
-      <section id="lab" class="content-section labs-section section-shell">
-        <header class="section-heading reveal">
-          <span class="section-index">03 / PUBLIC LABS</span>
-          <h2>不要只读方法，<br /><em>进入一个真实情境</em></h2>
-          <p>所有实验都在浏览器本地运行，不调用模型、不读取真实工作区，也不会修改文件。</p>
-        </header>
-        <div class="lab-catalog">
-          <a class="lab-feature reveal" href="workspace-assistant.html">
-            <div><span class="status concept">CONCEPT MOCK</span><small>LAB 002 · PRODUCT EXPERIENCE</small></div>
-            <h3>Workspace Assistant</h3>
-            <p>在六个使用场景中体验：下一步引导、工作项创建、目标纠正、技术决策、Audit 与 Codex Handoff。</p>
-            <strong>打开完整交互 Mock →</strong>
-          </a>
-
-          <div class="evidence-lab reveal" data-evidence-lab>
-            <div class="lab-status"><div><span>LAB 001 · CASE</span><strong data-case-number>01 / 06</strong></div><div><span>SCORE</span><strong data-score>00</strong></div><div><span>BEST · THIS DEVICE</span><strong data-best>—</strong></div></div>
-            <div class="lab-progress" aria-hidden="true"><span data-lab-progress></span></div>
-            <div class="case-card"><span class="case-origin" data-case-origin>用户输入</span><blockquote data-case-text>“先看公开站点的物理限制，再评估能做到多大。”</blockquote><p>这句话属于哪一种信息？</p></div>
-            <div class="answer-grid" role="group" aria-label="选择信息性质">
-              <button type="button" data-answer="source"><b>A</b><span>来源 Source</span><small>实际原话或原始输入</small></button>
-              <button type="button" data-answer="fact"><b>B</b><span>事实 Fact</span><small>可回源核对的当前状态</small></button>
-              <button type="button" data-answer="inference"><b>C</b><span>推断 Inference</span><small>基于证据形成的解释</small></button>
-              <button type="button" data-answer="decision"><b>D</b><span>决定 Decision</span><small>明确选择与责任承诺</small></button>
-            </div>
-            <div class="lab-feedback" hidden data-feedback aria-live="polite"><div><span data-feedback-icon>✓</span><strong data-feedback-title>判断正确</strong></div><p data-feedback-copy></p><button class="button button-primary" type="button" data-next>下一题 →</button></div>
-            <div class="lab-complete" hidden data-complete><span>LAB COMPLETED</span><h3>你的得分：<b data-final-score>0 / 6</b></h3><p data-final-copy></p><button class="button button-primary" type="button" data-restart>再做一次 ↺</button></div>
-            <p class="local-note">成绩只保存在当前浏览器；本站没有账号和云端存储。</p>
-          </div>
-        </div>
-      </section>
-
-      <section class="closing section-shell reveal">
-        <span class="section-index">PUBLIC BOUNDARY</span>
-        <h2>公开不是搬出内部细节，<br />而是把可复用的关系<em>重新表达。</em></h2>
-        <p>AI Center 是公开概念地图；Workspace Assistant 是交互 Mock；页面不代表任何组织的当前业务或交付承诺。</p>
-        <a class="button button-dark" href="#">查看公开仓库 <span>↗</span></a>
-      </section>
-    </main>
-
-    <footer class="site-footer">
-      <div class="section-shell footer-inner">
-        <a class="brand footer-brand" href="#top"><span class="brand-mark">K</span><span><strong>KAEL LAB</strong><small>Public AI Center</small></span></a>
-        <p>Static first. No tracker. No secret. No claim without boundary.</p>
-        <p>© <span data-year></span> Kael · Concept V0.2</p>
+  <main id="main">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">KAEL · MEEPO · JUGG / NEST · LANOX</p>
+        <h1>把方法、工程与产品，<br><em>放进同一个 AI 生态入口。</em></h1>
+        <p>Kael 保持人的判断，Meepo 孵化 Agent 能力，Jugg / Nest 沉淀工程与知识，Lanox 把这些能力带向未来的技术品牌与产品矩阵。</p>
+        <div class="hero-actions"><a class="button primary" href="#ecosystem">选择一个生态</a><a class="button secondary" href="lanox/index.html">查看 Lanox →</a></div>
       </div>
-    </footer>
-  </body>
+      <aside class="hero-map" aria-label="四生态关系概览">
+        <div class="map-center"><span>HUMAN</span><strong>Kael</strong><small>目标 · 判断 · 证据</small></div>
+        <div class="orbit orbit-one"><span>BUILD</span><strong>Meepo</strong></div>
+        <div class="orbit orbit-two"><span>KNOW</span><strong>Jugg / Nest</strong></div>
+        <div class="orbit orbit-three"><span>BRAND</span><strong>Lanox</strong></div>
+        <svg viewBox="0 0 520 520" aria-hidden="true"><circle cx="260" cy="260" r="112"/><circle cx="260" cy="260" r="188"/><path d="M260 72v376M72 260h376"/></svg>
+      </aside>
+    </section>
+
+    <section class="truth-strip" aria-label="站点内容边界">
+      <article><span>PUBLIC METHOD</span><strong>可公开复用的方法</strong><p>来源、事实、推断与决定清楚分开。</p></article>
+      <article><span>CURRENT</span><strong>有证据的当前能力</strong><p>无法证明的内容不写成已经实现。</p></article>
+      <article><span>CONCEPT / ROADMAP</span><strong>演示与未来方向</strong><p>纯前端交互不会冒充真实系统动作。</p></article>
+    </section>
+
+    <section class="section ecosystem-section" id="ecosystem" aria-labelledby="ecosystem-title">
+      <header class="section-heading"><div><p class="eyebrow">CHOOSE YOUR ENTRY</p><h2 id="ecosystem-title">你今天要进入哪一个世界？</h2></div><p>四个入口不是四套互相竞争的真源。它们分别拥有人的协作方法、Agent 实践、工程知识和品牌产品表达。</p></header>
+      <div class="ecosystem-grid" aria-label="生态选择">
+        <button class="ecosystem-card is-active" type="button" data-ecosystem="kael" aria-pressed="true"><span class="card-number">01</span><span class="card-state current">PUBLIC METHOD</span><strong>Kael</strong><p>人机协作、工作项、知识蒸馏与证据判断。</p><i>选择 →</i></button>
+        <button class="ecosystem-card" type="button" data-ecosystem="meepo" aria-pressed="false"><span class="card-number">02</span><span class="card-state current">CURRENT PRACTICE</span><strong>Meepo</strong><p>Agent 产品、Workbench 与运行能力的孵化实践。</p><i>选择 →</i></button>
+        <button class="ecosystem-card" type="button" data-ecosystem="nest" aria-pressed="false"><span class="card-number">03</span><span class="card-state current">ENGINEERING</span><strong>Jugg / Nest</strong><p>工程经验、可复用能力与垂直知识产品。</p><i>选择 →</i></button>
+        <button class="ecosystem-card" type="button" data-ecosystem="lanox" aria-pressed="false"><span class="card-number">04</span><span class="card-state direction">DIRECTION</span><strong>Lanox</strong><p>未来技术品牌、通用 Agent、垂直产品与 Framework。</p><i>选择 →</i></button>
+      </div>
+
+      <article class="ecosystem-detail" data-ecosystem-detail aria-live="polite">
+        <div class="detail-index" data-detail-index>01 / KAEL</div>
+        <div><span class="card-state current" data-detail-state>PUBLIC METHOD</span><h3 data-detail-title>让人的目标和判断始终在场</h3><p data-detail-copy>Kael 负责协作方法、工作项、知识准入与证据判断。Agent 可以分析和建议，但不能把推断写成人的决定。</p></div>
+        <div class="detail-points" data-detail-points><span>工作项</span><span>来源</span><span>证据</span><span>最终判断</span></div>
+        <a class="button primary" data-detail-link href="#method">进入 Kael 方法 →</a>
+      </article>
+    </section>
+
+    <section class="section guides-section" id="guides" aria-labelledby="guides-title">
+      <header class="section-heading"><div><p class="eyebrow">INTERACTIVE HELP</p><h2 id="guides-title">从真实任务开始，不从功能菜单开始</h2></div><p>三份帮助共享同一个交互包：内容、状态和行为逐文件一致；父页面只负责把你送到正确主题。</p></header>
+      <div class="guide-grid">
+        <a class="guide-card collaboration" href="help/index.html?topic=collaboration"><span>01 · HUMAN × AGENT</span><h3>怎样创建和继续工作项</h3><p>理解目录职责、三种继续方式、授权层次、Session 收口与归档检查。</p><strong>打开人机协作帮助 →</strong></a>
+        <a class="guide-card knowledge" href="help/index.html?topic=nest"><span>02 · VERTICAL KNOWLEDGE</span><h3>怎样使用 Nest 知识库</h3><p>浏览目录、打开多文档、提问、核对来源、追问和证据不足出口。</p><strong>打开知识库帮助 →</strong></a>
+        <a class="guide-card workbench" href="help/index.html?topic=workbench"><span>03 · AGENT EXECUTION</span><h3>怎样使用 Codex Workbench</h3><p>工作目录、Session、Thread、Turn、流式事件、停止关闭与本机历史。</p><strong>打开 Workbench 帮助 →</strong></a>
+      </div>
+    </section>
+
+    <section class="section method-section" id="method" aria-labelledby="method-title">
+      <header class="section-heading light"><div><p class="eyebrow">KAEL COLLABORATION METHOD</p><h2 id="method-title">Agent 加速执行，<br>人拥有目标与判断。</h2></div><p>方法不是让每个任务变慢，而是避免建议冒充决定、局部检查冒充完成、长 Session 结束后只剩聊天记忆。</p></header>
+      <div class="method-chain">
+        <article><span>01</span><strong>提出目标</strong><p>说明真实问题、边界、不做项和成功是什么。</p></article><i>→</i>
+        <article><span>02</span><strong>绑定工作项</strong><p>来源、需求、方案、执行与证据进入唯一上下文。</p></article><i>→</i>
+        <article><span>03</span><strong>Agent 执行</strong><p>读取当前事实，在授权范围内分析、修改和验证。</p></article><i>→</i>
+        <article><span>04</span><strong>证据回流</strong><p>明确成功、失败、未执行与不能证明的边界。</p></article>
+      </div>
+      <div class="principles">
+        <article><b>FACT OWNER</b><strong>事实归真实所有者</strong><p>代码看当前工作区，状态看权威入口，运行看当前证据。</p></article>
+        <article><b>HUMAN DECISION</b><strong>建议不冒充决定</strong><p>Agent 的推断、排序和方案必须标明来源与确认边界。</p></article>
+        <article><b>EVIDENCE LANGUAGE</b><strong>给检查准确命名</strong><p>静态检查、真实测试、发布和使用者验收互不替代。</p></article>
+      </div>
+    </section>
+
+    <section class="section labs-section" id="labs" aria-labelledby="labs-title">
+      <header class="section-heading"><div><p class="eyebrow">PUBLIC EXPERIMENTS</p><h2 id="labs-title">保留实验，让判断能力也能被练习</h2></div><p>旧 Concept Mock 与 Evidence Lab 继续保留；它们使用演示数据，不连接真实工作区、模型或 API。</p></header>
+      <div class="labs-grid">
+        <a class="concept-card" href="workspace-assistant.html"><span class="card-state direction">CONCEPT MOCK</span><small>Workspace Assistant</small><h3>多角色、多场景工作空间概念</h3><p>体验公开脱敏的角色、任务与协作状态，不代表已经连接真实 Codex。</p><strong>进入 Concept Mock →</strong></a>
+        <div class="evidence-lab" data-evidence-lab>
+          <header><div><span class="card-state current">INTERACTIVE LAB</span><h3>Evidence Lab</h3></div><div class="score"><span data-case-number>01 / 06</span><strong data-score>00</strong><small>BEST <b data-best>—</b></small></div></header>
+          <div class="lab-progress"><span data-lab-progress></span></div>
+          <article class="case-card"><span data-case-origin>用户输入</span><blockquote data-case-text>“先看公开站点的物理限制，再评估能做到多大。”</blockquote></article>
+          <div class="answer-grid" aria-label="选择信息类型"><button type="button" data-answer="source">来源<small>提出者实际表达</small></button><button type="button" data-answer="fact">事实<small>可回到证据核对</small></button><button type="button" data-answer="inference">推断<small>由事实推导的判断</small></button><button type="button" data-answer="decision">决定<small>有权者作出的选择</small></button></div>
+          <div class="lab-feedback" data-feedback hidden><strong data-feedback-title></strong><p data-feedback-copy></p><button class="button primary" type="button" data-next>下一题 →</button></div>
+          <div class="lab-complete" data-complete hidden><span>LAB COMPLETE</span><h3 data-final-score></h3><p data-final-copy></p><button class="button secondary" type="button" data-restart>再来一次</button></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="closing"><p class="eyebrow">ONE ECOSYSTEM, CLEAR OWNERSHIP</p><h2>让每个入口都知道，<br>自己负责什么。</h2><a class="button primary" href="#ecosystem">选择生态入口 ↑</a></section>
+  </main>
+
+  <footer class="site-footer"><a class="brand" href="index.html"><span class="brand-mark">K</span><span><strong>Kael Lab</strong><small>Public AI Ecosystem</small></span></a><p>公开静态站点 · 无服务端 · 无私密 Key · 交互状态只属于当前浏览器</p><span>© <span data-year></span> KAEL LAB</span></footer>
+  <script src="app.js"></script>
+</body>
 </html>

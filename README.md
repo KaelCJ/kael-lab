@@ -2,11 +2,11 @@
 
 人与 Agent 共同工作的公开 AI Center、方法体系与交互实验场。
 
-首版采用零依赖纯静态实现：
+站点采用零依赖纯静态实现：
 
-- `index.html`：AI Center 总看板、人机协作方法和公开实验入口。
-- `styles.css`：AI Center 首页响应式视觉系统。
-- `app.js`：能力地图与“证据和判断”交互实验。
+- `index.html`、`styles.css`、`app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，三类帮助入口、协作方法和 Evidence Lab。
+- `help/`：人机协作、Nest 知识库、Codex Workbench 的自包含同源帮助包。
+- `lanox/`：不含内部实现上下文的 Lanox 公共品牌与六层架构概览。
 - `workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `workspace-assistant.css`、`workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `404.html`：静态托管失败页。
@@ -16,10 +16,10 @@
 在仓库根目录运行任意静态服务器，例如：
 
 ```bash
-python -m http.server 8080
+python -m http.server 4173
 ```
 
-然后访问 `http://localhost:8080/`。
+然后访问 `http://localhost:4173/`。
 
 ## 公开边界
 
