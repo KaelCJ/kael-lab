@@ -1,0 +1,53 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="如何使用从产品需求到架构、研发、测试和人确认的完整 AI 协作流程。"><title>完整流程 · Lanox Guide</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="workflow">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a><nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav><div class="header-actions"><span class="demo-badge">GUIDED DEMO · NOT LIVE</span><a class="home-link" href="index.html">帮助中心</a></div></div></header>
+  <main id="content">
+    <section class="page-hero compact"><div><p class="eyebrow">05 · END-TO-END COLLABORATION</p><h1>一个目标，一条链，<em>每次交接都有输入和证据</em>。</h1><p class="lead">人定义目标并做关键决定，AI 回源、整理、执行和检查。所有角色围绕同一个工作项协作，不靠聊天记忆接力，也不把建议和检查结果冒充人已确认。</p><div class="path-ribbon"><a href="requirements.html">01 产品</a><a href="architecture.html">02 架构</a><a href="development.html">03 研发</a><a href="testing.html">04 测试</a><a href="workflow.html" aria-current="page">05 全流程</a><a href="board.html">06 看板</a></div></div><aside class="hero-aside"><article><span class="status current">SINGLE SOURCE</span><strong>同一个工作项</strong><p>来源、需求、方案、执行、测试和产出各归其位。</p></article><article><span class="status demo">AI LOOP</span><strong>回源 → 执行 → 回流</strong><p>每一步消费当前事实，不依赖摘要猜测。</p></article><article><span class="status human">HUMAN LOOP</span><strong>目标 → 确认 → 校准</strong><p>人保持方向、风险和最终验收主权。</p></article></aside></section>
+
+    <section class="section" aria-labelledby="guide-title"><div class="section-heading"><span>GUIDED JOURNEY</span><div><h2 id="guide-title">点击五个阶段，观察输入、AI 动作、人的门禁和输出</h2><p>演示会循环推进，但真实流程只有满足当前门禁后才进入下一阶段。</p></div></div>
+      <div class="demo-shell">
+        <div class="demo-controls"><h2>W-DEMO-042</h2><p>知识答案来源体验 · 演示工作项</p><div class="control-list">
+          <button class="stage-button is-active" type="button" data-workflow-stage><strong>01 · 产品需求</strong><small>问题 → 可验收需求</small></button>
+          <button class="stage-button" type="button" data-workflow-stage><strong>02 · 架构方案</strong><small>选择 → 可执行步骤</small></button>
+          <button class="stage-button" type="button" data-workflow-stage><strong>03 · 研发实施</strong><small>步骤 → 当前构建</small></button>
+          <button class="stage-button" type="button" data-workflow-stage><strong>04 · 测试证据</strong><small>构建 → 分层证据</small></button>
+          <button class="stage-button" type="button" data-workflow-stage><strong>05 · 确认回流</strong><small>证据 → 人的决定</small></button>
+        </div></div>
+        <div class="demo-stage"><div class="stage-top"><div><h2>协作交接台</h2><p>每个输出回到同一目标，下一角色不用重新翻聊天猜上下文。</p></div><button class="button primary" type="button" data-workflow-next>推进演示阶段 →</button></div><div class="progress-track" aria-label="演示流程进度"><i data-workflow-progress></i></div><div class="output-card" data-workflow-detail aria-live="polite"></div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="start-title"><div class="section-heading"><span>START OR CONTINUE</span><div><h2 id="start-title">真实使用时，你只需要从这三句话开始</h2></div></div>
+      <div class="grid-3">
+        <article class="panel panel-pad"><div class="panel-title"><h3>新目标：创建</h3><span class="status current">NEW</span></div><p class="quiet">先查重，再建立唯一目标；先整理，不默认实施。</p><div class="prompt"><code id="prompt-flow-create">为这个目标创建工作项。先查是否已有同一目标；保存我的原始表达，整理当前需求和验收标准。先不要修改代码。</code><button class="copy-button" type="button" data-copy="prompt-flow-create" aria-label="复制新建示例">⧉</button></div></article>
+        <article class="panel panel-pad"><div class="panel-title"><h3>旧目标：继续</h3><span class="status info">RESUME</span></div><p class="quiet">编号、代办或代码现场都可以进入，但先回读当前事实。</p><div class="prompt"><code id="prompt-flow-resume">继续 W-&lt;编号&gt;。回读当前需求、方案、执行记录、测试证据和工作树，再告诉我准确恢复点；暂不修改。</code><button class="copy-button" type="button" data-copy="prompt-flow-resume" aria-label="复制继续示例">⧉</button></div></article>
+        <article class="panel panel-pad"><div class="panel-title"><h3>本轮：授权</h3><span class="status human">SCOPE</span></div><p class="quiet">查看、修改、验证、提交和发布不是一件事。</p><div class="prompt"><code id="prompt-flow-scope">允许修改帮助页并做本地浏览器验证；不要修改产品源码，不要提交或发布。范围变化时先停止并说明。</code><button class="copy-button" type="button" data-copy="prompt-flow-scope" aria-label="复制授权示例">⧉</button></div></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="objects-title"><div class="section-heading"><span>WORK ITEM ANATOMY</span><div><h2 id="objects-title">同一个工作项里，每类事实由谁负责</h2><p>固定的是职责，不是文件数量。简单任务可以很短，复杂目标在所属目录继续拆分。</p></div></div>
+      <div class="grid-4">
+        <article class="tool-card"><span>README</span><h3>当前入口</h3><p>简介与产物导航；不复制完整状态和正文。</p></article>
+        <article class="tool-card"><span>SOURCE / REQ</span><h3>为什么做</h3><p>原话保留纠正历史；需求维护当前范围与 AC。</p></article>
+        <article class="tool-card"><span>SOLUTION</span><h3>怎样满足</h3><p>方案、取舍、代价、反例、影响和回退。</p></article>
+        <article class="tool-card"><span>EXECUTION</span><h3>实际做了什么</h3><p>计划、真实动作、偏差、失败与恢复点。</p></article>
+        <article class="tool-card"><span>TEST</span><h3>怎样证明</h3><p>自动检查、真实测试、人工确认分开。</p></article>
+        <article class="tool-card"><span>OUTPUT</span><h3>交付给谁</h3><p>人最终使用、审阅或发布的真实产物。</p></article>
+        <article class="tool-card"><span>STATUS</span><h3>是否仍是代办</h3><p>进行中或完成；完成不等于质量或发布。</p></article>
+        <article class="tool-card"><span>ARCHIVE</span><h3>是否移出活动区</h3><p>可恢复移动，不是完成、删除或清空。</p></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="stop-title"><div class="section-heading"><span>SESSION HYGIENE</span><div><h2 id="stop-title">Session 太长时怎样收口</h2></div></div>
+      <div class="grid-2">
+        <div class="panel panel-pad"><div class="panel-title"><h3>先把稳定事实写回</h3><span class="status current">PERSIST</span></div><ul class="list" style="margin-top:14px"><li>用户补充与纠正进入来源</li><li>当前范围和 AC 更新需求基线</li><li>确认的取舍进入方案</li><li>真实动作、失败和恢复点进入执行</li><li>检查与测试证据进入测试入口</li></ul></div>
+        <div class="panel panel-pad"><div class="panel-title"><h3>再手动做归档检查</h3><span class="status demo">MANUAL</span></div><p class="quiet">调用 <code>$nest-archive-check</code>，检查 Session 事实是否唯一归属、编号与目录是否唯一、引用是否冲突、目标是否仍未完成。适合时才归档；需要继续时恢复原工作项。</p><div class="callout" style="margin-top:14px"><span class="status wait">ROADMAP</span><div><strong>未来可以自动提醒</strong><p>当前仍是手动触发。自动提醒不能擅自执行物理归档或删除。</p></div></div></div>
+      </div>
+    </section>
+
+    <section class="section"><div class="callout"><span class="status human">THE RULE</span><div><strong>AI 负责扩大执行能力，人负责保持目标和判断主权</strong><p>流程不是为了增加表格，而是让 Agent 可以更大胆地自动执行，同时让任何人都能知道它为什么做、做到哪里、什么失败了、什么仍要人决定。</p></div></div></section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · WORKFLOW</span><span>下一步：<a href="board.html">从领导视角看工作项组合 →</a></span></footer><div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>

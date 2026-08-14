@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="AI 如何执行自动检查、真实端到端测试并保留使用者验收门禁。"><title>测试证据 · Lanox Guide</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="testing">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a><nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav><div class="header-actions"><span class="demo-badge">DEMO RUNS · NOT LIVE</span><a class="home-link" href="index.html">帮助中心</a></div></div></header>
+  <main id="content">
+    <section class="page-hero compact"><div><p class="eyebrow">04 · AI QUALITY & EVIDENCE</p><h1>AI 可以自动执行，<em>不能自动升级证据等级</em>。</h1><p class="lead">语法、链接和结构扫描是自动检查；从真实产品入口操作当前构建是端到端测试；使用者判断问题是否真正解决是验收。三者都重要，但不能互相冒充。</p><div class="path-ribbon"><a href="requirements.html">01 产品</a><a href="architecture.html">02 架构</a><a href="development.html">03 研发</a><a href="testing.html" aria-current="page">04 测试</a><a href="workflow.html">05 全流程</a><a href="board.html">06 看板</a></div></div><aside class="hero-aside"><article><span class="status info">AUTO CHECK</span><strong>快，但不经过真实入口</strong><p>证明语法、结构或约束，不称为测试通过。</p></article><article><span class="status current">REAL E2E</span><strong>真实页面与依赖</strong><p>当前构建、真实鉴权、数据和最终 DOM。</p></article><article><span class="status human">USER ACCEPTANCE</span><strong>人的价值判断</strong><p>AI 汇总证据，但不能替使用者签字。</p></article></aside></section>
+
+    <section class="section" aria-labelledby="lanes-title"><div class="section-heading"><span>EVIDENCE LADDER</span><div><h2 id="lanes-title">先分清你手里是哪一种证据</h2></div></div>
+      <div class="evidence-lanes">
+        <article class="evidence-lane"><span class="status info">01 · AUTO CHECK</span><h3>自动检查</h3><p>编译、语法、静态链接、敏感模式、结构断言。可以高频运行，用于尽早发现低成本问题。</p><footer>能说：7 个脚本语法检查成功<br>不能说：产品测试通过</footer></article>
+        <article class="evidence-lane"><span class="status current">02 · REAL E2E</span><h3>真实端到端测试</h3><p>从产品支持入口，用真实构建、鉴权、依赖、数据与 Session 操作，观察最终用户结果。</p><footer>能说：本次 Chrome 的来源冲突路径失败<br>不能说：所有浏览器都通过</footer></article>
+        <article class="evidence-lane"><span class="status human">03 · ACCEPTANCE</span><h3>使用者验收</h3><p>产品或真实使用者判断目标是否解决、限制是否可接受、是否允许发布或完成。</p><footer>能说：产品已确认接受<br>不能说：AI 已替产品验收</footer></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="test-demo-title"><div class="section-heading"><span>RUN EXPLORER</span><div><h2 id="test-demo-title">切换证据类型，看通过、失败与未执行</h2><p>演示故意保留失败 Run。点击“新增复测”不会覆盖旧结果，只提示应创建一条新记录。</p></div></div>
+      <div class="demo-shell">
+        <div class="demo-controls"><h2>证据类型</h2><p>W-DEMO-042 · 当前构建 v0.demo</p><div class="control-list"><button class="evidence-button is-active" type="button" data-evidence-type="auto"><strong>自动检查</strong><small>syntax / links / scan</small></button><button class="evidence-button" type="button" data-evidence-type="e2e"><strong>真实端到端</strong><small>entry / auth / DOM</small></button><button class="evidence-button" type="button" data-evidence-type="uat"><strong>使用者验收</strong><small>value / accept / publish</small></button></div><button class="button" type="button" data-add-rerun style="margin-top:16px">新增独立复测 Run</button></div>
+        <div class="demo-stage" data-evidence-output aria-live="polite"></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="ai-test-title"><div class="section-heading"><span>HOW AI TESTS</span><div><h2 id="ai-test-title">“AI 自动测试”在实际流程里怎样工作</h2><p>自动代表执行者可以是 AI，不代表环境、账号、门禁和证据可以伪造。</p></div></div>
+      <div class="handoff-map">
+        <article class="handoff-node"><b>01</b><strong>读取 AC 与影响面</strong><p>从当前需求和方案生成可证伪用例，不从实现细节倒推“必过”条件。</p><div class="gate">人确认高风险范围</div></article>
+        <article class="handoff-node"><b>02</b><strong>核对真实条件</strong><p>当前构建、入口、账号、权限、数据、依赖与 Session 是否可用。</p><div class="gate">缺条件 → 未执行</div></article>
+        <article class="handoff-node"><b>03</b><strong>先跑低成本检查</strong><p>语法、结构、秘密和链接快速失败，但不称为真实测试。</p><div class="gate">检查结果独立记录</div></article>
+        <article class="handoff-node"><b>04</b><strong>走真实用户路径</strong><p>操作真实页面入口，观察最终 DOM、日志或真实副作用。</p><div class="gate">失败现场不清理</div></article>
+        <article class="handoff-node"><b>05</b><strong>汇总给人确认</strong><p>列出通过、失败、未执行、覆盖范围和证据新鲜度。</p><div class="gate">人决定接受或继续</div></article>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="anti-title"><div class="section-heading"><span>ANTI-PATTERNS</span><div><h2 id="anti-title">看起来自动化，实际上破坏证据的做法</h2></div></div><div class="grid-2"><ul class="list fail"><li>用 Mock/Fake 绕过真实依赖，再写“端到端通过”</li><li>直接调用内部函数代替真实页面入口</li><li>为了变绿而覆盖失败数据或删除旧 Run</li><li>没有账号或环境仍生成“测试通过”结论</li></ul><ul class="list warn"><li>把静态扫描统称为测试</li><li>用一次 Chrome 成功代表全浏览器兼容</li><li>把页面加载成功当成业务目标完成</li><li>把产品验收自动标记为 AI 已确认</li></ul></div>
+      <div class="prompt"><code id="prompt-testing">基于当前构建和验收标准设计分层验证：先列自动检查，再列必须经过真实产品入口的端到端路径，最后列需要使用者确认的事项。缺少真实条件时写“未执行”，保留所有失败 Run。</code><button class="copy-button" type="button" data-copy="prompt-testing" aria-label="复制测试示例">⧉</button></div>
+    </section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · QUALITY</span><span>下一步：<a href="workflow.html">看证据怎样回到完整协作流程 →</a></span></footer><div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>

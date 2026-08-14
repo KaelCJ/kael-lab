@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="产品如何与 AI 把模糊想法整理为可验收需求和工作项。">
+  <title>产品需求 · Lanox Guide</title><link rel="stylesheet" href="styles.css">
+</head>
+<body data-page="requirements">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner">
+    <a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a>
+    <nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav>
+    <div class="header-actions"><span class="demo-badge">DEMO DATA · NOT LIVE</span><a class="home-link" href="index.html">帮助中心</a></div>
+  </div></header>
+
+  <main id="content">
+    <section class="page-hero compact">
+      <div><p class="eyebrow">01 · PRODUCT REQUIREMENT</p><h1>产品不只说“做什么”，还要定义<em>怎样算解决</em>。</h1><p class="lead">AI 可以帮助查重、追问、整理需求和验收标准，但不会替产品猜测目标用户，也不会把草案自动升级为已确认需求。</p><div class="path-ribbon"><a href="requirements.html" aria-current="page">01 产品</a><a href="architecture.html">02 架构</a><a href="development.html">03 研发</a><a href="testing.html">04 测试</a><a href="workflow.html">05 全流程</a><a href="board.html">06 看板</a></div></div>
+      <aside class="hero-aside"><article><span class="status current">INPUT</span><strong>真实问题与目标用户</strong><p>先描述现场，不先指定技术实现。</p></article><article><span class="status demo">AI DRAFT</span><strong>REQ / AC 草案</strong><p>查重、整理、发现缺口，等待人确认。</p></article><article><span class="status human">HUMAN GATE</span><strong>产品确认范围</strong><p>确认后架构才能开始出方案。</p></article></aside>
+    </section>
+
+    <section class="section" aria-labelledby="demo-title">
+      <div class="section-heading"><span>INTERACTIVE LAB</span><div><h2 id="demo-title">代入四种产品需求现场</h2><p>前三个场景信息足以形成演示工作项；第四个故意保持模糊，看看 AI 应该在哪里停止。</p></div></div>
+      <div class="demo-shell">
+        <div class="demo-controls"><h2>选择需求场景</h2><p>以下内容全部为公开演示数据，不会创建真实工作项。</p><div class="control-list">
+          <button class="control-button is-active" type="button" data-requirement-scenario="source"><strong>来源可信体验</strong><small>目标、范围和 AC 较完整</small></button>
+          <button class="control-button" type="button" data-requirement-scenario="mobile"><strong>移动端溢出</strong><small>可观察的界面缺陷</small></button>
+          <button class="control-button" type="button" data-requirement-scenario="onboarding"><strong>新成员上手</strong><small>流程与认知目标</small></button>
+          <button class="control-button" type="button" data-requirement-scenario="vague"><strong>“更智能的看板”</strong><small>信息不足，必须停下</small></button>
+        </div></div>
+        <div class="demo-stage">
+          <div class="stage-top"><div><h2>需求澄清工作台</h2><p>先看目标用户、问题、期望结果、做与不做，再判断是否足以进入方案。</p></div><div class="stage-actions"><button class="button primary" type="button" data-build-requirement>生成工作项预览</button></div></div>
+          <div class="output-card" data-requirement-output aria-live="polite"></div>
+          <div class="output-card" data-work-item-preview><div class="output-head"><strong>工作项预览</strong><span class="status wait">NOT GENERATED</span></div><div class="output-body"><p class="quiet">选择信息充分的场景，然后生成。演示只在本页显示，不写入真实工作区。</p></div></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="input-title">
+      <div class="section-heading"><span>HOW TO ASK</span><div><h2 id="input-title">产品应该给 AI 什么输入</h2><p>不需要先写成完整 PRD，但至少让问题可以被观察，让下一角色不需要重新猜。</p></div></div>
+      <div class="grid-4">
+        <article class="tool-card"><span>01 · WHO</span><h3>谁遇到问题</h3><p>角色、使用场景、频率和上下文。不要只说“用户觉得不好用”。</p></article>
+        <article class="tool-card"><span>02 · NOW</span><h3>现在发生什么</h3><p>当前入口、操作、结果和影响。能给事实就不给想象。</p></article>
+        <article class="tool-card"><span>03 · CHANGE</span><h3>希望改变什么</h3><p>描述可观察结果，不把特定技术方案伪装成业务需求。</p></article>
+        <article class="tool-card"><span>04 · BOUNDARY</span><h3>这次不做什么</h3><p>防止一个界面问题无意扩大成平台重建或无边界重构。</p></article>
+      </div>
+      <div class="prompt"><code id="prompt-requirement">为这个目标查找已有工作项：用户在答案页无法判断来源是否支持结论。先整理目标用户、当前问题、期望结果、范围与可证伪验收标准；信息不足时列出问题，暂不出技术方案。</code><button class="copy-button" type="button" data-copy="prompt-requirement" aria-label="复制产品需求示例">⧉</button></div>
+    </section>
+
+    <section class="section" aria-labelledby="handoff-title">
+      <div class="section-heading"><span>HANDOFF CONTRACT</span><div><h2 id="handoff-title">交给架构前，检查这五件事</h2></div></div>
+      <div class="grid-2">
+        <ul class="list"><li>同一目标没有重复工作项，或已经绑定原工作项</li><li>原始表达和当前整理后的需求分开保存</li><li>每条验收标准都能被证伪，不写“体验良好”</li><li>范围外和不做项清楚，避免隐性扩张</li><li>待澄清项已经由产品确认或明确阻塞</li></ul>
+        <div class="callout"><span class="status human">HUMAN GATE</span><div><strong>“AI 帮我整理好了”不等于“需求已确认”</strong><p>产品确认的是目标、范围和验收，不需要替架构提前确认技术；如果目标用户、问题或结果仍不明确，正确状态是继续澄清。</p></div></div>
+      </div>
+    </section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · PRODUCT</span><span>下一步：<a href="architecture.html">把已确认需求变成方案与执行步骤 →</a></span></footer>
+  <div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>

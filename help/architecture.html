@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="架构如何与 AI 比较方案、记录取舍并生成可执行步骤。"><title>架构方案 · Lanox Guide</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="architecture">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a><nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav><div class="header-actions"><span class="demo-badge">DEMO DATA · NOT LIVE</span><a class="home-link" href="index.html">帮助中心</a></div></div></header>
+  <main id="content">
+    <section class="page-hero compact"><div><p class="eyebrow">02 · ARCHITECTURE & EXECUTION PLAN</p><h1>架构不是画一张图，<em>是把选择和代价说清楚</em>。</h1><p class="lead">AI 先回读已确认需求、当前实现和项目契约，再比较成熟做法与本地条件。方案必须有适用条件、反例、影响和回退；人的选择确认后，才能拆成研发可领取的步骤。</p><div class="path-ribbon"><a href="requirements.html">01 产品</a><a href="architecture.html" aria-current="page">02 架构</a><a href="development.html">03 研发</a><a href="testing.html">04 测试</a><a href="workflow.html">05 全流程</a><a href="board.html">06 看板</a></div></div><aside class="hero-aside"><article><span class="status current">INPUT</span><strong>已确认需求 + 当前实现</strong><p>不以历史摘要替代代码和运行事实。</p></article><article><span class="status demo">AI OPTIONS</span><strong>至少一个反例</strong><p>不是默认把复杂方案写成最佳实践。</p></article><article><span class="status human">HUMAN GATE</span><strong>人确认关键取舍</strong><p>推荐项仍只是建议，不冒充决定。</p></article></aside></section>
+
+    <section class="section" aria-labelledby="arch-demo-title"><div class="section-heading"><span>OPTION LAB</span><div><h2 id="arch-demo-title">同一个需求，比较三种实施范围</h2><p>演示目标：让知识答案带来源。选择方案查看速度、长期一致性、回退和证据质量之间的真实代价。</p></div></div>
+      <div class="panel panel-pad">
+        <div class="option-grid" role="group" aria-label="架构方案选择">
+          <button class="option-card" type="button" data-architecture-option="thin"><b>OPTION A</b><strong>前端轻量增强</strong><small>改动小、见效快；可能把契约适配压在界面层。</small></button>
+          <button class="option-card is-active" type="button" data-architecture-option="contract"><b>OPTION B</b><strong>证据契约贯通</strong><small>先定义稳定来源模型，再打通一个最小纵向链。</small></button>
+          <button class="option-card" type="button" data-architecture-option="rebuild"><b>OPTION C</b><strong>重建知识检索链</strong><small>范围最大；当前问题未必证明需要整链重做。</small></button>
+        </div>
+        <div class="output-card" data-architecture-detail aria-live="polite"></div>
+        <div class="stage-actions" style="margin-top:14px"><button class="button primary" type="button" data-build-plan>用确认候选生成执行步骤</button></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="plan-title"><div class="section-heading"><span>EXECUTION PLAN</span><div><h2 id="plan-title">步骤要小到能暂停，也要大到有可观察结果</h2><p>研发不应该收到“实现来源能力”这种黑盒任务。每一步都要知道输入、允许修改、输出、验证和停止条件。</p></div></div><div class="panel panel-pad" data-plan-output><div class="empty-state"><strong>还没有生成演示步骤</strong><p>先在上方比较方案，再生成一条最小纵向执行链。</p></div></div></section>
+
+    <section class="section" aria-labelledby="questions-title"><div class="section-heading"><span>ARCHITECT CHECKLIST</span><div><h2 id="questions-title">方案评审必须回答的八个问题</h2></div></div>
+      <div class="grid-2">
+        <div class="details-grid">
+          <details open><summary>为什么现在需要改变？</summary><div>回到已确认需求和当前证据。没有问题证据时，不因技术流行而迁移。</div></details>
+          <details><summary>已有模式为什么适用或不适用？</summary><div>核对代表性成熟实现与本地约束；偏离时给不适用证据。</div></details>
+          <details><summary>模块和数据由谁拥有？</summary><div>避免公共层反向依赖产品、兄弟应用读取私有资源或同一事实多处维护。</div></details>
+          <details><summary>失败时用户会看到什么？</summary><div>不只考虑成功路径；定义错误、降级、停止和诊断入口。</div></details>
+        </div>
+        <div class="details-grid">
+          <details open><summary>改动影响哪些真实入口？</summary><div>列出调用方、数据、权限、会话、缓存和兼容范围，避免用模块名代替影响分析。</div></details>
+          <details><summary>怎样回退？</summary><div>说明准确对象、保留的旧链、数据兼容和触发条件，不写“回滚代码即可”。</div></details>
+          <details><summary>哪些结论仍是假设？</summary><div>把事实、建议、推断和人的决定分开，避免 AI 方案成为虚假门禁。</div></details>
+          <details><summary>怎样拆成可验证步骤？</summary><div>先打通最小纵向链，再覆盖失败和边界；每步都有独立证据。</div></details>
+        </div>
+      </div>
+      <div class="prompt"><code id="prompt-architecture">基于已确认需求和当前代码事实，给出 2—3 个可选方案。逐个说明适用条件、关键代价、反例、影响范围和回退边界；推荐项标为 AI 建议，等待人确认后再拆执行步骤。</code><button class="copy-button" type="button" data-copy="prompt-architecture" aria-label="复制架构示例">⧉</button></div>
+    </section>
+
+    <section class="section"><div class="callout"><span class="status human">STOP CONDITION</span><div><strong>方案改变用户流程、模块边界、数据契约或发生不可逆变更时，必须等人确认</strong><p>页面里点击“推荐方案”只是演示选择。真实执行不能用 AI 推荐、会议草案或页面状态替代用户确认。</p></div></div></section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · ARCHITECTURE</span><span>下一步：<a href="development.html">研发按确认后的步骤实施 →</a></span></footer><div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>

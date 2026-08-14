@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="研发如何与 AI 按已确认步骤实施、阻塞和回流证据。"><title>研发实施 · Lanox Guide</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="development">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a><nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav><div class="header-actions"><span class="demo-badge">DEMO DATA · NOT LIVE</span><a class="home-link" href="index.html">帮助中心</a></div></div></header>
+  <main id="content">
+    <section class="page-hero compact"><div><p class="eyebrow">03 · ENGINEERING EXECUTION</p><h1>研发不是接一句“做完”，而是<em>消费已确认步骤并回流事实</em>。</h1><p class="lead">AI 先回读工作项和当前代码现场，再按步骤最小修改。需要越权、范围变化或证据不足时停止；失败现场保留，完成结果回到同一工作项。</p><div class="path-ribbon"><a href="requirements.html">01 产品</a><a href="architecture.html">02 架构</a><a href="development.html" aria-current="page">03 研发</a><a href="testing.html">04 测试</a><a href="workflow.html">05 全流程</a><a href="board.html">06 看板</a></div></div><aside class="hero-aside"><article><span class="status current">READ FIRST</span><strong>需求、方案、代码现场</strong><p>不只读执行步骤，也不靠上次会话记忆。</p></article><article><span class="status demo">AI EXECUTION</span><strong>按范围最小修改</strong><p>不增加未要求功能或无关重构。</p></article><article><span class="status blocked">STOP</span><strong>阻塞比猜测可靠</strong><p>缺权限、缺事实或范围变化时保留现场。</p></article></aside></section>
+
+    <section class="section" aria-labelledby="dev-demo-title"><div class="section-heading"><span>EXECUTION LAB</span><div><h2 id="dev-demo-title">领取步骤、运行、阻塞、完成</h2><p>点击不同步骤，再模拟运行或阻塞。所有日志都是固定演示文本，不读取代码、不执行命令。</p></div></div>
+      <div class="demo-shell">
+        <div class="demo-controls"><h2>演示执行计划</h2><p>W-DEMO-042 · 知识答案来源体验</p><div class="step-list" data-dev-steps></div></div>
+        <div class="demo-stage"><div class="stage-top"><div><h2>步骤执行台</h2><p>同一时刻只处理一个已确认步骤；结果和失败都形成可继续的恢复点。</p></div><span class="status demo">BROWSER MEMORY ONLY</span></div><div class="stage-actions"><button class="button" type="button" data-dev-action="run">模拟运行</button><button class="button danger" type="button" data-dev-action="block">模拟阻塞</button><button class="button primary" type="button" data-dev-action="complete">标记演示完成</button></div><div class="terminal" data-dev-terminal aria-live="polite" style="margin-top:14px"></div></div>
+      </div>
+    </section>
+
+    <section class="section" aria-labelledby="before-title"><div class="section-heading"><span>BEFORE EDITING</span><div><h2 id="before-title">动手前，AI 和研发一起核对什么</h2></div></div>
+      <div class="grid-3">
+        <article class="tool-card"><span>FACTS</span><h3>当前工作树</h3><p>已有改动属于谁、哪些文件和本目标有关、是否存在未保存现场。不能用提交树替代工作区状态。</p></article>
+        <article class="tool-card"><span>RULES</span><h3>项目与模块边界</h3><p>读取适用入口、应用所有权、依赖方向和资源归属；规则加载不产生写入授权。</p></article>
+        <article class="tool-card"><span>AUTHORITY</span><h3>本轮允许动作</h3><p>查看、设计、修改、验证、提交、发布分别确认。越接近外部副作用，范围越要准确。</p></article>
+      </div>
+      <div class="prompt"><code id="prompt-development">继续这个工作项。先回读当前需求、已确认方案、执行步骤和工作树；只实施 STEP-02 的最小范围，保留用户已有改动。完成后分别报告修改、自动检查、未执行测试和下一恢复点。</code><button class="copy-button" type="button" data-copy="prompt-development" aria-label="复制研发执行示例">⧉</button></div>
+    </section>
+
+    <section class="section" aria-labelledby="evidence-title"><div class="section-heading"><span>ENGINEERING OUTPUT</span><div><h2 id="evidence-title">“代码写完”还不够，交接要带什么</h2><p>研发交给测试的是当前构建、影响范围和可复核证据，不是一句“应该没问题”。</p></div></div>
+      <div class="grid-2">
+        <div class="panel panel-pad"><div class="panel-title"><h3>完成步骤的交付包</h3><span class="status current">READY</span></div><ul class="list" style="margin-top:14px"><li>准确修改文件和可观察行为变化</li><li>方案偏差、为什么偏差、是否需要重新确认</li><li>执行过的自动检查及其退出结果</li><li>没有执行的真实测试和缺失条件</li><li>失败现场、已知限制与准确回退对象</li><li>下一步从哪个步骤和代码位置继续</li></ul></div>
+        <div class="panel panel-pad"><div class="panel-title"><h3>不能冒充完成的情况</h3><span class="status blocked">STOP</span></div><ul class="list fail" style="margin-top:14px"><li>依赖接口或数据契约尚未确认</li><li>修改范围跨出已授权文件或产品边界</li><li>用户已有改动与本步骤冲突</li><li>检查通过但真实用户入口没有执行</li><li>为了让结果“绿”而覆盖失败或伪造响应</li><li>工作项记录和代码现场已经失去对应关系</li></ul></div>
+      </div>
+    </section>
+
+    <section class="section"><div class="callout"><span class="status demo">DEMO LESSON</span><div><strong>阻塞不是失败的包装，而是可继续的真实状态</strong><p>演示台会拒绝在未解除阻塞时直接标记完成。真实协作同样要保留阻塞原因、已经完成的动作和恢复条件，不能用后一次成功删除旧失败。</p></div></div></section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · ENGINEERING</span><span>下一步：<a href="testing.html">把当前构建变成分层证据 →</a></span></footer><div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>

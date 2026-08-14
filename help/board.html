@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="zh-Hans"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><meta name="description" content="领导如何查看演示工作项、进度、阻塞、参与者和贡献关系。"><title>领导看板 · Lanox Guide</title><link rel="stylesheet" href="styles.css"></head>
+<body data-page="board">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header"><div class="header-inner"><a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a><nav class="global-nav" aria-label="角色帮助导航"><a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a></nav><div class="header-actions"><span class="demo-badge">ALL BOARD DATA IS DEMO</span><a class="home-link" href="index.html">帮助中心</a></div></div></header>
+  <main id="content">
+    <section class="page-hero compact"><div><p class="eyebrow">06 · LEADERSHIP WORK BOARD</p><h1>领导看目标、流动和风险，<em>不是看聊天次数</em>。</h1><p class="lead">工作项看板回答：现在有哪些目标、进度到哪里、谁负责、谁参与、做了什么、哪里阻塞、证据多久没更新。贡献用于理解协作，不等于个人绩效评分。</p><div class="path-ribbon"><a href="requirements.html">01 产品</a><a href="architecture.html">02 架构</a><a href="development.html">03 研发</a><a href="testing.html">04 测试</a><a href="workflow.html">05 全流程</a><a href="board.html" aria-current="page">06 看板</a></div></div><aside class="hero-aside"><article><span class="status demo">DEMO DATA</span><strong>7 个虚构工作项</strong><p>人物、进度和活动都不对应真实组织。</p></article><article><span class="status current">OUTCOME VIEW</span><strong>目标与证据</strong><p>进度不能脱离阻塞和证据新鲜度阅读。</p></article><article><span class="status human">LEADER ACTION</span><strong>决定优先级与资源</strong><p>看板帮助提问，不自动评价员工。</p></article></aside></section>
+
+    <section class="section" aria-labelledby="overview-title"><div class="section-heading"><span>PORTFOLIO SNAPSHOT</span><div><h2 id="overview-title">先看组合健康度，再进入单个工作项</h2><p>以下数字全部来自固定演示数据集，只用于说明看板应该怎样帮助决策。</p></div></div>
+      <div class="board-summary"><article class="summary-card"><small>ACTIVE WORK ITEMS</small><strong>6</strong><p>进行中、测试中、待方案或阻塞</p></article><article class="summary-card"><small>BLOCKED</small><strong style="color:var(--red)">1</strong><p>需要人确认真实运行身份字段</p></article><article class="summary-card"><small>FRESH EVIDENCE</small><strong style="color:var(--mint)">4</strong><p>24 小时内有新证据</p></article><article class="summary-card"><small>DEMO PARTICIPANTS</small><strong>7</strong><p>6 个虚构人类角色 + AI</p></article></div>
+    </section>
+
+    <section class="section" aria-labelledby="board-title"><div class="section-heading"><span>INTERACTIVE BOARD</span><div><h2 id="board-title">筛选工作项并查看参与关系</h2><p>可按团队、状态、风险或关键词筛选。尝试组合“执行平台 + 已完成”，观察空态；按重置恢复。</p></div></div>
+      <div class="filter-bar">
+        <div class="field"><label for="board-search">搜索标题、编号或负责人</label><input id="board-search" type="search" placeholder="例如：来源 / 周屿" data-filter="search"></div>
+        <div class="field"><label for="board-team">团队</label><select id="board-team" data-filter="team"><option value="">全部团队</option><option>知识产品</option><option>执行平台</option><option>协作方法</option></select></div>
+        <div class="field"><label for="board-state">状态</label><select id="board-state" data-filter="state"><option value="">全部状态</option><option>进行中</option><option>测试中</option><option>阻塞</option><option>已完成</option><option>待方案</option></select></div>
+        <div class="field"><label for="board-risk">风险</label><select id="board-risk" data-filter="risk"><option value="">全部风险</option><option>低</option><option>中</option><option>高</option></select></div>
+      </div>
+      <div class="panel-title" style="margin-top:12px"><h3>可见工作项 · <span data-count-visible>0</span></h3><button class="button" type="button" data-reset-filters>重置筛选</button></div>
+      <div class="table-wrap" style="margin-top:10px"><table class="data-table"><thead><tr><th>工作项</th><th>状态</th><th>负责人 / 团队</th><th>进度</th><th>参与者</th><th>风险 / 更新</th></tr></thead><tbody data-board-body></tbody></table></div>
+      <div class="empty-state" data-board-empty hidden><strong>当前筛选没有演示工作项</strong><p>这不是系统错误。重置筛选，或改变团队与状态组合。</p><button class="button" type="button" data-reset-filters>重置筛选</button></div>
+    </section>
+
+    <section class="section" data-board-detail-wrap aria-labelledby="detail-title"><div class="section-heading"><span>WORK ITEM INSPECTOR</span><div><h2 id="detail-title">一个工作项，哪些人参与了，分别做了什么</h2><p>点击表格行或用 Tab 聚焦后按 Enter，查看工作项详情、贡献和活动时间线。</p></div></div>
+      <div class="detail-layout"><div class="panel panel-pad" data-board-detail></div><aside class="panel panel-pad"><div class="panel-title"><h3>活动时间线</h3><span class="status demo">DEMO</span></div><ol class="timeline" data-board-timeline style="margin-top:20px"></ol></aside></div>
+    </section>
+
+    <section class="section" aria-labelledby="leader-questions"><div class="section-heading"><span>LEADERSHIP QUESTIONS</span><div><h2 id="leader-questions">看板应该帮助领导问什么</h2></div></div>
+      <div class="grid-2"><ul class="list"><li>这个目标为什么现在重要，验收结果是什么？</li><li>进度数字背后的已完成输出和剩余风险是什么？</li><li>阻塞需要我的决定、资源还是跨团队协调？</li><li>最近证据多久没有更新，原因是什么？</li><li>同类目标是否重复，是否需要合并优先级？</li></ul><ul class="list warn"><li>不要用提交数、消息数或 AI Turn 数评价贡献</li><li>不要把“参与者多”直接等价为效率低</li><li>不要用进度百分比替代质量和验收证据</li><li>不要把 AI 生成的活动记录当成真实绩效事实</li><li>不要因看板显示完成就跳过发布与使用者确认</li></ul></div>
+    </section>
+
+    <section class="section"><div class="callout"><span class="status demo">DATA BOUNDARY</span><div><strong>本页所有姓名、工作项、团队、贡献、进度和时间线都是虚构演示数据</strong><p>真实领导看板必须从工作项事实源和真实执行证据聚合，并保留数据新鲜度、来源和权限；它不能成为独立维护的第二套状态，也不能把协作记录变成人员绩效结论。</p></div></div></section>
+  </main>
+  <footer class="footer"><span>LANOX GUIDE · LEADERSHIP</span><span><a href="workflow.html">返回完整协作流程</a> · <a href="index.html">帮助中心</a></span></footer><div class="toast" data-toast role="status" aria-live="polite"></div><script src="app.js"></script>
+</body></html>
