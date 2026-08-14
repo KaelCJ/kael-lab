@@ -4,12 +4,12 @@
 
 站点采用零依赖纯静态实现：
 
-- `index.html`、`styles.css`、`app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，三类帮助入口、协作方法和 Evidence Lab。
+- `index.html`、`styles.css`、`app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，六类角色帮助入口、协作方法和 Evidence Lab。
 - `ecosystem.css`、`ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页。
 - `kael/`：人机协作总循环、工作项上下文、任务内增益与跨任务判断升级。
 - `meepo/`：组合根、产品 Agent、公共 Framework 与 Nest 候选能力的当前模块视图。
 - `nest/`：Jugg/Nest 业务伴生治理、五类支撑、六层资产与知识产品候选核心。
-- `help/`：人机协作、Nest 知识库、Codex Workbench 的自包含同源帮助包。
+- `help/`：自包含同源帮助包；包含帮助中心、产品需求、架构方案、研发实施、测试证据、完整流程与领导看板六个独立交互页，并保留工作项、Nest 知识库和 Codex Workbench 快速指引。
 - `lanox/`：不含内部实现上下文的 Lanox 公共品牌、六层架构与产品方向。
 - `workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `workspace-assistant.css`、`workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
@@ -31,6 +31,7 @@ python -m http.server 4173
 - 页面明确区分 `Public Method`、`Concept Mock` 和 `Demo Data`。
 - 四个产品空间进一步区分 `Current`、`Building`、`Candidate` 与 `Direction`，架构节点和演讲分镜都是公开静态表达。
 - Workspace Assistant 只使用脱敏模拟数据，不连接真实工作区、模型、Codex 或 API。
+- 帮助页中的人物、工作项、进度、贡献、运行和测试记录全部是固定演示数据，不代表真实组织状态或人员绩效。
 - 首版没有服务端、账号、统计、评论、私密 API Key 或第三方 CDN。
 - 浏览器实验成绩只保存在访问者当前设备的 LocalStorage 中。
 
