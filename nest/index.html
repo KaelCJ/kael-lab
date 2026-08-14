@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Jugg / Nest：业务伴生治理、工程能力资产与可靠知识的候选核心思想。">
+  <meta name="theme-color" content="#f8f7f1">
+  <title>Jugg / Nest · Engineering Knowledge System</title>
+  <link rel="stylesheet" href="../ecosystem.css">
+  <script>document.documentElement.classList.add("js")</script>
+</head>
+<body data-view="architecture" data-theme="paper">
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="space-topbar">
+    <a class="space-brand" href="../index.html"><span class="space-brand-mark">N</span><span><strong>Jugg / Nest</strong><small>ENGINEERING KNOWLEDGE</small></span></a>
+    <nav class="space-nav" aria-label="产品空间"><a href="../kael/">Kael</a><a href="../meepo/">Meepo</a><a href="../nest/" aria-current="page">Jugg / Nest</a><a href="../lanox/">Lanox</a></nav>
+    <a class="lab-back" href="../index.html"><span>返回</span> Kael Lab ↗</a>
+  </header>
+
+  <div class="control-deck" aria-label="页面视图与主题">
+    <div class="control-group"><span class="control-label">VIEW</span><button class="control-button" type="button" data-view-target="architecture" aria-pressed="true">ARCHITECTURE</button><button class="control-button" type="button" data-view-target="briefing" aria-pressed="false">BRIEFING</button></div>
+    <div class="control-group"><span class="control-label">THEME</span><button class="theme-button" type="button" data-theme-target="paper" aria-label="Paper 主题" aria-pressed="true"></button><button class="theme-button" type="button" data-theme-target="night" aria-label="Night 主题" aria-pressed="false"></button><button class="theme-button" type="button" data-theme-target="ice" aria-label="Ice 主题" aria-pressed="false"></button></div>
+  </div>
+
+  <main class="space-main" id="main">
+    <section class="space-hero">
+      <div class="space-hero-copy"><p class="hero-kicker">JUGG / NEST · ENGINEERING COMPOUNDING</p><h1>让治理伴随业务，<br><em>让经验成为资产。</em></h1><p>Jugg / Nest 的候选核心不是再建一套旁路平台，而是让治理能力在 Web、RPC、MQ、DB、Redis 与 AI 等真实触点中伴随业务运行，再把思想、方法、规范、代码和验证沉淀为可复用资产。</p></div>
+      <aside class="hero-fact"><span class="status-chip candidate">CANDIDATE · REVIEW PENDING</span><strong>这是待最终 Review 的核心思想提炼。</strong><p>页面可以解释业务伴生治理的价值与资产结构，但不宣称完整控制平台、全链路覆盖或所有组件已经交付。</p></aside>
+    </section>
+
+    <section class="view-panel" data-view-panel="architecture" tabindex="-1" aria-labelledby="architecture-title">
+      <header class="panel-heading"><div><p class="section-kicker">COMPANION GOVERNANCE ARCHITECTURE</p><h2 id="architecture-title">两条运行线，五类支撑，六层资产</h2></div><p>点击节点查看它在“业务运行—治理触点—能力沉淀”中的责任。图中结构是候选核心思想，不是当前交付清单。</p></header>
+      <div class="architecture-workspace">
+        <div class="architecture-canvas">
+          <div class="canvas-meta"><span><b>JUGG / NEST CORE</b> / CANDIDATE INTERPRETATION</span><span>SELECT A NODE →</span></div>
+          <div class="architecture-grid nest-map">
+            <div class="map-band">RUNNING SYSTEM / 治理不脱离真实业务主线</div>
+            <button class="node orange lane is-selected" type="button" data-node data-index="LINE A / BUSINESS" data-title="真实业务主线" data-state="CORE LINE" data-detail="请求、消息、数据和 AI 调用继续服务真实业务目标，治理能力不能迫使业务改写成平台流程。" data-owner="业务系统与领域团队" data-boundary="治理不能成为与业务脱节的第二套业务系统。"><b>LINE A · BUSINESS</b><strong>真实业务主线</strong><small>用户请求 · 领域逻辑 · 服务调用 · 数据结果</small></button>
+            <button class="node blue lane" type="button" data-node data-index="LINE B / DAPPER" data-title="Dapper 业务伴生治理线" data-state="COMPANION LINE" data-detail="配置、上下文、日志、告警与增强能力在真实触点伴生运行，为业务提供可观察、可控制和可复用的工程支撑。" data-owner="Jugg / Nest 工程能力" data-boundary="伴生治理不应侵入领域语义，也不能冒充完整控制平台。"><b>LINE B · DAPPER</b><strong>业务伴生治理线</strong><small>低侵入增强 · 统一上下文 · 运行证据</small></button>
+
+            <div class="map-band">TOUCHPOINTS / 能力进入真实流量与数据路径的地方</div>
+            <div class="touchpoints" aria-label="治理触点"><span>WEB</span><span>RPC</span><span>MQ</span><span>DB</span><span>REDIS</span><span>AI</span></div>
+
+            <div class="map-band">FIVE SUPPORTS / 跨触点复用的工程能力</div>
+            <button class="node green support" type="button" data-node data-index="SUPPORT 01" data-title="动态配置" data-state="ENGINEERING SUPPORT" data-detail="让策略和运行参数在受控边界内动态生效，并保留来源、范围与变更责任。" data-owner="配置与治理能力" data-boundary="动态不等于无审计、无边界或任意远程控制。"><b>01 · CONFIG</b><strong>动态配置</strong><small>策略 · 参数 · 作用域</small></button>
+            <button class="node green support" type="button" data-node data-index="SUPPORT 02" data-title="日志与告警" data-state="ENGINEERING SUPPORT" data-detail="把关键运行事件转为可定位的日志、指标和告警，使问题能够回到具体触点与上下文。" data-owner="可观测与告警能力" data-boundary="有日志不等于问题已诊断；告警需要责任人和处置路径。"><b>02 · SIGNAL</b><strong>日志 / 告警</strong><small>事件 · 定位 · 处置入口</small></button>
+            <button class="node green support" type="button" data-node data-index="SUPPORT 03" data-title="并发与上下文" data-state="ENGINEERING SUPPORT" data-detail="在异步、线程和跨进程边界中传递必要上下文，让追踪、授权和业务关联保持一致。" data-owner="并发与上下文能力" data-boundary="上下文传递必须控制数据最小化和生命周期。"><b>03 · CONTEXT</b><strong>并发 / 上下文</strong><small>异步 · 传播 · 生命周期</small></button>
+            <button class="node green support" type="button" data-node data-index="SUPPORT 04" data-title="基础 Util" data-state="ENGINEERING SUPPORT" data-detail="把高频、稳定、边界清晰的基础能力沉淀为可复用工具，减少业务重复实现。" data-owner="基础工程能力" data-boundary="工具类不能成为无边界的杂物仓库或隐藏业务规则。"><b>04 · UTIL</b><strong>基础 Util</strong><small>稳定复用 · 明确契约</small></button>
+            <button class="node green support" type="button" data-node data-index="SUPPORT 05" data-title="框架与中间件增强" data-state="ENGINEERING SUPPORT" data-detail="在框架和中间件触点提供低侵入增强，使通用治理能力自然进入业务运行路径。" data-owner="框架与中间件能力" data-boundary="增强必须保留回退路径，不能绑死业务或掩盖底层语义。"><b>05 · ENHANCE</b><strong>框架 / 中间件增强</strong><small>低侵入 · 可回退 · 可组合</small></button>
+
+            <div class="map-band">SIX ASSET LAYERS / 从认知到可验证交付</div>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 01" data-title="思想资产" data-state="ASSET LAYER" data-detail="解释为什么采用业务伴生治理、责任如何划分，以及哪些反例不适用。" data-owner="工程思想所有者" data-boundary="口号不能替代适用条件和反例。"><b>A01</b><strong>思想</strong><small>为什么</small></button>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 02" data-title="方法资产" data-state="ASSET LAYER" data-detail="把思想转成可重复的分析、设计、接入和验证路径。" data-owner="工程方法所有者" data-boundary="方法必须在代表性场景中验证。"><b>A02</b><strong>方法</strong><small>怎么做</small></button>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 03" data-title="规范资产" data-state="ASSET LAYER" data-detail="定义契约、命名、边界、错误处理和治理要求，使不同实现保持一致。" data-owner="工程规范所有者" data-boundary="规范不能替代代码和运行证据。"><b>A03</b><strong>规范</strong><small>如何一致</small></button>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 04" data-title="代码资产" data-state="ASSET LAYER" data-detail="以组件、适配、增强和工具承载可运行能力，并由真实版本与依赖证明。" data-owner="对应代码仓库" data-boundary="文档命中不能证明当前版本可用。"><b>A04</b><strong>代码</strong><small>可运行能力</small></button>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 05" data-title="场景与交付资产" data-state="ASSET LAYER" data-detail="在具体业务触点形成接入模式、交付路径和处置经验。" data-owner="真实场景与交付记录" data-boundary="单一场景成功不能自动推广到所有系统。"><b>A05</b><strong>场景 / 交付</strong><small>在哪里生效</small></button>
+            <button class="node purple asset" type="button" data-node data-index="ASSET 06" data-title="知识与验证资产" data-state="ASSET LAYER" data-detail="把来源、问题、方案、验证和适用边界组织为可追溯知识，服务后续判断。" data-owner="知识库与验证记录" data-boundary="没有来源和证据的答案必须明确停下。"><b>A06</b><strong>知识 / 验证</strong><small>如何复用与校准</small></button>
+          </div>
+        </div>
+        <aside class="inspector" data-inspector aria-live="polite">
+          <div class="inspector-head"><span>ENGINEERING INSPECTOR</span><span class="inspector-index" data-inspector-index>LINE A / BUSINESS</span></div>
+          <span class="status-chip candidate" data-inspector-state>CORE LINE</span><h3 data-inspector-title>真实业务主线</h3><p data-inspector-detail>请求、消息、数据和 AI 调用继续服务真实业务目标，治理能力不能迫使业务改写成平台流程。</p>
+          <dl><dt>真实所有者</dt><dd data-inspector-owner>业务系统与领域团队</dd><dt>停止边界</dt><dd data-inspector-boundary>治理不能成为与业务脱节的第二套业务系统。</dd></dl>
+          <a class="inspector-link" href="../help/index.html?topic=nest">打开 Nest 知识库帮助 →</a>
+        </aside>
+      </div>
+    </section>
+
+    <section class="view-panel" data-view-panel="briefing" tabindex="-1" aria-labelledby="briefing-title">
+      <header class="panel-heading"><div><p class="section-kicker">BRIEFING MODE</p><h2 id="briefing-title">从工程治理，到知识复利</h2></div><p>五张分镜解释候选核心思想、三项价值与六层资产。左右方向键可翻页。</p></header>
+      <div class="briefing-shell">
+        <div class="briefing-stage">
+          <article class="brief-slide is-active" data-slide><div class="brief-slide-inner"><div><span class="slide-number">01 · THE IDEA</span><h2>治理不在业务之外，<br><em>而在业务身边。</em></h2><p>真实业务主线继续创造价值，Dapper 伴生治理线在关键触点提供配置、上下文、日志、告警与增强。二者协同，但责任不混在一起。</p></div><aside class="slide-aside"><b>CANDIDATE CORE</b><strong>伴生，不接管；增强，不吞并。</strong><p>当前提炼仍待最终 Review，不等于完整平台已经落地。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">02 · TOUCHPOINTS</span><h2>能力必须进入，<br><em>真实流量与数据路径。</em></h2><p>Web、RPC、MQ、DB、Redis 和 AI 是治理能力产生价值的触点。脱离触点的抽象，无法证明对真实业务有效。</p></div><div class="slide-grid"><article><b>TRAFFIC</b><strong>Web / RPC</strong><p>请求、调用和上下文。</p></article><article><b>EVENT</b><strong>MQ</strong><p>异步消息与消费链。</p></article><article><b>DATA</b><strong>DB / Redis</strong><p>持久化、缓存与诊断。</p></article><article><b>INTELLIGENCE</b><strong>AI</strong><p>模型调用、成本与效果。</p></article></div></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">03 · THREE VALUES</span><h2>三种价值，<br><em>必须同时成立。</em></h2><p>工程能力既要提高研发效率，也要提升运行时的可观察与可控制，还要让业务代码更精简而平台责任不丢失。</p></div><div class="slide-grid"><article><b>VALUE 01</b><strong>研发提效</strong><p>减少重复接入与问题定位成本。</p></article><article><b>VALUE 02</b><strong>可观察 / 可控制</strong><p>运行信号、上下文与受控策略。</p></article><article><b>VALUE 03</b><strong>业务代码精简</strong><p>通用责任下沉，领域语义保持清晰。</p></article><article><b>GUARDRAIL</b><strong>平台责任不消失</strong><p>精简不等于隐藏错误或转移责任。</p></article></div></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">04 · SIX ASSETS</span><h2>代码只是第四层，<br><em>不是全部资产。</em></h2><p>思想解释为什么，方法说明怎么做，规范建立一致性，代码提供能力，场景与交付证明适用性，知识与验证让经验在后续任务中复用和校准。</p></div><aside class="slide-aside"><b>ASSET CHAIN</b><strong>思想 → 方法 → 规范 → 代码 → 场景 / 交付 → 知识 / 验证</strong><p>六层缺一会让能力难以理解、接入、证明或长期复用。</p></aside></div></article>
+          <article class="brief-slide" data-slide><div class="brief-slide-inner"><div><span class="slide-number">05 · KNOWLEDGE PRODUCT</span><h2>可靠答案，<br><em>必须能回到来源。</em></h2><p>Nest 知识库用目录建立范围，用多文档建立上下文，用来源支持答案；证据不足时明确停下，而不是编造一个看似完整的结论。</p><p><a class="inspector-link" href="../help/index.html?topic=nest">进入 Nest 知识库交互帮助 →</a></p></div><aside class="slide-aside"><b>ANSWER CONTRACT</b><strong>范围 → 文档 → 问题 → 来源 → 追问</strong><p>知识产品的核心不是“总能回答”，而是“知道答案凭什么成立”。</p></aside></div></article>
+        </div>
+        <nav class="briefing-nav" aria-label="演讲分镜"><button type="button" data-slide-prev>← PREV</button><div class="slide-progress"><span data-slide-progress></span></div><span class="slide-page" data-slide-page>01 / 05</span><button type="button" data-slide-next>NEXT →</button><span class="key-hint">← → / PAGE UP · PAGE DOWN</span></nav>
+      </div>
+    </section>
+  </main>
+
+  <footer class="space-footer"><a class="space-brand" href="../index.html"><span class="space-brand-mark">N</span><span><strong>Jugg / Nest</strong><small>CANDIDATE CORE</small></span></a><p>候选核心思想 · 待最终 Review · 不宣称完整控制平台已经实现</p><span>© <span data-year></span> KAEL LAB</span></footer>
+  <script src="../ecosystem.js"></script>
+</body>
+</html>
