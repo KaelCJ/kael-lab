@@ -1,8 +1,8 @@
 (() => {
   const ecosystems = {
-    kael: { index: "01 / KAEL", state: "PUBLIC METHOD", title: "让人的目标和判断始终在场", copy: "Kael 负责协作方法、工作项、知识准入与证据判断。Agent 可以分析和建议，但不能把推断写成人的决定。", points: ["工作项", "来源", "证据", "最终判断"], href: "#method", link: "进入 Kael 方法 →", stateClass: "current" },
-    meepo: { index: "02 / MEEPO", state: "CURRENT PRACTICE", title: "让 Agent 产品在真实工程里长出来", copy: "Meepo 是 Agent 产品、Workbench 与运行能力的孵化实践。它承担实现和验证，但不替代 Kael 的方法所有权，也不替代 Lanox 的品牌表达。", points: ["Agent 产品", "Workbench", "运行能力", "实践证据"], href: "help/index.html?topic=collaboration", link: "进入人机协作帮助 →", stateClass: "current" },
-    nest: { index: "03 / JUGG · NEST", state: "ENGINEERING", title: "把工程经验变成可复用能力和可靠知识", copy: "Jugg / Nest 保存工程事实、组件经验与知识产品。知识库让用户从目录、文档和来源出发，得到能够继续行动的答案。", points: ["工程事实", "能力资产", "知识库", "来源"], href: "help/index.html?topic=nest", link: "进入 Nest 知识库帮助 →", stateClass: "current" },
+    kael: { index: "01 / KAEL", state: "PUBLIC METHOD", title: "让人的目标和判断始终在场", copy: "Kael 负责协作方法、工作项、知识准入与证据判断。Agent 可以分析和建议，但不能把推断写成人的决定。", points: ["工作项", "双增益环", "证据", "最终判断"], href: "kael/index.html", link: "进入 Kael 空间 →", stateClass: "current" },
+    meepo: { index: "02 / MEEPO", state: "CURRENT PRACTICE", title: "让 Agent 产品在真实工程里长出来", copy: "Meepo 按组合根、产品 Agent、公共 Framework 与候选能力分层；Current、Building 与 Candidate 不混写。", points: ["组合根", "产品 Agent", "Framework", "候选能力"], href: "meepo/index.html", link: "进入 Meepo 空间 →", stateClass: "current" },
+    nest: { index: "03 / JUGG · NEST", state: "ENGINEERING", title: "把工程经验变成可复用能力和可靠知识", copy: "Jugg / Nest 用业务伴生治理连接真实触点，并把思想、方法、规范、代码、交付和验证沉淀为资产。", points: ["业务主线", "伴生治理", "六层资产", "可靠知识"], href: "nest/index.html", link: "进入 Jugg / Nest 空间 →", stateClass: "current" },
     lanox: { index: "04 / LANOX", state: "DIRECTION", title: "把能力组织成未来技术品牌和产品矩阵", copy: "Lanox 面向未来的通用 Agent、垂直领域产品、Agent Framework、企业能力与基础设施价值。页面区分 Current、Direction 与 Roadmap。", points: ["通用 Agent", "垂直产品", "Framework", "品牌"], href: "lanox/index.html", link: "进入 Lanox →", stateClass: "direction" }
   };
   const cards = [...document.querySelectorAll("[data-ecosystem]")];
@@ -10,7 +10,7 @@
   function selectEcosystem(key) {
     const item = ecosystems[key];
     if (!item || !detail) return;
-    cards.forEach(card => { const active = card.dataset.ecosystem === key; card.classList.toggle("is-active", active); card.setAttribute("aria-pressed", String(active)); });
+    cards.forEach(card => { const active = card.dataset.ecosystem === key; card.classList.toggle("is-active", active); if (active) card.setAttribute("aria-current", "true"); else card.removeAttribute("aria-current"); });
     detail.querySelector("[data-detail-index]").textContent = item.index;
     const state = detail.querySelector("[data-detail-state]");
     state.textContent = item.state; state.className = `card-state ${item.stateClass}`;
@@ -19,7 +19,10 @@
     detail.querySelector("[data-detail-points]").innerHTML = item.points.map(point => `<span>${point}</span>`).join("");
     const link = detail.querySelector("[data-detail-link]"); link.href = item.href; link.textContent = item.link;
   }
-  cards.forEach(card => card.addEventListener("click", () => selectEcosystem(card.dataset.ecosystem)));
+  cards.forEach(card => {
+    card.addEventListener("mouseenter", () => selectEcosystem(card.dataset.ecosystem));
+    card.addEventListener("focus", () => selectEcosystem(card.dataset.ecosystem));
+  });
 
   const cases = [
     { origin: "用户输入", text: "“先看公开站点的物理限制，再评估能做到多大。”", answer: "source", explanation: "这是提出者的原始要求。它决定研究顺序，但本身不是平台限制的事实证据。" },
