@@ -59,6 +59,33 @@
     { id: 'core', name: '增幅核心', icon: '✦', desc: '所有伤害 +8%', bonus: { damage: 8 }, price: 21 },
     { id: 'medkit', name: '急救胶囊', icon: '✚', desc: '立即恢复 14 生命', bonus: { heal: 14 }, price: 10 }
   ];
+  const CHEST_ITEMS = ITEMS.filter(item => item.id !== 'medkit');
+  const SKILLS = {
+    rover: [
+      { name: '测距标定', desc: '标记射程内最远敌人 5 秒；远距离物理武器命中增伤 20%。', kind: 'active' },
+      { name: '稳轨', desc: '连续移动 1 秒后，下次远程物理命中暴击率 +15%。' },
+      { name: '掠线', desc: '每 6 次远程物理武器开火，追加一枚穿透弹。' },
+      { name: '星点合围', desc: '每 12 次远程物理攻击命中，向最多 3 名敌人发射追踪弹。' }
+    ],
+    bulwark: [
+      { name: '破围斩', desc: '向前突进并斩击路径上的敌人；与冲刺分别冷却。', kind: 'active' },
+      { name: '踏稳', desc: '周围多名敌人持续逼近时积蓄一次减伤。' },
+      { name: '回锋', desc: '每 5 次近战物理武器攻击，追加一次侧向横扫。' },
+      { name: '裂阵反击', desc: '本波承伤累积到门槛时释放环形剑气。' }
+    ],
+    conductor: [
+      { name: '极差场', desc: '放置持续 4 秒的法术伤害场域。', kind: 'active' },
+      { name: '蓄电', desc: '法术攻击命中积累电荷；每次攻击最多积一层。' },
+      { name: '绝缘回流', desc: '受击时消耗电荷减伤，并反击附近敌人。' },
+      { name: '过载边界', desc: '电荷满后释放向外扩散的法术脉冲。' }
+    ],
+    scavenger: [
+      { name: '磁流召回', desc: '4 秒内拾取范围 +180。', kind: 'active' },
+      { name: '拾荒分红', desc: '每手动拾取 8 个材料，额外获得 2 个材料。' },
+      { name: '废件护层', desc: '每手动拾取 12 个材料，获得短时防护。' },
+      { name: '满载运转', desc: '本波拾取 18 个材料后，短时提高伤害与攻速。' }
+    ]
+  };
   const UPGRADES = [
     { name: '生命扩容', icon: '✚', bonus: { maxHp: 5 }, desc: '最大生命 +5，并恢复 5 生命' },
     { name: '装甲加固', icon: '⬡', bonus: { armor: 2 }, desc: '护甲 +2' },
@@ -134,7 +161,7 @@
     } catch (_) { /* Sound is optional. */ }
   }
   function renderTitle() {
-    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="selection-card" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}"><span class="selection-icon">${c.icon}</span><span><strong>${c.name}</strong><small>${c.desc}</small></span></button>`).join('');
+    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="selection-card" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}"><span class="selection-icon">${c.icon}</span><span><strong>${c.name}</strong><small>${c.desc}</small><small class="skill-preview">专属技能：${SKILLS[c.id].map(skill => skill.name).join(' · ')}</small></span></button>`).join('');
     $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${b.icon}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
     $('difficulty-list').innerHTML = DIFFICULTIES.map(d => `<button type="button" data-difficulty="${d.id}" aria-pressed="${selectedDifficulty === d.id}">${d.name}</button>`).join('');
     $('pace-list').innerHTML = PACES.map(p => `<button type="button" data-pace="${p.id}" aria-pressed="${selectedPace === p.id}">${p.name}</button>`).join('');
@@ -144,7 +171,7 @@
     $('record-label').textContent = `最佳记录：${best ? `第 ${best} 波` : '暂无'} · 通关 ${save.wins} 次`;
   }
   function hideScreens() {
-    ['title-screen', 'level-screen', 'shop-screen', 'pause-screen', 'result-screen'].forEach(id => $(id).classList.add('hidden'));
+    ['title-screen', 'level-screen', 'shop-screen', 'chest-screen', 'pause-screen', 'result-screen'].forEach(id => $(id).classList.add('hidden'));
   }
   function showPhase(next) {
     phase = next;
@@ -152,7 +179,7 @@
     hideScreens();
     $('hud').classList.toggle('hidden', next !== 'combat');
     $('touch-controls').classList.toggle('hidden', next !== 'combat');
-    const screen = { title: 'title-screen', level: 'level-screen', shop: 'shop-screen', pause: 'pause-screen', result: 'result-screen' }[next];
+    const screen = { title: 'title-screen', level: 'level-screen', shop: 'shop-screen', chest: 'chest-screen', pause: 'pause-screen', result: 'result-screen' }[next];
     if (screen) $(screen).classList.remove('hidden');
   }
   function createWeapon(id, tier = 1) { return { id, tier, uid: ++uid, cool: 0 }; }
@@ -167,6 +194,10 @@
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       weapons: [createWeapon(character.weapon)], shopOffers: [], rerolls: 0,
+      pendingChests: 0, chestReward: null, attackSeq: 0,
+      skills: { activeCooldown: 0, mark: null, moveTime: 0, steadyReady: false, rangedFires: 0, rangedHits: 0, meleeFires: 0,
+        manualPickups: 0, shieldTime: 0, loadedTime: 0, loadedUsed: false, charge: 0, field: null, overload: null,
+        guardTime: 0, guardReady: false, guardCooldown: 0, damageTaken: 0, counterCooldown: 0, returnCooldown: 0, hitIds: new Set() },
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
       spawnClock: 0, hazardClock: 8, specialSpawned: false, normalChestDropped: false, regenClock: 0, lifeClock: 0,
       bossFight: false, pendingVictory: false, hudClock: 0, screenShake: 0
@@ -185,6 +216,12 @@
     run.normalChestDropped = false;
     run.bossFight = false;
     run.pendingVictory = false;
+    run.skills.activeCooldown = 0;
+    run.skills.moveTime = 0; run.skills.steadyReady = false; run.skills.rangedFires = 0; run.skills.rangedHits = 0; run.skills.meleeFires = 0;
+    run.skills.manualPickups = 0; run.skills.loadedUsed = false; run.skills.loadedTime = 0; run.skills.damageTaken = 0;
+    run.skills.magnetTime = 0; run.skills.shieldTime = 0; run.skills.guardTime = 0; run.skills.guardReady = false;
+    run.skills.guardCooldown = 0; run.skills.counterCooldown = 0; run.skills.returnCooldown = 0; run.skills.charge = 0;
+    run.skills.hitIds.clear(); run.skills.mark = null; run.skills.field = null; run.skills.overload = null;
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
     showPhase('combat');
@@ -201,7 +238,6 @@
   }
   function endRun(victory) {
     if (phase === 'result') return;
-    if (victory) collectRemainingPickups();
     if (victory) save.wins += 1;
     updateRecord();
     showPhase('result');
@@ -242,12 +278,39 @@
     $('level-options').querySelector('button')?.focus({ preventScroll: true });
   }
   function finishWave() {
-    if (run.wave >= MAX_WAVES) { endRun(true); return; }
+    if (phase !== 'combat') return;
     collectRemainingPickups();
     run.enemies = []; run.enemyBullets = []; run.bullets = [];
-    if (run.pendingLevels > 0) levelOffers();
-    else openShop();
+    if (run.pendingChests > 0) openChest();
+    else finishChestSequence();
     tone(660, .2, 'triangle', .05);
+  }
+  function finishChestSequence() {
+    if (run.wave >= MAX_WAVES) endRun(true);
+    else if (run.pendingLevels > 0) levelOffers();
+    else openShop();
+  }
+  function openChest() {
+    run.chestReward = pick(CHEST_ITEMS);
+    $('chests-left').textContent = run.pendingChests;
+    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${run.chestReward.icon}</span><div><strong>${run.chestReward.name}</strong><p>${run.chestReward.desc}</p></div>`;
+    $('chest-scrap-button').textContent = `拆解为 ◇ ${Math.round(run.chestReward.price * .5)}`;
+    showPhase('chest');
+    $('chest-take-button').focus({ preventScroll: true });
+  }
+  function resolveChest(take) {
+    if (phase !== 'chest' || !run.chestReward) return;
+    const item = run.chestReward;
+    if (take) { applyBonus(item.bonus); showToast(`获得${item.name}`); }
+    else {
+      const salvage = Math.round(item.price * .5);
+      run.money += salvage; run.earned += salvage;
+      showToast(`拆解${item.name}：材料 +${salvage}`);
+    }
+    run.pendingChests -= 1;
+    run.chestReward = null;
+    tone(take ? 760 : 450, .12, 'triangle', .04);
+    if (run.pendingChests > 0) openChest(); else finishChestSequence();
   }
   function collectRemainingPickups() {
     const materials = run.pickups.filter(item => item.kind === 'material').length;
@@ -259,8 +322,9 @@
     if (chests) {
       const before = run.player.hp;
       heal(chests * Math.max(4, Math.round(run.player.maxHp * CHEST_HEAL_RATE)));
+      run.pendingChests += chests;
       const recovered = Math.round(run.player.hp - before);
-      showToast(`自动回收 ${chests} 个宝箱：${recovered ? `生命 +${recovered}` : '生命已满'}`);
+      showToast(`自动回收 ${chests} 个宝箱，待结算开启；${recovered ? `生命 +${recovered}` : '生命已满'}`);
     }
     run.pickups = [];
   }
@@ -440,7 +504,104 @@
     run.player.dashCooldown = 4.2;
     run.player.invuln = Math.max(run.player.invuln, .25);
     run.effects.push({ kind: 'pulse', x: run.player.x, y: run.player.y, r: 32, color: '#b5f6eb', life: .3, maxLife: .3 });
+    updateHUD();
     tone(330, .08, 'triangle', .035);
+  }
+  function segmentDistance(e, x1, y1, x2, y2) {
+    const dx = x2 - x1, dy = y2 - y1;
+    const t = clamp(((e.x - x1) * dx + (e.y - y1) * dy) / (dx * dx + dy * dy || 1), 0, 1);
+    return Math.hypot(e.x - x1 - dx * t, e.y - y1 - dy * t);
+  }
+  function dealSkillDamage(e, amount) { damageEnemy(e, amount * (1 + run.stats.damage / 100), false); }
+  function tryActiveSkill() {
+    if (phase !== 'combat' || run.skills.activeCooldown > 0) return;
+    const p = run.player, s = run.skills;
+    if (run.character.id === 'rover') {
+      const range = Math.max(0, ...run.weapons.filter(w => WEAPONS[w.id].type === 'ranged').map(w => WEAPONS[w.id].range));
+      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= range).sort((a, b) => distance(b, p) - distance(a, p))[0];
+      if (!target) { showToast('射程内没有可标定目标'); return; }
+      s.mark = { target, time: 5 };
+      s.activeCooldown = 12;
+      run.effects.push({ kind: 'text', x: target.x, y: target.y - target.r - 15, text: '已标定', color: '#b5f6eb', life: .8, maxLife: .8 });
+    } else if (run.character.id === 'bulwark') {
+      const v = movementVector(), nearest = run.enemies.filter(e => !e.dead).sort((a, b) => distance(a, p) - distance(b, p))[0];
+      const angle = Math.hypot(v.x, v.y) > .05 ? Math.atan2(v.y, v.x) : nearest ? Math.atan2(nearest.y - p.y, nearest.x - p.x) : p.facing;
+      const x = p.x, y = p.y;
+      p.x = clamp(x + Math.cos(angle) * 100, p.radius, WORLD.w - p.radius);
+      p.y = clamp(y + Math.sin(angle) * 100, p.radius, WORLD.h - p.radius);
+      p.facing = angle; moveTarget = null;
+      for (const e of run.enemies) if (!e.dead && segmentDistance(e, x, y, p.x, p.y) < e.r + 38) dealSkillDamage(e, 16 + run.stats.melee);
+      run.effects.push({ kind: 'line', x1: x, y1: y, x2: p.x, y2: p.y, color: '#ffcd91', life: .23, maxLife: .23, width: 22 });
+      s.activeCooldown = 9;
+    } else if (run.character.id === 'scavenger') {
+      s.magnetTime = 4;
+      s.activeCooldown = 12;
+      run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 255 + run.stats.pickup, color: '#ffe4a0', life: .4, maxLife: .4 });
+    } else {
+      s.field = { x: p.x, y: p.y, time: 4, tick: 0 };
+      s.activeCooldown = 10;
+      run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 115, color: '#b5b4ff', life: .4, maxLife: .4 });
+    }
+    updateHUD();
+    tone(610, .14, 'triangle', .045);
+  }
+  function addCharge() {
+    const s = run.skills;
+    s.charge += 1;
+    if (s.charge >= 10) {
+      s.charge = 0;
+      s.overload = { age: 0, hit: new Set(), first: false, second: false };
+      showToast('过载边界！');
+    }
+  }
+  function countScavengedMaterial() {
+    const s = run.skills;
+    s.manualPickups += 1;
+    if (s.manualPickups % 8 === 0) { run.money += 2; run.earned += 2; showToast('拾荒分红：材料 +2'); }
+    if (s.manualPickups % 12 === 0) { s.shieldTime = 8; showToast('废件护层就绪'); }
+    if (s.manualPickups >= 18 && !s.loadedUsed) { s.loadedUsed = true; s.loadedTime = 6; showToast('满载运转！'); }
+  }
+  function updateSkills(dt) {
+    const s = run.skills, p = run.player;
+    s.activeCooldown = Math.max(0, s.activeCooldown - dt);
+    s.guardCooldown = Math.max(0, s.guardCooldown - dt);
+    s.counterCooldown = Math.max(0, s.counterCooldown - dt);
+    s.returnCooldown = Math.max(0, s.returnCooldown - dt);
+    s.shieldTime = Math.max(0, s.shieldTime - dt);
+    s.loadedTime = Math.max(0, s.loadedTime - dt);
+    s.magnetTime = Math.max(0, (s.magnetTime || 0) - dt);
+    if (s.mark) { s.mark.time -= dt; if (s.mark.time <= 0 || s.mark.target.dead) s.mark = null; }
+    if (run.character.id === 'rover') {
+      s.moveTime = run.movedThisFrame ? Math.min(1, s.moveTime + dt) : 0;
+      if (s.moveTime >= 1) s.steadyReady = true;
+    } else if (run.character.id === 'bulwark') {
+      const nearby = run.enemies.filter(e => !e.dead && distance(e, p) <= 160).length;
+      s.guardTime = nearby >= 3 && s.guardCooldown <= 0 ? s.guardTime + dt : 0;
+      if (s.guardTime >= 1) { s.guardReady = true; s.guardTime = 0; }
+    } else if (run.character.id === 'conductor') {
+      if (s.field) {
+        s.field.time -= dt; s.field.tick += dt;
+        while (s.field.tick >= .5 && s.field.time > -.5) {
+          s.field.tick -= .5;
+          let hit = false;
+          for (const e of run.enemies) if (!e.dead && distance(e, s.field) <= 115 + e.r) { dealSkillDamage(e, 3 + run.stats.elemental * .4); hit = true; }
+          if (hit) addCharge();
+          run.effects.push({ kind: 'pulse', x: s.field.x, y: s.field.y, r: 115, color: '#b5b4ff', life: .22, maxLife: .22 });
+        }
+        if (s.field.time <= 0) s.field = null;
+      }
+      if (s.overload) {
+        const burst = s.overload;
+        burst.age += dt;
+        const radius = Math.min(220, burst.age / .24 * 220);
+        for (const e of run.enemies) if (!e.dead && !burst.hit.has(e) && distance(e, p) <= radius + e.r) {
+          burst.hit.add(e); dealSkillDamage(e, 8 + run.stats.elemental * .6);
+        }
+        if (burst.age >= .12 && !burst.first) { burst.first = true; run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 110, color: '#c6b8ff', life: .38, maxLife: .38 }); }
+        if (burst.age >= .24 && !burst.second) { burst.second = true; run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 220, color: '#c6b8ff', life: .42, maxLife: .42 }); }
+        if (burst.age >= .3) s.overload = null;
+      }
+    }
   }
   function movePlayer(dt) {
     const p = run.player, v = movementVector();
@@ -450,8 +611,10 @@
     else if (Math.hypot(vx, vy) > .05) p.facing = Math.atan2(vy, vx);
     const speed = 215 * (1 + run.stats.speed / 100);
     const step = dashing ? speed * dt : Math.min(speed * dt, v.remaining ?? Infinity);
+    const oldX = p.x, oldY = p.y;
     p.x = clamp(p.x + vx * step, p.radius, WORLD.w - p.radius);
     p.y = clamp(p.y + vy * step, p.radius, WORLD.h - p.radius);
+    run.movedThisFrame = Math.hypot(p.x - oldX, p.y - oldY) > .1;
     if (!dashing && v.remaining !== undefined && v.remaining <= step + 3) moveTarget = null;
     p.invuln = Math.max(0, p.invuln - dt);
     p.dashCooldown = Math.max(0, p.dashCooldown - dt);
@@ -464,8 +627,36 @@
     const p = run.player;
     if (p.invuln > 0 || phase !== 'combat') return;
     if (Math.random() * 100 < run.stats.dodge) { p.invuln = .18; showToast('闪避！'); return; }
-    const damage = Math.max(1, Math.round(rawDamage * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)))));
+    const s = run.skills;
+    let damage = Math.max(1, Math.round(rawDamage * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)))));
+    if (run.character.id === 'bulwark' && s.guardReady) {
+      damage = Math.max(1, Math.round(damage * .75));
+      s.guardReady = false; s.guardCooldown = 5;
+    }
+    if (run.character.id === 'scavenger' && s.shieldTime > 0) { damage = Math.max(1, damage - 3); s.shieldTime = 0; }
+    if (run.character.id === 'conductor' && s.charge >= 3 && s.returnCooldown <= 0) {
+      s.charge -= 3; s.returnCooldown = 5;
+      damage = Math.max(1, Math.round(damage * .7));
+      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= 160).sort((a, b) => distance(a, p) - distance(b, p))[0];
+      if (target) { dealSkillDamage(target, 6 + run.stats.elemental * .5); run.effects.push({ kind: 'line', x1: p.x, y1: p.y, x2: target.x, y2: target.y, color: '#b5b4ff', life: .2, maxLife: .2, width: 3 }); }
+    }
+    const actualDamage = Math.min(p.hp, damage);
     p.hp -= damage;
+    if (run.character.id === 'bulwark') {
+      s.damageTaken += actualDamage;
+      if (s.damageTaken >= 15 && s.counterCooldown <= 0 && p.hp > 0) {
+        s.damageTaken = 0; s.counterCooldown = 6;
+        for (const e of run.enemies) if (!e.dead && distance(e, p) <= 155 + e.r) {
+          dealSkillDamage(e, 12 + run.stats.melee);
+          if (!e.dead && e.id !== 'boss' && e.id !== 'elite') {
+            const angle = Math.atan2(e.y - p.y, e.x - p.x);
+            e.x = clamp(e.x + Math.cos(angle) * 65, e.r, WORLD.w - e.r);
+            e.y = clamp(e.y + Math.sin(angle) * 65, e.r, WORLD.h - e.r);
+          }
+        }
+        run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 155, color: '#ffcd91', life: .35, maxLife: .35 });
+      }
+    }
     p.invuln = .55;
     run.screenShake = 9;
     run.effects.push({ kind: 'text', x: p.x, y: p.y - 23, text: `-${damage}`, color: '#ff777a', life: .65, maxLife: .65 });
@@ -483,7 +674,7 @@
       e.attackClock -= dt; e.chargeClock -= dt;
       if (e.burn > 0) {
         e.burn -= dt; e.burnClock -= dt;
-        if (e.burnClock <= 0) { e.burnClock = .5; damageEnemy(e, 2 + run.stats.elemental * .2, false); }
+        if (e.burnClock <= 0) { e.burnClock = .5; dealSkillDamage(e, 2 + run.stats.elemental * .2); }
       }
       if (run.pendingVictory) break;
       if (e.dead) continue;
@@ -540,7 +731,7 @@
   }
   function dropChest(x, y) {
     run.pickups.push({ kind: 'chest', x: clamp(x, 12, WORLD.w - 12), y: clamp(y, 12, WORLD.h - 12), r: 12, drift: rand(0, TAU) });
-    showToast('宝箱掉落：靠近可回血');
+    showToast('宝箱掉落：拾取回血，结算开装备');
   }
   function killEnemy(e) {
     if (e.dead) return;
@@ -557,17 +748,22 @@
     if (e.id === 'boss' && run.wave === MAX_WAVES) run.pendingVictory = true;
     if (e.id === 'boss') showToast('首领已击败！');
   }
-  function damageEnemy(e, amount, directHit = true) {
+  function damageEnemy(e, amount, directHit = true, hit = null) {
     if (e.dead) return;
-    const crit = directHit && Math.random() * 100 < run.stats.crit;
+    const s = run.skills;
+    if (hit?.type === 'ranged' && run.character.id === 'rover' && s.mark?.target === e && distance(e, run.player) >= hit.range * .5) amount *= 1.2;
+    const steady = hit?.type === 'ranged' && run.character.id === 'rover' && s.steadyReady;
+    const crit = directHit && Math.random() * 100 < run.stats.crit + (steady ? 15 : 0);
+    if (steady) { s.steadyReady = false; s.moveTime = 0; }
     const damage = Math.max(1, Math.round(amount * (crit ? 1.8 : 1)));
     e.hp -= damage; e.hitFlash = .1;
     if (crit) run.effects.push({ kind: 'text', x: e.x + rand(-8, 8), y: e.y - e.r, text: String(damage), color: '#ffe284', life: .55, maxLife: .55 });
     if (directHit && run.lifeClock <= 0 && Math.random() * 100 < run.stats.lifesteal) { heal(1); run.lifeClock = .13; }
     if (e.hp <= 0) killEnemy(e);
+    if (hit) registerWeaponHit(e, hit);
   }
   function updatePickups(dt) {
-    const p = run.player, range = 75 + run.stats.pickup;
+    const p = run.player, range = 75 + run.stats.pickup + (run.skills.magnetTime > 0 ? 180 : 0);
     for (let i = run.pickups.length - 1; i >= 0; i--) {
       const item = run.pickups[i], d = distance(item, p);
       if (d < range && d > 1) {
@@ -579,12 +775,14 @@
         if (item.kind === 'chest') {
           const before = p.hp;
           heal(Math.max(4, Math.round(p.maxHp * CHEST_HEAL_RATE)));
+          run.pendingChests += 1;
           const recovered = Math.round(p.hp - before);
-          showToast(recovered ? `宝箱：生命 +${recovered}` : '宝箱：生命已满');
+          showToast(`宝箱待结算开启；${recovered ? `生命 +${recovered}` : '生命已满'}`);
           if (recovered) run.effects.push({ kind: 'text', x: p.x, y: p.y - 24, text: `+${recovered}`, color: '#ffe4a0', life: .7, maxLife: .7 });
           tone(720, .12, 'triangle', .045);
         } else {
           run.money += 1; run.earned += 1; addXp(1);
+          if (run.character.id === 'scavenger') countScavengedMaterial();
         }
         run.pickups.splice(i, 1);
       }
@@ -592,12 +790,32 @@
   }
   function weaponDamage(w) {
     const def = WEAPONS[w.id];
-    return (def.damage * Math.pow(1.65, w.tier - 1) + (run.stats[def.type] || 0)) * (1 + run.stats.damage / 100);
+    const loaded = run.character.id === 'scavenger' && run.skills.loadedTime > 0 ? 3 : 0;
+    return (def.damage * Math.pow(1.65, w.tier - 1) + (run.stats[def.type] || 0) + loaded) * (1 + run.stats.damage / 100);
   }
-  function getTarget(range) {
+  function attackSpeed() { return run.stats.attackSpeed + (run.character.id === 'scavenger' && run.skills.loadedTime > 0 ? 20 : 0); }
+  function registerWeaponHit(e, hit) {
+    const s = run.skills;
+    if (s.hitIds.has(hit.attackId)) return;
+    s.hitIds.add(hit.attackId);
+    if (run.character.id === 'rover' && hit.type === 'ranged') {
+      s.rangedHits += 1;
+      if (s.rangedHits % 12 === 0) {
+        const targets = run.enemies.filter(enemy => !enemy.dead).sort((a, b) => distance(a, run.player) - distance(b, run.player)).slice(0, 3);
+        for (const target of targets) {
+          const angle = Math.atan2(target.y - run.player.y, target.x - run.player.x);
+          run.bullets.push({ x: run.player.x, y: run.player.y, vx: Math.cos(angle) * 650, vy: Math.sin(angle) * 650,
+            life: 1.25, damage: hit.damage * .5, r: 5, color: '#b5f6eb', pierce: 1, explosion: 0, hit: new Set(), skill: true, homing: target });
+        }
+        showToast('星点合围！');
+      }
+    } else if (run.character.id === 'conductor' && hit.type === 'elemental') addCharge();
+  }
+  function getTarget(range, type) {
     const p = run.player;
     let candidates = run.enemies.filter(e => !e.dead && distance(e, p) <= range);
     if (!candidates.length) return null;
+    if (type === 'ranged' && run.character.id === 'rover' && run.skills.mark && candidates.includes(run.skills.mark.target)) return run.skills.mark.target;
     if (run.aimTarget) {
       const near = candidates.filter(e => distance(e, run.aimTarget) < 120).sort((a, b) => distance(a, run.aimTarget) - distance(b, run.aimTarget))[0];
       if (near) return near;
@@ -605,26 +823,31 @@
     candidates.sort((a, b) => distance(a, p) - distance(b, p));
     return candidates[0];
   }
-  function addShot(x, y, angle, w, damage) {
+  function addShot(x, y, angle, w, damage, options = {}) {
     const def = WEAPONS[w.id];
     const speed = def.speed || 620;
-    run.bullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: def.range / speed, damage, r: w.id === 'spore' ? 9 : w.id === 'rail' ? 5 : 4, color: def.color, pierce: def.pierce || 1, explosion: def.explosion ? def.explosion * (1 + .15 * (w.tier - 1)) : 0, hit: new Set() });
+    run.bullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: def.range / speed, damage,
+      r: w.id === 'spore' ? 9 : w.id === 'rail' ? 5 : 4, color: def.color,
+      pierce: options.pierce || def.pierce || 1, explosion: options.skill ? 0 : def.explosion ? def.explosion * (1 + .15 * (w.tier - 1)) : 0,
+      hit: new Set(), skill: !!options.skill, attackId: options.attackId, type: def.type, range: def.range, baseDamage: damage });
   }
   function fireWeapon(w) {
     const def = WEAPONS[w.id];
     if (w.id === 'drone') return;
     const p = run.player;
-    const target = getTarget(def.range);
+    const target = getTarget(def.range, def.type);
     if (!target) return;
-    w.cool = Math.max(.09, def.cooldown * Math.pow(.95, w.tier - 1) / (1 + run.stats.attackSpeed / 100));
+    w.cool = Math.max(.09, def.cooldown * Math.pow(.95, w.tier - 1) / (1 + attackSpeed() / 100));
     const angle = Math.atan2(target.y - p.y, target.x - p.x);
     const damage = weaponDamage(w);
+    const attackId = ++run.attackSeq;
+    const hit = { attackId, type: def.type, range: def.range, damage };
     if (w.id === 'blade' || w.id === 'ember') {
       const halfArc = w.id === 'blade' ? .9 : .5;
       for (const e of run.enemies) {
         if (e.dead || distance(e, p) > def.range + e.r) continue;
         const relative = Math.atan2(Math.sin(Math.atan2(e.y - p.y, e.x - p.x) - angle), Math.cos(Math.atan2(e.y - p.y, e.x - p.x) - angle));
-        if (Math.abs(relative) < halfArc) { damageEnemy(e, damage); if (w.id === 'ember') { e.burn = 2; e.burnClock = .4; } }
+        if (Math.abs(relative) < halfArc) { damageEnemy(e, damage, true, hit); if (w.id === 'ember') { e.burn = 2; e.burnClock = .4; } }
       }
       run.effects.push({ kind: 'arc', x: p.x, y: p.y, r: def.range, angle, arc: halfArc, color: def.color, life: w.id === 'blade' ? .18 : .13, maxLife: .18 });
     } else if (w.id === 'arc') {
@@ -633,7 +856,7 @@
       for (let i = 0; i < 2 + w.tier && current; i++) {
         struck.add(current);
         run.effects.push({ kind: 'line', x1: from.x, y1: from.y, x2: current.x, y2: current.y, color: def.color, life: .16, maxLife: .16, width: 3 });
-        damageEnemy(current, damage * Math.pow(.75, i));
+        damageEnemy(current, damage * Math.pow(.75, i), true, hit);
         from = current;
         current = run.enemies.filter(e => !e.dead && !struck.has(e) && distance(e, from) < 190).sort((a, b) => distance(a, from) - distance(b, from))[0];
       }
@@ -641,7 +864,24 @@
       const count = def.count || 1;
       for (let i = 0; i < count; i++) {
         const spread = count > 1 ? (i - (count - 1) / 2) * .16 : 0;
-        addShot(p.x + Math.cos(angle) * 21, p.y + Math.sin(angle) * 21, angle + spread, w, damage);
+        addShot(p.x + Math.cos(angle) * 21, p.y + Math.sin(angle) * 21, angle + spread, w, damage, { attackId });
+      }
+    }
+    if (run.character.id === 'rover' && def.type === 'ranged') {
+      run.skills.rangedFires += 1;
+      if (run.skills.rangedFires % 6 === 0) {
+        addShot(p.x, p.y, angle, w, damage * .6, { skill: true, pierce: 3 });
+        showToast('掠线！');
+      }
+    } else if (run.character.id === 'bulwark' && def.type === 'melee') {
+      run.skills.meleeFires += 1;
+      if (run.skills.meleeFires % 5 === 0) {
+        const side = angle + (run.skills.meleeFires % 2 ? 1 : -1) * Math.PI / 2;
+        for (const e of run.enemies) if (!e.dead && distance(e, p) <= 120 + e.r) {
+          const relative = Math.atan2(Math.sin(Math.atan2(e.y - p.y, e.x - p.x) - side), Math.cos(Math.atan2(e.y - p.y, e.x - p.x) - side));
+          if (Math.abs(relative) < .7) dealSkillDamage(e, 10 + run.stats.melee * .5);
+        }
+        run.effects.push({ kind: 'arc', x: p.x, y: p.y, r: 120, angle: side, arc: .7, color: '#ffcd91', life: .2, maxLife: .2 });
       }
     }
     if (Math.random() < .24) tone(w.id === 'rail' ? 440 : 590, .04, 'triangle', .012);
@@ -655,19 +895,27 @@
         const index = drones.indexOf(w), angle = run.totalTime * 2.8 + index * TAU / Math.max(1, drones.length);
         const orb = { x: run.player.x + Math.cos(angle) * 87, y: run.player.y + Math.sin(angle) * 87 };
         const hit = run.enemies.find(e => !e.dead && distance(e, orb) < e.r + 17);
-        if (hit) { damageEnemy(hit, weaponDamage(w)); w.cool = Math.max(.13, WEAPONS.drone.cooldown / (1 + run.stats.attackSpeed / 100)); }
+        if (hit) {
+          const damage = weaponDamage(w);
+          damageEnemy(hit, damage, true, { attackId: ++run.attackSeq, type: 'elemental', range: WEAPONS.drone.range, damage });
+          w.cool = Math.max(.13, WEAPONS.drone.cooldown / (1 + attackSpeed() / 100));
+        }
       } else if (w.cool <= 0) fireWeapon(w);
     }
   }
   function explode(b) {
     run.effects.push({ kind: 'pulse', x: b.x, y: b.y, r: b.explosion, color: '#c2e88c', life: .33, maxLife: .33 });
-    for (const e of run.enemies) if (!e.dead && distance(e, b) < b.explosion + e.r) damageEnemy(e, b.damage);
+    for (const e of run.enemies) if (!e.dead && distance(e, b) < b.explosion + e.r) damageEnemy(e, b.damage, true, { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage });
     tone(180, .1, 'sawtooth', .025);
   }
   function updateBullets(dt) {
     for (let i = run.bullets.length - 1; i >= 0; i--) {
       const b = run.bullets[i];
       const fromX = b.x, fromY = b.y;
+      if (b.homing && !b.homing.dead) {
+        const angle = Math.atan2(b.homing.y - b.y, b.homing.x - b.x);
+        b.vx = Math.cos(angle) * 650; b.vy = Math.sin(angle) * 650;
+      }
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
       let remove = false;
       const dx = b.x - fromX, dy = b.y - fromY;
@@ -680,7 +928,7 @@
         if ((hitX - e.x) ** 2 + (hitY - e.y) ** 2 >= radius * radius) continue;
         b.hit.add(e);
         if (b.explosion) { b.x = hitX; b.y = hitY; explode(b); remove = true; break; }
-        damageEnemy(e, b.damage);
+        damageEnemy(e, b.damage, !b.skill, b.skill ? null : { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage });
         b.pierce -= 1;
         if (b.pierce <= 0) { remove = true; break; }
       }
@@ -706,6 +954,33 @@
     for (let i = run.effects.length - 1; i >= 0; i--) { run.effects[i].life -= dt; if (run.effects[i].life <= 0) run.effects.splice(i, 1); }
     run.screenShake = Math.max(0, run.screenShake - dt * 25);
   }
+  function skillStatus(index) {
+    const s = run.skills, id = run.character.id;
+    if (index === 0) return s.activeCooldown > 0 ? `${s.activeCooldown.toFixed(1)} 秒` : 'Q / 就绪';
+    if (id === 'rover') return [null, s.steadyReady ? '下次命中就绪' : `移动 ${s.moveTime.toFixed(1)} / 1 秒`, `${s.rangedFires % 6} / 6 次开火`, `${s.rangedHits % 12} / 12 次命中`][index];
+    if (id === 'bulwark') return [null, s.guardReady ? '防护就绪' : s.guardCooldown > 0 ? `${s.guardCooldown.toFixed(1)} 秒` : `${s.guardTime.toFixed(1)} / 1 秒`, `${s.meleeFires % 5} / 5 次攻击`, `${s.damageTaken} / 15 承伤`][index];
+    if (id === 'scavenger') return [null, `${s.manualPickups % 8} / 8 材料`, s.shieldTime > 0 ? `防护 ${s.shieldTime.toFixed(1)} 秒` : `${s.manualPickups % 12} / 12 材料`, s.loadedTime > 0 ? `强化 ${s.loadedTime.toFixed(1)} 秒` : s.loadedUsed ? '本波已触发' : `${s.manualPickups} / 18 材料`][index];
+    return [null, `${s.charge} / 10 电荷`, s.returnCooldown > 0 ? `${s.returnCooldown.toFixed(1)} 秒` : '受击触发', s.overload ? '脉冲释放中' : `${s.charge} / 10 电荷`][index];
+  }
+  function renderSkillStrip() {
+    const skills = SKILLS[run.character.id];
+    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && run.skills.activeCooldown <= 0 ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skill.desc}"><strong>${skill.name}</strong><span>${skillStatus(i)}</span></div>`).join('');
+    $('skill-button').disabled = run.skills.activeCooldown > 0;
+    $('skill-button').innerHTML = `${skills[0].name}<small>Q${run.skills.activeCooldown > 0 ? ` · ${run.skills.activeCooldown.toFixed(1)}` : ''}</small>`;
+    $('skill-button').setAttribute('aria-label', `施放${skills[0].name}${run.skills.activeCooldown > 0 ? `，冷却 ${run.skills.activeCooldown.toFixed(1)} 秒` : '，就绪'}`);
+  }
+  function renderPauseDetails() {
+    const s = run.stats, p = run.player;
+    const stats = [
+      ['生命', `${Math.ceil(p.hp)} / ${p.maxHp}`], ['护甲', s.armor], ['移动速度', `${s.speed}%`], ['攻击速度', `${attackSpeed()}%`],
+      ['远程伤害加值', s.ranged], ['近战伤害加值', s.melee], ['法术伤害加值', s.elemental], ['全伤害', `${s.damage}%`],
+      ['暴击率', `${s.crit}%`], ['暴击伤害', '180%'], ['闪避率', `${s.dodge}%`], ['生命窃取', `${s.lifesteal}%`],
+      ['每 5 秒回血', s.regen], ['拾取范围', 75 + s.pickup + (run.skills.magnetTime > 0 ? 180 : 0)], ['幸运', s.luck],
+      ['当前武器射程', run.weapons.map(w => WEAPONS[w.id].range).join(' / ')]
+    ];
+    $('pause-stats').innerHTML = stats.map(([name, value]) => `<div class="pause-stat"><span>${name}</span><strong>${value}</strong></div>`).join('');
+    $('pause-skills').innerHTML = SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${skill.name}</strong><span>${skill.desc} ${i === 0 ? `当前：${skillStatus(i)}` : ''}</span></div>`).join('');
+  }
   function updateHUD() {
     if (!run) return;
     $('wave-label').textContent = `第 ${run.wave} / ${MAX_WAVES} 波`;
@@ -718,6 +993,7 @@
     $('money-label').textContent = run.money;
     $('hud-stats').textContent = `击败 ${run.kills} · 冲刺 ${run.player.dashCooldown > 0 ? `${run.player.dashCooldown.toFixed(1)}s` : '就绪'}`;
     $('dash-button').disabled = run.player.dashCooldown > 0;
+    renderSkillStrip();
   }
   function updateCombat(dt) {
     run.elapsed += dt; run.totalTime += dt; run.timeLeft -= dt;
@@ -727,20 +1003,22 @@
     if (phase !== 'combat') return;
     updateEnemies(dt);
     if (phase !== 'combat') return;
-    if (run.pendingVictory) { endRun(true); return; }
+    if (run.pendingVictory) { finishWave(); return; }
+    updateSkills(dt);
+    if (run.pendingVictory) { finishWave(); return; }
     updateWeapons(dt);
     if (phase !== 'combat') return;
-    if (run.pendingVictory) { endRun(true); return; }
+    if (run.pendingVictory) { finishWave(); return; }
     updateBullets(dt);
     if (phase !== 'combat') return;
-    if (run.pendingVictory) { endRun(true); return; }
+    if (run.pendingVictory) { finishWave(); return; }
     updateEnemyBullets(dt);
     if (phase !== 'combat') return;
     updatePickups(dt);
     updateEffects(dt);
     run.hudClock -= dt;
     if (run.hudClock <= 0) { run.hudClock = .08; updateHUD(); }
-    if (run.timeLeft <= 0) finishWave();
+    if (run.timeLeft <= 0 && (run.wave < MAX_WAVES || !run.bossFight || run.pendingVictory)) finishWave();
   }
 
   function camera() {
@@ -886,6 +1164,22 @@
     }
     ctx.globalAlpha = 1;
   }
+  function drawSkillAreas() {
+    const s = run.skills;
+    if (s.field) {
+      ctx.fillStyle = '#b5b4ff'; ctx.strokeStyle = '#d5cfff'; ctx.lineWidth = 2; ctx.globalAlpha = .12;
+      ctx.beginPath(); ctx.arc(s.field.x, s.field.y, 115, 0, TAU); ctx.fill();
+      ctx.globalAlpha = .55; ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (s.mark && !s.mark.target.dead) {
+      ctx.strokeStyle = '#b5f6eb'; ctx.lineWidth = 3; ctx.globalAlpha = .65 + .25 * Math.sin(ambientTime * 10);
+      ctx.beginPath(); ctx.arc(s.mark.target.x, s.mark.target.y, s.mark.target.r + 12, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+    if (s.shieldTime > 0 || s.guardReady) {
+      ctx.strokeStyle = s.guardReady ? '#ffcd91' : '#ffe4a0'; ctx.lineWidth = 3; ctx.globalAlpha = .8;
+      ctx.beginPath(); ctx.arc(run.player.x, run.player.y, run.player.radius + 8, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  }
   function drawCombat() {
     const cam = camera();
     ctx.save();
@@ -899,7 +1193,7 @@
     }
     ctx.shadowBlur = 0;
     for (const e of run.enemies) if (visible(e, cam, e.r + 20)) drawEnemy(e);
-    drawWeapons(cam); drawPlayer(); drawEffects(cam);
+    drawWeapons(cam); drawPlayer(); drawSkillAreas(); drawEffects(cam);
     ctx.restore();
   }
   function drawTitleScene() {
@@ -941,6 +1235,8 @@
   function pause() {
     if (phase !== 'combat') return;
     previousPhase = phase; showPhase('pause'); keys.clear(); resetStick();
+    clearTimeout(toastTimer); $('toast').classList.remove('show');
+    renderPauseDetails();
     $('resume-button').focus({ preventScroll: true });
   }
   function resume() { if (phase === 'pause') { showPhase(previousPhase); $('pause-button').focus({ preventScroll: true }); } }
@@ -987,12 +1283,15 @@
     });
     $('reroll-button').addEventListener('click', rerollShop);
     $('next-wave-button').addEventListener('click', startWave);
+    $('chest-take-button').addEventListener('click', () => resolveChest(true));
+    $('chest-scrap-button').addEventListener('click', () => resolveChest(false));
     window.addEventListener('keydown', event => {
       const key = event.key.length === 1 ? event.key.toLowerCase() : event.key;
       if (key === 'Escape') { if (phase === 'combat') pause(); else if (phase === 'pause') resume(); return; }
       if (phase !== 'combat') return;
-      if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' '].includes(key)) event.preventDefault();
+      if (['w', 'a', 's', 'd', 'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight', ' ', 'q'].includes(key)) event.preventDefault();
       if (key === ' ') { if (!event.repeat) tryDash(); return; }
+      if (key === 'q') { if (!event.repeat) tryActiveSkill(); return; }
       keys.add(key);
     });
     window.addEventListener('keyup', event => { keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key); });
@@ -1004,6 +1303,9 @@
     joystick.addEventListener('pointerup', event => { if (event.pointerId === stick.pointerId) resetStick(); });
     joystick.addEventListener('pointercancel', event => { if (event.pointerId === stick.pointerId) resetStick(); });
     $('dash-button').addEventListener('pointerdown', event => { event.preventDefault(); tryDash(); });
+    $('skill-button').addEventListener('pointerdown', event => { event.preventDefault(); tryActiveSkill(); });
+    $('dash-button').addEventListener('click', event => { if (event.detail === 0) tryDash(); });
+    $('skill-button').addEventListener('click', event => { if (event.detail === 0) tryActiveSkill(); });
     canvas.addEventListener('pointerdown', event => {
       if (phase !== 'combat') return;
       const box = canvas.getBoundingClientRect(), cam = camera();

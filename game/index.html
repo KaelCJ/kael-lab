@@ -12,7 +12,7 @@
 </head>
 <body>
   <main id="game" class="game-shell">
-    <canvas id="arena" aria-label="星核幸存者游戏战场。电脑使用方向键、WASD 或右键点击移动，手机使用摇杆移动；攻击自动进行。"></canvas>
+    <canvas id="arena" aria-label="星核幸存者游戏战场。电脑使用方向键、WASD 或右键点击移动，空格冲刺、Q 施放主动技能；手机使用摇杆和右侧技能、冲刺按钮。攻击自动进行。"></canvas>
 
     <div id="hud" class="hud hidden" aria-live="off">
       <div class="hud-top">
@@ -23,12 +23,16 @@
         </div>
         <div class="hud-group hud-right"><span class="currency">◇ <b id="money-label">0</b></span><button id="pause-button" class="icon-button" type="button" aria-label="暂停游戏" title="暂停 (Esc)">Ⅱ</button></div>
       </div>
+      <div id="skill-strip" class="skill-strip" aria-label="角色技能"></div>
       <div class="hud-bottom"><div id="weapon-strip" class="weapon-strip" aria-label="已装备武器"></div><div class="hud-stats" id="hud-stats"></div></div>
+      <div class="combat-actions">
+        <button id="skill-button" class="skill-button" type="button" aria-label="施放主动技能" title="主动技能 (Q)">技能<small>Q</small></button>
+        <button id="dash-button" class="dash-button" type="button" aria-label="冲刺" title="冲刺 (空格)">冲刺<small>空格</small></button>
+      </div>
     </div>
 
     <div id="touch-controls" class="touch-controls hidden" aria-label="触控操作">
       <div id="joystick" class="joystick" role="group" aria-label="移动摇杆"><div id="joystick-knob" class="joystick-knob"></div></div>
-      <button id="dash-button" class="dash-button" type="button" aria-label="冲刺">冲刺</button>
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
@@ -40,7 +44,7 @@
         <div class="setup-column"><h2>选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span>难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span>节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span>音效</span><button id="sound-button" class="small-button" type="button"></button></div></div>
         <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button">开始远征 <span aria-hidden="true">➜</span></button></div>
       </div>
-      <p class="controls-note">电脑：WASD / 方向键移动，右键点击目的地自动前往，空格冲刺，Esc 暂停。手机横竖屏均可用左侧摇杆移动、右侧按钮冲刺。武器自动瞄准；拾取宝箱可回血。</p>
+      <p class="controls-note">电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机横竖屏均可用左侧摇杆和右侧技能、冲刺按钮。武器自动瞄准；主动拾取宝箱可回血，波末进入开箱结算。</p>
     </section>
 
     <section id="level-screen" class="screen modal-screen hidden" aria-labelledby="level-title">
@@ -48,14 +52,16 @@
     </section>
 
     <section id="shop-screen" class="screen modal-screen hidden" aria-labelledby="shop-title">
-      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker">波间补给 · <span id="shop-wave"></span></div><h2 id="shop-title">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption">波末回收的材料按 80% 折算货币，经验全额保留；宝箱自动回收并回血。六槽满时可合成同名同阶武器，或卖出一把。</p><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">迎接下一波 ➜</button></div><h3>装备与属性</h3><div id="inventory" class="inventory"></div><div id="shop-stats" class="shop-stats"></div></div>
+      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker">波间补给 · <span id="shop-wave"></span></div><h2 id="shop-title">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption">波末未拾取材料按 80% 折算货币，经验全额保留；宝箱先开出改装，可立即装配或拆解。六槽满时可合成同名同阶武器，或卖出一把。</p><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">迎接下一波 ➜</button></div><h3>装备与属性</h3><div id="inventory" class="inventory"></div><div id="shop-stats" class="shop-stats"></div></div>
     </section>
 
-    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="modal-card compact-card"><div class="modal-kicker">远征暂歇</div><h2 id="pause-title">已暂停</h2><p>你的远征会在这里等你。</p><button id="resume-button" class="primary-button" type="button">继续战斗</button><button id="restart-button" class="secondary-button" type="button">重新开始</button><button id="quit-button" class="text-button" type="button">返回标题</button></div></section>
+    <section id="chest-screen" class="screen modal-screen hidden" aria-labelledby="chest-title"><div class="modal-card chest-card"><div class="modal-kicker">波间战利品 · 待开 <span id="chests-left">0</span></div><h2 id="chest-title">拾获补给箱</h2><p>依次查看宝箱改装，决定立即装配到本局或拆解。</p><div id="chest-reward" class="chest-reward" aria-live="polite"></div><div class="chest-actions"><button id="chest-take-button" class="primary-button" type="button">收下改装</button><button id="chest-scrap-button" class="secondary-button" type="button">拆解为材料</button></div></div></section>
+
+    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="pause-layout"><aside class="modal-card pause-panel" aria-labelledby="pause-stats-title"><div class="modal-kicker">当前驾驶员</div><h3 id="pause-stats-title">属性</h3><div id="pause-stats" class="pause-stats"></div><h3>角色技能</h3><div id="pause-skills" class="pause-skills"></div></aside><div class="modal-card compact-card"><div class="modal-kicker">远征暂歇</div><h2 id="pause-title">已暂停</h2><p>你的远征会在这里等你。</p><button id="resume-button" class="primary-button" type="button">继续战斗</button><button id="restart-button" class="secondary-button" type="button">重新开始</button><button id="quit-button" class="text-button" type="button">返回标题</button></div></div></section>
 
     <section id="result-screen" class="screen modal-screen hidden" aria-labelledby="result-title"><div class="modal-card compact-card result-card"><div id="result-kicker" class="modal-kicker"></div><h2 id="result-title"></h2><p id="result-message"></p><div id="result-stats" class="result-stats"></div><button id="result-restart" class="primary-button" type="button">再来一局</button><button id="result-home" class="secondary-button" type="button">返回标题</button></div></section>
 
-    <noscript><div class="noscript"><h1>星核幸存者</h1><p>这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动；手机横竖屏均可使用触控摇杆。游戏不需要账号或服务器。</p><p><a href="../games.html">返回游戏列表</a></p></div></noscript>
+    <noscript><div class="noscript"><h1>星核幸存者</h1><p>这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动，Q 主动技能、空格冲刺；手机横竖屏均可使用触控摇杆与右侧按钮。游戏不需要账号或服务器。</p><p><a href="../games.html">返回游戏列表</a></p></div></noscript>
   </main>
 </body>
 </html>
