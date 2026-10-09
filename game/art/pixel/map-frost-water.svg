@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>蓝霜残骸：破冰寒流</title>
+  <rect x="0" y="0" width="64" height="64" fill="#2a5269"/>
+  <rect x="0" y="7" width="64" height="5" fill="#42758b"/>
+  <rect x="0" y="28" width="64" height="5" fill="#42758b"/>
+  <rect x="0" y="50" width="64" height="5" fill="#42758b"/>
+  <rect x="7" y="10" width="17" height="3" fill="#75aebd"/>
+  <rect x="46" y="10" width="15" height="3" fill="#75aebd"/>
+  <rect x="29" y="19" width="20" height="3" fill="#75aebd"/>
+  <rect x="4" y="31" width="14" height="3" fill="#92c6d0"/>
+  <rect x="32" y="31" width="18" height="3" fill="#92c6d0"/>
+  <rect x="18" y="41" width="17" height="3" fill="#75aebd"/>
+  <rect x="6" y="52" width="18" height="3" fill="#92c6d0"/>
+  <rect x="43" y="52" width="15" height="3" fill="#92c6d0"/>
+  <rect x="30" y="5" width="10" height="4" fill="#c5e5e4"/>
+  <rect x="27" y="7" width="15" height="3" fill="#c5e5e4"/>
+  <rect x="9" y="38" width="9" height="4" fill="#c5e5e4"/>
+  <rect x="6" y="40" width="15" height="3" fill="#c5e5e4"/>
+  <rect x="49" y="60" width="8" height="2" fill="#e0f6ef"/>
+  <rect x="2" y="19" width="7" height="2" fill="#e0f6ef"/>
+</svg>

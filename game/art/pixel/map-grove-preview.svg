@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>荧菌裂谷：地图预览</title>
+  <rect x="0" y="0" width="64" height="64" fill="#30384b"/>
+  <rect x="0" y="43" width="64" height="21" fill="#273d53"/>
+  <rect x="0" y="48" width="64" height="3" fill="#67baa9"/>
+  <rect x="24" y="56" width="25" height="2" fill="#b89fce"/>
+  <rect x="5" y="12" width="32" height="11" fill="#10252d"/>
+  <rect x="10" y="6" width="24" height="7" fill="#10252d"/>
+  <rect x="13" y="9" width="18" height="8" fill="#bf91c9"/>
+  <rect x="8" y="16" width="26" height="5" fill="#a477b3"/>
+  <rect x="19" y="23" width="8" height="21" fill="#10252d"/>
+  <rect x="21" y="24" width="4" height="22" fill="#d7afd7"/>
+  <rect x="5" y="17" width="5" height="3" fill="#e1c5dd"/>
+  <rect x="42" y="29" width="18" height="5" fill="#10252d"/>
+  <rect x="45" y="22" width="13" height="9" fill="#10252d"/>
+  <rect x="49" y="19" width="8" height="5" fill="#a487ad"/>
+  <rect x="46" y="26" width="10" height="5" fill="#896995"/>
+  <rect x="41" y="32" width="17" height="4" fill="#6b5a82"/>
+  <rect x="47" y="8" width="9" height="8" fill="#89d6bb"/>
+  <rect x="50" y="5" width="4" height="4" fill="#d5ffe4"/>
+</svg>

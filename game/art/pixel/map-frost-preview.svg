@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>蓝霜残骸：地图预览</title>
+  <rect x="0" y="0" width="64" height="64" fill="#344c5b"/>
+  <rect x="0" y="43" width="64" height="21" fill="#2a5269"/>
+  <rect x="0" y="48" width="64" height="3" fill="#92c6d0"/>
+  <rect x="8" y="54" width="16" height="4" fill="#c5e5e4"/>
+  <rect x="8" y="30" width="28" height="8" fill="#10252d"/>
+  <rect x="12" y="24" width="20" height="7" fill="#10252d"/>
+  <rect x="15" y="17" width="14" height="8" fill="#10252d"/>
+  <rect x="18" y="9" width="8" height="9" fill="#10252d"/>
+  <rect x="20" y="4" width="4" height="6" fill="#c9edf1"/>
+  <rect x="11" y="31" width="22" height="6" fill="#609bb0"/>
+  <rect x="15" y="25" width="14" height="6" fill="#79afc1"/>
+  <rect x="18" y="18" width="8" height="7" fill="#9ed5dc"/>
+  <rect x="20" y="10" width="4" height="8" fill="#bfe9eb"/>
+  <rect x="19" y="38" width="7" height="10" fill="#10252d"/>
+  <rect x="21" y="38" width="3" height="8" fill="#8d9ea4"/>
+  <rect x="40" y="30" width="20" height="7" fill="#10252d"/>
+  <rect x="45" y="18" width="14" height="14" fill="#10252d"/>
+  <rect x="49" y="12" width="8" height="8" fill="#10252d"/>
+  <rect x="52" y="8" width="4" height="6" fill="#e0f5ee"/>
+  <rect x="47" y="20" width="10" height="10" fill="#a7d4da"/>
+  <rect x="42" y="32" width="17" height="4" fill="#70a0b5"/>
+</svg>

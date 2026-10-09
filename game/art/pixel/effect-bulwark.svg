@@ -1,0 +1,28 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>破围斩战场斩痕</title>
+  <g fill="#10252d">
+    <rect x="4" y="46" width="16" height="8"/><rect x="11" y="39" width="17" height="12"/>
+    <rect x="19" y="31" width="18" height="14"/><rect x="28" y="23" width="18" height="14"/>
+    <rect x="37" y="15" width="18" height="14"/><rect x="46" y="8" width="14" height="12"/>
+    <rect x="10" y="55" width="10" height="3"/><rect x="3" y="38" width="8" height="3"/>
+    <rect x="50" y="4" width="9" height="3"/><rect x="55" y="22" width="6" height="3"/>
+  </g>
+  <g fill="#dba65e">
+    <rect x="6" y="47" width="14" height="5"/><rect x="13" y="40" width="15" height="10"/>
+    <rect x="21" y="32" width="16" height="12"/><rect x="30" y="24" width="16" height="12"/>
+    <rect x="39" y="16" width="15" height="12"/><rect x="48" y="10" width="10" height="9"/>
+    <rect x="10" y="56" width="9" height="2"/><rect x="3" y="38" width="7" height="2"/>
+    <rect x="51" y="4" width="8" height="2"/><rect x="56" y="22" width="5" height="2"/>
+  </g>
+  <g fill="#f6d58b">
+    <rect x="7" y="47" width="12" height="3"/><rect x="15" y="40" width="11" height="7"/>
+    <rect x="23" y="33" width="12" height="9"/><rect x="32" y="25" width="12" height="9"/>
+    <rect x="41" y="17" width="11" height="9"/><rect x="49" y="11" width="7" height="7"/>
+  </g>
+  <g fill="#e7f7e9">
+    <rect x="10" y="46" width="8" height="2"/><rect x="17" y="39" width="9" height="3"/>
+    <rect x="25" y="31" width="10" height="4"/><rect x="34" y="23" width="10" height="4"/>
+    <rect x="43" y="15" width="9" height="4"/><rect x="51" y="9" width="5" height="3"/>
+  </g>
+  <g fill="#66838b"><rect x="7" y="30" width="6" height="3"/><rect x="48" y="38" width="8" height="3"/><rect x="42" y="45" width="5" height="3"/></g>
+</svg>
