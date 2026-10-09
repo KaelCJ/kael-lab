@@ -14,7 +14,13 @@
   const rand = (a, b) => a + Math.random() * (b - a);
   const pick = list => list[Math.floor(Math.random() * list.length)];
   const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-
+  const ART_PATHS = {
+    scavenger: './art/scavenger.svg', crawler: './art/crawler.svg',
+    'scavenger-step': './art/scavenger-step.svg', 'scavenger-attack': './art/scavenger-attack.svg',
+    'crawler-step': './art/crawler-step.svg', 'crawler-attack': './art/crawler-attack.svg',
+    elite: './art/elite.svg', boss: './art/boss.svg',
+    pulse: './art/pulse.svg', blade: './art/blade.svg'
+  };
   const CHARACTERS = [
     { id: 'rover', name: '巡星者', icon: '✦', desc: '均衡机动 · 初始脉冲枪', weapon: 'pulse', hp: 30, stats: { speed: 8, ranged: 2 } },
     { id: 'bulwark', name: '装甲匠', icon: '⬡', desc: '高生命护甲 · 初始弧刃', weapon: 'blade', hp: 40, stats: { armor: 3, speed: -8, melee: 3 } },
@@ -26,6 +32,23 @@
     { id: 'grove', name: '荧菌裂谷', icon: '✿', desc: '发光菌簇与腐蚀孢雾', ground: '#26303c', grid: '#3f4c61', accent: '#d6a0f1', hazard: '孢雾爆发' },
     { id: 'frost', name: '蓝霜残骸', icon: '❄', desc: '冻结碎片与寒流裂缝', ground: '#1e3440', grid: '#3b5967', accent: '#9fdcf5', hazard: '寒流爆裂' }
   ];
+  const TERRAIN_LAYOUTS = {
+    docks: {
+      water: [[1600, 520, 448, 128], [610, 1130, 384, 64]],
+      tree: [[930, 580], [1010, 1135], [1450, 550], [1690, 1050], [700, 800], [2100, 1080]],
+      rock: [[1510, 1000], [1180, 560], [930, 1370], [1960, 840], [1780, 1300]]
+    },
+    grove: {
+      water: [[530, 560, 448, 128], [1630, 980, 384, 128]],
+      tree: [[1140, 580], [1550, 640], [940, 990], [1250, 1210], [2010, 660], [740, 1270]],
+      rock: [[1050, 760], [1600, 830], [1460, 1220], [1840, 560], [550, 1050]]
+    },
+    frost: {
+      water: [[1000, 450, 448, 128], [1600, 1070, 448, 128]],
+      tree: [[900, 720], [1510, 660], [1120, 1190], [1960, 740], [740, 1180], [2080, 1300]],
+      rock: [[1560, 940], [1000, 960], [1260, 1340], [1860, 540], [560, 730]]
+    }
+  };
   const DIFFICULTIES = [
     { id: 'normal', name: '标准', mult: 1 },
     { id: 'hard', name: '挑战', mult: 1.3 },
@@ -86,6 +109,7 @@
       { name: '满载运转', desc: '本波拾取 18 个材料后，短时提高伤害与攻速。' }
     ]
   };
+  const SKILL_FX_COLORS = { rover: '#a6f5dc', bulwark: '#ffd28d', conductor: '#c5b2ff', scavenger: '#f6d17e' };
   const UPGRADES = [
     { name: '生命扩容', icon: '✚', bonus: { maxHp: 5 }, desc: '最大生命 +5，并恢复 5 生命' },
     { name: '装甲加固', icon: '⬡', bonus: { armor: 2 }, desc: '护甲 +2' },
@@ -112,22 +136,218 @@
     elite: { name: '精英哨卫', hp: 270, speed: 96, radius: 31, damage: 10, color: '#ffbf79', value: 17 },
     boss: { name: '星核吞噬者', hp: 1150, speed: 74, radius: 53, damage: 14, color: '#f3a5c9', value: 40 }
   };
+  const ENEMY_POSES = {
+    crawler: ['step', 'attack'], runner: ['step'], tank: ['step'], shooter: ['attack'],
+    charger: ['windup', 'charge'], splitter: ['step'], elite: ['windup', 'charge'], boss: ['windup', 'attack']
+  };
+  const PIXEL_ART_IDS = [
+    ...CHARACTERS.flatMap(({ id }) => [id, `${id}-step`, `${id}-attack`, `skill-${id}`, ...[1, 2, 3].map(index => `skill-${id}-${index}`)]),
+    ...Object.keys(WEAPONS),
+    ...Object.keys(ENEMIES).flatMap(id => [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)]),
+    ...ITEMS.map(item => `item-${item.id}`),
+    ...UPGRADES.map((_, index) => `upgrade-${index}`),
+    ...BIOMES.flatMap(({ id }) => ['ground', 'tree', 'rock', 'water', 'trap', 'preview'].map(kind => `map-${id}-${kind}`)),
+    ...CHARACTERS.map(({ id }) => `effect-${id}`)
+  ];
+  const SKIN_ART = {
+    draft: ART_PATHS,
+    pixel: Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./art/pixel/${id}.svg`]))
+  };
+  const artImages = Object.fromEntries(Object.entries(SKIN_ART).flatMap(([skin, paths]) => Object.entries(paths).map(([id, path]) => {
+    const image = new Image();
+    image.src = path;
+    return [`${skin}:${id}`, image];
+  })));
+  const artIcon = (id, fallback) => SKIN_ART[selectedSkin][id]
+    ? `<img class="art-icon" src="${SKIN_ART[selectedSkin][id]}" alt="" decoding="async">`
+    : fallback;
+  const artImage = id => {
+    const image = artImages[`${selectedSkin}:${id}`];
+    return image?.complete && image.naturalWidth ? image : null;
+  };
 
   let save = loadSave();
   let selectedCharacter = CHARACTERS[0].id;
   let selectedBiome = BIOMES[0].id;
   let selectedDifficulty = save.settings.difficulty || 'normal';
   let selectedPace = save.settings.pace || 'normal';
+  let selectedSkin = save.settings.skin === 'draft' ? 'draft' : 'pixel';
   let soundEnabled = save.settings.sound !== false;
   let phase = 'title';
   let previousPhase = 'combat';
   let run = null;
-  let viewW = 0, viewH = 0, dpr = 1, lastFrame = 0, ambientTime = 0;
-  let uid = 0, toastTimer = 0, audio = null;
+  let viewW = 0, viewH = 0, dpr = 1, canvasScale = 1, lastFrame = 0, ambientTime = 0;
+  let uid = 0, toastTimer = 0, audio = null, audioNoise = null, lastCombatSound = -Infinity;
+  const lastSfxAt = Object.create(null);
   const keys = new Set();
   const stick = { x: 0, y: 0, pointerId: null };
   let moveTarget = null;
+  let moveFlow = null;
   const decor = Array.from({ length: 125 }, () => ({ x: rand(30, WORLD.w - 30), y: rand(30, WORLD.h - 30), r: rand(2, 13), angle: rand(0, TAU) }));
+  const NAV_STEP = 64, NAV_COLS = Math.floor(WORLD.w / NAV_STEP), NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
+
+  function buildTerrain(id) {
+    const layout = TERRAIN_LAYOUTS[id];
+    return [
+      ...layout.water.map(([x, y, w, h]) => ({ kind: 'water', x, y, w, h })),
+      ...layout.tree.map(([x, y]) => ({ kind: 'tree', x, y, r: 22 })),
+      ...layout.rock.map(([x, y]) => ({ kind: 'rock', x, y, r: 22 }))
+    ];
+  }
+  function terrainCollision(x, y, radius, blockWater = true) {
+    if (x < radius || y < radius || x > WORLD.w - radius || y > WORLD.h - radius) return true;
+    for (const o of run.terrain) {
+      if (o.kind === 'water') {
+        if (blockWater && Math.hypot(x - clamp(x, o.x, o.x + o.w), y - clamp(y, o.y, o.y + o.h)) < radius) return true;
+      } else if (Math.hypot(x - o.x, y - o.y) < radius + o.r) return true;
+    }
+    return false;
+  }
+  function terrainLineBlocked(x1, y1, x2, y2, radius, blockWater = true) {
+    for (const o of run.terrain) {
+      if (o.kind !== 'water') {
+        if (segmentDistance(o, x1, y1, x2, y2) < radius + o.r) return true;
+        continue;
+      }
+      if (!blockWater) continue;
+      if (Math.hypot(x1 - clamp(x1, o.x, o.x + o.w), y1 - clamp(y1, o.y, o.y + o.h)) < radius
+        || Math.hypot(x2 - clamp(x2, o.x, o.x + o.w), y2 - clamp(y2, o.y, o.y + o.h)) < radius) return true;
+      for (const [cx, cy] of [[o.x, o.y], [o.x + o.w, o.y], [o.x, o.y + o.h], [o.x + o.w, o.y + o.h]]) {
+        if (segmentDistance({ x: cx, y: cy }, x1, y1, x2, y2) < radius) return true;
+      }
+      const dx = x2 - x1, dy = y2 - y1;
+      let enter = 0, exit = 1;
+      for (const [start, delta, min, max] of [[x1, dx, o.x, o.x + o.w], [y1, dy, o.y, o.y + o.h]]) {
+        if (!delta) { if (start < min || start > max) { enter = 2; break; } }
+        else {
+          const a = (min - start) / delta, b = (max - start) / delta;
+          enter = Math.max(enter, Math.min(a, b));
+          exit = Math.min(exit, Math.max(a, b));
+        }
+      }
+      if (enter <= exit) return true;
+    }
+    return false;
+  }
+  function segmentCircleHitTime(x1, y1, x2, y2, cx, cy, radius) {
+    const dx = x2 - x1, dy = y2 - y1, fx = x1 - cx, fy = y1 - cy;
+    const c = fx * fx + fy * fy - radius * radius;
+    if (c <= 0) return 0;
+    const a = dx * dx + dy * dy;
+    if (!a) return Infinity;
+    const b = 2 * (fx * dx + fy * dy);
+    const discriminant = b * b - 4 * a * c;
+    // 与 terrainCollision / terrainLineBlocked 的严格相交规则一致：
+    // 只擦边不算命中，避免目标看得见但弹丸在切线处被墙吃掉。
+    if (discriminant <= 0) return Infinity;
+    const t = (-b - Math.sqrt(discriminant)) / (2 * a);
+    return t >= 0 && t <= 1 ? t : Infinity;
+  }
+  function terrainHitTime(x1, y1, x2, y2, radius) {
+    let first = Infinity;
+    for (const o of run.terrain) if (o.kind !== 'water') {
+      first = Math.min(first, segmentCircleHitTime(x1, y1, x2, y2, o.x, o.y, radius + o.r));
+    }
+    return first;
+  }
+  function moveThroughTerrain(actor, dx, dy) {
+    const radius = actor.radius ?? actor.r;
+    const steps = Math.max(1, Math.ceil(Math.hypot(dx, dy) / 12));
+    const sx = dx / steps, sy = dy / steps;
+    for (let i = 0; i < steps; i++) {
+      const nx = clamp(actor.x + sx, radius, WORLD.w - radius);
+      const ny = clamp(actor.y + sy, radius, WORLD.h - radius);
+      if (!terrainCollision(nx, ny, radius)) { actor.x = nx; actor.y = ny; }
+      else {
+        if (!terrainCollision(nx, actor.y, radius)) actor.x = nx;
+        if (!terrainCollision(actor.x, ny, radius)) actor.y = ny;
+      }
+    }
+  }
+  function nearestWalkable(x, y, radius) {
+    x = clamp(x, radius, WORLD.w - radius); y = clamp(y, radius, WORLD.h - radius);
+    if (!terrainCollision(x, y, radius)) return { x, y };
+    for (let reach = 24; reach <= 320; reach += 24) {
+      for (let i = 0; i < 24; i++) {
+        const angle = i * TAU / 24;
+        const px = clamp(x + Math.cos(angle) * reach, radius, WORLD.w - radius);
+        const py = clamp(y + Math.sin(angle) * reach, radius, WORLD.h - radius);
+        if (!terrainCollision(px, py, radius)) return { x: px, y: py };
+      }
+    }
+    return { x: WORLD.w / 2, y: WORLD.h / 2 };
+  }
+  function navIndex(x, y) {
+    const col = clamp(Math.floor(x / NAV_STEP), 0, NAV_COLS - 1);
+    const row = clamp(Math.floor(y / NAV_STEP), 0, NAV_ROWS - 1);
+    return row * NAV_COLS + col;
+  }
+  function navPoint(index) {
+    return { x: (index % NAV_COLS + .5) * NAV_STEP, y: (Math.floor(index / NAV_COLS) + .5) * NAV_STEP };
+  }
+  function closestNavIndex(x, y, free, radius, requireVisible = true) {
+    const col = clamp(Math.floor(x / NAV_STEP), 0, NAV_COLS - 1);
+    const row = clamp(Math.floor(y / NAV_STEP), 0, NAV_ROWS - 1);
+    let best = -1, bestDistance = Infinity;
+    for (let ring = 0; ring <= 4 && best < 0; ring++) {
+      for (let yy = Math.max(0, row - ring); yy <= Math.min(NAV_ROWS - 1, row + ring); yy++) {
+        for (let xx = Math.max(0, col - ring); xx <= Math.min(NAV_COLS - 1, col + ring); xx++) {
+          const index = yy * NAV_COLS + xx;
+          if (!free[index]) continue;
+          const point = navPoint(index), d = Math.hypot(point.x - x, point.y - y);
+          if (d < bestDistance && (!requireVisible || !terrainLineBlocked(x, y, point.x, point.y, radius))) {
+            best = index; bestDistance = d;
+          }
+        }
+      }
+    }
+    return best;
+  }
+  function makeFlow(x, y, radius) {
+    const size = NAV_COLS * NAV_ROWS, free = new Uint8Array(size), distanceMap = new Int16Array(size);
+    distanceMap.fill(-1);
+    for (let i = 0; i < size; i++) {
+      const point = navPoint(i);
+      free[i] = terrainCollision(point.x, point.y, radius) ? 0 : 1;
+    }
+    const goal = closestNavIndex(x, y, free, radius, false);
+    if (goal < 0) return { free, distanceMap };
+    const queue = new Int16Array(size);
+    let head = 0, tail = 0;
+    queue[tail++] = goal; distanceMap[goal] = 0;
+    while (head < tail) {
+      const index = queue[head++], col = index % NAV_COLS, row = Math.floor(index / NAV_COLS);
+      const neighbors = [col > 0 ? index - 1 : -1, col < NAV_COLS - 1 ? index + 1 : -1,
+        row > 0 ? index - NAV_COLS : -1, row < NAV_ROWS - 1 ? index + NAV_COLS : -1];
+      for (const next of neighbors) if (next >= 0 && free[next] && distanceMap[next] < 0) {
+        const from = navPoint(index), to = navPoint(next);
+        if (terrainLineBlocked(from.x, from.y, to.x, to.y, radius)) continue;
+        distanceMap[next] = distanceMap[index] + 1;
+        queue[tail++] = next;
+      }
+    }
+    return { free, distanceMap };
+  }
+  function flowDirection(flow, x, y, radius) {
+    const index = closestNavIndex(x, y, flow.free, radius);
+    if (index < 0) return null;
+    const current = navPoint(index);
+    if (Math.hypot(current.x - x, current.y - y) > 22) {
+      const length = Math.hypot(current.x - x, current.y - y);
+      return { x: (current.x - x) / length, y: (current.y - y) / length };
+    }
+    const col = index % NAV_COLS, row = Math.floor(index / NAV_COLS);
+    const neighbors = [col > 0 ? index - 1 : -1, col < NAV_COLS - 1 ? index + 1 : -1,
+      row > 0 ? index - NAV_COLS : -1, row < NAV_ROWS - 1 ? index + NAV_COLS : -1];
+    let best = -1, bestDistance = flow.distanceMap[index];
+    for (const next of neighbors) if (next >= 0 && flow.distanceMap[next] >= 0 && flow.distanceMap[next] < bestDistance) {
+      const point = navPoint(next);
+      if (!terrainLineBlocked(x, y, point.x, point.y, radius)) { best = next; bestDistance = flow.distanceMap[next]; }
+    }
+    if (best < 0) return null;
+    const point = navPoint(best), length = Math.hypot(point.x - x, point.y - y);
+    return { x: (point.x - x) / length, y: (point.y - y) / length };
+  }
 
   function loadSave() {
     try {
@@ -136,8 +356,30 @@
     } catch (_) { return { settings: {}, records: {}, wins: 0 }; }
   }
   function persist() {
-    save.settings = { sound: soundEnabled, pace: selectedPace, difficulty: selectedDifficulty };
+    save.settings = { sound: soundEnabled, pace: selectedPace, difficulty: selectedDifficulty, skin: selectedSkin };
     try { localStorage.setItem(SAVE_KEY, JSON.stringify(save)); } catch (_) { /* Storage may be unavailable. */ }
+  }
+  function updateSkinButtons() {
+    const name = selectedSkin === 'pixel' ? '像素风' : '初版';
+    const next = selectedSkin === 'pixel' ? '初版' : '像素风';
+    $('game').dataset.skin = selectedSkin;
+    for (const id of ['title-skin-button', 'skin-button', 'pause-skin-button']) {
+      const button = $(id);
+      button.textContent = id === 'pause-skin-button' ? `画面：${name}` : name;
+      button.setAttribute('aria-label', `当前${name}，切换为${next}`);
+      button.title = `切换为${next}`;
+    }
+  }
+  function toggleSkin() {
+    selectedSkin = selectedSkin === 'pixel' ? 'draft' : 'pixel';
+    updateSkinButtons(); persist(); resize(); renderTitle();
+    if (!run) return;
+    renderWeaponStrip(); renderSkillStrip();
+    if (phase === 'shop') renderShop();
+    if (phase === 'pause') renderPauseDetails();
+    if (phase === 'level') renderLevelChoices();
+    if (phase === 'chest') renderChestReward();
+    updateHUD();
   }
   function showToast(message) {
     const el = $('toast');
@@ -147,22 +389,86 @@
     toastTimer = setTimeout(() => el.classList.remove('show'), 1900);
   }
   function refocus(selector) { requestAnimationFrame(() => document.querySelector(selector)?.focus({ preventScroll: true })); }
-  function tone(freq = 440, duration = .08, type = 'sine', volume = .035) {
+  function playSfx(kind) {
     if (!soundEnabled) return;
+    const now = performance.now();
+    const combat = WEAPON_IDS.includes(kind) || kind === 'explosion' || kind === 'shooter-fire' || kind === 'boss-attack';
+    if (combat && now - lastCombatSound < 90) return;
+    if (now - (lastSfxAt[kind] ?? -Infinity) < 60) return;
     try {
-      audio ||= new (window.AudioContext || window.webkitAudioContext)();
+      const AudioCtor = window.AudioContext || window.webkitAudioContext;
+      if (!AudioCtor) return;
+      audio ||= new AudioCtor();
       if (audio.state === 'suspended') audio.resume().catch(() => {});
-      const osc = audio.createOscillator(), gain = audio.createGain();
-      osc.type = type; osc.frequency.setValueAtTime(freq, audio.currentTime);
-      gain.gain.setValueAtTime(volume, audio.currentTime);
-      gain.gain.exponentialRampToValueAtTime(.001, audio.currentTime + duration);
-      osc.connect(gain); gain.connect(audio.destination);
-      osc.start(); osc.stop(audio.currentTime + duration);
+      lastSfxAt[kind] = now;
+      if (combat) lastCombatSound = now;
+      const wave = (type, from, to, duration, volume, delay = 0) => {
+        const start = audio.currentTime + delay;
+        const osc = audio.createOscillator(), gain = audio.createGain();
+        osc.type = type;
+        osc.frequency.setValueAtTime(from, start);
+        osc.frequency.exponentialRampToValueAtTime(to, start + duration);
+        gain.gain.setValueAtTime(.0001, start);
+        gain.gain.linearRampToValueAtTime(volume, start + .004);
+        gain.gain.exponentialRampToValueAtTime(.0001, start + duration);
+        osc.connect(gain); gain.connect(audio.destination);
+        osc.start(start); osc.stop(start + duration);
+      };
+      const noise = (duration, volume, frequency, filterType = 'bandpass') => {
+        if (!audioNoise) {
+          audioNoise = audio.createBuffer(1, Math.ceil(audio.sampleRate * .35), audio.sampleRate);
+          const samples = audioNoise.getChannelData(0);
+          for (let i = 0; i < samples.length; i++) samples[i] = Math.random() * 2 - 1;
+        }
+        const source = audio.createBufferSource(), filter = audio.createBiquadFilter(), gain = audio.createGain();
+        source.buffer = audioNoise;
+        filter.type = filterType; filter.frequency.value = frequency;
+        gain.gain.setValueAtTime(volume, audio.currentTime);
+        gain.gain.exponentialRampToValueAtTime(.0001, audio.currentTime + duration);
+        source.connect(filter); filter.connect(gain); gain.connect(audio.destination);
+        source.start(); source.stop(audio.currentTime + duration);
+      };
+      switch (kind) {
+        case 'pulse': wave('triangle', 780, 340, .08, .027); noise(.035, .009, 2600, 'highpass'); break;
+        case 'scatter': wave('sawtooth', 190, 75, .13, .029); noise(.1, .026, 950, 'lowpass'); break;
+        case 'blade': wave('sine', 1000, 230, .13, .018); noise(.12, .016, 1350); break;
+        case 'arc': wave('square', 1050, 270, .08, .014); noise(.075, .022, 2200, 'highpass'); break;
+        case 'drone': wave('sine', 670, 290, .07, .016); break;
+        case 'ember': wave('triangle', 210, 80, .11, .013); noise(.11, .016, 780); break;
+        case 'rail': wave('sawtooth', 130, 48, .23, .034); wave('sine', 1080, 410, .17, .014); noise(.12, .021, 1500, 'highpass'); break;
+        case 'spore': wave('sine', 360, 100, .15, .02); noise(.075, .011, 700, 'lowpass'); break;
+        case 'explosion': wave('sawtooth', 155, 45, .19, .025); noise(.15, .02, 570, 'lowpass'); break;
+        case 'shooter-fire': wave('triangle', 460, 190, .09, .012); break;
+        case 'boss-attack': wave('sawtooth', 180, 55, .25, .032); noise(.16, .018, 680, 'lowpass'); break;
+        case 'skill-rover': wave('sine', 530, 880, .13, .031); wave('triangle', 990, 1250, .1, .015, .055); break;
+        case 'skill-bulwark': wave('sawtooth', 210, 90, .2, .028); noise(.16, .02, 1100); break;
+        case 'skill-conductor': wave('square', 520, 135, .2, .02); noise(.13, .023, 2600, 'highpass'); break;
+        case 'skill-scavenger': wave('sine', 310, 940, .2, .027); wave('triangle', 620, 1240, .15, .013, .06); break;
+        case 'overload': wave('square', 760, 110, .23, .02); noise(.2, .027, 1900, 'highpass'); break;
+        case 'dash': wave('triangle', 410, 140, .11, .024); noise(.08, .012, 1300); break;
+        case 'hurt': wave('sawtooth', 165, 70, .15, .038); break;
+        case 'chest-pickup': wave('sine', 580, 860, .11, .034); wave('sine', 800, 1100, .12, .017, .07); break;
+        case 'chest-open': wave('triangle', 510, 830, .2, .025); wave('sine', 930, 1370, .25, .021, .1); break;
+        case 'chest-take': wave('sine', 760, 1060, .16, .033); break;
+        case 'chest-scrap': wave('triangle', 550, 250, .14, .025); noise(.075, .01, 1200); break;
+        case 'warning-boss': wave('sawtooth', 170, 125, .31, .045); wave('sawtooth', 160, 95, .32, .036, .18); break;
+        case 'warning-elite': wave('sawtooth', 260, 145, .25, .037); break;
+        case 'victory': wave('triangle', 500, 670, .28, .035); wave('triangle', 750, 1030, .32, .034, .18); break;
+        case 'defeat': wave('triangle', 310, 115, .4, .042); break;
+        case 'merge': wave('triangle', 590, 980, .18, .033); wave('sine', 900, 1260, .2, .022, .09); break;
+        case 'level': wave('sine', 690, 980, .13, .026); break;
+        case 'wave-end': wave('triangle', 610, 820, .2, .029); break;
+        case 'wave-start': wave('triangle', 480, 720, .16, .028); break;
+        case 'buy': wave('triangle', 640, 860, .1, .028); break;
+        case 'reroll': wave('square', 450, 310, .09, .016); break;
+        case 'select': wave('sine', 610, 790, .12, .023); break;
+      }
     } catch (_) { /* Sound is optional. */ }
   }
   function renderTitle() {
-    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="selection-card" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}"><span class="selection-icon">${c.icon}</span><span><strong>${c.name}</strong><small>${c.desc}</small><small class="skill-preview">专属技能：${SKILLS[c.id].map(skill => skill.name).join(' · ')}</small></span></button>`).join('');
-    $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${b.icon}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
+    updateSkinButtons();
+    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="selection-card" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}"><span class="selection-icon">${artIcon(c.id, c.icon)}</span><span><strong>${c.name}</strong><small>${c.desc}</small><small class="skill-preview">专属技能：${SKILLS[c.id].map(skill => skill.name).join(' · ')}</small></span></button>`).join('');
+    $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${artIcon(`map-${b.id}-preview`, b.icon)}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
     $('difficulty-list').innerHTML = DIFFICULTIES.map(d => `<button type="button" data-difficulty="${d.id}" aria-pressed="${selectedDifficulty === d.id}">${d.name}</button>`).join('');
     $('pace-list').innerHTML = PACES.map(p => `<button type="button" data-pace="${p.id}" aria-pressed="${selectedPace === p.id}">${p.name}</button>`).join('');
     $('sound-button').textContent = soundEnabled ? '开启' : '关闭';
@@ -175,7 +481,7 @@
   }
   function showPhase(next) {
     phase = next;
-    if (next !== 'combat') moveTarget = null;
+    if (next !== 'combat') { moveTarget = null; moveFlow = null; }
     hideScreens();
     $('hud').classList.toggle('hidden', next !== 'combat');
     $('touch-controls').classList.toggle('hidden', next !== 'combat');
@@ -184,13 +490,13 @@
   }
   function createWeapon(id, tier = 1) { return { id, tier, uid: ++uid, cool: 0 }; }
   function startRun() {
-    resetStick(); keys.clear(); moveTarget = null;
+    resetStick(); keys.clear(); moveTarget = null; moveFlow = null;
     const character = CHARACTERS.find(c => c.id === selectedCharacter);
     const biome = BIOMES.find(b => b.id === selectedBiome);
     const difficulty = DIFFICULTIES.find(d => d.id === selectedDifficulty);
     const stats = { armor: 0, speed: 0, ranged: 0, melee: 0, elemental: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, ...character.stats };
     run = {
-      character, biome, difficulty, stats, player: { x: WORLD.w / 2, y: WORLD.h / 2, radius: 17, hp: character.hp, maxHp: character.hp, facing: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
+      character, biome, difficulty, stats, player: { x: WORLD.w / 2, y: WORLD.h / 2, radius: 17, hp: character.hp, maxHp: character.hp, facing: 0, attackFacing: 0, attackPose: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       weapons: [createWeapon(character.weapon)], shopOffers: [], rerolls: 0,
@@ -198,6 +504,7 @@
       skills: { activeCooldown: 0, mark: null, moveTime: 0, steadyReady: false, rangedFires: 0, rangedHits: 0, meleeFires: 0,
         manualPickups: 0, shieldTime: 0, loadedTime: 0, loadedUsed: false, charge: 0, field: null, overload: null,
         guardTime: 0, guardReady: false, guardCooldown: 0, damageTaken: 0, counterCooldown: 0, returnCooldown: 0, hitIds: new Set() },
+      terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
       spawnClock: 0, hazardClock: 8, specialSpawned: false, normalChestDropped: false, regenClock: 0, lifeClock: 0,
       bossFight: false, pendingVictory: false, hudClock: 0, screenShake: 0
@@ -206,7 +513,7 @@
   }
   function waveDuration() { return selectedPace === 'quick' ? 15 + Math.min(6, run.wave * .3) : run.wave === MAX_WAVES ? 90 : Math.min(60, 15 + run.wave * 5); }
   function startWave() {
-    resetStick(); keys.clear(); moveTarget = null;
+    resetStick(); keys.clear(); moveTarget = null; moveFlow = null;
     run.wave += 1;
     run.elapsed = 0;
     run.timeLeft = waveDuration();
@@ -229,7 +536,7 @@
     updateHUD();
     $('pause-button').focus({ preventScroll: true });
     showToast(run.wave === MAX_WAVES ? '最终波次：击败星核吞噬者！' : `第 ${run.wave} 波开始`);
-    tone(540, .16, 'triangle', .045);
+    playSfx('wave-start');
   }
   function updateRecord() {
     const key = `${run.character.id}:${run.biome.id}:${run.difficulty.id}`;
@@ -246,7 +553,7 @@
     $('result-message').textContent = victory ? '你撑过了全部 20 波敌潮。星港又多了一位幸存者。' : '已保存本次记录。调整装备组合，再向更深处出发。';
     $('result-stats').innerHTML = `<div><span>完成波次</span><strong>${run.wave} / ${MAX_WAVES}</strong></div><div><span>击败敌人</span><strong>${run.kills}</strong></div><div><span>获得材料</span><strong>${run.earned}</strong></div><div><span>角色等级</span><strong>${run.level}</strong></div>`;
     $('result-restart').focus({ preventScroll: true });
-    tone(victory ? 790 : 210, .45, 'triangle', .06);
+    playSfx(victory ? 'victory' : 'defeat');
     renderTitle();
   }
 
@@ -267,15 +574,18 @@
       run.level += 1;
       run.pendingLevels += 1;
       run.xpNeed = Math.round(8 + run.level * 4 + Math.pow(run.level, 1.32));
-      tone(680, .1, 'sine', .02);
+      playSfx('level');
     }
   }
   function levelOffers() {
     run.levelChoices = [...UPGRADES].sort(() => Math.random() - .5).slice(0, 3);
-    $('levels-left').textContent = `剩余 ${run.pendingLevels} 次`;
-    $('level-options').innerHTML = run.levelChoices.map((u, i) => `<button class="choice-option" type="button" data-level="${i}"><span class="choice-icon">${u.icon}</span><strong>${u.name}</strong><span>${u.desc}</span></button>`).join('');
+    renderLevelChoices();
     showPhase('level');
     $('level-options').querySelector('button')?.focus({ preventScroll: true });
+  }
+  function renderLevelChoices() {
+    $('levels-left').textContent = `剩余 ${run.pendingLevels} 次`;
+    $('level-options').innerHTML = run.levelChoices.map((u, i) => `<button class="choice-option" type="button" data-level="${i}"><span class="choice-icon">${artIcon(`upgrade-${UPGRADES.indexOf(u)}`, u.icon)}</span><strong>${u.name}</strong><span>${u.desc}</span></button>`).join('');
   }
   function finishWave() {
     if (phase !== 'combat') return;
@@ -283,7 +593,7 @@
     run.enemies = []; run.enemyBullets = []; run.bullets = [];
     if (run.pendingChests > 0) openChest();
     else finishChestSequence();
-    tone(660, .2, 'triangle', .05);
+    playSfx('wave-end');
   }
   function finishChestSequence() {
     if (run.wave >= MAX_WAVES) endRun(true);
@@ -292,11 +602,15 @@
   }
   function openChest() {
     run.chestReward = pick(CHEST_ITEMS);
-    $('chests-left').textContent = run.pendingChests;
-    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${run.chestReward.icon}</span><div><strong>${run.chestReward.name}</strong><p>${run.chestReward.desc}</p></div>`;
-    $('chest-scrap-button').textContent = `拆解为 ◇ ${Math.round(run.chestReward.price * .5)}`;
+    renderChestReward();
     showPhase('chest');
+    playSfx('chest-open');
     $('chest-take-button').focus({ preventScroll: true });
+  }
+  function renderChestReward() {
+    $('chests-left').textContent = run.pendingChests;
+    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${artIcon(`item-${run.chestReward.id}`, run.chestReward.icon)}</span><div><strong>${run.chestReward.name}</strong><p>${run.chestReward.desc}</p></div>`;
+    $('chest-scrap-button').textContent = `拆解为 ◇ ${Math.round(run.chestReward.price * .5)}`;
   }
   function resolveChest(take) {
     if (phase !== 'chest' || !run.chestReward) return;
@@ -309,7 +623,7 @@
     }
     run.pendingChests -= 1;
     run.chestReward = null;
-    tone(take ? 760 : 450, .12, 'triangle', .04);
+    playSfx(take ? 'chest-take' : 'chest-scrap');
     if (run.pendingChests > 0) openChest(); else finishChestSequence();
   }
   function collectRemainingPickups() {
@@ -357,7 +671,7 @@
       const def = offer.kind === 'weapon' ? WEAPONS[offer.id] : ITEMS.find(item => item.id === offer.id);
       const disabled = run.money < offer.cost || (offer.kind === 'weapon' && !canFitWeapon(offer));
       const reason = run.money < offer.cost ? '材料不足' : '武器槽已满';
-      return `<div class="offer-card ${offer.locked ? 'locked' : ''}"><div class="offer-head"><span class="offer-icon">${def.icon}</span><span class="tier-label">${offer.kind === 'weapon' ? `武器 · ${'ⅠⅡⅢⅣ'[offer.tier - 1]}阶` : '改装'}</span></div><strong>${def.name}</strong><p>${def.desc}</p><div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} 购买</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? '解锁' : '锁定'} ${def.name}" aria-pressed="${offer.locked}">${offer.locked ? '🔒' : '锁'}</button></div></div>`;
+      return `<div class="offer-card ${offer.locked ? 'locked' : ''}"><div class="offer-head"><span class="offer-icon">${artIcon(offer.kind === 'weapon' ? offer.id : `item-${offer.id}`, def.icon)}</span><span class="tier-label">${offer.kind === 'weapon' ? `武器 · ${'ⅠⅡⅢⅣ'[offer.tier - 1]}阶` : '改装'}</span></div><strong>${def.name}</strong><p>${def.desc}</p><div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} 购买</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? '解锁' : '锁定'} ${def.name}" aria-pressed="${offer.locked}">${offer.locked ? '🔒' : '锁'}</button></div></div>`;
     }).join('');
     const rerollCost = 3 + run.wave + run.rerolls * 3;
     $('reroll-button').textContent = `刷新商品 ◇ ${rerollCost}`;
@@ -367,7 +681,7 @@
       if (!w) return '<div class="inventory-item empty">空槽</div>';
       const def = WEAPONS[w.id];
       const merge = w.tier < 4 && run.weapons.some(other => other !== w && other.id === w.id && other.tier === w.tier);
-      return `<div class="inventory-item"><strong>${def.icon} ${def.name} ${'ⅠⅡⅢⅣ'[w.tier - 1]}</strong><div class="item-actions">${merge ? `<button type="button" data-merge="${i}">合成</button>` : ''}<button type="button" data-sell="${i}">卖 ◇${sellPrice(w)}</button></div></div>`;
+      return `<div class="inventory-item"><strong>${artIcon(w.id, def.icon)} ${def.name} ${'ⅠⅡⅢⅣ'[w.tier - 1]}</strong><div class="item-actions">${merge ? `<button type="button" data-merge="${i}">合成</button>` : ''}<button type="button" data-sell="${i}">卖 ◇${sellPrice(w)}</button></div></div>`;
     }).join('');
     $('shop-stats').textContent = statSummary();
   }
@@ -385,7 +699,7 @@
   function renderWeaponStrip() {
     $('weapon-strip').innerHTML = Array.from({ length: 6 }, (_, i) => {
       const w = run.weapons[i];
-      return w ? `<span class="weapon-slot" title="${WEAPONS[w.id].name} ${w.tier} 阶">${WEAPONS[w.id].icon}<small>${'ⅠⅡⅢⅣ'[w.tier - 1]}</small></span>` : '<span class="weapon-slot empty">+</span>';
+      return w ? `<span class="weapon-slot" role="img" aria-label="${WEAPONS[w.id].name} ${w.tier} 阶" title="${WEAPONS[w.id].name} ${w.tier} 阶">${artIcon(w.id, WEAPONS[w.id].icon)}<small>${'ⅠⅡⅢⅣ'[w.tier - 1]}</small></span>` : '<span class="weapon-slot empty">+</span>';
     }).join('');
   }
   function buyOffer(index) {
@@ -402,7 +716,7 @@
       applyBonus(item.bonus); showToast(`获得${item.name}`);
     }
     run.shopOffers[index] = null;
-    renderShop(); renderWeaponStrip(); tone(770, .09, 'triangle', .04);
+    renderShop(); renderWeaponStrip(); playSfx('buy');
     focusShopControl(`#shop-offers [data-buy="${(index + 1) % 4}"]`);
   }
   function mergeWeapon(index) {
@@ -412,7 +726,7 @@
     if (secondIndex < 0) return;
     first.tier += 1; first.cool = 0;
     run.weapons.splice(secondIndex, 1);
-    renderShop(); renderWeaponStrip(); showToast(`${WEAPONS[first.id].name}合成为 ${first.tier} 阶`); tone(830, .17, 'triangle', .06);
+    renderShop(); renderWeaponStrip(); showToast(`${WEAPONS[first.id].name}合成为 ${first.tier} 阶`); playSfx('merge');
     focusShopControl(`#inventory [data-sell="${Math.min(index, run.weapons.length - 1)}"]`);
   }
   function sellWeapon(index) {
@@ -427,7 +741,7 @@
     if (run.money < cost) return;
     run.money -= cost; run.rerolls += 1;
     run.shopOffers = run.shopOffers.map(offer => offer?.locked ? offer : randomShopOffer());
-    renderShop(); tone(480, .1, 'square', .02);
+    renderShop(); playSfx('reroll');
     focusShopControl('#reroll-button');
   }
 
@@ -450,10 +764,12 @@
       x = clamp(p.x + Math.cos(angle) * radius, 45, WORLD.w - 45);
       y = clamp(p.y + Math.sin(angle) * radius, 45, WORLD.h - 45);
     }
+    const spawn = nearestWalkable(x, y, def.radius * (small ? .7 : 1));
+    x = spawn.x; y = spawn.y;
     const healthScale = (1 + (run.wave - 1) * .19) * run.difficulty.mult;
     const hp = Math.round(def.hp * healthScale * (small ? .45 : 1));
     run.enemies.push({ id, x, y, hp, maxHp: hp, r: def.radius * (small ? .7 : 1), speed: def.speed * (1 + run.wave * .008), damage: def.damage, value: small ? 0 : def.value,
-      attackClock: rand(.6, 2.1), chargeClock: rand(1.5, 3.5), charging: 0, chargeX: 0, chargeY: 0, burn: 0, burnClock: 0, hitFlash: 0, dead: false, hitBy: new Map() });
+      attackClock: rand(.6, 2.1), chargeClock: rand(1.5, 3.5), charging: 0, windup: 0, chargeX: 0, chargeY: 0, attackPose: 0, biteCooldown: 0, animTime: rand(0, 1), burn: 0, burnClock: 0, hitFlash: 0, dead: false, hitBy: new Map() });
   }
   function spawnWaveEnemies(dt) {
     if (run.timeLeft <= 0) return;
@@ -471,9 +787,9 @@
       run.specialSpawned = true;
       if (run.wave === 10 || run.wave === 20) {
         spawnEnemy('boss'); run.bossFight = true;
-        showToast('警告：星核吞噬者接近！'); tone(190, .4, 'sawtooth', .07);
+        showToast('警告：星核吞噬者接近！'); playSfx('warning-boss');
       } else if (run.wave % 5 === 0) {
-        spawnEnemy('elite'); showToast('精英哨卫出现！'); tone(230, .28, 'sawtooth', .06);
+        spawnEnemy('elite'); showToast('精英哨卫出现！'); playSfx('warning-elite');
       }
     }
   }
@@ -484,11 +800,17 @@
     if (keys.has('w') || keys.has('ArrowUp')) y -= 1;
     if (keys.has('s') || keys.has('ArrowDown')) y += 1;
     const length = Math.hypot(x, y);
-    if (length > .05) moveTarget = null;
+    if (length > .05) { moveTarget = null; moveFlow = null; }
     else if (moveTarget && run) {
       const dx = moveTarget.x - run.player.x, dy = moveTarget.y - run.player.y;
       const remaining = Math.hypot(dx, dy);
-      if (remaining <= 3) { moveTarget = null; return { x: 0, y: 0 }; }
+      if (remaining <= 3) { moveTarget = null; moveFlow = null; return { x: 0, y: 0 }; }
+      if (terrainLineBlocked(run.player.x, run.player.y, moveTarget.x, moveTarget.y, run.player.radius)) {
+        const direction = flowDirection(moveFlow, run.player.x, run.player.y, run.player.radius);
+        if (direction) return direction;
+        moveTarget = null; moveFlow = null;
+        return { x: 0, y: 0 };
+      }
       return { x: dx / remaining, y: dy / remaining, remaining };
     }
     return length > 1 ? { x: x / length, y: y / length } : { x, y };
@@ -499,13 +821,13 @@
     const length = Math.hypot(v.x, v.y);
     run.player.dashX = length > .05 ? v.x / length : Math.cos(angle);
     run.player.dashY = length > .05 ? v.y / length : Math.sin(angle);
-    moveTarget = null;
+    moveTarget = null; moveFlow = null;
     run.player.dashTime = .18;
     run.player.dashCooldown = 4.2;
     run.player.invuln = Math.max(run.player.invuln, .25);
     run.effects.push({ kind: 'pulse', x: run.player.x, y: run.player.y, r: 32, color: '#b5f6eb', life: .3, maxLife: .3 });
     updateHUD();
-    tone(330, .08, 'triangle', .035);
+    playSfx('dash');
   }
   function segmentDistance(e, x1, y1, x2, y2) {
     const dx = x2 - x1, dy = y2 - y1;
@@ -513,53 +835,65 @@
     return Math.hypot(e.x - x1 - dx * t, e.y - y1 - dy * t);
   }
   function dealSkillDamage(e, amount) { damageEnemy(e, amount * (1 + run.stats.damage / 100), false); }
+  function skillBurst(index, x, y, radius = 54, life = .38, angle = 0) {
+    run.effects.push({ kind: 'skill-burst', character: run.character.id, skill: index,
+      x, y, r: radius, angle, life, maxLife: life });
+  }
   function tryActiveSkill() {
     if (phase !== 'combat' || run.skills.activeCooldown > 0) return;
     const p = run.player, s = run.skills;
     if (run.character.id === 'rover') {
       const range = Math.max(0, ...run.weapons.filter(w => WEAPONS[w.id].type === 'ranged').map(w => WEAPONS[w.id].range));
-      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= range).sort((a, b) => distance(b, p) - distance(a, p))[0];
+      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= range
+        && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false)).sort((a, b) => distance(b, p) - distance(a, p))[0];
       if (!target) { showToast('射程内没有可标定目标'); return; }
       s.mark = { target, time: 5 };
       s.activeCooldown = 12;
       run.effects.push({ kind: 'text', x: target.x, y: target.y - target.r - 15, text: '已标定', color: '#b5f6eb', life: .8, maxLife: .8 });
+      run.effects.push({ kind: 'line', x1: p.x, y1: p.y, x2: target.x, y2: target.y, color: '#b5f6eb', life: .22, maxLife: .22, width: 5 });
+      skillBurst(0, target.x, target.y, target.r + 30);
     } else if (run.character.id === 'bulwark') {
       const v = movementVector(), nearest = run.enemies.filter(e => !e.dead).sort((a, b) => distance(a, p) - distance(b, p))[0];
       const angle = Math.hypot(v.x, v.y) > .05 ? Math.atan2(v.y, v.x) : nearest ? Math.atan2(nearest.y - p.y, nearest.x - p.x) : p.facing;
       const x = p.x, y = p.y;
-      p.x = clamp(x + Math.cos(angle) * 100, p.radius, WORLD.w - p.radius);
-      p.y = clamp(y + Math.sin(angle) * 100, p.radius, WORLD.h - p.radius);
-      p.facing = angle; moveTarget = null;
+      moveThroughTerrain(p, Math.cos(angle) * 100, Math.sin(angle) * 100);
+      p.facing = angle; moveTarget = null; moveFlow = null;
       for (const e of run.enemies) if (!e.dead && segmentDistance(e, x, y, p.x, p.y) < e.r + 38) dealSkillDamage(e, 16 + run.stats.melee);
       run.effects.push({ kind: 'line', x1: x, y1: y, x2: p.x, y2: p.y, color: '#ffcd91', life: .23, maxLife: .23, width: 22 });
+      skillBurst(0, (x + p.x) / 2, (y + p.y) / 2, 72, .42, angle);
       s.activeCooldown = 9;
     } else if (run.character.id === 'scavenger') {
       s.magnetTime = 4;
       s.activeCooldown = 12;
       run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 255 + run.stats.pickup, color: '#ffe4a0', life: .4, maxLife: .4 });
+      skillBurst(0, p.x, p.y, 112);
     } else {
       s.field = { x: p.x, y: p.y, time: 4, tick: 0 };
       s.activeCooldown = 10;
       run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 115, color: '#b5b4ff', life: .4, maxLife: .4 });
+      skillBurst(0, p.x, p.y, 115);
     }
     updateHUD();
-    tone(610, .14, 'triangle', .045);
+    playSfx(`skill-${run.character.id}`);
   }
   function addCharge() {
     const s = run.skills;
     s.charge += 1;
+    skillBurst(1, run.player.x, run.player.y, 28, .2);
     if (s.charge >= 10) {
       s.charge = 0;
       s.overload = { age: 0, hit: new Set(), first: false, second: false };
       showToast('过载边界！');
+      playSfx('overload');
+      skillBurst(3, run.player.x, run.player.y, 110, .48);
     }
   }
   function countScavengedMaterial() {
     const s = run.skills;
     s.manualPickups += 1;
-    if (s.manualPickups % 8 === 0) { run.money += 2; run.earned += 2; showToast('拾荒分红：材料 +2'); }
-    if (s.manualPickups % 12 === 0) { s.shieldTime = 8; showToast('废件护层就绪'); }
-    if (s.manualPickups >= 18 && !s.loadedUsed) { s.loadedUsed = true; s.loadedTime = 6; showToast('满载运转！'); }
+    if (s.manualPickups % 8 === 0) { run.money += 2; run.earned += 2; showToast('拾荒分红：材料 +2'); skillBurst(1, run.player.x, run.player.y, 45); }
+    if (s.manualPickups % 12 === 0) { s.shieldTime = 8; showToast('废件护层就绪'); skillBurst(2, run.player.x, run.player.y, 50); }
+    if (s.manualPickups >= 18 && !s.loadedUsed) { s.loadedUsed = true; s.loadedTime = 6; showToast('满载运转！'); skillBurst(3, run.player.x, run.player.y, 64, .5); }
   }
   function updateSkills(dt) {
     const s = run.skills, p = run.player;
@@ -573,11 +907,11 @@
     if (s.mark) { s.mark.time -= dt; if (s.mark.time <= 0 || s.mark.target.dead) s.mark = null; }
     if (run.character.id === 'rover') {
       s.moveTime = run.movedThisFrame ? Math.min(1, s.moveTime + dt) : 0;
-      if (s.moveTime >= 1) s.steadyReady = true;
+      if (s.moveTime >= 1 && !s.steadyReady) { s.steadyReady = true; skillBurst(1, p.x, p.y, 36, .26); }
     } else if (run.character.id === 'bulwark') {
       const nearby = run.enemies.filter(e => !e.dead && distance(e, p) <= 160).length;
-      s.guardTime = nearby >= 3 && s.guardCooldown <= 0 ? s.guardTime + dt : 0;
-      if (s.guardTime >= 1) { s.guardReady = true; s.guardTime = 0; }
+      s.guardTime = !s.guardReady && nearby >= 3 && s.guardCooldown <= 0 ? s.guardTime + dt : 0;
+      if (s.guardTime >= 1) { s.guardReady = true; s.guardTime = 0; skillBurst(1, p.x, p.y, 50); }
     } else if (run.character.id === 'conductor') {
       if (s.field) {
         s.field.time -= dt; s.field.tick += dt;
@@ -587,6 +921,7 @@
           for (const e of run.enemies) if (!e.dead && distance(e, s.field) <= 115 + e.r) { dealSkillDamage(e, 3 + run.stats.elemental * .4); hit = true; }
           if (hit) addCharge();
           run.effects.push({ kind: 'pulse', x: s.field.x, y: s.field.y, r: 115, color: '#b5b4ff', life: .22, maxLife: .22 });
+          skillBurst(0, s.field.x, s.field.y, 78, .25);
         }
         if (s.field.time <= 0) s.field = null;
       }
@@ -598,7 +933,7 @@
           burst.hit.add(e); dealSkillDamage(e, 8 + run.stats.elemental * .6);
         }
         if (burst.age >= .12 && !burst.first) { burst.first = true; run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 110, color: '#c6b8ff', life: .38, maxLife: .38 }); }
-        if (burst.age >= .24 && !burst.second) { burst.second = true; run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 220, color: '#c6b8ff', life: .42, maxLife: .42 }); }
+        if (burst.age >= .24 && !burst.second) { burst.second = true; run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 220, color: '#c6b8ff', life: .42, maxLife: .42 }); skillBurst(3, p.x, p.y, 220, .5); }
         if (burst.age >= .3) s.overload = null;
       }
     }
@@ -612,10 +947,11 @@
     const speed = 215 * (1 + run.stats.speed / 100);
     const step = dashing ? speed * dt : Math.min(speed * dt, v.remaining ?? Infinity);
     const oldX = p.x, oldY = p.y;
-    p.x = clamp(p.x + vx * step, p.radius, WORLD.w - p.radius);
-    p.y = clamp(p.y + vy * step, p.radius, WORLD.h - p.radius);
+    moveThroughTerrain(p, vx * step, vy * step);
     run.movedThisFrame = Math.hypot(p.x - oldX, p.y - oldY) > .1;
-    if (!dashing && v.remaining !== undefined && v.remaining <= step + 3) moveTarget = null;
+    p.animTime = run.movedThisFrame ? p.animTime + dt : 0;
+    p.attackPose = Math.max(0, p.attackPose - dt);
+    if (!dashing && v.remaining !== undefined && v.remaining <= step + 3) { moveTarget = null; moveFlow = null; }
     p.invuln = Math.max(0, p.invuln - dt);
     p.dashCooldown = Math.max(0, p.dashCooldown - dt);
     run.lifeClock = Math.max(0, run.lifeClock - dt);
@@ -632,13 +968,15 @@
     if (run.character.id === 'bulwark' && s.guardReady) {
       damage = Math.max(1, Math.round(damage * .75));
       s.guardReady = false; s.guardCooldown = 5;
+      skillBurst(1, p.x, p.y, 54);
     }
-    if (run.character.id === 'scavenger' && s.shieldTime > 0) { damage = Math.max(1, damage - 3); s.shieldTime = 0; }
+    if (run.character.id === 'scavenger' && s.shieldTime > 0) { damage = Math.max(1, damage - 3); s.shieldTime = 0; skillBurst(2, p.x, p.y, 52); }
     if (run.character.id === 'conductor' && s.charge >= 3 && s.returnCooldown <= 0) {
       s.charge -= 3; s.returnCooldown = 5;
       damage = Math.max(1, Math.round(damage * .7));
+      skillBurst(2, p.x, p.y, 62);
       const target = run.enemies.filter(e => !e.dead && distance(e, p) <= 160).sort((a, b) => distance(a, p) - distance(b, p))[0];
-      if (target) { dealSkillDamage(target, 6 + run.stats.elemental * .5); run.effects.push({ kind: 'line', x1: p.x, y1: p.y, x2: target.x, y2: target.y, color: '#b5b4ff', life: .2, maxLife: .2, width: 3 }); }
+      if (target) { dealSkillDamage(target, 6 + run.stats.elemental * .5); run.effects.push({ kind: 'line', x1: p.x, y1: p.y, x2: target.x, y2: target.y, color: '#b5b4ff', life: .2, maxLife: .2, width: 3 }); skillBurst(2, target.x, target.y, 36, .26); }
     }
     const actualDamage = Math.min(p.hp, damage);
     p.hp -= damage;
@@ -650,27 +988,38 @@
           dealSkillDamage(e, 12 + run.stats.melee);
           if (!e.dead && e.id !== 'boss' && e.id !== 'elite') {
             const angle = Math.atan2(e.y - p.y, e.x - p.x);
-            e.x = clamp(e.x + Math.cos(angle) * 65, e.r, WORLD.w - e.r);
-            e.y = clamp(e.y + Math.sin(angle) * 65, e.r, WORLD.h - e.r);
+            moveThroughTerrain(e, Math.cos(angle) * 65, Math.sin(angle) * 65);
           }
         }
         run.effects.push({ kind: 'pulse', x: p.x, y: p.y, r: 155, color: '#ffcd91', life: .35, maxLife: .35 });
+        skillBurst(3, p.x, p.y, 155, .48);
       }
     }
     p.invuln = .55;
     run.screenShake = 9;
     run.effects.push({ kind: 'text', x: p.x, y: p.y - 23, text: `-${damage}`, color: '#ff777a', life: .65, maxLife: .65 });
-    tone(150, .13, 'sawtooth', .06);
+    playSfx('hurt');
     if (p.hp <= 0) { p.hp = 0; endRun(false); }
   }
   function updateEnemies(dt) {
     const p = run.player;
+    run.enemyFlowClock -= dt;
+    const playerCell = navIndex(p.x, p.y);
+    if (run.enemyFlowClock <= 0 || run.enemyFlowCell !== playerCell) {
+      run.enemyFlow = makeFlow(p.x, p.y, 54);
+      run.enemyFlowCell = playerCell;
+      run.enemyFlowClock = .35;
+    }
     for (const e of run.enemies) {
       if (e.dead) continue;
       const dx = p.x - e.x, dy = p.y - e.y;
       const dist = Math.max(1, Math.hypot(dx, dy));
-      let ux = dx / dist, uy = dy / dist;
+      const route = terrainLineBlocked(e.x, e.y, p.x, p.y, e.r)
+        ? flowDirection(run.enemyFlow, e.x, e.y, e.r) : null;
+      let ux = route?.x ?? dx / dist, uy = route?.y ?? dy / dist;
       e.hitFlash = Math.max(0, e.hitFlash - dt);
+      e.attackPose = Math.max(0, e.attackPose - dt);
+      e.biteCooldown = Math.max(0, e.biteCooldown - dt);
       e.attackClock -= dt; e.chargeClock -= dt;
       if (e.burn > 0) {
         e.burn -= dt; e.burnClock -= dt;
@@ -680,35 +1029,51 @@
       if (e.dead) continue;
       let speed = e.speed;
       if (e.id === 'shooter') {
-        if (dist < 270) { ux = -ux; uy = -uy; }
-        else if (dist < 370) { ux = 0; uy = 0; }
-        if (e.attackClock <= 0 && dist < 650) {
+        const canSee = !terrainLineBlocked(e.x, e.y, p.x, p.y, 6, false);
+        if (canSee && dist < 270) { ux = -ux; uy = -uy; }
+        else if (canSee && dist < 370) { ux = 0; uy = 0; }
+        if (e.attackClock <= 0 && dist < 650 && canSee) {
           shootEnemyBullet(e.x, e.y, dx / dist, dy / dist, e.damage, 235);
+          playSfx('shooter-fire');
           e.attackClock = 2.1 / (1 + run.wave * .015);
+          e.attackPose = .28;
         }
       } else if (e.id === 'charger' || e.id === 'elite') {
-        if (e.charging > 0) { e.charging -= dt; ux = e.chargeX; uy = e.chargeY; speed *= e.id === 'elite' ? 3.1 : 3.7; }
+        if (e.windup > 0) {
+          e.windup -= dt; speed = 0;
+          if (e.windup <= 0) { e.charging = .65; e.chargeClock = 3.5; e.attackPose = .3; }
+        } else if (e.charging > 0) { e.charging -= dt; ux = e.chargeX; uy = e.chargeY; speed *= e.id === 'elite' ? 3.1 : 3.7; }
         else if (e.chargeClock <= 0 && dist < 480) {
-          e.charging = .65; e.chargeClock = e.id === 'elite' ? 3.5 : 3;
           e.chargeX = ux; e.chargeY = uy;
-          run.effects.push({ kind: 'line', x1: e.x, y1: e.y, x2: e.x + ux * 160, y2: e.y + uy * 160, color: '#ff9c71', life: .35, maxLife: .35, width: 8 });
+          e.windup = e.id === 'elite' ? .4 : .35;
+          speed = 0;
+          run.effects.push({ kind: 'line', x1: e.x, y1: e.y, x2: e.x + ux * 160, y2: e.y + uy * 160, color: '#ff9c71', life: e.windup, maxLife: e.windup, width: 8 });
         }
       } else if (e.id === 'boss') {
         if (dist < 200) speed *= .5;
-        if (e.attackClock <= 0 && dist < 820) {
-          const count = 12;
-          for (let i = 0; i < count; i++) {
-            const angle = i * TAU / count + run.elapsed * .25;
-            shootEnemyBullet(e.x, e.y, Math.cos(angle), Math.sin(angle), e.damage * .55, 215);
+        if (e.windup > 0) {
+          e.windup -= dt; speed = 0;
+          if (e.windup <= 0) {
+            const count = 12;
+            for (let i = 0; i < count; i++) {
+              const angle = i * TAU / count + run.elapsed * .25;
+              shootEnemyBullet(e.x, e.y, Math.cos(angle), Math.sin(angle), e.damage * .55, 215);
+            }
+            e.attackClock = 2.7; e.attackPose = .32;
+            run.effects.push({ kind: 'pulse', x: e.x, y: e.y, r: 78, color: '#f3a5c9', life: .4, maxLife: .4 });
+            playSfx('boss-attack');
           }
-          e.attackClock = 2.7;
-          run.effects.push({ kind: 'pulse', x: e.x, y: e.y, r: 78, color: '#f3a5c9', life: .4, maxLife: .4 });
-          tone(170, .18, 'sawtooth', .04);
-        }
+        } else if (e.attackClock <= 0 && dist < 820) { e.windup = .55; speed = 0; }
       }
-      e.x = clamp(e.x + ux * speed * dt, e.r, WORLD.w - e.r);
-      e.y = clamp(e.y + uy * speed * dt, e.r, WORLD.h - e.r);
-      if (distance(e, p) < e.r + p.radius - 2) hurtPlayer(e.damage);
+      const oldX = e.x, oldY = e.y;
+      moveThroughTerrain(e, ux * speed * dt, uy * speed * dt);
+      if (e.charging > 0 && Math.hypot(e.x - oldX, e.y - oldY) < speed * dt * .35) e.charging = 0;
+      e.moving = Math.hypot(e.x - oldX, e.y - oldY) > .1;
+      if (e.moving) e.animTime += dt;
+      if (distance(e, p) < e.r + p.radius - 2) {
+        if (e.id === 'crawler' && e.biteCooldown <= 0) { e.attackPose = .24; e.biteCooldown = .65; }
+        hurtPlayer(e.damage);
+      }
       if (phase !== 'combat') break;
     }
     run.enemies = run.enemies.filter(e => !e.dead);
@@ -719,18 +1084,24 @@
   function updateEnemyBullets(dt) {
     for (let i = run.enemyBullets.length - 1; i >= 0; i--) {
       const b = run.enemyBullets[i];
+      const fromX = b.x, fromY = b.y;
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
-      if (b.life <= 0 || b.x < 0 || b.y < 0 || b.x > WORLD.w || b.y > WORLD.h) { run.enemyBullets.splice(i, 1); continue; }
-      if (distance(b, run.player) < b.r + run.player.radius) { hurtPlayer(b.damage); run.enemyBullets.splice(i, 1); }
+      const wallTime = terrainHitTime(fromX, fromY, b.x, b.y, b.r);
+      const playerTime = segmentCircleHitTime(fromX, fromY, b.x, b.y,
+        run.player.x, run.player.y, b.r + run.player.radius);
+      if (playerTime <= 1 && playerTime <= wallTime) { hurtPlayer(b.damage); run.enemyBullets.splice(i, 1); continue; }
+      if (wallTime <= 1 || b.life <= 0 || b.x < 0 || b.y < 0 || b.x > WORLD.w || b.y > WORLD.h) run.enemyBullets.splice(i, 1);
     }
   }
   function dropPickup(x, y, count) {
     for (let i = 0; i < count && run.pickups.length < 450; i++) {
-      run.pickups.push({ kind: 'material', x: clamp(x + rand(-23, 23), 12, WORLD.w - 12), y: clamp(y + rand(-23, 23), 12, WORLD.h - 12), r: 5, drift: rand(0, TAU) });
+      const point = nearestWalkable(x + rand(-23, 23), y + rand(-23, 23), 6);
+      run.pickups.push({ kind: 'material', x: point.x, y: point.y, r: 5, drift: rand(0, TAU) });
     }
   }
   function dropChest(x, y) {
-    run.pickups.push({ kind: 'chest', x: clamp(x, 12, WORLD.w - 12), y: clamp(y, 12, WORLD.h - 12), r: 12, drift: rand(0, TAU) });
+    const point = nearestWalkable(x, y, 13);
+    run.pickups.push({ kind: 'chest', x: point.x, y: point.y, r: 12, drift: rand(0, TAU) });
     showToast('宝箱掉落：拾取回血，结算开装备');
   }
   function killEnemy(e) {
@@ -744,6 +1115,7 @@
       run.normalChestDropped = true;
     }
     run.effects.push({ kind: 'pulse', x: e.x, y: e.y, r: e.r * 1.8, color: ENEMIES[e.id].color, life: .26, maxLife: .26 });
+    if (SKIN_ART[selectedSkin][e.id]) run.effects.push({ kind: 'shards', x: e.x, y: e.y, r: e.r, color: ENEMIES[e.id].color, life: .34, maxLife: .34 });
     if (e.id === 'splitter') { spawnEnemy('runner', e.x - 18, e.y, true); spawnEnemy('runner', e.x + 18, e.y, true); }
     if (e.id === 'boss' && run.wave === MAX_WAVES) run.pendingVictory = true;
     if (e.id === 'boss') showToast('首领已击败！');
@@ -754,7 +1126,7 @@
     if (hit?.type === 'ranged' && run.character.id === 'rover' && s.mark?.target === e && distance(e, run.player) >= hit.range * .5) amount *= 1.2;
     const steady = hit?.type === 'ranged' && run.character.id === 'rover' && s.steadyReady;
     const crit = directHit && Math.random() * 100 < run.stats.crit + (steady ? 15 : 0);
-    if (steady) { s.steadyReady = false; s.moveTime = 0; }
+    if (steady) { s.steadyReady = false; s.moveTime = 0; skillBurst(1, e.x, e.y, e.r + 24, .28); }
     const damage = Math.max(1, Math.round(amount * (crit ? 1.8 : 1)));
     e.hp -= damage; e.hitFlash = .1;
     if (crit) run.effects.push({ kind: 'text', x: e.x + rand(-8, 8), y: e.y - e.r, text: String(damage), color: '#ffe284', life: .55, maxLife: .55 });
@@ -768,8 +1140,7 @@
       const item = run.pickups[i], d = distance(item, p);
       if (d < range && d > 1) {
         const speed = 250 + (range - d) * 5;
-        item.x += (p.x - item.x) / d * speed * dt;
-        item.y += (p.y - item.y) / d * speed * dt;
+        moveThroughTerrain(item, (p.x - item.x) / d * speed * dt, (p.y - item.y) / d * speed * dt);
       }
       if (d < p.radius + item.r + 3) {
         if (item.kind === 'chest') {
@@ -779,7 +1150,7 @@
           const recovered = Math.round(p.hp - before);
           showToast(`宝箱待结算开启；${recovered ? `生命 +${recovered}` : '生命已满'}`);
           if (recovered) run.effects.push({ kind: 'text', x: p.x, y: p.y - 24, text: `+${recovered}`, color: '#ffe4a0', life: .7, maxLife: .7 });
-          tone(720, .12, 'triangle', .045);
+          playSfx('chest-pickup');
         } else {
           run.money += 1; run.earned += 1; addXp(1);
           if (run.character.id === 'scavenger') countScavengedMaterial();
@@ -793,6 +1164,11 @@
     const loaded = run.character.id === 'scavenger' && run.skills.loadedTime > 0 ? 3 : 0;
     return (def.damage * Math.pow(1.65, w.tier - 1) + (run.stats[def.type] || 0) + loaded) * (1 + run.stats.damage / 100);
   }
+  function projectileRadius(weaponId) {
+    if (weaponId === 'spore') return 9;
+    if (weaponId === 'rail') return 5;
+    return 4;
+  }
   function attackSpeed() { return run.stats.attackSpeed + (run.character.id === 'scavenger' && run.skills.loadedTime > 0 ? 20 : 0); }
   function registerWeaponHit(e, hit) {
     const s = run.skills;
@@ -805,15 +1181,18 @@
         for (const target of targets) {
           const angle = Math.atan2(target.y - run.player.y, target.x - run.player.x);
           run.bullets.push({ x: run.player.x, y: run.player.y, vx: Math.cos(angle) * 650, vy: Math.sin(angle) * 650,
-            life: 1.25, damage: hit.damage * .5, r: 5, color: '#b5f6eb', pierce: 1, explosion: 0, hit: new Set(), skill: true, homing: target });
+            life: 1.25, damage: hit.damage * .5, r: 5, color: '#b5f6eb', pierce: 1, explosion: 0, hit: new Set(), skill: true, visualTag: 'stars', homing: target });
         }
+        skillBurst(3, run.player.x, run.player.y, 62, .4);
         showToast('星点合围！');
       }
     } else if (run.character.id === 'conductor' && hit.type === 'elemental') addCharge();
   }
-  function getTarget(range, type) {
+  function getTarget(range, type, weaponId) {
     const p = run.player;
-    let candidates = run.enemies.filter(e => !e.dead && distance(e, p) <= range);
+    const radius = projectileRadius(weaponId);
+    let candidates = run.enemies.filter(e => !e.dead && distance(e, p) <= range
+      && (weaponId === 'arc' || !terrainLineBlocked(p.x, p.y, e.x, e.y, radius, false)));
     if (!candidates.length) return null;
     if (type === 'ranged' && run.character.id === 'rover' && run.skills.mark && candidates.includes(run.skills.mark.target)) return run.skills.mark.target;
     if (run.aimTarget) {
@@ -827,18 +1206,22 @@
     const def = WEAPONS[w.id];
     const speed = def.speed || 620;
     run.bullets.push({ x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed, life: def.range / speed, damage,
-      r: w.id === 'spore' ? 9 : w.id === 'rail' ? 5 : 4, color: def.color,
+      r: projectileRadius(w.id), color: def.color,
       pierce: options.pierce || def.pierce || 1, explosion: options.skill ? 0 : def.explosion ? def.explosion * (1 + .15 * (w.tier - 1)) : 0,
-      hit: new Set(), skill: !!options.skill, attackId: options.attackId, type: def.type, range: def.range, baseDamage: damage });
+      hit: new Set(), skill: !!options.skill,
+      visualTag: options.visualTag || (run.character.id === 'scavenger' && run.skills.loadedTime > 0 ? 'loaded' : null),
+      attackId: options.attackId, type: def.type, range: def.range, baseDamage: damage });
   }
   function fireWeapon(w) {
     const def = WEAPONS[w.id];
     if (w.id === 'drone') return;
     const p = run.player;
-    const target = getTarget(def.range, def.type);
+    const target = getTarget(def.range, def.type, w.id);
     if (!target) return;
     w.cool = Math.max(.09, def.cooldown * Math.pow(.95, w.tier - 1) / (1 + attackSpeed() / 100));
     const angle = Math.atan2(target.y - p.y, target.x - p.x);
+    p.attackPose = .2;
+    p.attackFacing = angle;
     const damage = weaponDamage(w);
     const attackId = ++run.attackSeq;
     const hit = { attackId, type: def.type, range: def.range, damage };
@@ -847,7 +1230,9 @@
       for (const e of run.enemies) {
         if (e.dead || distance(e, p) > def.range + e.r) continue;
         const relative = Math.atan2(Math.sin(Math.atan2(e.y - p.y, e.x - p.x) - angle), Math.cos(Math.atan2(e.y - p.y, e.x - p.x) - angle));
-        if (Math.abs(relative) < halfArc) { damageEnemy(e, damage, true, hit); if (w.id === 'ember') { e.burn = 2; e.burnClock = .4; } }
+        if (Math.abs(relative) < halfArc && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false)) {
+          damageEnemy(e, damage, true, hit); if (w.id === 'ember') { e.burn = 2; e.burnClock = .4; }
+        }
       }
       run.effects.push({ kind: 'arc', x: p.x, y: p.y, r: def.range, angle, arc: halfArc, color: def.color, life: w.id === 'blade' ? .18 : .13, maxLife: .18 });
     } else if (w.id === 'arc') {
@@ -870,7 +1255,8 @@
     if (run.character.id === 'rover' && def.type === 'ranged') {
       run.skills.rangedFires += 1;
       if (run.skills.rangedFires % 6 === 0) {
-        addShot(p.x, p.y, angle, w, damage * .6, { skill: true, pierce: 3 });
+        addShot(p.x, p.y, angle, w, damage * .6, { skill: true, pierce: 3, visualTag: 'pierce' });
+        skillBurst(2, p.x, p.y, 48, .3, angle);
         showToast('掠线！');
       }
     } else if (run.character.id === 'bulwark' && def.type === 'melee') {
@@ -882,9 +1268,10 @@
           if (Math.abs(relative) < .7) dealSkillDamage(e, 10 + run.stats.melee * .5);
         }
         run.effects.push({ kind: 'arc', x: p.x, y: p.y, r: 120, angle: side, arc: .7, color: '#ffcd91', life: .2, maxLife: .2 });
+        skillBurst(2, p.x, p.y, 120, .32, side);
       }
     }
-    if (Math.random() < .24) tone(w.id === 'rail' ? 440 : 590, .04, 'triangle', .012);
+    playSfx(w.id);
   }
   function updateWeapons(dt) {
     const drones = run.weapons.filter(w => w.id === 'drone');
@@ -898,6 +1285,7 @@
         if (hit) {
           const damage = weaponDamage(w);
           damageEnemy(hit, damage, true, { attackId: ++run.attackSeq, type: 'elemental', range: WEAPONS.drone.range, damage });
+          playSfx('drone');
           w.cool = Math.max(.13, WEAPONS.drone.cooldown / (1 + attackSpeed() / 100));
         }
       } else if (w.cool <= 0) fireWeapon(w);
@@ -906,7 +1294,7 @@
   function explode(b) {
     run.effects.push({ kind: 'pulse', x: b.x, y: b.y, r: b.explosion, color: '#c2e88c', life: .33, maxLife: .33 });
     for (const e of run.enemies) if (!e.dead && distance(e, b) < b.explosion + e.r) damageEnemy(e, b.damage, true, { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage });
-    tone(180, .1, 'sawtooth', .025);
+    playSfx('explosion');
   }
   function updateBullets(dt) {
     for (let i = run.bullets.length - 1; i >= 0; i--) {
@@ -919,18 +1307,25 @@
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
       let remove = false;
       const dx = b.x - fromX, dy = b.y - fromY;
-      const lengthSq = dx * dx + dy * dy;
-      for (const e of run.enemies) {
-        if (e.dead || b.hit.has(e)) continue;
-        const t = lengthSq ? clamp(((e.x - fromX) * dx + (e.y - fromY) * dy) / lengthSq, 0, 1) : 0;
-        const hitX = fromX + dx * t, hitY = fromY + dy * t;
-        const radius = b.r + e.r;
-        if ((hitX - e.x) ** 2 + (hitY - e.y) ** 2 >= radius * radius) continue;
+      const wallTime = terrainHitTime(fromX, fromY, b.x, b.y, b.r);
+      const hits = run.enemies.filter(e => !e.dead && !b.hit.has(e))
+        .map(e => ({ enemy: e, time: segmentCircleHitTime(fromX, fromY, b.x, b.y, e.x, e.y, b.r + e.r) }))
+        .filter(hit => hit.time <= 1 && hit.time <= wallTime)
+        .sort((a, b) => a.time - b.time);
+      for (const { enemy: e, time } of hits) {
+        if (e.dead) continue;
+        const hitX = fromX + dx * time, hitY = fromY + dy * time;
         b.hit.add(e);
         if (b.explosion) { b.x = hitX; b.y = hitY; explode(b); remove = true; break; }
         damageEnemy(e, b.damage, !b.skill, b.skill ? null : { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage });
+        if (b.visualTag === 'stars' || b.visualTag === 'pierce') skillBurst(b.visualTag === 'stars' ? 3 : 2, e.x, e.y, e.r + 18, .24);
         b.pierce -= 1;
         if (b.pierce <= 0) { remove = true; break; }
+      }
+      if (wallTime <= 1 && !remove) {
+        b.x = fromX + dx * wallTime; b.y = fromY + dy * wallTime;
+        run.effects.push({ kind: 'pulse', x: b.x, y: b.y, r: 12, color: b.color, life: .16, maxLife: .16 });
+        remove = true;
       }
       if (b.life <= 0) { if (b.explosion && !remove) explode(b); remove = true; }
       if (remove || b.x < 0 || b.y < 0 || b.x > WORLD.w || b.y > WORLD.h) run.bullets.splice(i, 1);
@@ -941,7 +1336,9 @@
     if (run.hazardClock <= 0 && run.timeLeft > 4) {
       run.hazardClock = rand(9, 12);
       const angle = rand(0, TAU), offset = rand(70, 220);
-      run.hazards.push({ x: clamp(run.player.x + Math.cos(angle) * offset, 80, WORLD.w - 80), y: clamp(run.player.y + Math.sin(angle) * offset, 80, WORLD.h - 80), r: rand(60, 85), life: 3, hit: false });
+      const radius = rand(60, 85);
+      const point = nearestWalkable(run.player.x + Math.cos(angle) * offset, run.player.y + Math.sin(angle) * offset, radius);
+      run.hazards.push({ x: point.x, y: point.y, r: radius, life: 3, hit: false });
       showToast(`小心：${run.biome.hazard}`);
     }
     for (let i = run.hazards.length - 1; i >= 0; i--) {
@@ -964,9 +1361,9 @@
   }
   function renderSkillStrip() {
     const skills = SKILLS[run.character.id];
-    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && run.skills.activeCooldown <= 0 ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skill.desc}"><strong>${skill.name}</strong><span>${skillStatus(i)}</span></div>`).join('');
+    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && run.skills.activeCooldown <= 0 ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skill.desc}"><strong><span class="skill-icon">${artIcon(`skill-${run.character.id}${i ? `-${i}` : ''}`, '')}</span>${skill.name}</strong><span>${skillStatus(i)}</span></div>`).join('');
     $('skill-button').disabled = run.skills.activeCooldown > 0;
-    $('skill-button').innerHTML = `${skills[0].name}<small>Q${run.skills.activeCooldown > 0 ? ` · ${run.skills.activeCooldown.toFixed(1)}` : ''}</small>`;
+    $('skill-button').innerHTML = `<span class="active-skill-art">${artIcon(`skill-${run.character.id}`, '')}</span><span>${skills[0].name}</span><small>${run.skills.activeCooldown > 0 ? `<span class="key-hint">Q · </span>${run.skills.activeCooldown.toFixed(1)} 秒` : '<span class="key-hint">Q</span>'}</small>`;
     $('skill-button').setAttribute('aria-label', `施放${skills[0].name}${run.skills.activeCooldown > 0 ? `，冷却 ${run.skills.activeCooldown.toFixed(1)} 秒` : '，就绪'}`);
   }
   function renderPauseDetails() {
@@ -979,7 +1376,7 @@
       ['当前武器射程', run.weapons.map(w => WEAPONS[w.id].range).join(' / ')]
     ];
     $('pause-stats').innerHTML = stats.map(([name, value]) => `<div class="pause-stat"><span>${name}</span><strong>${value}</strong></div>`).join('');
-    $('pause-skills').innerHTML = SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${skill.name}</strong><span>${skill.desc} ${i === 0 ? `当前：${skillStatus(i)}` : ''}</span></div>`).join('');
+    $('pause-skills').innerHTML = SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong><span class="pause-skill-art">${artIcon(`skill-${run.character.id}${i ? `-${i}` : ''}`, '')}</span>${skill.name}</strong><span>${skill.desc}</span><span>当前：${skillStatus(i)}</span></div>`).join('');
   }
   function updateHUD() {
     if (!run) return;
@@ -1033,6 +1430,42 @@
     const b = run.biome;
     ctx.fillStyle = b.ground;
     ctx.fillRect(0, 0, WORLD.w, WORLD.h);
+    if (selectedSkin === 'pixel') {
+      const ground = artImage(`map-${b.id}-ground`);
+      if (ground) {
+        for (let x = Math.floor(cam.x / 64) * 64; x < cam.x + viewW + 64; x += 64) {
+          for (let y = Math.floor(cam.y / 64) * 64; y < cam.y + viewH + 64; y += 64) {
+            ctx.drawImage(ground, x, y, 64, 64);
+          }
+        }
+        ctx.fillStyle = 'rgba(8, 21, 29, .18)';
+        ctx.fillRect(cam.x, cam.y, viewW, viewH);
+        ctx.fillStyle = b.accent; ctx.globalAlpha = .5;
+        ctx.fillRect(0, 0, WORLD.w, 6); ctx.fillRect(0, WORLD.h - 6, WORLD.w, 6);
+        ctx.fillRect(0, 0, 6, WORLD.h); ctx.fillRect(WORLD.w - 6, 0, 6, WORLD.h);
+        ctx.globalAlpha = 1;
+        return;
+      }
+      ctx.fillStyle = b.grid;
+      ctx.globalAlpha = .22;
+      const grid = 80;
+      for (let x = Math.floor(cam.x / grid) * grid; x < cam.x + viewW + grid; x += grid) ctx.fillRect(x, cam.y, 2, viewH);
+      for (let y = Math.floor(cam.y / grid) * grid; y < cam.y + viewH + grid; y += grid) ctx.fillRect(cam.x, y, viewW, 2);
+      ctx.fillStyle = b.accent;
+      for (const d of decor) {
+        if (!visible(d, cam, 20)) continue;
+        const x = Math.round(d.x / 4) * 4, y = Math.round(d.y / 4) * 4;
+        ctx.fillRect(x - 8, y - 2, 16, 4);
+        if (b.id === 'grove') ctx.fillRect(x - 4, y - 6, 8, 12);
+        else if (b.id === 'frost') ctx.fillRect(x - 2, y - 8, 4, 16);
+        else ctx.fillRect(x - 4, y + 2, 8, 4);
+      }
+      ctx.globalAlpha = .5;
+      ctx.fillRect(0, 0, WORLD.w, 6); ctx.fillRect(0, WORLD.h - 6, WORLD.w, 6);
+      ctx.fillRect(0, 0, 6, WORLD.h); ctx.fillRect(WORLD.w - 6, 0, 6, WORLD.h);
+      ctx.globalAlpha = 1;
+      return;
+    }
     ctx.strokeStyle = b.grid;
     ctx.globalAlpha = .32;
     ctx.lineWidth = 1;
@@ -1053,10 +1486,53 @@
     ctx.strokeRect(4, 4, WORLD.w - 8, WORLD.h - 8);
     ctx.globalAlpha = 1;
   }
+  function drawTerrain(cam) {
+    const biome = run.biome.id;
+    for (const o of run.terrain) {
+      const w = o.kind === 'water' ? o.w : 48, h = o.kind === 'tree' ? 64 : o.kind === 'water' ? o.h : 48;
+      const left = o.kind === 'water' ? o.x : o.x - 24;
+      const top = o.kind === 'tree' ? o.y - 48 : o.kind === 'rock' ? o.y - 24 : o.y;
+      if (left + w < cam.x || left > cam.x + viewW || top + h < cam.y || top > cam.y + viewH) continue;
+      const image = artImage(`map-${biome}-${o.kind}`);
+      if (image) {
+        if (o.kind === 'water') {
+          for (let x = o.x; x < o.x + o.w; x += 64) {
+            for (let y = o.y; y < o.y + o.h; y += 64) ctx.drawImage(image, x, y, 64, 64);
+          }
+        } else ctx.drawImage(image, left, top, w, h);
+      } else if (o.kind === 'water') {
+        ctx.fillStyle = '#285c69'; ctx.fillRect(o.x, o.y, o.w, o.h);
+      } else if (o.kind === 'tree') {
+        ctx.fillStyle = '#6e6652'; ctx.fillRect(o.x - 6, o.y - 12, 12, 27);
+        ctx.fillStyle = run.biome.accent; ctx.beginPath(); ctx.arc(o.x, o.y - 26, 23, 0, TAU); ctx.fill();
+      } else {
+        ctx.fillStyle = '#7f9194'; ctx.beginPath(); ctx.arc(o.x, o.y, 23, 0, TAU); ctx.fill();
+      }
+      if (o.kind === 'water') {
+        ctx.strokeStyle = run.biome.accent; ctx.globalAlpha = .55; ctx.lineWidth = selectedSkin === 'pixel' ? 4 : 3;
+        ctx.strokeRect(o.x + 2, o.y + 2, o.w - 4, o.h - 4); ctx.globalAlpha = 1;
+      }
+    }
+  }
   function drawHazards(cam) {
     for (const h of run.hazards) {
       if (!visible(h, cam, h.r)) continue;
       const active = h.life < 1.5;
+      if (selectedSkin === 'pixel') {
+        const size = Math.round(h.r / 4) * 8;
+        ctx.globalAlpha = active ? .26 : .12;
+        ctx.fillStyle = run.biome.accent;
+        drawPixelArc(h.x, h.y, h.r, 0, TAU, 5);
+        const trap = artImage(`map-${run.biome.id}-trap`);
+        if (trap) {
+          ctx.globalAlpha = active ? .95 : .55 + Math.sin(ambientTime * 12) * .15;
+          ctx.drawImage(trap, Math.round(h.x - size * .35), Math.round(h.y - size * .35), size * .7, size * .7);
+        }
+        ctx.globalAlpha = active ? .9 : .6;
+        ctx.fillStyle = run.biome.accent; drawPixelArc(h.x, h.y, h.r, 0, TAU, 5);
+        ctx.globalAlpha = 1;
+        continue;
+      }
       ctx.fillStyle = run.biome.accent;
       ctx.globalAlpha = active ? .28 : .09 + Math.sin(ambientTime * 12) * .04;
       ctx.beginPath(); ctx.arc(h.x, h.y, h.r, 0, TAU); ctx.fill();
@@ -1073,11 +1549,28 @@
       const glow = .72 + .22 * Math.sin(ambientTime * 7 + item.drift);
       if (item.kind === 'chest') {
         ctx.save(); ctx.globalAlpha = glow;
-        ctx.fillStyle = '#6d4738'; ctx.strokeStyle = '#ffe2a0'; ctx.lineWidth = 2;
-        ctx.fillRect(item.x - 11, item.y - 8, 22, 18); ctx.strokeRect(item.x - 11, item.y - 8, 22, 18);
-        ctx.fillStyle = '#f6c76e'; ctx.fillRect(item.x - 12, item.y - 10, 24, 6);
-        ctx.fillStyle = '#fff5d8'; ctx.fillRect(item.x - 2, item.y - 4, 4, 10); ctx.fillRect(item.x - 5, item.y - 1, 10, 4);
+        if (selectedSkin === 'pixel') {
+          const x = Math.round(item.x), y = Math.round(item.y);
+          ctx.fillStyle = '#182932'; ctx.fillRect(x - 14, y - 10, 28, 22);
+          ctx.fillStyle = '#9d663e'; ctx.fillRect(x - 11, y - 7, 22, 16);
+          ctx.fillStyle = '#f6c76e'; ctx.fillRect(x - 12, y - 10, 24, 6);
+          ctx.fillRect(x - 9, y + 1, 4, 8); ctx.fillRect(x + 5, y + 1, 4, 8);
+          ctx.fillStyle = '#fff5d8'; ctx.fillRect(x - 3, y - 5, 6, 10);
+        } else {
+          ctx.fillStyle = '#6d4738'; ctx.strokeStyle = '#ffe2a0'; ctx.lineWidth = 2;
+          ctx.fillRect(item.x - 11, item.y - 8, 22, 18); ctx.strokeRect(item.x - 11, item.y - 8, 22, 18);
+          ctx.fillStyle = '#f6c76e'; ctx.fillRect(item.x - 12, item.y - 10, 24, 6);
+          ctx.fillStyle = '#fff5d8'; ctx.fillRect(item.x - 2, item.y - 4, 4, 10); ctx.fillRect(item.x - 5, item.y - 1, 10, 4);
+        }
         ctx.restore();
+        continue;
+      }
+      if (selectedSkin === 'pixel') {
+        const x = Math.round(item.x), y = Math.round(item.y);
+        ctx.globalAlpha = glow;
+        ctx.fillStyle = '#b8f9d1';
+        ctx.fillRect(x - 3, y - 6, 6, 12);
+        ctx.fillRect(x - 6, y - 3, 12, 6);
         continue;
       }
       ctx.fillStyle = '#b8f9d1'; ctx.globalAlpha = glow;
@@ -1087,25 +1580,57 @@
   }
   function drawEnemy(e) {
     const def = ENEMIES[e.id];
-    ctx.save(); ctx.translate(e.x, e.y);
-    ctx.rotate(Math.atan2(run.player.y - e.y, run.player.x - e.x));
-    ctx.fillStyle = '#0007'; ctx.beginPath(); ctx.ellipse(2, e.r * .75, e.r * .95, e.r * .48, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = e.hitFlash > 0 ? '#fff3e4' : def.color;
-    ctx.strokeStyle = '#16232b'; ctx.lineWidth = e.id === 'boss' ? 5 : 3;
-    ctx.beginPath();
-    const sides = e.id === 'boss' ? 9 : e.id === 'tank' || e.id === 'elite' ? 6 : 5;
-    for (let i = 0; i < sides; i++) {
-      const a = i * TAU / sides, r = e.r * (i % 2 && e.id === 'boss' ? .85 : 1);
-      const x = Math.cos(a) * r, y = Math.sin(a) * r;
-      if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    ctx.save(); ctx.translate(selectedSkin === 'pixel' ? Math.round(e.x) : e.x, selectedSkin === 'pixel' ? Math.round(e.y) : e.y);
+    ctx.fillStyle = '#0007';
+    if (selectedSkin === 'pixel') ctx.fillRect(-e.r, e.r * .58, e.r * 2, e.r * .5);
+    else { ctx.beginPath(); ctx.ellipse(2, e.r * .75, e.r * .95, e.r * .48, 0, 0, TAU); ctx.fill(); }
+    if (e.id === 'elite' && e.windup > 0) {
+      ctx.strokeStyle = '#ffc47c'; ctx.lineWidth = 3;
+      if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffc47c'; drawPixelArc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
+      else { ctx.beginPath(); ctx.arc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); ctx.stroke(); }
     }
-    ctx.closePath(); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#23343c'; ctx.beginPath(); ctx.arc(-e.r * .1, 0, e.r * .55, 0, TAU); ctx.fill();
-    ctx.fillStyle = e.id === 'boss' ? '#ffdcef' : '#f8f6d5';
-    ctx.fillRect(e.r * .03, -e.r * .26, e.r * .3, e.r * .18);
-    ctx.fillRect(e.r * .03, e.r * .08, e.r * .3, e.r * .18);
-    if (e.id === 'shooter') { ctx.fillStyle = '#eeceff'; ctx.fillRect(e.r * .3, -4, e.r * .6, 8); }
-    if (e.id === 'charger' && e.charging > 0) { ctx.strokeStyle = '#fff8c6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-e.r, 0); ctx.lineTo(e.r * 1.5, 0); ctx.stroke(); }
+    if (e.id === 'boss' && e.windup > 0) {
+      ctx.strokeStyle = '#f7a6cf'; ctx.lineWidth = 4;
+      if (selectedSkin === 'pixel') { ctx.fillStyle = '#f7a6cf'; drawPixelArc(0, 0, e.r + 9 + (1 - e.windup / .55) * 15, 0, TAU, 6); }
+      else { ctx.beginPath(); ctx.arc(0, 0, e.r + 9 + (1 - e.windup / .55) * 15, 0, TAU); ctx.stroke(); }
+    }
+    ctx.rotate((e.id === 'elite' || e.id === 'charger') && (e.windup > 0 || e.charging > 0)
+      ? Math.atan2(e.chargeY, e.chargeX)
+      : Math.atan2(run.player.y - e.y, run.player.x - e.x));
+    if (e.id === 'crawler' && selectedSkin !== 'pixel') ctx.translate(0, Math.sin(e.animTime * 22) * .7);
+    if (e.id === 'elite' && e.windup > 0) ctx.scale(.9, 1.08);
+    if (e.id === 'elite' && e.charging > 0) ctx.scale(1.12, .9);
+    if (e.id === 'boss') {
+      const pulse = e.attackPose > 0 ? 1.12 : e.windup > 0 ? 1 + (1 - e.windup / .55) * .09 : 1 + Math.sin(run.totalTime * 4) * .025;
+      ctx.scale(pulse, pulse);
+    }
+    const pose = e.windup > 0 && (e.id === 'charger' || e.id === 'elite' || e.id === 'boss') ? `${e.id}-windup`
+      : e.charging > 0 && (e.id === 'charger' || e.id === 'elite') ? `${e.id}-charge`
+      : e.attackPose > 0 && (e.id === 'crawler' || e.id === 'shooter' || e.id === 'boss') ? `${e.id}-attack`
+      : e.moving && Math.floor(e.animTime * 6) % 2 && ENEMY_POSES[e.id].includes('step') ? `${e.id}-step` : e.id;
+    const image = artImage(pose) || artImage(e.id);
+    if (image?.complete && image.naturalWidth) {
+      const size = e.r * 2.4;
+      if (e.hitFlash > 0) ctx.filter = 'brightness(1.9)';
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
+    } else {
+      ctx.fillStyle = e.hitFlash > 0 ? '#fff3e4' : def.color;
+      ctx.strokeStyle = '#16232b'; ctx.lineWidth = e.id === 'boss' ? 5 : 3;
+      ctx.beginPath();
+      const sides = e.id === 'boss' ? 9 : e.id === 'tank' || e.id === 'elite' ? 6 : 5;
+      for (let i = 0; i < sides; i++) {
+        const a = i * TAU / sides, r = e.r * (i % 2 && e.id === 'boss' ? .85 : 1);
+        const x = Math.cos(a) * r, y = Math.sin(a) * r;
+        if (i === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+      }
+      ctx.closePath(); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#23343c'; ctx.beginPath(); ctx.arc(-e.r * .1, 0, e.r * .55, 0, TAU); ctx.fill();
+      ctx.fillStyle = e.id === 'boss' ? '#ffdcef' : '#f8f6d5';
+      ctx.fillRect(e.r * .03, -e.r * .26, e.r * .3, e.r * .18);
+      ctx.fillRect(e.r * .03, e.r * .08, e.r * .3, e.r * .18);
+      if (e.id === 'shooter') { ctx.fillStyle = '#eeceff'; ctx.fillRect(e.r * .3, -4, e.r * .6, 8); }
+      if (e.id === 'charger' && e.charging > 0) { ctx.strokeStyle = '#fff8c6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-e.r, 0); ctx.lineTo(e.r * 1.5, 0); ctx.stroke(); }
+    }
     ctx.restore();
     if (e.hp < e.maxHp || e.id === 'boss' || e.id === 'elite') {
       const width = e.r * 2.2;
@@ -1115,81 +1640,205 @@
   }
   function drawPlayer() {
     const p = run.player;
-    ctx.save(); ctx.translate(p.x, p.y); ctx.rotate(p.facing);
+    ctx.save(); ctx.translate(selectedSkin === 'pixel' ? Math.round(p.x) : p.x, selectedSkin === 'pixel' ? Math.round(p.y) : p.y); ctx.rotate(p.attackPose > 0 ? p.attackFacing : p.facing);
     if (p.invuln > 0 && Math.floor(ambientTime * 18) % 2 === 0) ctx.globalAlpha = .55;
-    ctx.fillStyle = '#0008'; ctx.beginPath(); ctx.ellipse(2, 15, 18, 8, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = run.character.id === 'conductor' ? '#b6aef0' : run.character.id === 'bulwark' ? '#b0c3c0' : run.character.id === 'scavenger' ? '#ddb88b' : '#90d9c6';
-    ctx.strokeStyle = '#132931'; ctx.lineWidth = 3;
-    ctx.beginPath(); ctx.arc(0, 0, p.radius, 0, TAU); ctx.fill(); ctx.stroke();
-    ctx.fillStyle = '#223a45'; ctx.beginPath(); ctx.ellipse(5, 0, 10, 11, 0, 0, TAU); ctx.fill();
-    ctx.fillStyle = '#fff4cf'; ctx.fillRect(5, -8, 9, 5); ctx.fillRect(5, 3, 9, 5);
-    ctx.fillStyle = '#f7b96e'; ctx.beginPath(); ctx.arc(-7, -12, 5, 0, TAU); ctx.fill();
+    ctx.fillStyle = '#0008';
+    if (selectedSkin === 'pixel') ctx.fillRect(-17, 11, 34, 9);
+    else { ctx.beginPath(); ctx.ellipse(2, 15, 18, 8, 0, 0, TAU); ctx.fill(); }
+    if (selectedSkin !== 'pixel' && run.character.id === 'scavenger' && p.attackPose <= 0 && run.movedThisFrame) ctx.translate(0, Math.sin(p.animTime * 24) * 1.3);
+    const pose = p.attackPose > 0 ? `${run.character.id}-attack`
+      : run.movedThisFrame && Math.floor(p.animTime * 6) % 2 ? `${run.character.id}-step` : run.character.id;
+    const image = artImage(pose) || artImage(run.character.id);
+    if (image?.complete && image.naturalWidth) {
+      const size = p.radius * 2.5;
+      ctx.drawImage(image, -size / 2, -size / 2, size, size);
+    } else {
+      ctx.fillStyle = run.character.id === 'conductor' ? '#b6aef0' : run.character.id === 'bulwark' ? '#b0c3c0' : run.character.id === 'scavenger' ? '#ddb88b' : '#90d9c6';
+      ctx.strokeStyle = '#132931'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(0, 0, p.radius, 0, TAU); ctx.fill(); ctx.stroke();
+      ctx.fillStyle = '#223a45'; ctx.beginPath(); ctx.ellipse(5, 0, 10, 11, 0, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#fff4cf'; ctx.fillRect(5, -8, 9, 5); ctx.fillRect(5, 3, 9, 5);
+      ctx.fillStyle = '#f7b96e'; ctx.beginPath(); ctx.arc(-7, -12, 5, 0, TAU); ctx.fill();
+    }
     ctx.restore();
     if (run.aimTarget) {
       ctx.strokeStyle = '#ffe69c'; ctx.globalAlpha = Math.min(1, run.aimTarget.life);
-      ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke();
+      ctx.lineWidth = 2;
+      if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffe69c'; drawPixelArc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); }
+      else { ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke(); }
       ctx.beginPath(); ctx.moveTo(run.aimTarget.x - 24, run.aimTarget.y); ctx.lineTo(run.aimTarget.x - 11, run.aimTarget.y); ctx.moveTo(run.aimTarget.x + 11, run.aimTarget.y); ctx.lineTo(run.aimTarget.x + 24, run.aimTarget.y); ctx.stroke(); ctx.globalAlpha = 1;
     }
     if (moveTarget) {
       ctx.strokeStyle = '#91f5cf'; ctx.lineWidth = 2;
-      ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.stroke();
-      ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 3, 0, TAU); ctx.stroke();
+      if (selectedSkin === 'pixel') { ctx.fillStyle = '#91f5cf'; drawPixelArc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.fillRect(moveTarget.x - 2, moveTarget.y - 2, 4, 4); }
+      else { ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 3, 0, TAU); ctx.stroke(); }
     }
   }
   function drawWeapons(cam) {
     for (const b of run.bullets) {
       if (!visible(b, cam)) continue;
-      ctx.fillStyle = b.color; ctx.shadowColor = b.color; ctx.shadowBlur = 12;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill();
+      ctx.fillStyle = b.color;
+      if (selectedSkin === 'pixel') {
+        const size = Math.max(6, Math.round(b.r * 2));
+        if (b.visualTag) {
+          const angle = Math.atan2(b.vy, b.vx);
+          ctx.save(); ctx.translate(Math.round(b.x), Math.round(b.y)); ctx.rotate(angle);
+          ctx.fillStyle = b.visualTag === 'stars' ? '#b5f6eb' : '#f9e39a';
+          ctx.fillRect(-18, -3, 24, 6); ctx.fillRect(-30, -1, 8, 2);
+          if (b.visualTag === 'stars') { ctx.fillRect(-2, -10, 4, 20); ctx.fillRect(-10, -2, 20, 4); }
+          ctx.restore();
+        } else ctx.fillRect(Math.round(b.x - size / 2), Math.round(b.y - size / 2), size, size);
+      } else {
+        ctx.shadowColor = b.color; ctx.shadowBlur = 12;
+        ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill();
+      }
     }
     ctx.shadowBlur = 0;
     const drones = run.weapons.filter(w => w.id === 'drone');
     for (let i = 0; i < drones.length; i++) {
       const angle = run.totalTime * 2.8 + i * TAU / drones.length;
       const x = run.player.x + Math.cos(angle) * 87, y = run.player.y + Math.sin(angle) * 87;
+      const image = artImage('drone');
+      if (image) { ctx.drawImage(image, Math.round(x - 17), Math.round(y - 17), 34, 34); continue; }
       ctx.fillStyle = '#8ef0d6'; ctx.strokeStyle = '#13343a'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(x, y, 14, 0, TAU); ctx.fill(); ctx.stroke();
       ctx.fillStyle = '#fff'; ctx.beginPath(); ctx.arc(x + 3, y - 2, 4, 0, TAU); ctx.fill();
     }
   }
+  function drawPixelArc(x, y, radius, from, to, size = 4) {
+    const steps = Math.max(8, Math.ceil(Math.abs(to - from) * radius / 5));
+    for (let i = 0; i <= steps; i++) {
+      const angle = from + (to - from) * i / steps;
+      const px = Math.round((x + Math.cos(angle) * radius) / size) * size;
+      const py = Math.round((y + Math.sin(angle) * radius) / size) * size;
+      ctx.fillRect(px - size / 2, py - size / 2, size, size);
+    }
+  }
   function drawEffects(cam) {
     for (const fx of run.effects) {
-      if (!visible(fx, cam, fx.r || 30)) continue;
+      const inView = fx.kind === 'line'
+        ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW
+          && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) <= cam.y + viewH
+        : visible(fx, cam, fx.r || 30);
+      if (!inView) continue;
       ctx.globalAlpha = clamp(fx.life / fx.maxLife, 0, 1);
       ctx.strokeStyle = fx.color; ctx.fillStyle = fx.color;
-      if (fx.kind === 'pulse') { ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r * (1.15 - fx.life / fx.maxLife * .35), 0, TAU); ctx.stroke(); }
-      else if (fx.kind === 'line') { ctx.lineWidth = fx.width || 3; ctx.beginPath(); ctx.moveTo(fx.x1, fx.y1); ctx.lineTo(fx.x2, fx.y2); ctx.stroke(); }
-      else if (fx.kind === 'arc') { ctx.lineWidth = fx.angle ? 14 : 8; ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r, fx.angle - fx.arc, fx.angle + fx.arc); ctx.stroke(); }
+      if (fx.kind === 'skill-burst') {
+        const progress = 1 - fx.life / fx.maxLife;
+        const color = SKILL_FX_COLORS[fx.character];
+        ctx.save(); ctx.translate(Math.round(fx.x), Math.round(fx.y)); ctx.rotate(fx.angle || 0);
+        ctx.fillStyle = color; ctx.strokeStyle = color;
+        if (selectedSkin === 'pixel') {
+          drawPixelArc(0, 0, fx.r * (.35 + progress * .65), 0, TAU, 4);
+          for (let i = 0; i < 8; i++) {
+            const angle = i * TAU / 8, reach = fx.r * (.22 + progress * .7);
+            ctx.fillRect(Math.round(Math.cos(angle) * reach / 4) * 4 - 3,
+              Math.round(Math.sin(angle) * reach / 4) * 4 - 3, 6, 6);
+          }
+          const image = artImage(fx.skill === 0 ? `effect-${fx.character}` : `skill-${fx.character}-${fx.skill}`);
+          if (image) {
+            const size = Math.min(80, Math.max(38, fx.r * .65)) * (1 + progress * .35);
+            ctx.drawImage(image, -size / 2, -size / 2, size, size);
+          }
+        } else {
+          ctx.shadowColor = color; ctx.shadowBlur = 15; ctx.lineWidth = 3;
+          ctx.beginPath(); ctx.arc(0, 0, fx.r * (.4 + progress * .6), 0, TAU); ctx.stroke();
+          for (let i = 0; i < 8; i++) {
+            const angle = i * TAU / 8, reach = fx.r * (.2 + progress * .65);
+            ctx.beginPath(); ctx.moveTo(Math.cos(angle) * (reach - 12), Math.sin(angle) * (reach - 12));
+            ctx.lineTo(Math.cos(angle) * reach, Math.sin(angle) * reach); ctx.stroke();
+          }
+        }
+        ctx.restore();
+      }
+      else if (fx.kind === 'pulse') {
+        const radius = fx.r * (1.15 - fx.life / fx.maxLife * .35);
+        if (selectedSkin === 'pixel') drawPixelArc(fx.x, fx.y, radius, 0, TAU, 5);
+        else { ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(fx.x, fx.y, radius, 0, TAU); ctx.stroke(); }
+      }
+      else if (fx.kind === 'shards') {
+        const travel = 1 - fx.life / fx.maxLife;
+        for (let i = 0; i < 4; i++) {
+          const angle = i * TAU / 4 + .4;
+          ctx.save(); ctx.translate(fx.x + Math.cos(angle) * fx.r * travel, fx.y + Math.sin(angle) * fx.r * travel);
+          if (selectedSkin !== 'pixel') ctx.rotate(angle + travel * 2);
+          ctx.fillRect(-4, -3, 8, 6); ctx.restore();
+        }
+      }
+      else if (fx.kind === 'line') {
+        if (selectedSkin === 'pixel') {
+          const steps = Math.max(1, Math.ceil(Math.hypot(fx.x2 - fx.x1, fx.y2 - fx.y1) / 5));
+          for (let i = 0; i <= steps; i++) {
+            const x = fx.x1 + (fx.x2 - fx.x1) * i / steps, y = fx.y1 + (fx.y2 - fx.y1) * i / steps;
+            ctx.fillRect(Math.round(x / 4) * 4, Math.round(y / 4) * 4, fx.width || 4, fx.width || 4);
+          }
+        } else { ctx.lineWidth = fx.width || 3; ctx.beginPath(); ctx.moveTo(fx.x1, fx.y1); ctx.lineTo(fx.x2, fx.y2); ctx.stroke(); }
+      }
+      else if (fx.kind === 'arc') {
+        if (selectedSkin === 'pixel') drawPixelArc(fx.x, fx.y, fx.r, fx.angle - fx.arc, fx.angle + fx.arc, 8);
+        else { ctx.lineWidth = fx.angle ? 14 : 8; ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r, fx.angle - fx.arc, fx.angle + fx.arc); ctx.stroke(); }
+      }
       else if (fx.kind === 'text') { ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText(fx.text, fx.x, fx.y - (1 - fx.life / fx.maxLife) * 24); }
     }
     ctx.globalAlpha = 1;
   }
+  function drawSkillGround() {
+    const field = run.skills.field;
+    if (!field) return;
+    ctx.fillStyle = '#b5b4ff'; ctx.strokeStyle = '#d5cfff'; ctx.lineWidth = 2; ctx.globalAlpha = .12;
+    if (selectedSkin === 'pixel') {
+      ctx.fillRect(field.x - 80, field.y - 80, 160, 160);
+      const image = artImage('effect-conductor');
+      if (image) { ctx.globalAlpha = .32; ctx.drawImage(image, field.x - 88, field.y - 88, 176, 176); }
+      ctx.globalAlpha = .7; ctx.fillStyle = '#d5cfff'; drawPixelArc(field.x, field.y, 115, 0, TAU);
+    } else { ctx.beginPath(); ctx.arc(field.x, field.y, 115, 0, TAU); ctx.fill(); ctx.globalAlpha = .55; ctx.stroke(); }
+    ctx.globalAlpha = 1;
+  }
   function drawSkillAreas() {
     const s = run.skills;
-    if (s.field) {
-      ctx.fillStyle = '#b5b4ff'; ctx.strokeStyle = '#d5cfff'; ctx.lineWidth = 2; ctx.globalAlpha = .12;
-      ctx.beginPath(); ctx.arc(s.field.x, s.field.y, 115, 0, TAU); ctx.fill();
-      ctx.globalAlpha = .55; ctx.stroke(); ctx.globalAlpha = 1;
-    }
     if (s.mark && !s.mark.target.dead) {
       ctx.strokeStyle = '#b5f6eb'; ctx.lineWidth = 3; ctx.globalAlpha = .65 + .25 * Math.sin(ambientTime * 10);
-      ctx.beginPath(); ctx.arc(s.mark.target.x, s.mark.target.y, s.mark.target.r + 12, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
+      if (selectedSkin === 'pixel') {
+        ctx.fillStyle = '#b5f6eb'; drawPixelArc(s.mark.target.x, s.mark.target.y, s.mark.target.r + 12, 0, TAU);
+        const image = artImage('effect-rover');
+        if (image) ctx.drawImage(image, s.mark.target.x - 32, s.mark.target.y - 32, 64, 64);
+      }
+      else { ctx.beginPath(); ctx.arc(s.mark.target.x, s.mark.target.y, s.mark.target.r + 12, 0, TAU); ctx.stroke(); }
+      ctx.globalAlpha = 1;
+    }
+    if (selectedSkin === 'pixel' && run.character.id === 'scavenger' && s.magnetTime > 0) {
+      const image = artImage('effect-scavenger');
+      ctx.globalAlpha = .65 + .2 * Math.sin(ambientTime * 9);
+      if (image) ctx.drawImage(image, run.player.x - 42, run.player.y - 42, 84, 84);
+      ctx.fillStyle = '#f6d17e'; drawPixelArc(run.player.x, run.player.y, 75 + run.stats.pickup, 0, TAU, 5);
+      ctx.globalAlpha = 1;
+    }
+    if (selectedSkin === 'pixel' && run.character.id === 'conductor' && s.charge > 0) {
+      for (let i = 0; i < s.charge; i++) {
+        const angle = i * TAU / 10 - Math.PI / 2;
+        ctx.fillStyle = i % 2 ? '#c5b2ff' : '#f0dcff';
+        ctx.fillRect(Math.round(run.player.x + Math.cos(angle) * 34) - 2,
+          Math.round(run.player.y + Math.sin(angle) * 34) - 2, 5, 5);
+      }
     }
     if (s.shieldTime > 0 || s.guardReady) {
       ctx.strokeStyle = s.guardReady ? '#ffcd91' : '#ffe4a0'; ctx.lineWidth = 3; ctx.globalAlpha = .8;
-      ctx.beginPath(); ctx.arc(run.player.x, run.player.y, run.player.radius + 8, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1;
+      if (selectedSkin === 'pixel') { ctx.fillStyle = ctx.strokeStyle; drawPixelArc(run.player.x, run.player.y, run.player.radius + 8, 0, TAU); }
+      else { ctx.beginPath(); ctx.arc(run.player.x, run.player.y, run.player.radius + 8, 0, TAU); ctx.stroke(); }
+      ctx.globalAlpha = 1;
     }
   }
   function drawCombat() {
     const cam = camera();
     ctx.save();
     if (run.screenShake > 0 && phase === 'combat') ctx.translate(rand(-run.screenShake, run.screenShake), rand(-run.screenShake, run.screenShake));
-    ctx.translate(-cam.x, -cam.y);
-    drawBackdrop(cam); drawHazards(cam); drawPickups(cam);
+    ctx.translate(selectedSkin === 'pixel' ? -Math.round(cam.x) : -cam.x, selectedSkin === 'pixel' ? -Math.round(cam.y) : -cam.y);
+    drawBackdrop(cam); drawTerrain(cam); drawHazards(cam); drawSkillGround(); drawPickups(cam);
     for (const b of run.enemyBullets) {
       if (!visible(b, cam)) continue;
-      ctx.fillStyle = '#ff8da8'; ctx.shadowColor = '#ff8da8'; ctx.shadowBlur = 9;
-      ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill();
+      ctx.fillStyle = '#ff8da8';
+      if (selectedSkin === 'pixel') ctx.fillRect(Math.round(b.x - b.r), Math.round(b.y - b.r), b.r * 2, b.r * 2);
+      else { ctx.shadowColor = '#ff8da8'; ctx.shadowBlur = 9; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill(); }
     }
     ctx.shadowBlur = 0;
     for (const e of run.enemies) if (visible(e, cam, e.r + 20)) drawEnemy(e);
@@ -1197,6 +1846,24 @@
     ctx.restore();
   }
   function drawTitleScene() {
+    if (selectedSkin === 'pixel') {
+      ctx.fillStyle = '#102530'; ctx.fillRect(0, 0, viewW, viewH);
+      for (let i = 0; i < 65; i++) {
+        const x = Math.floor((i * 7919 % 1000) / 1000 * viewW / 4) * 4;
+        const y = Math.floor((i * 6151 % 1000) / 1000 * viewH / 4) * 4;
+        ctx.fillStyle = i % 6 ? '#3e6972' : '#a5d6b7';
+        ctx.fillRect(x, y, i % 6 ? 2 : 4, i % 6 ? 2 : 4);
+      }
+      const x = Math.round(viewW * .73 / 8) * 8, y = Math.round(viewH * .57 / 8) * 8;
+      for (let i = 4; i >= 0; i--) {
+        const size = 64 + i * 32;
+        ctx.fillStyle = i % 2 ? '#25444e' : '#476b66';
+        ctx.fillRect(x - size / 2, y - size / 2, size, size);
+      }
+      ctx.fillStyle = '#ffcf7a'; ctx.fillRect(x - 48, y - 48, 96, 96);
+      ctx.fillStyle = '#ffebad'; ctx.fillRect(x - 24, y - 24, 48, 48);
+      return;
+    }
     const grd = ctx.createLinearGradient(0, 0, viewW, viewH);
     grd.addColorStop(0, '#0a1d28'); grd.addColorStop(.6, '#17343c'); grd.addColorStop(1, '#10232e');
     ctx.fillStyle = grd; ctx.fillRect(0, 0, viewW, viewH);
@@ -1219,14 +1886,17 @@
     viewW = Math.max(1, canvas.clientWidth);
     viewH = Math.max(1, canvas.clientHeight);
     dpr = Math.min(2, window.devicePixelRatio || 1);
-    canvas.width = Math.round(viewW * dpr); canvas.height = Math.round(viewH * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvasScale = selectedSkin === 'pixel' ? 1 : dpr;
+    canvas.width = Math.round(viewW * canvasScale); canvas.height = Math.round(viewH * canvasScale);
+    ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
+    ctx.imageSmoothingEnabled = selectedSkin !== 'pixel';
   }
   function loop(now) {
     const dt = Math.min(.05, (now - (lastFrame || now)) / 1000);
     lastFrame = now; ambientTime += dt;
     if (phase === 'combat' && run) updateCombat(dt);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
+    ctx.imageSmoothingEnabled = selectedSkin !== 'pixel';
     ctx.clearRect(0, 0, viewW, viewH);
     if (run && phase !== 'title') drawCombat(); else drawTitleScene();
     requestAnimationFrame(loop);
@@ -1240,7 +1910,7 @@
     $('resume-button').focus({ preventScroll: true });
   }
   function resume() { if (phase === 'pause') { showPhase(previousPhase); $('pause-button').focus({ preventScroll: true }); } }
-  function goTitle() { run = null; keys.clear(); resetStick(); showPhase('title'); renderTitle(); $('start-button').focus({ preventScroll: true }); }
+  function goTitle() { run = null; moveFlow = null; keys.clear(); resetStick(); showPhase('title'); renderTitle(); $('start-button').focus({ preventScroll: true }); }
   function resetStick() { stick.x = 0; stick.y = 0; stick.pointerId = null; $('joystick-knob').style.transform = 'translate(0,0)'; }
   function moveStick(event) {
     const box = $('joystick').getBoundingClientRect();
@@ -1255,7 +1925,10 @@
     $('biome-list').addEventListener('click', event => { const b = event.target.closest('[data-biome]'); if (b) { selectedBiome = b.dataset.biome; renderTitle(); refocus(`[data-biome="${selectedBiome}"]`); } });
     $('difficulty-list').addEventListener('click', event => { const b = event.target.closest('[data-difficulty]'); if (b) { selectedDifficulty = b.dataset.difficulty; persist(); renderTitle(); refocus(`[data-difficulty="${selectedDifficulty}"]`); } });
     $('pace-list').addEventListener('click', event => { const b = event.target.closest('[data-pace]'); if (b) { selectedPace = b.dataset.pace; persist(); renderTitle(); refocus(`[data-pace="${selectedPace}"]`); } });
-    $('sound-button').addEventListener('click', () => { soundEnabled = !soundEnabled; persist(); renderTitle(); refocus('#sound-button'); if (soundEnabled) tone(660, .1); });
+    for (const id of ['title-skin-button', 'skin-button', 'pause-skin-button']) {
+      $(id).addEventListener('click', () => { toggleSkin(); $(id).focus({ preventScroll: true }); });
+    }
+    $('sound-button').addEventListener('click', () => { soundEnabled = !soundEnabled; persist(); renderTitle(); refocus('#sound-button'); if (soundEnabled) playSfx('select'); });
     $('start-button').addEventListener('click', startRun);
     $('pause-button').addEventListener('click', pause);
     $('resume-button').addEventListener('click', resume);
@@ -1268,7 +1941,7 @@
       if (!button || phase !== 'level') return;
       const choice = run.levelChoices[Number(button.dataset.level)];
       if (!choice) return;
-      applyBonus(choice.bonus); run.pendingLevels -= 1; tone(790, .14, 'triangle', .04);
+      applyBonus(choice.bonus); run.pendingLevels -= 1; playSfx('level');
       if (run.pendingLevels > 0) levelOffers(); else openShop();
     });
     $('shop-offers').addEventListener('click', event => {
@@ -1312,7 +1985,8 @@
       const x = event.clientX - box.left + cam.x, y = event.clientY - box.top + cam.y;
       if (event.button === 2) {
         event.preventDefault();
-        moveTarget = { x: clamp(x, run.player.radius, WORLD.w - run.player.radius), y: clamp(y, run.player.radius, WORLD.h - run.player.radius) };
+        moveTarget = nearestWalkable(x, y, run.player.radius);
+        moveFlow = makeFlow(moveTarget.x, moveTarget.y, run.player.radius);
       } else if (event.button === 0) {
         run.aimTarget = { x: clamp(x, 0, WORLD.w), y: clamp(y, 0, WORLD.h), life: 3.5 };
       }

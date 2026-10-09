@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>极差场战场雷纹</title>
+  <g fill="#10252d">
+    <rect x="8" y="8" width="16" height="6"/><rect x="8" y="14" width="6" height="10"/>
+    <rect x="40" y="8" width="16" height="6"/><rect x="50" y="14" width="6" height="10"/>
+    <rect x="8" y="50" width="16" height="6"/><rect x="8" y="40" width="6" height="10"/>
+    <rect x="40" y="50" width="16" height="6"/><rect x="50" y="40" width="6" height="10"/>
+    <rect x="27" y="4" width="10" height="7"/><rect x="27" y="53" width="10" height="7"/>
+    <rect x="4" y="27" width="7" height="10"/><rect x="53" y="27" width="7" height="10"/>
+    <rect x="30" y="16" width="8" height="11"/><rect x="25" y="25" width="13" height="7"/>
+    <rect x="30" y="31" width="10" height="6"/><rect x="26" y="36" width="10" height="12"/>
+  </g>
+  <g fill="#9177be">
+    <rect x="10" y="10" width="13" height="3"/><rect x="10" y="13" width="3" height="10"/>
+    <rect x="41" y="10" width="13" height="3"/><rect x="51" y="13" width="3" height="10"/>
+    <rect x="10" y="51" width="13" height="3"/><rect x="10" y="41" width="3" height="10"/>
+    <rect x="41" y="51" width="13" height="3"/><rect x="51" y="41" width="3" height="10"/>
+    <rect x="29" y="5" width="6" height="5"/><rect x="29" y="54" width="6" height="5"/>
+    <rect x="5" y="29" width="5" height="6"/><rect x="54" y="29" width="5" height="6"/>
+  </g>
+  <g fill="#d0b9ef">
+    <rect x="12" y="10" width="9" height="2"/><rect x="43" y="10" width="9" height="2"/>
+    <rect x="12" y="52" width="9" height="2"/><rect x="43" y="52" width="9" height="2"/>
+    <rect x="32" y="17" width="4" height="9"/><rect x="27" y="26" width="9" height="4"/>
+    <rect x="32" y="32" width="6" height="4"/><rect x="28" y="37" width="6" height="9"/>
+  </g>
+  <g fill="#e7f7e9"><rect x="33" y="18" width="2" height="7"/><rect x="28" y="27" width="7" height="2"/><rect x="33" y="33" width="4" height="2"/><rect x="29" y="38" width="4" height="7"/></g>
+  <g fill="#62ddce"><rect x="19" y="21" width="7" height="3"/><rect x="39" y="21" width="7" height="3"/><rect x="18" y="40" width="8" height="3"/><rect x="39" y="40" width="8" height="3"/><rect x="18" y="26" width="3" height="6"/><rect x="43" y="33" width="3" height="6"/></g>
+</svg>

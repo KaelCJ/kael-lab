@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>赤沙废港：锈砂码头地砖</title>
+  <rect x="0" y="0" width="64" height="64" fill="#454746"/>
+  <rect x="0" y="0" width="64" height="8" fill="#625447"/>
+  <rect x="0" y="8" width="64" height="2" fill="#302f32"/>
+  <rect x="0" y="10" width="64" height="18" fill="#625447"/>
+  <rect x="0" y="28" width="64" height="2" fill="#302f32"/>
+  <rect x="0" y="30" width="64" height="20" fill="#625447"/>
+  <rect x="0" y="50" width="64" height="2" fill="#302f32"/>
+  <rect x="0" y="52" width="64" height="12" fill="#625447"/>
+  <rect x="15" y="0" width="2" height="8" fill="#302f32"/>
+  <rect x="42" y="10" width="2" height="18" fill="#302f32"/>
+  <rect x="23" y="30" width="2" height="20" fill="#302f32"/>
+  <rect x="50" y="52" width="2" height="12" fill="#302f32"/>
+  <rect x="3" y="4" width="8" height="2" fill="#8e6c54"/>
+  <rect x="22" y="15" width="14" height="2" fill="#8e6c54"/>
+  <rect x="48" y="22" width="8" height="2" fill="#8e6c54"/>
+  <rect x="5" y="39" width="11" height="2" fill="#8e6c54"/>
+  <rect x="31" y="45" width="12" height="2" fill="#8e6c54"/>
+  <rect x="17" y="57" width="14" height="2" fill="#8e6c54"/>
+  <rect x="7" y="11" width="3" height="3" fill="#3a393b"/>
+  <rect x="54" y="34" width="3" height="3" fill="#3a393b"/>
+  <rect x="26" y="2" width="3" height="3" fill="#b67b58"/>
+  <rect x="3" y="55" width="3" height="3" fill="#b67b58"/>
+  <rect x="58" y="57" width="3" height="3" fill="#b67b58"/>
+</svg>

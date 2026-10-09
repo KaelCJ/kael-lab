@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 64 64" shape-rendering="crispEdges">
+  <title>荧菌裂谷：荧光暗河</title>
+  <rect x="0" y="0" width="64" height="64" fill="#273d53"/>
+  <rect x="0" y="5" width="64" height="5" fill="#395972"/>
+  <rect x="0" y="26" width="64" height="5" fill="#395972"/>
+  <rect x="0" y="49" width="64" height="5" fill="#395972"/>
+  <rect x="5" y="8" width="16" height="3" fill="#5e8aa0"/>
+  <rect x="43" y="8" width="16" height="3" fill="#5e8aa0"/>
+  <rect x="24" y="17" width="15" height="3" fill="#5e8aa0"/>
+  <rect x="8" y="29" width="12" height="3" fill="#67baa9"/>
+  <rect x="31" y="29" width="21" height="3" fill="#67baa9"/>
+  <rect x="0" y="39" width="8" height="3" fill="#5e8aa0"/>
+  <rect x="48" y="39" width="16" height="3" fill="#5e8aa0"/>
+  <rect x="14" y="52" width="18" height="3" fill="#67baa9"/>
+  <rect x="42" y="52" width="16" height="3" fill="#67baa9"/>
+  <rect x="34" y="5" width="5" height="2" fill="#b89fce"/>
+  <rect x="17" y="19" width="6" height="2" fill="#b89fce"/>
+  <rect x="39" y="41" width="7" height="2" fill="#b89fce"/>
+  <rect x="3" y="59" width="7" height="2" fill="#b89fce"/>
+  <rect x="6" y="43" width="3" height="3" fill="#80d6be"/>
+  <rect x="55" y="19" width="3" height="3" fill="#80d6be"/>
+</svg>
