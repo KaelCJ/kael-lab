@@ -5,14 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#111827">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <meta name="description" content="星核幸存者：原创横屏网页生存肉鸽游戏。移动、自动攻击、升级、购物，在 20 波敌潮中求生。">
+  <meta name="description" content="星核幸存者：原创网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波敌潮中移动、自动攻击、升级和购物。">
   <title>星核幸存者 · Kael Lab</title>
   <link rel="stylesheet" href="./game.css">
   <script src="./game.js" defer></script>
 </head>
 <body>
   <main id="game" class="game-shell">
-    <canvas id="arena" aria-label="星核幸存者游戏战场。使用方向键或 WASD 移动，攻击自动进行。"></canvas>
+    <canvas id="arena" aria-label="星核幸存者游戏战场。电脑使用方向键、WASD 或右键点击移动，手机使用摇杆移动；攻击自动进行。"></canvas>
 
     <div id="hud" class="hud hidden" aria-live="off">
       <div class="hud-top">
@@ -32,16 +32,15 @@
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
-    <div id="rotate-hint" class="rotate-hint" role="status">↻<br>请将手机横过来游玩</div>
 
     <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
-      <div class="title-heading"><a class="home-link" href="../">← Kael Lab</a><div class="eyebrow">KAEL LAB · BROWSER GAME</div><h1 id="game-title">星核<span>幸存者</span></h1><p>在坠落的星港里活过 20 波。拾取材料、组合武器，让下一波变成你的资源。</p></div>
+      <div class="title-heading"><a class="home-link" href="../games.html">← 选择游戏</a><div class="eyebrow">KAEL LAB · BROWSER GAME</div><h1 id="game-title">星核<span>幸存者</span></h1><p>在坠落的星港里活过 20 波。拾取材料、组合武器，让下一波变成你的资源。</p></div>
       <div class="setup-panel">
         <div class="setup-column"><h2>选择驾驶员</h2><div id="character-list" class="selection-grid"></div></div>
         <div class="setup-column"><h2>选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span>难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span>节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span>音效</span><button id="sound-button" class="small-button" type="button"></button></div></div>
         <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button">开始远征 <span aria-hidden="true">➜</span></button></div>
       </div>
-      <p class="controls-note">电脑：WASD / 方向键移动，空格冲刺，Esc 暂停。手机：左侧摇杆移动，右侧冲刺。武器自动瞄准。建议横屏与全屏游玩。</p>
+      <p class="controls-note">电脑：WASD / 方向键移动，右键点击目的地自动前往，空格冲刺，Esc 暂停。手机横竖屏均可用左侧摇杆移动、右侧按钮冲刺。武器自动瞄准。</p>
     </section>
 
     <section id="level-screen" class="screen modal-screen hidden" aria-labelledby="level-title">
@@ -56,7 +55,7 @@
 
     <section id="result-screen" class="screen modal-screen hidden" aria-labelledby="result-title"><div class="modal-card compact-card result-card"><div id="result-kicker" class="modal-kicker"></div><h2 id="result-title"></h2><p id="result-message"></p><div id="result-stats" class="result-stats"></div><button id="result-restart" class="primary-button" type="button">再来一局</button><button id="result-home" class="secondary-button" type="button">返回标题</button></div></section>
 
-    <noscript><div class="noscript"><h1>星核幸存者</h1><p>这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD 或方向键移动；手机横屏使用触控摇杆。游戏不需要账号或服务器。</p><p><a href="../">返回 Kael Lab</a></p></div></noscript>
+    <noscript><div class="noscript"><h1>星核幸存者</h1><p>这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动；手机横竖屏均可使用触控摇杆。游戏不需要账号或服务器。</p><p><a href="../games.html">返回游戏列表</a></p></div></noscript>
   </main>
 </body>
 </html>

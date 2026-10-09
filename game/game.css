@@ -107,13 +107,59 @@ h1 span{color:var(--amber)}
 .result-stats div{background:#203845;border-radius:7px;padding:9px}
 .result-stats span{display:block;color:var(--muted);font-size:.72rem}
 .result-stats strong{font-size:1.2rem;color:var(--amber)}
-.rotate-hint{display:none}
 .noscript{position:absolute;inset:0;z-index:20;background:#0b1720;padding:5vw;overflow:auto}
 .noscript h1{font-size:2rem}
 .noscript a{color:var(--mint)}
-@media (hover:fine) and (pointer:fine){.touch-controls{display:none!important}}
+@media (pointer:fine){.touch-controls{display:none!important}}
 @media (max-width:900px){.title-screen{grid-template-columns:1fr 1.3fr;gap:16px;padding:12px 20px}.home-link{margin-bottom:12px}.title-heading p{font-size:.82rem}.setup-panel{gap:12px;padding:14px}.selection-card{min-height:44px;padding:5px}.selection-icon{width:30px;height:30px}.controls-note{font-size:.64rem}.hud-wave span:last-child{display:none}.hud-group{font-size:.7rem;padding:4px 6px}.hud-bottom{margin-left:140px;margin-right:95px}.weapon-slot{width:32px;height:32px;font-size:.95rem}.hud-stats{display:none}}
 @media (max-height:520px){.title-screen{align-items:start}.title-heading h1{font-size:clamp(2.1rem,6vw,3.8rem)}.title-heading p{line-height:1.35}.setup-panel{align-self:start}.selection-grid{gap:4px}.selection-card small{display:none}.setting-row{margin-top:6px}.setup-footer{padding-top:8px}.controls-note{align-self:start}.modal-card{padding:12px 16px}.modal-card h2{font-size:1.4rem}.modal-card p{font-size:.72rem}.choice-grid{margin-top:8px}.choice-option{min-height:100px;padding:8px}.choice-option .choice-icon{font-size:1.35rem}.shop-offers{margin-top:8px}.offer-card{min-height:145px}.shop-card h3{margin:8px 0 5px}.inventory-item{min-height:58px}.hud{padding-top:4px;padding-bottom:4px}.hud-bottom{margin-bottom:0}.touch-controls{padding-bottom:12px}.joystick{width:94px;height:94px}.joystick-knob{width:42px;height:42px}.dash-button{width:64px;height:64px;font-size:.72rem}}
 @media (max-width:680px){.title-screen{grid-template-columns:1fr;gap:10px}.title-heading{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0 10px}.title-heading .home-link{grid-column:1/-1;margin:0}.title-heading .eyebrow{display:none}.title-heading h1{font-size:2rem;margin:0}.title-heading p{margin:0;font-size:.72rem}.setup-panel{gap:8px}.selection-icon{display:none}.selection-card strong{font-size:.75rem}.selection-card small{font-size:.6rem}.setting-row{font-size:.68rem}.segmented button{font-size:.65rem;padding:3px 5px}.setup-footer .primary-button{padding:8px}.controls-note{font-size:.62rem}.hud-top{grid-template-columns:1fr 135px 1fr;gap:4px}.hud-wave{gap:4px}.hud-wave strong{font-size:.95rem}.hud-vitals .meter{height:16px;font-size:.58rem}.hud-vitals .exp-meter{height:10px}.hud-right{gap:4px}.weapon-strip{gap:2px}.weapon-slot{width:27px;height:27px}.shop-offers{grid-template-columns:repeat(2,1fr)}.offer-card{min-height:120px}.inventory{grid-template-columns:repeat(3,1fr)}.choice-grid{gap:5px}.choice-option strong{font-size:.75rem}.choice-option span:last-child{font-size:.66rem}}
-@media (orientation:portrait) and (pointer:coarse){.rotate-hint{display:block;position:absolute;z-index:15;inset:0;background:#091822ed;text-align:center;padding-top:35vh;color:var(--amber);font-size:1.25rem;font-weight:800;line-height:2}.title-screen,.modal-screen{visibility:hidden}}
+@media (orientation:portrait) and (max-width:680px){
+  .title-screen{display:block;padding:calc(env(safe-area-inset-top) + 18px) 16px calc(env(safe-area-inset-bottom) + 22px)}
+  .title-heading{display:block}
+  .title-heading .home-link{margin-bottom:12px}
+  .title-heading h1{font-size:2.5rem;margin:0 0 8px}
+  .title-heading p{font-size:.875rem;line-height:1.5;margin:0}
+  .setup-panel{grid-template-columns:1fr;gap:16px;margin-top:18px;padding:16px}
+  #character-list{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .selection-card{min-height:52px;padding:7px;gap:7px}
+  .selection-icon{display:grid;width:28px;height:28px;font-size:1rem}
+  .selection-card strong{font-size:.8125rem}
+  .selection-card small{font-size:.75rem}
+  .setting-row{font-size:.8125rem}
+  .segmented button{font-size:.8125rem;padding:6px 8px}
+  .setup-footer{align-items:stretch;flex-direction:column;padding-top:14px}
+  .setup-footer .primary-button{min-height:44px}
+  .controls-note{margin-top:16px;font-size:.8125rem;line-height:1.5}
+  .hud{padding:calc(env(safe-area-inset-top) + 8px) 10px calc(env(safe-area-inset-bottom) + 8px)}
+  .hud-top{grid-template-columns:minmax(0,1fr) minmax(92px,1fr) auto;gap:5px}
+  .hud-group{font-size:.6875rem}
+  .hud-wave{flex-direction:column;align-items:flex-start;gap:0;min-width:0}
+  .hud-wave span:first-child{white-space:nowrap}
+  .hud-wave strong{font-size:1rem}
+  .hud-bottom{position:absolute;top:calc(env(safe-area-inset-top) + 64px);left:50%;transform:translateX(-50%);margin:0}
+  .weapon-slot{width:30px;height:30px}
+  .touch-controls{padding:0 calc(env(safe-area-inset-right) + 22px) calc(env(safe-area-inset-bottom) + 26px) calc(env(safe-area-inset-left) + 22px)}
+  .joystick{width:112px;height:112px}
+  .dash-button{width:76px;height:76px}
+  .toast{top:calc(env(safe-area-inset-top) + 112px)}
+  .modal-screen{padding:calc(env(safe-area-inset-top) + 12px) 12px calc(env(safe-area-inset-bottom) + 12px)}
+  .modal-card{max-height:calc(100dvh - env(safe-area-inset-top) - env(safe-area-inset-bottom) - 24px);padding:16px}
+  .choice-grid{grid-template-columns:1fr;gap:8px;margin-top:12px}
+  .choice-option{min-height:0;padding:12px}
+  .choice-option strong{font-size:1rem}
+  .choice-option span:last-child{font-size:.8125rem}
+  .shop-offers{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+  .offer-card p{font-size:.8125rem}
+  .offer-card button,.inventory-item button{font-size:.75rem}
+  .inventory{grid-template-columns:repeat(3,minmax(0,1fr))}
+}
+@media (orientation:portrait) and (max-width:350px){
+  .shop-offers{grid-template-columns:1fr}
+  .offer-card{min-height:0}
+  .offer-card button{white-space:nowrap}
+  .shop-actions{flex-direction:column}
+  .shop-actions button{min-height:44px}
+  .inventory{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{scroll-behavior:auto!important;animation-duration:.01ms!important;transition-duration:.01ms!important}}
