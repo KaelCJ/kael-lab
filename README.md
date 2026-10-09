@@ -13,6 +13,8 @@
 - `lanox/`：不含内部实现上下文的 Lanox 公共品牌、六层架构与产品方向。
 - `workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `workspace-assistant.css`、`workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
+- `game/`：原创横屏网页生存肉鸽《星核幸存者》，纯 HTML/CSS/JS 与 Canvas；支持桌面键盘和手机触控、20 波战斗、升级、商店与本地记录。
+- `favicon.svg`：站点与游戏共享的公开矢量图标。
 - `404.html`：静态托管失败页。
 
 ## 本地预览
@@ -34,6 +36,7 @@ python -m http.server 4173
 - 帮助页中的人物、工作项、进度、贡献、运行和测试记录全部是固定演示数据，不代表真实组织状态或人员绩效。
 - 首版没有服务端、账号、统计、评论、私密 API Key 或第三方 CDN。
 - 浏览器实验成绩只保存在访问者当前设备的 LocalStorage 中。
+- 游戏使用原创名称、视觉和内容，借鉴生存肉鸽玩法；不是《土豆兄弟》或其 DLC 的官方移植。游戏设置与记录保存在当前浏览器的 LocalStorage 中。
 
 ## License
 
