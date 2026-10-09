@@ -97,6 +97,7 @@
   let uid = 0, toastTimer = 0, audio = null;
   const keys = new Set();
   const stick = { x: 0, y: 0, pointerId: null };
+  let moveTarget = null;
   const decor = Array.from({ length: 125 }, () => ({ x: rand(30, WORLD.w - 30), y: rand(30, WORLD.h - 30), r: rand(2, 13), angle: rand(0, TAU) }));
 
   function loadSave() {
@@ -145,6 +146,7 @@
   }
   function showPhase(next) {
     phase = next;
+    if (next !== 'combat') moveTarget = null;
     hideScreens();
     $('hud').classList.toggle('hidden', next !== 'combat');
     $('touch-controls').classList.toggle('hidden', next !== 'combat');
@@ -153,7 +155,7 @@
   }
   function createWeapon(id, tier = 1) { return { id, tier, uid: ++uid, cool: 0 }; }
   function startRun() {
-    resetStick(); keys.clear();
+    resetStick(); keys.clear(); moveTarget = null;
     const character = CHARACTERS.find(c => c.id === selectedCharacter);
     const biome = BIOMES.find(b => b.id === selectedBiome);
     const difficulty = DIFFICULTIES.find(d => d.id === selectedDifficulty);
@@ -171,7 +173,7 @@
   }
   function waveDuration() { return selectedPace === 'quick' ? 15 + Math.min(6, run.wave * .3) : run.wave === MAX_WAVES ? 90 : Math.min(60, 15 + run.wave * 5); }
   function startWave() {
-    resetStick(); keys.clear();
+    resetStick(); keys.clear(); moveTarget = null;
     run.wave += 1;
     run.elapsed = 0;
     run.timeLeft = waveDuration();
@@ -400,6 +402,13 @@
     if (keys.has('w') || keys.has('ArrowUp')) y -= 1;
     if (keys.has('s') || keys.has('ArrowDown')) y += 1;
     const length = Math.hypot(x, y);
+    if (length > .05) moveTarget = null;
+    else if (moveTarget && run) {
+      const dx = moveTarget.x - run.player.x, dy = moveTarget.y - run.player.y;
+      const remaining = Math.hypot(dx, dy);
+      if (remaining <= 3) { moveTarget = null; return { x: 0, y: 0 }; }
+      return { x: dx / remaining, y: dy / remaining, remaining };
+    }
     return length > 1 ? { x: x / length, y: y / length } : { x, y };
   }
   function tryDash() {
@@ -408,6 +417,7 @@
     const length = Math.hypot(v.x, v.y);
     run.player.dashX = length > .05 ? v.x / length : Math.cos(angle);
     run.player.dashY = length > .05 ? v.y / length : Math.sin(angle);
+    moveTarget = null;
     run.player.dashTime = .18;
     run.player.dashCooldown = 4.2;
     run.player.invuln = Math.max(run.player.invuln, .25);
@@ -417,11 +427,14 @@
   function movePlayer(dt) {
     const p = run.player, v = movementVector();
     let vx = v.x, vy = v.y;
-    if (p.dashTime > 0) { vx = p.dashX * 3.3; vy = p.dashY * 3.3; p.dashTime -= dt; }
+    const dashing = p.dashTime > 0;
+    if (dashing) { vx = p.dashX * 3.3; vy = p.dashY * 3.3; p.dashTime -= dt; }
     else if (Math.hypot(vx, vy) > .05) p.facing = Math.atan2(vy, vx);
     const speed = 215 * (1 + run.stats.speed / 100);
-    p.x = clamp(p.x + vx * speed * dt, p.radius, WORLD.w - p.radius);
-    p.y = clamp(p.y + vy * speed * dt, p.radius, WORLD.h - p.radius);
+    const step = dashing ? speed * dt : Math.min(speed * dt, v.remaining ?? Infinity);
+    p.x = clamp(p.x + vx * step, p.radius, WORLD.w - p.radius);
+    p.y = clamp(p.y + vy * step, p.radius, WORLD.h - p.radius);
+    if (!dashing && v.remaining !== undefined && v.remaining <= step + 3) moveTarget = null;
     p.invuln = Math.max(0, p.invuln - dt);
     p.dashCooldown = Math.max(0, p.dashCooldown - dt);
     run.lifeClock = Math.max(0, run.lifeClock - dt);
@@ -787,6 +800,11 @@
       ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(run.aimTarget.x - 24, run.aimTarget.y); ctx.lineTo(run.aimTarget.x - 11, run.aimTarget.y); ctx.moveTo(run.aimTarget.x + 11, run.aimTarget.y); ctx.lineTo(run.aimTarget.x + 24, run.aimTarget.y); ctx.stroke(); ctx.globalAlpha = 1;
     }
+    if (moveTarget) {
+      ctx.strokeStyle = '#91f5cf'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.stroke();
+      ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 3, 0, TAU); ctx.stroke();
+    }
   }
   function drawWeapons(cam) {
     for (const b of run.bullets) {
@@ -937,14 +955,17 @@
     canvas.addEventListener('pointerdown', event => {
       if (phase !== 'combat') return;
       const box = canvas.getBoundingClientRect(), cam = camera();
-      run.aimTarget = { x: clamp(event.clientX - box.left + cam.x, 0, WORLD.w), y: clamp(event.clientY - box.top + cam.y, 0, WORLD.h), life: 3.5 };
+      const x = event.clientX - box.left + cam.x, y = event.clientY - box.top + cam.y;
+      if (event.button === 2) {
+        event.preventDefault();
+        moveTarget = { x: clamp(x, run.player.radius, WORLD.w - run.player.radius), y: clamp(y, run.player.radius, WORLD.h - run.player.radius) };
+      } else if (event.button === 0) {
+        run.aimTarget = { x: clamp(x, 0, WORLD.w), y: clamp(y, 0, WORLD.h), life: 3.5 };
+      }
     });
-    const handleViewportChange = () => {
-      resize();
-      if (phase === 'combat' && window.matchMedia?.('(orientation: portrait) and (pointer: coarse)').matches) pause();
-    };
-    window.addEventListener('resize', handleViewportChange);
-    window.addEventListener('orientationchange', handleViewportChange);
+    canvas.addEventListener('contextmenu', event => { if (phase === 'combat') event.preventDefault(); });
+    window.addEventListener('resize', resize);
+    window.addEventListener('orientationchange', resize);
   }
 
   resize(); bindEvents(); renderTitle(); requestAnimationFrame(loop);
