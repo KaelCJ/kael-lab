@@ -6,6 +6,8 @@
   const ctx = canvas.getContext('2d');
   const WORLD = { w: 2600, h: 1700 };
   const MAX_WAVES = 20;
+  const SALVAGE_RATE = .8;
+  const CHEST_HEAL_RATE = .2;
   const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
   const TAU = Math.PI * 2;
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
@@ -166,8 +168,8 @@
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       weapons: [createWeapon(character.weapon)], shopOffers: [], rerolls: 0,
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
-      spawnClock: 0, hazardClock: 8, specialSpawned: false, regenClock: 0, lifeClock: 0,
-      bossFight: false, hudClock: 0, screenShake: 0
+      spawnClock: 0, hazardClock: 8, specialSpawned: false, normalChestDropped: false, regenClock: 0, lifeClock: 0,
+      bossFight: false, pendingVictory: false, hudClock: 0, screenShake: 0
     };
     startWave();
   }
@@ -180,7 +182,9 @@
     run.spawnClock = .3;
     run.hazardClock = 8;
     run.specialSpawned = false;
+    run.normalChestDropped = false;
     run.bossFight = false;
+    run.pendingVictory = false;
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
     showPhase('combat');
@@ -197,13 +201,14 @@
   }
   function endRun(victory) {
     if (phase === 'result') return;
+    if (victory) collectRemainingPickups();
     if (victory) save.wins += 1;
     updateRecord();
     showPhase('result');
     $('result-kicker').textContent = victory ? '远征完成' : '远征终止';
     $('result-title').textContent = victory ? '星核已平息' : '这次抵达第 ' + run.wave + ' 波';
     $('result-message').textContent = victory ? '你撑过了全部 20 波敌潮。星港又多了一位幸存者。' : '已保存本次记录。调整装备组合，再向更深处出发。';
-    $('result-stats').innerHTML = `<div><span>完成波次</span><strong>${run.wave} / ${MAX_WAVES}</strong></div><div><span>击败敌人</span><strong>${run.kills}</strong></div><div><span>拾得材料</span><strong>${run.earned}</strong></div><div><span>角色等级</span><strong>${run.level}</strong></div>`;
+    $('result-stats').innerHTML = `<div><span>完成波次</span><strong>${run.wave} / ${MAX_WAVES}</strong></div><div><span>击败敌人</span><strong>${run.kills}</strong></div><div><span>获得材料</span><strong>${run.earned}</strong></div><div><span>角色等级</span><strong>${run.level}</strong></div>`;
     $('result-restart').focus({ preventScroll: true });
     tone(victory ? 790 : 210, .45, 'triangle', .06);
     renderTitle();
@@ -238,13 +243,26 @@
   }
   function finishWave() {
     if (run.wave >= MAX_WAVES) { endRun(true); return; }
-    const salvaged = run.pickups.length;
-    if (salvaged) { run.money += salvaged; run.earned += salvaged; addXp(salvaged); }
-    run.pickups = [];
+    collectRemainingPickups();
     run.enemies = []; run.enemyBullets = []; run.bullets = [];
     if (run.pendingLevels > 0) levelOffers();
     else openShop();
     tone(660, .2, 'triangle', .05);
+  }
+  function collectRemainingPickups() {
+    const materials = run.pickups.filter(item => item.kind === 'material').length;
+    const chests = run.pickups.length - materials;
+    const payout = Math.floor(materials * SALVAGE_RATE);
+    run.money += payout;
+    run.earned += payout;
+    if (materials) addXp(materials);
+    if (chests) {
+      const before = run.player.hp;
+      heal(chests * Math.max(4, Math.round(run.player.maxHp * CHEST_HEAL_RATE)));
+      const recovered = Math.round(run.player.hp - before);
+      showToast(`自动回收 ${chests} 个宝箱：${recovered ? `生命 +${recovered}` : '生命已满'}`);
+    }
+    run.pickups = [];
   }
   function openShop() {
     run.rerolls = 0;
@@ -467,6 +485,7 @@
         e.burn -= dt; e.burnClock -= dt;
         if (e.burnClock <= 0) { e.burnClock = .5; damageEnemy(e, 2 + run.stats.elemental * .2, false); }
       }
+      if (run.pendingVictory) break;
       if (e.dead) continue;
       let speed = e.speed;
       if (e.id === 'shooter') {
@@ -499,6 +518,7 @@
       e.x = clamp(e.x + ux * speed * dt, e.r, WORLD.w - e.r);
       e.y = clamp(e.y + uy * speed * dt, e.r, WORLD.h - e.r);
       if (distance(e, p) < e.r + p.radius - 2) hurtPlayer(e.damage);
+      if (phase !== 'combat') break;
     }
     run.enemies = run.enemies.filter(e => !e.dead);
   }
@@ -515,26 +535,35 @@
   }
   function dropPickup(x, y, count) {
     for (let i = 0; i < count && run.pickups.length < 450; i++) {
-      run.pickups.push({ x: clamp(x + rand(-23, 23), 12, WORLD.w - 12), y: clamp(y + rand(-23, 23), 12, WORLD.h - 12), r: 5, drift: rand(0, TAU) });
+      run.pickups.push({ kind: 'material', x: clamp(x + rand(-23, 23), 12, WORLD.w - 12), y: clamp(y + rand(-23, 23), 12, WORLD.h - 12), r: 5, drift: rand(0, TAU) });
     }
+  }
+  function dropChest(x, y) {
+    run.pickups.push({ kind: 'chest', x: clamp(x, 12, WORLD.w - 12), y: clamp(y, 12, WORLD.h - 12), r: 12, drift: rand(0, TAU) });
+    showToast('宝箱掉落：靠近可回血');
   }
   function killEnemy(e) {
     if (e.dead) return;
     e.dead = true; run.kills += 1;
     const bonus = Math.random() * 100 < run.stats.luck * .5 ? 1 : 0;
     dropPickup(e.x, e.y, e.value + bonus);
+    if (e.id === 'elite' || e.id === 'boss') dropChest(e.x, e.y);
+    else if (e.value > 0 && !run.normalChestDropped && Math.random() < .1) {
+      dropChest(e.x, e.y);
+      run.normalChestDropped = true;
+    }
     run.effects.push({ kind: 'pulse', x: e.x, y: e.y, r: e.r * 1.8, color: ENEMIES[e.id].color, life: .26, maxLife: .26 });
     if (e.id === 'splitter') { spawnEnemy('runner', e.x - 18, e.y, true); spawnEnemy('runner', e.x + 18, e.y, true); }
-    if (e.id === 'boss' && run.wave === MAX_WAVES) endRun(true);
+    if (e.id === 'boss' && run.wave === MAX_WAVES) run.pendingVictory = true;
     if (e.id === 'boss') showToast('首领已击败！');
   }
-  function damageEnemy(e, amount, canCrit = true) {
+  function damageEnemy(e, amount, directHit = true) {
     if (e.dead) return;
-    const crit = canCrit && Math.random() * 100 < run.stats.crit;
+    const crit = directHit && Math.random() * 100 < run.stats.crit;
     const damage = Math.max(1, Math.round(amount * (crit ? 1.8 : 1)));
     e.hp -= damage; e.hitFlash = .1;
     if (crit) run.effects.push({ kind: 'text', x: e.x + rand(-8, 8), y: e.y - e.r, text: String(damage), color: '#ffe284', life: .55, maxLife: .55 });
-    if (run.lifeClock <= 0 && Math.random() * 100 < run.stats.lifesteal) { heal(1); run.lifeClock = .13; }
+    if (directHit && run.lifeClock <= 0 && Math.random() * 100 < run.stats.lifesteal) { heal(1); run.lifeClock = .13; }
     if (e.hp <= 0) killEnemy(e);
   }
   function updatePickups(dt) {
@@ -546,8 +575,17 @@
         item.x += (p.x - item.x) / d * speed * dt;
         item.y += (p.y - item.y) / d * speed * dt;
       }
-      if (d < p.radius + 8) {
-        run.money += 1; run.earned += 1; addXp(1);
+      if (d < p.radius + item.r + 3) {
+        if (item.kind === 'chest') {
+          const before = p.hp;
+          heal(Math.max(4, Math.round(p.maxHp * CHEST_HEAL_RATE)));
+          const recovered = Math.round(p.hp - before);
+          showToast(recovered ? `宝箱：生命 +${recovered}` : '宝箱：生命已满');
+          if (recovered) run.effects.push({ kind: 'text', x: p.x, y: p.y - 24, text: `+${recovered}`, color: '#ffe4a0', life: .7, maxLife: .7 });
+          tone(720, .12, 'triangle', .045);
+        } else {
+          run.money += 1; run.earned += 1; addXp(1);
+        }
         run.pickups.splice(i, 1);
       }
     }
@@ -686,11 +724,16 @@
     movePlayer(dt);
     spawnWaveEnemies(dt);
     updateHazards(dt);
+    if (phase !== 'combat') return;
     updateEnemies(dt);
     if (phase !== 'combat') return;
+    if (run.pendingVictory) { endRun(true); return; }
     updateWeapons(dt);
+    if (phase !== 'combat') return;
+    if (run.pendingVictory) { endRun(true); return; }
     updateBullets(dt);
     if (phase !== 'combat') return;
+    if (run.pendingVictory) { endRun(true); return; }
     updateEnemyBullets(dt);
     if (phase !== 'combat') return;
     updatePickups(dt);
@@ -750,6 +793,15 @@
     for (const item of run.pickups) {
       if (!visible(item, cam, 15)) continue;
       const glow = .72 + .22 * Math.sin(ambientTime * 7 + item.drift);
+      if (item.kind === 'chest') {
+        ctx.save(); ctx.globalAlpha = glow;
+        ctx.fillStyle = '#6d4738'; ctx.strokeStyle = '#ffe2a0'; ctx.lineWidth = 2;
+        ctx.fillRect(item.x - 11, item.y - 8, 22, 18); ctx.strokeRect(item.x - 11, item.y - 8, 22, 18);
+        ctx.fillStyle = '#f6c76e'; ctx.fillRect(item.x - 12, item.y - 10, 24, 6);
+        ctx.fillStyle = '#fff5d8'; ctx.fillRect(item.x - 2, item.y - 4, 4, 10); ctx.fillRect(item.x - 5, item.y - 1, 10, 4);
+        ctx.restore();
+        continue;
+      }
       ctx.fillStyle = '#b8f9d1'; ctx.globalAlpha = glow;
       ctx.beginPath(); ctx.moveTo(item.x, item.y - 6); ctx.lineTo(item.x + 5, item.y); ctx.lineTo(item.x, item.y + 6); ctx.lineTo(item.x - 5, item.y); ctx.closePath(); ctx.fill();
     }

@@ -83,7 +83,7 @@ h1 span{color:var(--amber)}
 .shop-card{width:min(1050px,100%)}
 .shop-heading{display:flex;align-items:center;justify-content:space-between;gap:12px}
 .shop-wallet{font-size:1.4rem;color:var(--amber);font-weight:900}
-.shop-caption{margin:0}
+.modal-card .shop-caption{margin:0;font-size:14px;line-height:20px}
 .shop-offers{grid-template-columns:repeat(4,minmax(0,1fr));margin-top:14px}
 .offer-card{min-height:184px;padding:11px;gap:5px}
 .offer-card.locked{border-color:var(--amber)}
