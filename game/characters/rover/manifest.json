@@ -1,0 +1,42 @@
+{
+  "id": "rover",
+  "displayName": "矮人火枪手",
+  "reference": {
+    "heroName": "Kardel Sharpeye",
+    "englishTitle": "Dwarven Sniper",
+    "race": "人族（矮人）",
+    "class": "火枪手",
+    "alias": "Sniper",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-rover-1",
+      "name": "增程瞄准",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-rover",
+      "name": "散弹齐射",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "rover.svg",
+      "rover-step.svg",
+      "rover-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-rover.svg",
+      "skill-rover-1.svg"
+    ],
+    "activeEffect": "effect-rover.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

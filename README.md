@@ -14,7 +14,7 @@ README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Ag
 AI Center 采用零依赖纯静态实现：
 
 - `index.html`、`styles.css`、`app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，六类角色帮助入口、协作方法和 Evidence Lab。
-- `ecosystem.css`、`ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页。
+- `shared/ecosystem.css`、`shared/ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页；共享资源的消费者和边界见 `shared/README.md`。
 - `kael/`：人机协作总循环、工作项上下文、任务内增益与跨任务判断升级。
 - `meepo/`：组合根、产品 Agent、公共 Framework 与 Nest 候选能力的当前模块视图。
 - `nest/`：Jugg/Nest 业务伴生治理、五类支撑、六层资产与知识产品候选核心。
@@ -24,8 +24,16 @@ AI Center 采用零依赖纯静态实现：
 - `workspace-assistant.css`、`workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `games.html`、`games.css`：游戏选择页；给以后新增的游戏保留独立入口。
 - `game/`：首款原创网页生存肉鸽《星核幸存者》，支持桌面和手机横竖屏游玩。实现、玩法和验证入口见 `game/README.md`。
-- `favicon.svg`：站点与游戏共享的公开矢量图标。
+- `favicon.svg`：站点与游戏共享的公开矢量图标，保留根路径以兼容浏览器默认图标请求。
 - `404.html`：静态托管失败页。
+
+## 目录约定
+
+- 根目录保留 GitHub Pages 的物理入口和部署文件；页面地址不因资源整理改变。
+- `shared/` 只放有多个真实页面消费者的稳定公开资源。
+- `help/`、`game/` 和各生态目录分别维护自己的 HTML、CSS、JavaScript、素材与设计资料。
+- `.agents/`、`.claude/`、`.codex/`、`.workspace-assistant/`、`.idea/` 和 `.playwright-mcp/` 属于协作工具、开发环境或生成的验证产物，不属于站点交付资源。
+- `dota/` 是独立资料目录，不与当前页面资源耦合。
 
 ## 本地预览
 

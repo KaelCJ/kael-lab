@@ -20,3 +20,9 @@ coverage/
 
 .idea/
 .claude/worktrees/
+
+# Local collaboration tools
+/.agents/skills/nest-work-report/
+/.agents/skills/nest-workspace-sync/
+/.claude/commands/nest-work-report.md
+/.claude/commands/nest-workspace-sync.md

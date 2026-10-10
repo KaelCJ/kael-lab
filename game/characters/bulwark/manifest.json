@@ -1,0 +1,42 @@
+{
+  "id": "bulwark",
+  "displayName": "刚背兽",
+  "reference": {
+    "heroName": "Rigwarl",
+    "englishTitle": "Bristleback",
+    "race": "中立（野猪人）",
+    "class": "野猪人战士（设计候选）",
+    "alias": "BB",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-bulwark-1",
+      "name": "刚背",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-bulwark",
+      "name": "刚毛齐射",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "bulwark.svg",
+      "bulwark-step.svg",
+      "bulwark-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-bulwark.svg",
+      "skill-bulwark-1.svg"
+    ],
+    "activeEffect": "effect-bulwark.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "conductor",
+  "displayName": "众神之王",
+  "reference": {
+    "heroName": "Zeus",
+    "englishTitle": "Lord of Olympia",
+    "race": "人族（矮人）",
+    "class": "山丘之王／战士",
+    "alias": "Zeus",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-conductor-1",
+      "name": "静电场",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-conductor",
+      "name": "全场雷击",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "conductor.svg",
+      "conductor-step.svg",
+      "conductor-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-conductor.svg",
+      "skill-conductor-1.svg"
+    ],
+    "activeEffect": "effect-conductor.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

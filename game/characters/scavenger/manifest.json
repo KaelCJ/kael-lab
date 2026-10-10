@@ -1,0 +1,42 @@
+{
+  "id": "scavenger",
+  "displayName": "炼金术士",
+  "reference": {
+    "heroName": "Razzil Darkbrew",
+    "englishTitle": "Alchemist",
+    "race": "中立（地精；食人魔搭档）",
+    "class": "炼金师",
+    "alias": "Alchemist",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-scavenger-1",
+      "name": "炼金分红",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-scavenger",
+      "name": "化学投掷",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "scavenger.svg",
+      "scavenger-step.svg",
+      "scavenger-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-scavenger.svg",
+      "skill-scavenger-1.svg"
+    ],
+    "activeEffect": "effect-scavenger.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

@@ -1,0 +1,42 @@
+{
+  "id": "jugg",
+  "displayName": "剑圣",
+  "reference": {
+    "heroName": "Yurnero",
+    "englishTitle": "Juggernaut",
+    "race": "兽族（兽人）",
+    "class": "剑圣／战士",
+    "alias": "Jugg",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-jugg-1",
+      "name": "跃空斩",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-jugg",
+      "name": "剑刃风暴",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "jugg.svg",
+      "jugg-step.svg",
+      "jugg-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-jugg.svg",
+      "skill-jugg-1.svg"
+    ],
+    "activeEffect": "effect-jugg.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}
