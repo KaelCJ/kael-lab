@@ -1,0 +1,42 @@
+{
+  "id": "sf",
+  "displayName": "影魔",
+  "reference": {
+    "heroName": "Nevermore",
+    "englishTitle": "Shadow Fiend",
+    "race": "中立（火元素）",
+    "class": "火焰领主",
+    "alias": "SF",
+    "source": "dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-sf-1",
+      "name": "收魂",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-sf",
+      "name": "魂之挽歌",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "character": [
+      "sf.svg",
+      "sf-step.svg",
+      "sf-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-sf.svg",
+      "skill-sf-1.svg"
+    ],
+    "activeEffect": "effect-sf.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

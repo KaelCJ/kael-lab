@@ -1,0 +1,1151 @@
+Endless Mode - Brotato Wiki
+Jump to sidebar
+Jump to content
+≡
+Home
+Weapons
+Characters
+Items
+Stats
+Enemies
+Upgrades
+Progress
+Modding
+Shop
+Endless Mode
+Updates
+Miscellaneous
+Community
+Home
+Weapons
+Characters
+Items
+Stats
+Enemies
+Modding
+More
+Danger Levels
+Upgrades
+Progress
+Shop
+Endless Mode
+Updates
+Miscellaneous
+Community
+Page
+Discussion
+View source
+View history
+Wiki Editing Guide
+Not logged in
+Create account
+Log in
+Navigation
+Main page
+Recent changes
+Random page
+Help about MediaWiki
+Tools
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+Page information
+Endless Mode
+From Brotato Wiki
+Contents
+1
+Endless Mode
+1.1
+Wave 20 Changes
+1.2
+Strategy
+2
+Post Wave 20 Changes
+2.1
+Materials
+3
+Wave Structure
+4
+The Endless Factor
+4.1
+The Endless Factor At different waves
+5
+Enemy Stats
+5.1
+Damage
+5.2
+Max HP
+5.3
+Speed
+6
+The Shop
+6.1
+Item Price
+6.2
+Rerolling
+6.3
+Recycling
+7
+Miscellaneous
+7.1
+Consumables
+7.2
+Iframes
+7.3
+Health Percent Damage
+8
+Endless Factor Tables
+Endless Mode
+Endless Mode is a game mode that can be toggled on and off in the Menu when you are selecting a
+Danger Level
+to play. See the picture to the right.
+You can also Enable Endless mode by choosing it just before you enter the Wave 20 Boss Wave.
+When playing in Endless Mode, the game doesn't end after beating the final Wave 20, but instead keeps going until you die.
+As the waves progress, the difficulty of the game dramatically increases, ensuring your demise.
+If you managed to beat at least wave 20, the run will count as a win when you die.
+Wave 20 Changes
+If you're playing on Endless Mode, Wave 20 still lasts 90 seconds, but killing the spawned Boss/Bosses doesn't instantly end the wave.
+Strategy
+For a Page on Strategy:
+Guide to Endless Mode
+Post Wave 20 Changes
+Once you finish Wave 20, endless mode begins. From here on out the game changes significantly:
+Piggy Bank
+Stops functioning entirely.
+Harvesting
+Stops increasing by 5% at the end of each wave. Instead it decreases by 20% at the end of each wave. The increase from
+Crown
+or playing
+Farmer
+also stops after wave 20. So you'll still lose 20% even if you have Crown. You can still increase your harvesting stat by upgrade, items, or other means.
+Elites
+and
+Bosses
+are nolonger Guaranteed to drop
+Loot Crates
+and when they drop loot crates, it is a regular crate instead of a Legendary Loot Crate.
+The Endless Factor begins to increase, affecting many aspects of the game.
+Materials
+The Drop chance of
+Materials
+from enemies is dependent on the current wave. See the Materials Page for more information.
+In Endless Mode, the Base Chance, 100%, is reduced by 1.5% times the current Wave. The minimum chance is 50%.
+An important takeaway is that characters such as
+Cryptid
+,
+Fisherman
+,
+Farmer
+,
+Streamer
+, and
+Explorer
+that have reduced materials drops from enemies actually end up having 25% drop rate once you get to wave + in Endless Mode.
+On The other hand,
+Jack
+just has a permanent 100% drop rate for 3x materials throughout all waves due to a bug in the coding.
+Wave
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Drop Chance
+68.5%
+67%
+65.5%
+64%
+62.5%
+61%
+59.5%
+58%
+56.5%
+55%
+53.5%
+52%
+50.5%
+50%
+50%
+50%
+50%
+50%
+50%
+50%
+Drop Chance 50% Characters
+34.25%
+33.5%
+32.75%
+32%
+31.25%
+30.5%
+29.75%
+29%
+28.25%
+27.5%
+26.75%
+26%
+25.25%
+25%
+25%
+25%
+25%
+25%
+25%
+25%
+Drop Chance Jack
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+Wave Structure
+The Endless Waves are grouped together in 10 waves at a time.
+Each 10th level, (So Wave 30, 40, 50 etc.) you'll face Both
+Bosses
+. No matter which Danger Level you're playing on.
+You'll also face 0, 1, or 3
+Elite Waves
+depending on your danger level.
+Horde Waves
+does not spawn after Wave 20.
+In addition, +1 Elite is added to Elite Waves and Boss Waves for each 10 Waves that has passed.
+So Wave 21-30 Adds +1 Elite. Wave 31-40 adds +2 and so on. These Elites can be dublicates, and multiple of the same elite often spawn.
+This 10 Wave structure continues on until you die, with the Endless Factor ever increasing.
+The Endless Factor
+In order to ramp up the difficulty of the game, the Endless Factor is introduced.
+From here on, we will go into the math behind the Endless Mode Scaling. But the short version is that several values in the game, which can be seen below, are multiplied by the Endless Factor, a number that increases exponentially to make the game super difficult. At wave 35, the Factor begins to increase even faster.
+This ensures that all runs come to an end.
+The Factor is calculated as follows:
+Endless_wave = max(0, current_wave - 20)
+Endless_mult = 2.0 + max(0, (current_wave - 35) * 0.2)
+Endless_factor = max(0, ((endless_wave * (endless_wave + 1)) / 2) / 100) * endless_mult
+The things to notice are:
+The Max function takes the highest of two numbers. It is used here to make 0 the lowest possible value.
+The Endless Factor starts at 0 and only starts growing from wave 21 and onwards.
+From Wave 36 and onwards, the Endless Multiplier is an addtional scaling that kicks in and causes the Endless Factor to scale faster.
+The end result, (And all you need to remember), is that you get a single number that the difficulty of many things are multiplied with.
+The Endless Factor At different waves
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Endless Factor
+0.00
+0.02
+0.06
+0.12
+0.20
+0.30
+0.42
+0.56
+0.72
+0.90
+1.10
+1.32
+1.56
+1.82
+2.10
+2.40
+2.99
+3.67
+4.45
+5.32
+6.30
+At the bottom of the page you can find the
+Table
+over all the effects of the Endless Factor.
+Now we will go over the different things that are affected by the Endless Factor.
+Enemy Stats
+Most importantly, the Endless Factor increases the Stats of all enemies.
+Damage
+The Damage of
+Enemies
+increases with 100% of the Endless Factor.
+Endless Damage = round(Damage * (1 + Endless Factor))
+Where:
+The Round function rounds the number to nearest whole Damage value.
+This means that enemies have their damage increased by the following percentages from wave 20-40:
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Damage Increase
+0%
+2%
+6%
+12%
+20%
+30%
+42%
+56%
+72%
+90%
+110%
+132%
+156%
+182%
+210%
+240%
+299%
+367%
+445%
+532%
+630%
+Max HP
+The Max HP of
+Enemies
+increases sharply with 225% of the Endless Factor.
+Endless Max HP = round(Max HP * (1 + Endless Factor * 2,25))
+Where:
+The Round function rounds the number to nearest whole HP value.
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+HP Increase
+0%
+5%
+14%
+27%
+45%
+68%
+95%
+126%
+162%
+203%
+248%
+297%
+351%
+410%
+473%
+540%
+673%
+826%
+1000%
+1197%
+1418%
+Speed
+Speed slowly increases with 7.5% of the endless factor. The speed increase from the endless factor has a limit of 275%.
+Endless Speed = Round(Speed * (1 + (min(1.75, Endless Factor / 13.33))))
+Where:
+The Round function rounds the number to nearest whole speed value.
+The min function means that the increase can never be more than 175%, meaning that the endless factor can't increase speed more than a 2.75 factor.
+Speed is the Speed of the enemy with other changes to speed already included.
+This Speed Factor is multiplicative with the base stat and the secondary stat. So speed modifiers from effects such as
+Snail
+and
+Old
+still matter.
+Wave
+1-20
+25
+30
+35
+40
+45
+51+
+Speed
+100%
+102%
+108%
+118%
+147%
+198%
+275%
+The Shop
+Item Price
+Endless Item Price = max(1.0, ((Item Price + Wave + (Item Price * Wave * 0.1 )) * items_price_factor * (1 + Endless_Factor / 5))
+Notes:
+Item Price is the base price of the Item or Weapon. This price can be modified by the
+Arms Dealer
+'s ability of -95% Weapon Price.
+The Endless Factor used is the value of the Wave you've just completed. So when you finish Wave 50, that is the value used for the Endless Factor of the
+Shop
+.
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Price Increase in %
+0%
+0.40%
+1.20%
+2.40%
+4.00%
+6.00%
+8.40%
+11.2%
+14.4%
+18.0%
+22.0%
+26.4%
+31.2%
+36.4%%
+42.0%%
+48.0%
+59.84%
+73.44%
+88.92%
+106.4%
+126.0%
+The Price Increase in % is the multiplier that is added to the cost of the item.
+For example if you buy a
+Gnome
+on Wave 40, the price is multiplied by 100% + 126% = 226%
+Without the endless Factor, the Gnome would have cost 540
+Materials
+. But because of the endless factor, the price becomes 540 * 2.26 = 1220
+For most builds, this increase means that the shop begins to slowly outscale your material income. So get your shopping done before it is too late.
+Rerolling
+The price for the Reroll Increase in Endless Mode is determined by:
+max(1, last_reroll_value + max(1, (0.5 * wave * (1 + Endless Factor)^(1/2) )))
+Notes:
+The max function is used to ensure that the price of rerolling is at least 1, and at least increases by 1 with each wave.
+See
+Shop Rerolling
+to understand how Rerolling works.
+Here is a table of the prices of rerolling in Endless Mode:
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+First Reroll Price
+30
+31
+33
+35
+37
+39
+41
+43
+46
+48
+51
+54
+57
+60
+63
+67
+71
+76
+82
+88
+94
+Price Increase per Reroll
+10
+10
+11
+12
+13
+14
+15
+16
+18
+19
+21
+23
+25
+27
+29
+32
+35
+39
+44
+49
+54
+Recycling
+Recycling
+is not affected by the Endless Factor, so the amount of
+Materials
+you get for recycling an item is actually 25%, or 60% with
+Recycling Machine
+of the Item's value without the Endless Factor was applied to it.
+Miscellaneous
+Here are the rest of mechanics that are affected by the Endless Factor.
+Consumables
+The Endless Factor affects the chances of an enemy dropping
+Consumables
+Consumable Drop Chance = Unit drop Chance * (1 + luck/100) / (1.0 + Endless Factor)
+The Drop chance has a maximum of 100%.
+You can see the drop chance of enemies
+Here
+.
+In Practice this means that you'll see way fewer consumables from drops at higher Endless Waves. The
+Garden
+item is not affected by this.
+Loot Hoarder,
+Elites
+, and
+Bosses
+have a guaranteed consumable drop.
+Trees
+has a 100% base chance of dropping a consumable. But it doesn't have the "guaranteed". This means the negative luck and the endless factor can cause trees to have a chance to not drop consumables.
+This means that no matter the Endless factor, those three type units will continue to drop consumables and
+Loot Crates
+unaffected by the Endless Factor. Trees on the other hand, along with every other enemy will begin to drop fewer and fewer consumables.
+Note that drop rate of Loot crates are impacted in two ways. The first factor is that since fewer consumables drop, it also means fewer consumables that have a chance to be a loot crate. The Second is that every time a loot crate is dropped, the odds of the next loot crate is reduced. So while Loot Hoarders, Elites, and Bosses keep having a 100% chance for loot crates after accounting for the endless factor, the chance is reduced below 100% when more loot crates are dropped.
+Note that you can combat this reduced chance by stacking
+Luck
+. Every 100 Luck keeps 1 additional loot crate guaranteed. So on wave 30-39, where 3 elites and bosses spawn, you need 200 luck, to guarantee the third loot crate. This doesn't account for further crates dropped by regular enemies and trees.
+Iframes
+Iframes, or Invulnerability Frames, are a duration of time after taking damage, where you cannot take damage again. This is what prevents you being hit more than once when you walk into an enemy.
+The Iframe Duration has a minimum of 0.2s and a maximum of 0.4s. See the
+Iframes
+for more details.
+Once the Endless Factor becomes larger than 1, it begins to influence the duration of your Iframes as seen below:
+Minimum Iframes = Base Min Iframes / (max(1.0, Endless Factor))
+Maximum Iframes = Base Max Iframes / (max(1.0, Endless Factor))
+So an Endless Factor of 2 halves your Iframes, 3 makes it a third and so on. This means that on later waves, walking into enemies can instantly deal damage to you multiple times. Enemy Projectiles tend to disappear after hitting you, so they will still only hit you once.
+See the
+Table
+for percentages on Iframe Durations.
+From testing, the maximum rate of hits you can take in late Endless Mode, is about 30 per second, or 2 frames between hits.
+Health Percent Damage
+Health Percent Damage
+is coded to lose effectiveness when you get to the higher levels of Endless Mode. Starting at wave 39, all sources of HP%DMG begins to deal less than 10% and 1% of current health or whatever is stated on their tooltip.
+This affects
+Chainsaw
+,
+Giant Belt
+, and
+Greek Fire
+.
+At higher Waves, these items and weapon basically loose the ability to deal damage based on enemy health.
+The loss follows the Equation:
+Health Percent Damage Bonus= Rounddown((current_enemy_health * Damage Bonus %) / max(1, Endless_Factor * 0.2))
+Notes:
+Health Percent Damage Bonus is the final bonus damage added to hit.
+current_enemy_health is the current HP of the Target.
+Damage Bonus % is the percentage of current health converted to bonus damage. It is 1% for Bosses and 10% the Regular enemies. Chainsaw 4 and
+Cursed
+versions have higher amounts.
+And Endless_Factor is the
+Endless Factor
+.
+So we notice that once 20% of the Endless Factor becomes a number higher than 1, the effect is divided by the number.
+You can see the percentage of effectiveness below:
+Wave
+1-38
+39
+40
+45
+50
+60
+75
+100
+Effectiveness
+100%
+94%
+79%
+38%
+22%
+9%
+3%
+1%
+Endless Factor Tables
+Here are the extended tables with all things affected by the Endless Factors for Wave 20-40 and for Wave 40-1000. The tables use scientific notation for large numbers.
+Wave
+20
+21
+22
+23
+24
+25
+26
+27
+28
+29
+30
+31
+32
+33
+34
+35
+36
+37
+38
+39
+40
+Endless Factor
+0.00
+0.02
+0.06
+0.12
+0.20
+0.30
+0.42
+0.56
+0.72
+0.90
+1.10
+1.32
+1.56
+1.82
+2.10
+2.40
+2.99
+3.67
+4.45
+5.32
+6.30
+Damage Increase
+0%
+2%
+6%
+12%
+20%
+30%
+42%
+56%
+72%
+90%
+110%
+132%
+156%
+182%
+210%
+240%
+299%
+367%
+445%
+532%
+630%
+HP Increase
+0%
+5%
+14%
+27%
+45%
+68%
+95%
+126%
+162%
+203%
+248%
+297%
+351%
+410%
+473%
+540%
+673%
+826%
+1000%
+1197%
+1418%
+Speed %
+100%
+100%
+100%
+101%
+102%
+102%
+103%
+104%
+105%
+107%
+108%
+110%
+112%
+114%
+116%
+118%
+122%
+128%
+133%
+140%
+147%
+Price Increase %
+0%
+0.40%
+1.20%
+2.40%
+4.00%
+6.00%
+8.40%
+11.2%
+14.4%
+18.0%
+22.0%
+26.4%
+31.2%
+36.4%%
+42.0%%
+48.0%
+59.84%
+73.44%
+88.92%
+106.4%
+126.0%
+First Reroll Price
+30
+31
+33
+35
+37
+39
+41
+43
+46
+48
+51
+54
+57
+60
+63
+67
+71
+76
+82
+88
+94
+Consumable Chance
+100%
+98.0%
+94.3%
+89.3%
+83.3%
+76.9%
+70.4%
+64.1%
+58.1%
+52.6%
+47.6%
+43.1%
+39.1%
+35.5%
+32.3%
+29.4%
+25.1%
+21.4%
+18.4%
+15.8%
+13.7%
+Iframes Duration
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+90.9%
+75.8%
+64.1%
+54.9%
+47.6%
+41.7%
+33.4%
+27.2%
+22.5%
+18.8%
+15.9%
+Giant Belt
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+100%
+93.98%
+79.97%
+Wave
+40
+45
+50
+60
+70
+80
+90
+100
+150
+200
+250
+300
+400
+500
+750
+1000
+Endless Factor
+6
+13
+23
+57
+115
+201
+323
+486
+2129
+5702
+11954
+21637
+54293
+1.10•E
+5
+3.87•E
+5
+9.37•E
+5
+Damage Increase
+630%
+1300%
+2325%
+5740%
+11575%
+20130%
+32305%
+48600%
+2.13•E
+3
+5.70•E
+3
+1.20•E
+4
+2.16•E
+4
+5.43•E
+4
+1.10•E
+5
+3.87•E
+5
+9.37•E
+5
+HP Increase
+1418%
+2925%
+5231%
+12915%
+25819%
+45293%
+72686%
+1.09•E
+3
+4.79•E
+3
+1.28•E
+4
+2.69•E
+4
+4.87•E
+4
+1.22•E
+5
+2.47•E
+5
+8.70•E
+5
+2.11•E
+6
+Speed %
+147%
+198%
+277%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+275%
+Price Increase %
+126%
+260%
+465%
+1148%
+2295%
+4026%
+6461%
+9720%
+4.26•E
+2
+1.14•E
+3
+2.39•E
+3
+4.33•E
+3
+1.09•E
+4
+2.19•E
+4
+7.74•E
+4
+1.87•E
+5
+First Reroll price
+94
+129
+173
+289
+446
+658
+900
+1203
+3611
+7751
+1.39•E
+4
+2.24•E
+4
+4.70•E
+4
+8.33•E
+4
+2.34•E
+5
+4.85•E
+5
+Consumable Chance
+13.7%
+7.1%
+4.1%
+1.7%
+0.9%
+0.5%
+0.3%
+2.05•E
+-3
+4.70•E
+-4
+1.75•E
+-4
+8.36•E
+-5
+4.62•E
+-5
+1.84•E
+-5
+9.12•E
+-6
+2.58•E
+-6
+1.07•E
+-6
+Iframes Duration
+15.87%
+7.69%
+4.35%
+1.75%
+8.71•E
+-3
+4.97•E
+-3
+3.10•E
+-3
+2.06•E
+-3
+4.70•E
+-4
+1.75•E
+-4
+8.37•E
+-5
+4.62•E
+-5
+1.84•E
+-5
+9.12•E
+-6
+2.28•E
+-6
+1.07•E
+-6
+Giant Belt
+79.37%
+38.46%
+21.51%
+8.71%
+4.36%
+2.48%
+1.55%
+1.03%
+2.35•E
+-3
+8.77•E
+-4
+4.18•E
+-4
+2.31•E
+-4
+9.21•E
+-5
+4.56•E
+-5
+1.29•E
+-5
+5.33•E
+-6
+Loading comments...
+Retrieved from "
+http://brotato.wiki.spellsandguns.com/index.php?title=Endless_Mode&oldid=8461
+"
+This page was last edited on 15 May 2026, at 23:57.
+Privacy policy
+About Brotato Wiki
+Disclaimers
+Questions or feedback? Join the discussion on the dedicated Discord!
+Wiki Home
+|
+Youtube
+|
+Discord
+|
+About Brotato Wiki
+|
+Gaming Wikis
+|
+Terms of Use
+|
+Copyright Policy
+|
+Recent Changes
+What links here
+Related changes
+Special pages
+Printable version
+Permanent link
+Page information

@@ -13,5 +13,5 @@ Kael Lab 是公开静态站点。处理本仓库时遵守以下边界：
 ## 方向与回源
 
 - 人机协作方向覆盖首页、`kael/`、`meepo/`、`nest/`、`lanox/`、`help/` 与 Workspace Assistant。先读根目录 `README.md` 定位入口，再以当前页面、代码和可核对的来源确认能力状态。
-- 网页游戏方向以 `games.html` 为选择入口。修改 `game/` 前再读 `game/README.md` 与 `game/AGENTS.md`；新增游戏时使用独立目录，并把入口登记到选择页。
+- 网页游戏方向以 `games.html` 为选择入口。涉及《星核幸存者》的设计、UI、代码或文档时，先读 `game/README.md` 与 `game/AGENTS.md`，再按其指引读取 `game/core/协作上下文.md` 和任务相关专题；新增游戏时使用独立目录，并把入口登记到选择页。
 - 实现或入口变化后更新相应 README 的当前事实与验证方法。聊天记忆和过期文档不能代替当前实现；未验证的设想明确标为计划。

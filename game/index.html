@@ -7,8 +7,8 @@
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
   <meta name="description" content="星核幸存者：原创网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波敌潮中移动、自动攻击、升级和购物。">
   <title>星核幸存者 · Kael Lab</title>
-  <link rel="stylesheet" href="./game.css">
-  <script src="./game.js" defer></script>
+  <link rel="stylesheet" href="../css/game/game.css">
+  <script src="../js/game/game.js" defer></script>
 </head>
 <body>
   <main id="game" class="game-shell" data-skin="pixel">
@@ -52,12 +52,14 @@
     </section>
 
     <section id="shop-screen" class="screen modal-screen hidden" aria-labelledby="shop-title">
-      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker">波间补给 · <span id="shop-wave"></span></div><h2 id="shop-title">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption">波末未拾取材料按 80% 折算货币，经验全额保留；宝箱先开出改装，可立即装配或拆解。六槽满时可合成同名同阶武器，或卖出一把。</p><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">迎接下一波 ➜</button></div><h3>装备与属性</h3><div id="inventory" class="inventory"></div><div id="shop-stats" class="shop-stats"></div></div>
+      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker">波间补给 · <span id="shop-wave"></span></div><h2 id="shop-title">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption">波末未拾取材料按 80% 折算货币，经验全额保留；宝箱先开出改装，可立即装配或拆解。六槽满时可合成同名同阶武器，或卖出一把。</p><div id="shop-next-wave" class="shop-next-wave" role="status"></div><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">开始下一波 ➜</button></div><h3>装备与属性</h3><div id="inventory" class="inventory"></div><div id="shop-stats" class="shop-stats"></div></div>
     </section>
 
     <section id="chest-screen" class="screen modal-screen hidden" aria-labelledby="chest-title"><div class="modal-card chest-card"><div class="modal-kicker">波间战利品 · 待开 <span id="chests-left">0</span></div><h2 id="chest-title">拾获补给箱</h2><p>依次查看宝箱改装，决定立即装配到本局或拆解。</p><div id="chest-reward" class="chest-reward" aria-live="polite"></div><div class="chest-actions"><button id="chest-take-button" class="primary-button" type="button">收下改装</button><button id="chest-scrap-button" class="secondary-button" type="button">拆解为材料</button></div></div></section>
 
-    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="pause-layout"><aside class="modal-card pause-panel" aria-labelledby="pause-stats-title"><div class="modal-kicker">当前驾驶员</div><h3 id="pause-stats-title">属性</h3><div id="pause-stats" class="pause-stats"></div><h3>角色技能</h3><div id="pause-skills" class="pause-skills"></div></aside><div class="modal-card compact-card"><div class="modal-kicker">远征暂歇</div><h2 id="pause-title">已暂停</h2><p>你的远征会在这里等你。</p><button id="pause-skin-button" class="secondary-button" type="button">画面：像素风</button><button id="resume-button" class="primary-button" type="button">继续战斗</button><button id="restart-button" class="secondary-button" type="button">重新开始</button><button id="quit-button" class="text-button" type="button">返回标题</button></div></div></section>
+    <section id="wave-result-screen" class="screen modal-screen hidden" aria-labelledby="wave-result-title"><div class="modal-card compact-card wave-result-card"><div id="wave-result-kicker" class="modal-kicker"></div><h2 id="wave-result-title"></h2><p id="wave-result-message"></p><div id="wave-result-stats" class="result-stats"></div><div class="wave-countdown"><span>自动继续</span><strong id="wave-result-countdown">3.5 秒</strong></div><button id="wave-result-continue" class="primary-button" type="button">继续结算</button></div></section>
+
+    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="pause-layout"><aside class="modal-card pause-panel" aria-labelledby="pause-stats-title"><div class="modal-kicker">当前驾驶员</div><h3 id="pause-stats-title">属性</h3><div id="pause-stats" class="pause-stats"></div><h3>当前武器</h3><div id="pause-weapons" class="pause-weapons"></div><h3>角色技能</h3><div id="pause-skills" class="pause-skills"></div></aside><div class="modal-card compact-card"><div class="modal-kicker">远征暂歇</div><h2 id="pause-title">已暂停</h2><p>你的远征会在这里等你。</p><button id="pause-skin-button" class="secondary-button" type="button">画面：像素风</button><button id="resume-button" class="primary-button" type="button">继续战斗</button><button id="restart-button" class="secondary-button" type="button">重新开始</button><button id="quit-button" class="text-button" type="button">返回标题</button></div></div></section>
 
     <section id="result-screen" class="screen modal-screen hidden" aria-labelledby="result-title"><div class="modal-card compact-card result-card"><div id="result-kicker" class="modal-kicker"></div><h2 id="result-title"></h2><p id="result-message"></p><div id="result-stats" class="result-stats"></div><button id="result-restart" class="primary-button" type="button">再来一局</button><button id="result-home" class="secondary-button" type="button">返回标题</button></div></section>
 
