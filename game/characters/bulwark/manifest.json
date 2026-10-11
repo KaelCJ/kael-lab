@@ -22,6 +22,18 @@
     }
   ],
   "assets": {
+    "runtime": {
+      "source": "art/runtime/bulwark-hero.svg",
+      "idle": "art/runtime/bulwark-idle-a.svg",
+      "idleAlternate": "art/runtime/bulwark-idle-alt.svg",
+      "walk": ["art/runtime/bulwark-walk-a.svg", "art/runtime/bulwark-walk-b.svg"],
+      "dash": "art/runtime/bulwark-dash.svg",
+      "attackWindup": "art/runtime/bulwark-attack-windup.svg",
+      "attack": "art/runtime/bulwark-attack.svg",
+      "attackRelease": "art/runtime/bulwark-attack-release.svg",
+      "skill": "art/runtime/bulwark-skill.svg",
+      "format": "svg-poses"
+    },
     "character": [
       "bulwark.svg",
       "bulwark-step.svg",

@@ -22,6 +22,18 @@
     }
   ],
   "assets": {
+    "runtime": {
+      "source": "art/runtime/scavenger-hero.svg",
+      "idle": "art/runtime/scavenger-idle-a.svg",
+      "idleAlternate": "art/runtime/scavenger-idle-alt.svg",
+      "walk": ["art/runtime/scavenger-walk-a.svg", "art/runtime/scavenger-walk-b.svg"],
+      "dash": "art/runtime/scavenger-dash.svg",
+      "attackWindup": "art/runtime/scavenger-attack-windup.svg",
+      "attack": "art/runtime/scavenger-attack.svg",
+      "attackRelease": "art/runtime/scavenger-attack-release.svg",
+      "skill": "art/runtime/scavenger-skill.svg",
+      "format": "svg-poses"
+    },
     "character": [
       "scavenger.svg",
       "scavenger-step.svg",

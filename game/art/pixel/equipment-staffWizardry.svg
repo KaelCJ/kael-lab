@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>魔力法杖</title>
+  <polygon points="14,10 18,10 19,30 13,30" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="8,8 12,3 20,3 24,8 20,14 12,14" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="12,7 16,3 20,7 19,11 13,11" fill="#76529d" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="15,4 18,7 16,10 13,8" fill="#d6a0f1" stroke="#76529d" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="5,4 8,2 10,5 7,8" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="24,3 27,5 25,8 22,6" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="12" y="22" width="8" height="3" fill="#f6d58b"/>
+</svg>

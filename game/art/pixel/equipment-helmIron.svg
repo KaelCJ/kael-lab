@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>铁艺头盔</title>
+  <polygon points="6,22 6,11 9,5 16,2 23,5 26,11 26,22 21,27 11,27" fill="#67838b" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="9,13 11,7 16,5 21,7 23,13 20,17 12,17" fill="#d9e8dc" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="10,18 22,18 20,23 18,24 14,24 12,23" fill="#10252d" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="14,14 18,14 18,27 16,30 14,27" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="4" y="11" width="4" height="7" fill="#67838b"/>
+  <rect x="24" y="11" width="4" height="7" fill="#67838b"/>
+  <rect x="14" y="6" width="4" height="3" fill="#9fdcf5"/>
+</svg>

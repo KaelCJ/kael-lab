@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>蝴蝶</title>
+  <polygon points="16,15 7,3 2,5 3,13 11,18 4,22 7,27 15,22" fill="#4a9e82" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="16,15 25,3 30,5 29,13 21,18 28,22 25,27 17,22" fill="#4389af" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="6,7 11,9 13,15 7,13" fill="#9ce6ac" stroke="#4a9e82" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="26,7 21,9 19,15 25,13" fill="#9fdcf5" stroke="#4389af" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="15,8 18,8 19,24 16,29 13,24" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="15" y="3" width="2" height="5" fill="#f6d58b"/>
+  <rect x="14" y="27" width="4" height="3" fill="#10252d"/>
+</svg>

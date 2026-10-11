@@ -1,0 +1,81 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>sf · walk-b pose</title>
+  <desc>Editable static SVG action frame; no autonomous SVG animation.</desc>
+  <defs>
+    <linearGradient id="sfBody" x1="76" y1="83" x2="183" y2="303" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#342746" />
+      <stop offset=".48" stop-color="#17152a" />
+      <stop offset="1" stop-color="#080b16" />
+    </linearGradient>
+    <linearGradient id="sfFlame" x1="87" y1="235" x2="171" y2="366" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3a2254" />
+      <stop offset=".5" stop-color="#171426" />
+      <stop offset="1" stop-color="#070b14" />
+    </linearGradient>
+    <linearGradient id="sfCore" x1="110" y1="167" x2="143" y2="207" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff1a1" />
+      <stop offset=".22" stop-color="#ffad58" />
+      <stop offset=".7" stop-color="#dc3e47" />
+      <stop offset="1" stop-color="#76233f" />
+    </linearGradient>
+    <linearGradient id="sfClaw" x1="0" y1="0" x2="1" y2="1">
+      <stop stop-color="#9b6aa9" />
+      <stop offset=".48" stop-color="#4e3d70" />
+      <stop offset="1" stop-color="#211e3d" />
+    </linearGradient>
+    <radialGradient id="sfSoul" cx="50%" cy="50%" r="50%">
+      <stop stop-color="#fff4bd" />
+      <stop offset=".3" stop-color="#ff9650" />
+      <stop offset=".75" stop-color="#d13f5b" stop-opacity=".85" />
+      <stop offset="1" stop-color="#71264d" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <g id="hero-motion" transform="translate(0 -3)">
+    <g id="hero-body" transform="rotate(4 128 345) skewX(-2)">
+      <path d="M88 231q-27 37-17 69l-13 27 24 4-4 28 25-11 18 25 16-27 24 13 6-31 24 1-14-29q17-35-8-69z" fill="url(#sfFlame)" stroke="#0a0d18" stroke-width="7" stroke-linejoin="round" />
+      <path d="m83 268 15 21-11 29 21-10 10 28 12-30 18 17 1-30 20 8-16-29m-68 30 22 8m29-11 21-9" stroke="#6b3d73" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".85" />
+      <path d="m73 331 22-12m27 17 16-17m17 12 21-13" stroke="#ca4a5d" stroke-width="4" stroke-linecap="round" opacity=".75" />
+      <path d="M84 127q18-28 45-29 32 1 49 29l21 68-25 65q-47 27-92 0l-29-64z" fill="url(#sfBody)" stroke="#090c18" stroke-width="8" stroke-linejoin="round" />
+      <path d="M89 145q24 18 42 15t42-18l14 55-20 48q-37 18-71-2l-22-46z" fill="#251b38" stroke="#4e2e5b" stroke-width="4" />
+      <path d="m105 132 19 39-14 35m42-79-16 44 15 32m-61-7 27 17m17-5 26-14" stroke="#b83d54" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".85" />
+      <path d="m124 168 6 17 12-3 6 20-16 15-15-13 3-20z" fill="url(#sfCore)" stroke="#ffb957" stroke-width="4" stroke-linejoin="round" />
+      <path d="m128 177 8 7m-14 7 13 8" stroke="#ffe6a0" stroke-width="3" stroke-linecap="round" opacity=".95" />
+      <g id="hero-weapon">
+        <g id="pose-left-arm" transform="rotate(-5 88 139)">
+          <path d="M88 128q-29-7-44 17l-16 45 31 13 36-41z" fill="#291d3d" stroke="#0c0e1a" stroke-width="7" stroke-linejoin="round" />
+          <path d="M43 166l-23 18 15 20 23-13" fill="url(#sfClaw)" stroke="#0c0e1a" stroke-width="6" stroke-linejoin="round" />
+          <path d="M25 195q-10 13-5 25l13 8 5-17 13 9 5-8-16-16z" fill="url(#sfClaw)" stroke="#0b0d18" stroke-width="5" stroke-linejoin="round" />
+          <path d="M26 223l-16 16 20-3-5 14 16-19" stroke="#bd7eb7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <g id="pose-right-arm" transform="rotate(5 168 139)">
+          <path d="M168 128q29-7 44 17l16 45-31 13-36-41z" fill="#291d3d" stroke="#0c0e1a" stroke-width="7" stroke-linejoin="round" />
+          <path d="M213 166l23 18-15 20-23-13" fill="url(#sfClaw)" stroke="#0c0e1a" stroke-width="6" stroke-linejoin="round" />
+          <path d="M231 195q10 13 5 25l-13 8-5-17-13 9-5-8 16-16z" fill="url(#sfClaw)" stroke="#0b0d18" stroke-width="5" stroke-linejoin="round" />
+          <path d="M230 223l16 16-20-3 5 14-16-19" stroke="#bd7eb7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
+      <path d="M91 93q-14-29 2-56l17 20 18-38 17 37 24-26q17 35-2 67z" fill="#17152b" stroke="#080b15" stroke-width="7" stroke-linejoin="round" />
+      <path d="m101 72 20-16 9 13 15-14 13 14 18-13-5 35-29 23-34-16z" fill="#302142" stroke="#0a0c18" stroke-width="6" stroke-linejoin="round" />
+      <path d="M92 87q21-15 37-14 20 0 38 15l7 41-21 29-43-1-24-28z" fill="url(#sfBody)" stroke="#0b0c18" stroke-width="7" stroke-linejoin="round" />
+      <path d="m98 106 22-13m38 17-23-13m-19 20 12 3m-20 10 22 8" stroke="#8e3c59" stroke-width="4" stroke-linecap="round" opacity=".85" />
+      <path d="m111 125 13-8 16 5 9 14-15 8-18-5z" fill="#130f22" stroke="#7a3650" stroke-width="4" />
+      <path d="m115 132 10 3m10-1 9-4" stroke="#ff7458" stroke-width="3" stroke-linecap="round" />
+      <g id="hero-accessory" transform="rotate(6 128 145)">
+        <path d="M76 136q-21-19-4-43 1 18 13 20-2-22 17-33-3 32 12 43l-15 21z" fill="#d64a58" stroke="#29152f" stroke-width="5" stroke-linejoin="round" />
+        <path d="M180 136q21-19 4-43-1 18-13 20 2-22-17-33 3 32-12 43l15 21z" fill="#d64a58" stroke="#29152f" stroke-width="5" stroke-linejoin="round" />
+        <path d="m82 127 10-23m82 23-10-23" stroke="#ffb05b" stroke-width="4" stroke-linecap="round" />
+        <g>
+          <circle cx="54" cy="112" r="15" fill="url(#sfSoul)" opacity=".85">
+            </circle>
+          <path d="m54 94 5 16-8 7-7-10z" fill="#ff9e57" />
+        </g>
+        <g>
+          <circle cx="205" cy="117" r="14" fill="url(#sfSoul)" opacity=".85">
+            </circle>
+          <path d="m205 98 5 15-8 8-7-11z" fill="#ff9e57" />
+        </g>
+        <path d="m61 268-14 11 18-2-3 13 14-18m121-7 14 11-18-2 3 13-14-18" stroke="#d6556c" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".82" />
+      </g>
+    </g>
+  </g>
+</svg>

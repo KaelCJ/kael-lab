@@ -1,0 +1,18 @@
+Use case: stylized-concept
+Asset type: one full-body idle-pose character PNG concept for a small 2D fantasy survival game, readable at 128px and 64px.
+
+Scene/backdrop: completely flat solid #FF00FF magenta chroma-key background; one isolated full-body character, no scenery, floor, shadow or gradient.
+
+Subject: a dwarven rifleman, based on the recognizable dwarf-and-rifle archetype of DotA1's Kardel Sharpeye / Dwarven Sniper. A short, stocky, powerful dwarf with very broad shoulders, short sturdy legs, a large head, a dense prominent beard, and a clearly readable face. The beard must remain visible as a strong shape. He holds one long-barreled fantasy rifle naturally in both hands across his body in a calm, alert idle stance. Show the complete wooden stock, mechanism, long metal barrel and muzzle. Keep the barrel readable in silhouette rather than foreshortened toward the camera. Both hands grip the same rifle convincingly. Clothing, metal armor pieces and leather details form clear layers.
+
+Style/medium: refined 2D hand-painted cartoon game art with the polished miniature-character readability associated with Kingdom Rush. Clean dark outer outlines, exaggerated but powerful body proportions, a few broad light and shadow groups, and crisp separated material shapes. Freshly redraw the character's clothing, equipment and details; do not extract, trace or reuse an existing game asset. Preserve the classic fantasy dwarf rifleman identity.
+
+Composition/framing: a slightly elevated three-quarter view. Keep the character upright with the head above the torso and the feet below. Center the complete character and the complete rifle on a portrait 3:4 canvas with a small clear margin on every side. Show the top of the head, both boots, both hands, rifle stock and muzzle without clipping. Keep the legs and feet distinct and avoid hiding the beard behind the rifle. This is one independent character illustration, not a portrait crop, lineup, collage, sprite sheet or animation sheet.
+
+Lighting/materials: controlled hand-painted shading. Group beard, clothing, wood and metal into distinct broad color masses. Use restrained metal highlights and simple cloth shadows, without dense filigree, tiny noisy details or dramatic effects that weaken the silhouette.
+
+Constraints: a viewer must immediately recognize a stocky dwarf carrying a long rifle after reduction to 64px. Full-body idle pose; all weapons fully visible; flat #FF00FF chroma-key background; no text, letters, logos, UI, border or watermark.
+
+Avoid: pixel art, 32x32 pixel-grid rendering, photorealism, 3D rendering, a science-fiction robot, modern tactical equipment, a short-barreled blaster, human-height slender proportions, baby-like chibi proportions, extra characters, extra weapons, muzzle flash, smoke, projectiles, skill effects, missing or duplicate limbs, cropped boots, cropped muzzle, no background scenery or gradients, or a fake transparency checkerboard.
+
+Background for local extraction: render the entire backdrop as perfectly flat solid RGB(255,0,255), hex #FF00FF. No magenta on the character itself. No ground shadows, drop shadows, backdrop lighting, gradients, vignette, scenery or fake transparency/checkerboard pattern. Show the complete character and every weapon tip inside a portrait 3:4 canvas with clear margin. Output one PNG illustration.

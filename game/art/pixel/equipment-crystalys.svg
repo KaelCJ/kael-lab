@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>水晶剑</title>
+  <polygon points="3,3 11,3 23,17 19,22 14,20" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="6,5 11,5 20,17 17,18" fill="#d9e8dc" stroke="#4389af" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="13,11 19,5 26,10 21,16" fill="#76529d" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="15,11 19,7 22,10 19,13" fill="#d6a0f1" stroke="#76529d" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="17,22 22,17 28,21 24,25" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="22,24 25,21 30,27 27,30" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="23" y="18" width="3" height="3" fill="#f6d58b"/>
+</svg>

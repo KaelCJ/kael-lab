@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>撒旦之邪力</title>
+  <polygon points="3,4 11,8 16,4 21,8 29,4 26,13 28,19 23,27 16,30 9,27 4,19 6,13" fill="#10252d" stroke="#b84944" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="7,9 13,12 16,8 19,12 25,9 24,18 20,25 16,27 12,25 8,18" fill="#b84944" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="10,15 15,14 14,18 10,19" fill="#ee8e61" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="22,15 17,14 18,18 22,19" fill="#ee8e61" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="13,21 19,21 16,26" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="3" y="2" width="4" height="4" fill="#ee8e61"/>
+  <rect x="25" y="2" width="4" height="4" fill="#ee8e61"/>
+</svg>

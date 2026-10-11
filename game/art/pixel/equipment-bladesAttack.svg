@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>攻击之爪</title>
+  <polygon points="4,5 8,3 18,19 15,23" fill="#67838b" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="14,3 18,2 22,20 18,23" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="25,5 29,7 21,23 17,21" fill="#67838b" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="11,20 21,20 24,28 8,28" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="10,22 22,22 20,25 12,25" fill="#ee8e61" stroke="#b84944" stroke-width="1" stroke-linejoin="miter"/>
+  <rect x="14" y="27" width="4" height="3" fill="#f6d58b"/>
+</svg>

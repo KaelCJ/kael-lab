@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>速度之鞋</title>
+  <polygon points="10,3 20,3 20,14 25,18 30,21 30,27 27,29 4,29 2,26 5,21 9,18" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="11,5 18,5 18,14 22,19 27,22 27,25 6,25 8,21 11,18" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="4,23 12,19 10,16 5,17 2,20" fill="#d9e8dc" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="20,8 27,4 27,8 22,13 20,13" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="4" y="26" width="24" height="3" fill="#10252d"/>
+  <rect x="12" y="8" width="6" height="2" fill="#f6d58b"/>
+</svg>

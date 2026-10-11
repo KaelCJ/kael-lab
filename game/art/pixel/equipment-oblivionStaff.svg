@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>空明杖</title>
+  <polygon points="14,10 18,10 19,30 13,30" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="5,7 12,3 16,8 20,3 27,7 23,13 18,15 14,15 9,13" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="10,7 15,5 17,9 21,5 24,8 21,12 16,13 11,12" fill="#76529d" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="14,5 17,9 15,12 12,9" fill="#d6a0f1" stroke="#76529d" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="2,3 5,1 8,4 5,7" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="27,2 30,4 27,7 24,5" fill="#9fdcf5" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="12" y="19" width="8" height="3" fill="#f6d58b"/>
+</svg>

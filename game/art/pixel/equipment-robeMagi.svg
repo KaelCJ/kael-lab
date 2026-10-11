@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>法师长袍</title>
+  <polygon points="11,4 16,7 21,4 27,8 24,15 25,28 7,28 8,15 5,8" fill="#4389af" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="10,7 14,10 18,10 22,7 24,10 21,15 20,25 12,25 11,15 8,10" fill="#76529d" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="14,12 18,12 19,25 13,25" fill="#9fdcf5" stroke="#4389af" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="12,3 16,6 20,3 21,8 16,12 11,8" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <circle cx="16" cy="8" r="2" fill="#d6a0f1" stroke="#76529d" stroke-width="1"/>
+  <rect x="4" y="26" width="24" height="3" fill="#10252d"/>
+</svg>

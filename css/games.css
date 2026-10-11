@@ -74,6 +74,13 @@ a:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
 .next-game { display: flex; margin-top: 14px; padding: 24px 28px; align-items: center; justify-content: space-between; gap: 20px; border: 1px dashed var(--line); }
 .next-game span { color: var(--mint); font-size: var(--label-size); line-height: var(--label-line); font-weight: 600; }
 .next-game p { margin: 0; color: var(--muted); font-size: var(--body-size); line-height: var(--body-line); }
+.support-card { display: flex; margin-top: 14px; padding: 26px 28px; align-items: center; justify-content: space-between; gap: 24px; border: 1px solid rgba(117,236,192,.28); background: rgba(117,236,192,.06); }
+.support-card .eyebrow { margin-bottom: 8px; }
+.support-card h2 { margin: 0 0 7px; font-size: var(--title-size); line-height: var(--title-line); font-weight: 600; }
+.support-card p:not(.eyebrow) { max-width: 600px; margin: 0; color: var(--muted); font-size: var(--body-size); line-height: var(--body-line); }
+.support-action { display: inline-flex; min-height: 44px; flex: 0 0 auto; padding: 0 18px; align-items: center; background: var(--mint); color: var(--ink); font-size: var(--body-size); line-height: var(--body-line); font-weight: 700; text-decoration: none; }
+.support-action:hover { background: #9af3d1; }
+.support-action:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
 .site-footer { display: flex; padding: 34px 0; justify-content: space-between; gap: 20px; border-top: 1px solid var(--line); color: var(--muted); font-size: var(--label-size); line-height: var(--label-line); }
 .site-footer a { color: var(--acid); text-decoration: none; }
 .site-footer a:hover { text-decoration: underline; }
@@ -90,7 +97,7 @@ a:focus-visible { outline: 3px solid var(--acid); outline-offset: 4px; }
   .game-copy { min-height: 440px; padding: 26px; }
   .game-card h3 { font-size: 40px; }
   .game-art { min-height: 260px; }
-  .next-game, .site-footer { align-items: flex-start; flex-direction: column; }
+  .next-game, .support-card, .site-footer { align-items: flex-start; flex-direction: column; }
 }
 @media (orientation: landscape) and (max-height: 520px) {
   .intro { min-height: 0; padding: 36px 0; }
