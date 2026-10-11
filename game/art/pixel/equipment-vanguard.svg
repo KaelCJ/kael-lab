@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>先锋盾</title>
+  <polygon points="16,1 27,5 29,17 25,26 16,31 7,26 3,17 5,5" fill="#67838b" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="16,4 24,7 26,17 22,24 16,27 10,24 6,17 8,7" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="16,7 22,9 23,17 20,22 16,24 12,22 9,17 10,9" fill="#b84944" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="16,10 20,14 16,21 12,14" fill="#f6d58b" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="3" y="12" width="6" height="4" fill="#d9e8dc"/>
+  <rect x="23" y="12" width="6" height="4" fill="#d9e8dc"/>
+  <rect x="14" y="3" width="4" height="4" fill="#d9e8dc"/>
+</svg>

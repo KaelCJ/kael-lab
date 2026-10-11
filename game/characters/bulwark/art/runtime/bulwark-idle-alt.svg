@@ -1,0 +1,96 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>bulwark · idle-alt pose</title>
+  <desc>Editable static SVG action frame; no autonomous SVG animation.</desc>
+  <defs>
+    <linearGradient id="bulwarkHide" x1="72" y1="72" x2="188" y2="286" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a9784f" />
+      <stop offset=".48" stop-color="#77513d" />
+      <stop offset="1" stop-color="#45363a" />
+    </linearGradient>
+    <linearGradient id="bulwarkMuzzle" x1="91" y1="103" x2="165" y2="178" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#be8a5b" />
+      <stop offset=".55" stop-color="#85573f" />
+      <stop offset="1" stop-color="#533b3c" />
+    </linearGradient>
+    <linearGradient id="bulwarkQuill" x1="61" y1="95" x2="198" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e0a75d" />
+      <stop offset=".45" stop-color="#a7613c" />
+      <stop offset="1" stop-color="#50343a" />
+    </linearGradient>
+    <linearGradient id="bulwarkLeather" x1="72" y1="213" x2="190" y2="330" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#82543b" />
+      <stop offset="1" stop-color="#3b3032" />
+    </linearGradient>
+    <linearGradient id="bulwarkBoot" x1="74" y1="283" x2="182" y2="372" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6d4b3f" />
+      <stop offset="1" stop-color="#292b34" />
+    </linearGradient>
+  </defs>
+  <g id="hero-motion" transform="translate(0 -2)">
+    <g id="hero-body" transform="rotate(-1.5 128 350)">
+      <g id="hero-weapon" transform="rotate(3 128 205)">
+        <path d="M73 245 42 220l38 7-23-37 40 22-8-46 32 36 8-50 19 47 27-42 1 52 39-31-18 48 44-16-33 34 36 5-49 18z" fill="url(#bulwarkQuill)" stroke="#392e35" stroke-width="6" stroke-linejoin="round" />
+        <path d="m69 221 20 9m-14-39 27 24m-3-38 16 29m13-44 4 38m28-31-13 32m38-23-26 24m47-9-34 18" stroke="#f3ca7b" stroke-width="4" stroke-linecap="round" opacity=".8" />
+        <path d="m58 229 26-10m102 3 26-4m-102-15 18-13m39 10 20-12" stroke="#683d38" stroke-width="5" stroke-linecap="round" />
+      </g>
+      <g id="pose-left-leg" transform="rotate(-1.5 116 261)">
+        <path d="M72 254 119 260l-5 76-39 17-16-45z" fill="url(#bulwarkBoot)" stroke="#252b31" stroke-width="6" stroke-linejoin="round" />
+        <path d="M64 322 113 313l8 26-67 27-16-13 17-23z" fill="#4c3a38" stroke="#252b31" stroke-width="6" stroke-linejoin="round" />
+        <path d="M43 350 98 329" stroke="#b17a50" stroke-width="6" stroke-linecap="round" />
+        <path d="M67 282 104 286" stroke="#c58f54" stroke-width="5" stroke-linecap="round" />
+      </g>
+      <g id="pose-right-leg" transform="rotate(1.5 140 261)">
+        <path d="M130 263 177 254l19 66-29 34-39-18z" fill="url(#bulwarkBoot)" stroke="#252b31" stroke-width="6" stroke-linejoin="round" />
+        <path d="M138 320 178 305l35 24-3 16-69 13-14-15z" fill="#4d3938" stroke="#252b31" stroke-width="6" stroke-linejoin="round" />
+        <path d="M156 336l48 -11" stroke="#b17a50" stroke-width="6" stroke-linecap="round" />
+        <path d="M149 267l27 -7" stroke="#c58f54" stroke-width="5" stroke-linecap="round" />
+      </g>
+      <path d="M65 138q-28 24-31 75l-5 68 34-8 15-49 107 8 14 45 25-12-20-83q-8-40-37-51z" fill="#4d3b3b" stroke="#282c31" stroke-width="6" stroke-linejoin="round" />
+      <path d="M73 140q37-28 111-4l22 57-13 73-110 7-25-71z" fill="url(#bulwarkHide)" stroke="#332f32" stroke-width="7" stroke-linejoin="round" />
+      <path d="m75 165 18-18 63 1 28 20-8 55-29 23-57-7-24-27z" fill="#936443" stroke="#4c3938" stroke-width="5" stroke-linejoin="round" />
+      <path d="m88 154 38 19 42-16 12 20-17 41-35 17-37-20-13-34z" fill="#a8784b" stroke="#65463d" stroke-width="4" />
+      <path d="m129 174 2 47m-43-29 42 18 42-20m-68 47 27 11 30-12" stroke="#d4a366" stroke-width="4" stroke-linecap="round" />
+      <path d="M67 235q61 17 128 0l4 26q-68 22-136 1z" fill="url(#bulwarkLeather)" stroke="#302d32" stroke-width="5" />
+      <path d="M72 242q59 15 117 2" stroke="#d09a5a" stroke-width="5" stroke-linecap="round" />
+      <path d="M112 239h32v29h-32z" fill="#c18b4c" stroke="#46352f" stroke-width="5" />
+      <path d="m121 247 14 1-1 12-13-1z" fill="#e4d2a4" stroke="#705440" stroke-width="2" />
+      <path d="M74 264 111 270l-19 30-28-18zm67 5 44-9 11 28-28 23z" fill="#5c463d" stroke="#322f33" stroke-width="5" />
+      <path d="M68 140q-33-5-45 25l4 48 33 9 25-42z" fill="#85583f" stroke="#332f32" stroke-width="6" stroke-linejoin="round" />
+      <path d="M42 163q17-15 37-8l-7 36-31 7z" fill="#bd8554" stroke="#66443b" stroke-width="3" />
+      <path d="M34 202 65 211l-9 42-31-5-8-27z" fill="#694a3e" stroke="#302c31" stroke-width="6" />
+      <path d="m32 215 28 8m-30 10 29 7" stroke="#d0a067" stroke-width="5" stroke-linecap="round" />
+      <g id="pose-swing-arm" transform="rotate(0 184 151)">
+        <path d="M184 140q30 5 40 30l-5 42-33 11-23-43z" fill="#875940" stroke="#332f32" stroke-width="6" stroke-linejoin="round" />
+        <path d="M181 153q23-2 34 15l-5 33-31-11z" fill="#bd8655" stroke="#66443b" stroke-width="3" />
+        <path d="M190 202 215 210l7 38-29 11-16-35z" fill="#68483d" stroke="#302c31" stroke-width="6" />
+        <path d="m187 216 29 7m-27 10 29 5" stroke="#d0a067" stroke-width="5" stroke-linecap="round" />
+        <path d="M195 248q13-12 26-1l6 17-15 17-21-8-5-14z" fill="url(#bulwarkMuzzle)" stroke="#453437" stroke-width="5" />
+        <g id="pose-melee-weapon">
+          <path d="M207 250l12 -4 8 15-13 14-18-5z" fill="#916842" stroke="#3c3032" stroke-width="5" />
+          <path d="M216 250l30 -30-8 39-21 11z" fill="#eadbb4" stroke="#755c49" stroke-width="5" stroke-linejoin="round" />
+          <path d="M221 255l18 -26" fill="none" stroke="#fff3d4" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
+      <path d="M30 247q13-14 27-4l8 18-16 17-22-8-5-15z" fill="url(#bulwarkMuzzle)" stroke="#453437" stroke-width="5" />
+      <path d="M92 69q25-31 59-20 25 9 34 38l-10 61-22 28-53-9-23-43z" fill="url(#bulwarkHide)" stroke="#382f32" stroke-width="6" stroke-linejoin="round" />
+      <path d="M87 82 70 70 62 89l18 26 18-13m85-15 17-15 8 21-17 25-17-12" fill="#936444" stroke="#4b3738" stroke-width="5" stroke-linejoin="round" />
+      <path d="m89 103 27-23 39 5 22 22-8 38-27 21-38-10-22-28z" fill="url(#bulwarkMuzzle)" stroke="#4a3537" stroke-width="5" />
+      <path d="m94 111 24-12 23 7 23-7 12 16-10 24-25 14-32-9-17-18z" fill="#b47b50" stroke="#704a3e" stroke-width="4" />
+      <path d="m115 108 13 5 14-4 12 10-11 18-20 7-18-13z" fill="#5b3d3d" stroke="#342d32" stroke-width="4" />
+      <ellipse cx="119" cy="118" rx="6" ry="4" fill="#201f27" />
+      <ellipse cx="143" cy="117" rx="6" ry="4" fill="#201f27" />
+      <path d="m98 142 21 7m18 0 21-8" stroke="#e1ad77" stroke-width="4" stroke-linecap="round" />
+      <path d="m108 148q7 17 18 20l-3 19-17-13-10-18zm47-1q-7 17-18 21l3 19 18-14 9-17z" fill="#efe2bf" stroke="#795544" stroke-width="4" stroke-linejoin="round" />
+      <path d="m101 151-7 16m62-15 8 17" stroke="#f9edce" stroke-width="3" stroke-linecap="round" />
+      <path d="M100 74q20-24 56-16l25 20-13 13-28-7-31 10z" fill="#513a39" stroke="#342e33" stroke-width="5" />
+      <path d="m105 71 13-14m7 12 10-16m9 17 10-13" stroke="#c0844d" stroke-width="5" stroke-linecap="round" />
+      <path d="M103 174q22 12 51-1l13 16-22 17-35-5-17-15z" fill="#764d3e" stroke="#3c3135" stroke-width="5" />
+      <path d="m111 182 10 12m28-14-10 17" stroke="#c48b5b" stroke-width="4" stroke-linecap="round" />
+    </g>
+    <g id="hero-accessory" transform="rotate(-1.5 128 205)">
+      <path d="m44 278-13-11 7 18-10 7 16 1m182-16 10-14-1 18 12 3-15 7" stroke="#e1b35f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" opacity=".8" />
+      <circle cx="128" cy="255" r="4" fill="#f4d180">
+        </circle>
+    </g>
+  </g>
+</svg>

@@ -5,65 +5,66 @@
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#111827">
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <meta name="description" content="星核幸存者：原创网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波敌潮中移动、自动攻击、升级和购物。">
+  <meta name="description" content="星核幸存者：原创网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波远征或无尽敌潮中移动、自动攻击、升级和购物。">
   <title>星核幸存者 · Kael Lab</title>
   <link rel="stylesheet" href="../css/game/game.css">
-  <script src="../js/game/game.js" defer></script>
+  <script type="module" src="../js/game/game.js?v=20261011"></script>
 </head>
 <body>
   <main id="game" class="game-shell" data-skin="pixel">
-    <canvas id="arena" aria-label="星核幸存者游戏战场。电脑使用方向键、WASD 或右键点击移动，空格冲刺、Q 施放主动技能；手机使用摇杆和右侧技能、冲刺按钮。攻击自动进行。"></canvas>
+    <canvas id="arena" data-i18n-attr="aria-label:canvasAria" aria-label="星核幸存者游戏战场。电脑使用方向键、WASD 或右键点击移动，空格冲刺、Q 施放主动技能；手机使用摇杆和右侧技能、冲刺按钮。攻击自动进行。"></canvas>
 
     <div id="hud" class="hud hidden" aria-live="off">
       <div class="hud-top">
         <div class="hud-group hud-wave"><span id="wave-label">第 1 / 20 波</span><strong id="time-label">30</strong><span id="biome-label">赤沙废港</span></div>
         <div class="hud-vitals">
           <div class="meter health-meter"><div id="hp-fill" class="meter-fill"></div><span id="hp-label">生命 20 / 20</span></div>
+          <div class="meter mana-meter"><div id="mana-fill" class="meter-fill"></div><span id="mana-label">法力 100 / 100</span></div>
           <div class="hud-experience"><div class="meter exp-meter"><div id="xp-fill" class="meter-fill"></div></div><span id="xp-label">等级 1</span></div>
         </div>
-        <div class="hud-group hud-right"><span class="currency">◇ <b id="money-label">0</b></span><button id="pause-button" class="icon-button" type="button" aria-label="暂停游戏" title="暂停 (Esc)">Ⅱ</button></div>
+        <div class="hud-group hud-right"><span class="currency">◇ <b id="money-label">0</b></span><button id="pause-button" class="icon-button" type="button" data-i18n-attr="aria-label:pauseAria;title:pauseTitleAttr" aria-label="暂停游戏" title="暂停 (Esc)">Ⅱ</button></div>
       </div>
-      <div id="skill-strip" class="skill-strip" aria-label="角色技能"></div>
-      <div class="hud-bottom"><div id="weapon-strip" class="weapon-strip" aria-label="已装备武器"></div><div class="hud-stats" id="hud-stats"></div><button id="skin-button" class="skin-toggle" type="button">像素风</button></div>
+      <div id="skill-strip" class="skill-strip" data-i18n-attr="aria-label:skillStripAria" aria-label="角色技能"></div>
+      <div class="hud-bottom"><div id="equipment-strip" class="equipment-strip" data-i18n-attr="aria-label:equipmentStripAria" aria-label="已持有装备"></div><div class="hud-stats" id="hud-stats"></div><button id="skin-button" class="skin-toggle" type="button">像素风</button></div>
       <div class="combat-actions">
-        <button id="skill-button" class="skill-button" type="button" aria-label="施放主动技能" title="主动技能 (Q)">技能<small>Q</small></button>
-        <button id="dash-button" class="dash-button" type="button" aria-label="冲刺" title="冲刺 (空格)">冲刺<small class="key-hint">空格</small></button>
+        <button id="skill-button" class="skill-button" type="button" data-i18n-attr="aria-label:skillAria;title:skillTitle" aria-label="施放主动技能" title="主动技能 (Q)">技能<small>Q</small></button>
+        <button id="dash-button" class="dash-button" type="button" data-i18n-attr="aria-label:dashAria;title:dashTitle" aria-label="冲刺" title="冲刺 (空格)">冲刺<small class="key-hint">空格</small></button>
       </div>
     </div>
 
-    <div id="touch-controls" class="touch-controls hidden" aria-label="触控操作">
-      <div id="joystick" class="joystick" role="group" aria-label="移动摇杆"><div id="joystick-knob" class="joystick-knob"></div></div>
+    <div id="touch-controls" class="touch-controls hidden" data-i18n-attr="aria-label:touchAria" aria-label="触控操作">
+      <div id="joystick" class="joystick" role="group" data-i18n-attr="aria-label:joystickAria" aria-label="移动摇杆"><div id="joystick-knob" class="joystick-knob"></div></div>
     </div>
 
     <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
     <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
-      <div class="title-heading"><a class="home-link" href="../games.html">← 选择游戏</a><div class="eyebrow">KAEL LAB · BROWSER GAME</div><h1 id="game-title">星核<span>幸存者</span></h1><p>在坠落的星港里活过 20 波。拾取材料、组合武器，让下一波变成你的资源。</p></div>
+      <div class="title-heading"><a class="home-link" data-i18n="home" href="../games.html">← 选择游戏</a><div class="eyebrow" data-i18n="eyebrow">KAEL LAB · BROWSER GAME</div><h1 id="game-title">星核<span>幸存者</span></h1><p data-i18n="titleLead">在坠落的星港里活过 20 波，或进入无尽模式。拾取组件，按固定配方合成大装备。</p></div>
       <div class="setup-panel">
-        <div class="setup-column"><h2>选择驾驶员</h2><div id="character-list" class="selection-grid"></div></div>
-        <div class="setup-column"><h2>选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span>难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span>节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span>画面</span><button id="title-skin-button" class="small-button" type="button">像素风</button></div><div class="setting-row"><span>音效</span><button id="sound-button" class="small-button" type="button"></button></div></div>
-        <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button">开始远征 <span aria-hidden="true">➜</span></button></div>
+        <div class="setup-column"><h2 data-i18n="chooseCharacter">选择驾驶员</h2><div id="character-list" class="selection-grid"></div></div>
+        <div class="setup-column"><h2 data-i18n="chooseBiome">选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span data-i18n="difficulty">难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="pace">节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="mode">模式</span><div id="mode-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="visuals">画面</span><button id="title-skin-button" class="small-button" type="button">像素风</button></div><div class="setting-row"><span data-i18n="sound">音效</span><button id="sound-button" class="small-button" type="button"></button></div><div class="setting-row locale-row"><span id="locale-label" data-i18n="language">语言</span><div class="segmented locale-switch"><button id="locale-zh-CN" type="button" data-locale="zh-CN">简体中文</button><button id="locale-zh-TW" type="button" data-locale="zh-TW">繁體中文</button><button id="locale-en" type="button" data-locale="en">English</button></div></div></div>
+        <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><div class="setup-actions"><a class="support-link" href="https://afdian.com/u/aa73c958c4b211f1919d52540025c377" target="_blank" rel="noopener noreferrer"><strong data-i18n="support">支持开发</strong><small data-i18n="supportNote">自愿支持，不影响游玩。</small></a><button id="start-button" class="primary-button" type="button" data-i18n="start">开始挑战 <span aria-hidden="true">➜</span></button></div></div>
       </div>
-      <p class="controls-note">电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机横竖屏均可用左侧摇杆和右侧技能、冲刺按钮。武器自动瞄准；主动拾取宝箱可回血，波末进入开箱结算。</p>
+      <p class="controls-note" data-i18n="controls">电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机使用摇杆和技能、冲刺按钮。角色自动普攻；主动技能需要蓝量且受冷却限制。</p>
     </section>
 
     <section id="level-screen" class="screen modal-screen hidden" aria-labelledby="level-title">
-      <div class="modal-card choice-card"><div class="modal-kicker">成长选择 <span id="levels-left"></span></div><h2 id="level-title">选择一项升级</h2><p>每次升级强化一项能力。选择后继续处理剩余等级。</p><div id="level-options" class="choice-grid"></div></div>
+      <div class="modal-card choice-card"><div class="modal-kicker"><span data-i18n="levelKicker">成长选择</span> <span id="levels-left"></span></div><h2 id="level-title" data-i18n="levelTitle">选择一项升级</h2><p data-i18n="levelDesc">每次升级强化一项能力。选择后继续处理剩余等级。</p><div id="level-options" class="choice-grid"></div></div>
     </section>
 
     <section id="shop-screen" class="screen modal-screen hidden" aria-labelledby="shop-title">
-      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker">波间补给 · <span id="shop-wave"></span></div><h2 id="shop-title">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption">波末未拾取材料按 80% 折算货币，经验全额保留；宝箱先开出改装，可立即装配或拆解。六槽满时可合成同名同阶武器，或卖出一把。</p><div id="shop-next-wave" class="shop-next-wave" role="status"></div><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">开始下一波 ➜</button></div><h3>装备与属性</h3><div id="inventory" class="inventory"></div><div id="shop-stats" class="shop-stats"></div></div>
+      <div class="modal-card shop-card"><div class="shop-heading"><div><div class="modal-kicker"><span data-i18n="shopKicker">波间补给 · </span><span id="shop-wave"></span></div><h2 id="shop-title" data-i18n="shopTitle">废港补给站</h2></div><div class="shop-wallet">◇ <span id="shop-money">0</span></div></div><p class="shop-caption" data-i18n="shopCaption">波末未拾取材料按 80% 折算货币，经验全额保留；商店出售组件，材料齐全后可合成成品，配方不占装备格。</p><div id="shop-next-wave" class="shop-next-wave" role="status"></div><div id="shop-offers" class="shop-offers"></div><div class="shop-actions"><button id="reroll-button" class="secondary-button" type="button"></button><button id="next-wave-button" class="primary-button" type="button">开始下一波 ➜</button></div><h3 data-i18n="shopEquipment">装备与属性</h3><div id="inventory" class="inventory"></div><h3 class="recipe-heading" data-i18n="recipesTitle">固定合成</h3><div id="recipe-list" class="recipe-list" aria-live="polite"></div><div id="shop-stats" class="shop-stats"></div></div>
     </section>
 
-    <section id="chest-screen" class="screen modal-screen hidden" aria-labelledby="chest-title"><div class="modal-card chest-card"><div class="modal-kicker">波间战利品 · 待开 <span id="chests-left">0</span></div><h2 id="chest-title">拾获补给箱</h2><p>依次查看宝箱改装，决定立即装配到本局或拆解。</p><div id="chest-reward" class="chest-reward" aria-live="polite"></div><div class="chest-actions"><button id="chest-take-button" class="primary-button" type="button">收下改装</button><button id="chest-scrap-button" class="secondary-button" type="button">拆解为材料</button></div></div></section>
+    <section id="chest-screen" class="screen modal-screen hidden" aria-labelledby="chest-title"><div class="modal-card chest-card"><div class="modal-kicker"><span data-i18n="chestKicker">波间战利品 · 待开 </span><span id="chests-left">0</span></div><h2 id="chest-title" data-i18n="chestTitle">拾获补给箱</h2><p data-i18n="chestDesc">依次查看宝箱装备，决定收下或拆解。</p><div id="chest-reward" class="chest-reward" aria-live="polite"></div><div class="chest-actions"><button id="chest-take-button" class="primary-button" type="button" data-i18n="chestTake">收下装备</button><button id="chest-scrap-button" class="secondary-button" type="button" data-i18n="chestScrap">拆解为材料</button></div></div></section>
 
-    <section id="wave-result-screen" class="screen modal-screen hidden" aria-labelledby="wave-result-title"><div class="modal-card compact-card wave-result-card"><div id="wave-result-kicker" class="modal-kicker"></div><h2 id="wave-result-title"></h2><p id="wave-result-message"></p><div id="wave-result-stats" class="result-stats"></div><div class="wave-countdown"><span>自动继续</span><strong id="wave-result-countdown">3.5 秒</strong></div><button id="wave-result-continue" class="primary-button" type="button">继续结算</button></div></section>
+    <section id="wave-result-screen" class="screen modal-screen hidden" aria-labelledby="wave-result-title"><div class="modal-card compact-card wave-result-card"><div id="wave-result-kicker" class="modal-kicker"></div><h2 id="wave-result-title"></h2><p id="wave-result-message"></p><div id="wave-result-stats" class="result-stats"></div><div class="wave-countdown"><span data-i18n="waveAuto">自动继续</span><strong id="wave-result-countdown">3.5 秒</strong></div><button id="wave-result-continue" class="primary-button" type="button" data-i18n="waveContinue">继续结算</button></div></section>
 
-    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="pause-layout"><aside class="modal-card pause-panel" aria-labelledby="pause-stats-title"><div class="modal-kicker">当前驾驶员</div><h3 id="pause-stats-title">属性</h3><div id="pause-stats" class="pause-stats"></div><h3>当前武器</h3><div id="pause-weapons" class="pause-weapons"></div><h3>角色技能</h3><div id="pause-skills" class="pause-skills"></div></aside><div class="modal-card compact-card"><div class="modal-kicker">远征暂歇</div><h2 id="pause-title">已暂停</h2><p>你的远征会在这里等你。</p><button id="pause-skin-button" class="secondary-button" type="button">画面：像素风</button><button id="resume-button" class="primary-button" type="button">继续战斗</button><button id="restart-button" class="secondary-button" type="button">重新开始</button><button id="quit-button" class="text-button" type="button">返回标题</button></div></div></section>
+    <section id="pause-screen" class="screen modal-screen hidden" aria-labelledby="pause-title"><div class="pause-layout"><aside class="modal-card pause-panel" aria-labelledby="pause-stats-title"><div class="modal-kicker" data-i18n="pauseDriver">当前驾驶员</div><h3 id="pause-stats-title" data-i18n="pauseStats">属性</h3><div id="pause-stats" class="pause-stats"></div><h3 data-i18n="pauseEquipment">当前装备</h3><div id="pause-equipment" class="pause-equipment"></div><h3 data-i18n="pauseSkills">角色技能</h3><div id="pause-skills" class="pause-skills"></div></aside><div class="modal-card compact-card"><div class="modal-kicker" data-i18n="pauseKicker">远征暂歇</div><h2 id="pause-title" data-i18n="pauseTitle">已暂停</h2><p data-i18n="pauseDesc">你的远征会在这里等你。</p><button id="pause-skin-button" class="secondary-button" type="button">画面：像素风</button><button id="resume-button" class="primary-button" type="button" data-i18n="resume">继续战斗</button><button id="restart-button" class="secondary-button" type="button" data-i18n="restart">重新开始</button><button id="quit-button" class="text-button" type="button" data-i18n="backTitle">返回标题</button></div></div></section>
 
-    <section id="result-screen" class="screen modal-screen hidden" aria-labelledby="result-title"><div class="modal-card compact-card result-card"><div id="result-kicker" class="modal-kicker"></div><h2 id="result-title"></h2><p id="result-message"></p><div id="result-stats" class="result-stats"></div><button id="result-restart" class="primary-button" type="button">再来一局</button><button id="result-home" class="secondary-button" type="button">返回标题</button></div></section>
+    <section id="result-screen" class="screen modal-screen hidden" aria-labelledby="result-title"><div class="modal-card compact-card result-card"><div id="result-kicker" class="modal-kicker"></div><h2 id="result-title"></h2><p id="result-message"></p><div id="result-stats" class="result-stats"></div><a class="support-link result-support-link" href="https://afdian.com/u/aa73c958c4b211f1919d52540025c377" target="_blank" rel="noopener noreferrer"><strong data-i18n="support">支持开发</strong><small data-i18n="supportNote">自愿支持，不影响游玩。</small></a><button id="result-restart" class="primary-button" type="button" data-i18n="resultRestart">再来一局</button><button id="result-home" class="secondary-button" type="button" data-i18n="resultHome">返回标题</button></div></section>
 
-    <noscript><div class="noscript"><h1>星核幸存者</h1><p>这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动，Q 主动技能、空格冲刺；手机横竖屏均可使用触控摇杆与右侧按钮。游戏不需要账号或服务器。</p><p><a href="../games.html">返回游戏列表</a></p></div></noscript>
+    <noscript><div class="noscript"><h1 data-i18n="noScriptTitle">星核幸存者</h1><p data-i18n="noScript">这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动，Q 主动技能、空格冲刺；手机横竖屏均可使用触控摇杆与右侧按钮。装备按固定组件配方合成，技能同时需要冷却完成和蓝量足够。游戏不需要账号或服务器。</p><p><a href="../games.html" data-i18n="home">返回游戏列表</a></p></div></noscript>
   </main>
 </body>
 </html>

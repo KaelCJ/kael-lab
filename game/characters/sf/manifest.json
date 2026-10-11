@@ -22,6 +22,18 @@
     }
   ],
   "assets": {
+    "runtime": {
+      "source": "art/runtime/sf-hero.svg",
+      "idle": "art/runtime/sf-idle-a.svg",
+      "idleAlternate": "art/runtime/sf-idle-alt.svg",
+      "walk": ["art/runtime/sf-walk-a.svg", "art/runtime/sf-walk-b.svg"],
+      "dash": "art/runtime/sf-dash.svg",
+      "attackWindup": "art/runtime/sf-attack-windup.svg",
+      "attack": "art/runtime/sf-attack.svg",
+      "attackRelease": "art/runtime/sf-attack-release.svg",
+      "skill": "art/runtime/sf-skill.svg",
+      "format": "svg-poses"
+    },
     "character": [
       "sf.svg",
       "sf-step.svg",

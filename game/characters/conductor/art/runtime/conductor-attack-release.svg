@@ -1,0 +1,132 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>conductor · attack-release pose</title>
+  <desc>Editable static SVG action frame; no autonomous SVG animation.</desc>
+  <defs>
+    <linearGradient id="steel" x1="53" y1="113" x2="181" y2="264" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#91aab8" />
+      <stop offset=".32" stop-color="#526e80" />
+      <stop offset=".72" stop-color="#304a61" />
+      <stop offset="1" stop-color="#20364d" />
+    </linearGradient>
+    <linearGradient id="brightSteel" x1="61" y1="115" x2="164" y2="195" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d3e6e8" />
+      <stop offset=".46" stop-color="#8daab9" />
+      <stop offset="1" stop-color="#486579" />
+    </linearGradient>
+    <linearGradient id="beard" x1="93" y1="91" x2="156" y2="207" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f7f5e3" />
+      <stop offset=".48" stop-color="#cad8d6" />
+      <stop offset="1" stop-color="#6d8c9b" />
+    </linearGradient>
+    <linearGradient id="skin" x1="95" y1="71" x2="158" y2="149" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#edbd8b" />
+      <stop offset=".6" stop-color="#c88963" />
+      <stop offset="1" stop-color="#8f594b" />
+    </linearGradient>
+    <linearGradient id="gold" x1="66" y1="161" x2="173" y2="288" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ebc878" />
+      <stop offset=".48" stop-color="#b68447" />
+      <stop offset="1" stop-color="#735039" />
+    </linearGradient>
+    <linearGradient id="boot" x1="69" y1="292" x2="172" y2="374" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#71574a" />
+      <stop offset=".55" stop-color="#4d4341" />
+      <stop offset="1" stop-color="#2f3540" />
+    </linearGradient>
+    <linearGradient id="hammer" x1="175" y1="34" x2="238" y2="108" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d4e8ea" />
+      <stop offset=".38" stop-color="#7798a9" />
+      <stop offset="1" stop-color="#2f4e68" />
+    </linearGradient>
+  </defs>
+  <g id="hero-motion" transform="translate(0 -2)">
+    <g id="hero-body" transform="rotate(-4 128 350)">
+      <g id="hero-accessory" transform="translate(0 12)">
+        <path d="m211 28 9-17-3 19 15-8-12 17m17 15 11-5-12 13 7 12-16-9m-37-36-8-16 1 20-12-9 7 17" stroke="#4da8d7" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="m211 28 9-17-3 19 15-8-12 17m17 15 11-5-12 13 7 12-16-9m-37-36-8-16 1 20-12-9 7 17" stroke="#edfaff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+        <path d="M208 83l19 -12-7 18" fill="none" stroke="#e4faff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+      <g id="hero-weapon" transform="rotate(-36 180 151) rotate(30 185 194)">
+        <path d="m194 88 15 9-28 111-14-7z" fill="#825d40" stroke="#27323a" stroke-width="5" stroke-linejoin="round" />
+        <path d="m201 91 5 3-28 110-5-3z" fill="#e0b46a" />
+        <path d="m184 130 12 7m-17 15 12 7m-18 16 12 7" stroke="#2f3941" stroke-width="5" stroke-linecap="round" />
+        <path d="m173 44 20-13 37 8 9 14-7 39-18 12-38-11-10-15z" fill="url(#hammer)" stroke="#202d3a" stroke-width="6" stroke-linejoin="round" />
+        <path d="m180 48 15-8 31 6 5 9-7 30-13 10-30-9-7-11z" stroke="#cfecf0" stroke-width="3" stroke-linejoin="round" />
+        <path d="m197 46-5 39 19 8 4-45z" fill="#344e65" stroke="#1e3448" stroke-width="3" />
+        <path d="m205 52-6 22 9-4-3 14 14-25-8 5 3-12z" fill="#dbfaff" stroke="#59bff2" stroke-width="2" stroke-linejoin="round" />
+        <path d="m170 58-9 5 6 23 12 8 1-50z" fill="#526e80" stroke="#253a4a" stroke-width="4" stroke-linejoin="round" />
+      </g>
+      <g id="pose-left-leg" transform="rotate(-6 116 261)">
+        <path d="m72 263 49 8-11 71-39 6-13-34z" fill="url(#boot)" stroke="#25303b" stroke-width="6" stroke-linejoin="round" />
+        <path d="m64 318 49 4-4 25-40 7-13-16z" fill="#7f6756" stroke="#29333c" stroke-width="5" stroke-linejoin="round" />
+        <path d="m65 341 45 1 3 27-68 5-8-12 11-14z" fill="#47454a" stroke="#222c35" stroke-width="6" stroke-linejoin="round" />
+        <path d="M48 358l52 -4" stroke="#ae9271" stroke-width="5" stroke-linecap="round" />
+        <path d="M71 324l31 1" stroke="#c5a472" stroke-width="5" stroke-linecap="round" />
+        <path d="M50 368l49 -4" stroke="#1e2934" stroke-width="3" stroke-linecap="round" />
+      </g>
+      <g id="pose-right-leg" transform="rotate(7 140 261)">
+        <path d="m129 273 51-6 10 70-39 15-22-34z" fill="url(#boot)" stroke="#25303b" stroke-width="6" stroke-linejoin="round" />
+        <path d="m137 323 43-9 10 24-37 21-15-15z" fill="#816651" stroke="#29333c" stroke-width="5" stroke-linejoin="round" />
+        <path d="m144 344 42-10 22 28-5 12-64-1-10-14z" fill="#4d4a4b" stroke="#222c35" stroke-width="6" stroke-linejoin="round" />
+        <path d="M149 357l44 -7" stroke="#ae9271" stroke-width="5" stroke-linecap="round" />
+        <path d="M149 324l25 -6" stroke="#c5a472" stroke-width="5" stroke-linecap="round" />
+        <path d="M148 367l49 1" stroke="#1e2934" stroke-width="3" stroke-linecap="round" />
+      </g>
+      <path d="M69 133q-30 19-32 79l-8 91 38-11 8-53 113 9 12 53 22-9-20-94q-6-49-32-65z" fill="#283d55" stroke="#1d2b3c" stroke-width="6" stroke-linejoin="round" />
+      <path d="m48 205-9 79 24-9 8-50m128-27 15 80-18-5-13-43" stroke="#537b8e" stroke-width="5" stroke-linecap="round" />
+      <path d="M67 150q45-28 107-5l19 54-16 82-101 4-24-78z" fill="url(#steel)" stroke="#213142" stroke-width="7" stroke-linejoin="round" />
+      <path d="m73 178 18-16 71-2 20 18-8 57-25 21-60-5-22-23z" fill="#3f5b70" stroke="#1e3547" stroke-width="5" stroke-linejoin="round" />
+      <path d="m86 167 35 11 39-12 14 19-15 39-36 15-38-20-12-35z" fill="url(#brightSteel)" stroke="#3d5767" stroke-width="4" stroke-linejoin="round" />
+      <path d="m121 178 2 59m-43-48 42 17 46-19" stroke="#d5d4b8" stroke-width="4" stroke-linecap="round" />
+      <path d="m91 188 25 8m16 5 28-12" stroke="#4b6879" stroke-width="5" stroke-linecap="round" />
+      <path d="m96 219 26 15 31-14" stroke="#344d5e" stroke-width="5" stroke-linecap="round" />
+      <path d="m125 190-8 18 8 11 9-13z" fill="#cbf3f4" stroke="#438ba7" stroke-width="3" stroke-linejoin="round" />
+      <path d="m66 239 114 4 2 23-111 9z" fill="#694b3f" stroke="#283442" stroke-width="5" stroke-linejoin="round" />
+      <path d="m71 250 103 3" stroke="#c99d5d" stroke-width="5" stroke-linecap="round" />
+      <path d="m112 244 27 2-1 22-25 1z" fill="url(#gold)" stroke="#3a3b3e" stroke-width="5" stroke-linejoin="round" />
+      <path d="m121 249 9 1-1 11-8 1z" fill="#d7eff0" stroke="#5c8898" stroke-width="2" />
+      <path d="m76 267 37 4-22 37-26-14zm62 4 42-6 12 29-25 23z" fill="#465b6b" stroke="#27394b" stroke-width="5" stroke-linejoin="round" />
+      <path d="m75 277 19 5m61-2 18-6" stroke="#b3a682" stroke-width="4" stroke-linecap="round" />
+      <g id="pose-cast-arm" transform="rotate(-68 72 132)">
+        <path d="M72 132q-38-6-51 25l3 40 34 6 26-36z" fill="url(#steel)" stroke="#253748" stroke-width="6" stroke-linejoin="round" />
+        <path d="m40 195 25 7-12 62-26-8-6-35z" fill="#6c8291" stroke="#263849" stroke-width="6" stroke-linejoin="round" />
+        <path d="m30 222 26 6-5 27-27-5z" fill="url(#brightSteel)" stroke="#314654" stroke-width="4" />
+        <path d="m27 256 27 8 2 23-13 15-25-9-6-18z" fill="url(#skin)" stroke="#4b4140" stroke-width="5" stroke-linejoin="round" />
+        <path d="m20 279 19 7-2 12m5-12 11 3" stroke="#825044" stroke-width="4" stroke-linecap="round" />
+        <path d="M18 261l-12 -14 7 19-9 5" fill="none" stroke="#d9f8ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      </g>
+      <path d="M175 131q28 3 40 24l-4 38-34 11-26-34z" fill="url(#steel)" stroke="#253748" stroke-width="6" stroke-linejoin="round" />
+      <path d="M35 151q20-14 40-9l-11 36-33 8zm137-7q21-3 33 14l-6 29-32-10z" fill="url(#brightSteel)" stroke="#43647a" stroke-width="3" stroke-linejoin="round" />
+      <path d="m31 183 31-6m111-2 29 9" stroke="#d6c18b" stroke-width="5" stroke-linecap="round" />
+      <path d="m40 162 10 7 10-12m120 0 10 12 9-8" stroke="#b9ebee" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+      <g id="pose-hammer-arm" transform="rotate(-36 180 151)">
+        <path d="m182 188 27-5 9 47-11 27-26-4-8-30z" fill="url(#steel)" stroke="#263849" stroke-width="6" stroke-linejoin="round" />
+        <path d="m180 219 31-3 1 21-26 8z" fill="url(#brightSteel)" stroke="#39566c" stroke-width="4" />
+        <path d="m181 181 23-11 14 11-1 23-20 11-17-11z" fill="url(#skin)" stroke="#4e4140" stroke-width="5" stroke-linejoin="round" />
+        <path d="m190 189 11-5m-9 15 14-6" stroke="#f1c99c" stroke-width="4" stroke-linecap="round" />
+      </g>
+      <path d="M91 64q24-34 58-18 24 10 24 42l-7 48-17 20-49-9-22-41z" fill="url(#skin)" stroke="#3d4144" stroke-width="6" stroke-linejoin="round" />
+      <path d="m83 77-14 4 5 30 18 13m77-44 12 2-6 27-15 16" fill="url(#skin)" stroke="#5a4441" stroke-width="5" stroke-linejoin="round" />
+      <path d="m86 78 2-29 18-20 34 3 22 17 9 25-19 12-51 3z" fill="url(#steel)" stroke="#263947" stroke-width="6" stroke-linejoin="round" />
+      <path d="m91 69 17-30 33-3 21 20 3 19-21-5-34 6z" fill="url(#brightSteel)" stroke="#506c7c" stroke-width="3" stroke-linejoin="round" />
+      <path d="m89 62-25-8 11 22 15 7m77-21 24-8-10 25-16 6" fill="#95adba" stroke="#344c5c" stroke-width="5" stroke-linejoin="round" />
+      <path d="m103 46 17-22 15 20-3 21-24 1z" fill="#728d9d" stroke="#344b5b" stroke-width="5" stroke-linejoin="round" />
+      <path d="m119 34 2-19 7 20" stroke="#c8e7e8" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m89 78 22-8 45 2 14 10-12 9-57 1z" fill="#405f74" stroke="#263b4b" stroke-width="5" stroke-linejoin="round" />
+      <path d="m108 78 17 4 11-3-8 10z" fill="#c2f7fa" stroke="#4b9cba" stroke-width="3" stroke-linejoin="round" />
+      <path d="m96 102 22-8 15 5-11 11-18 4zm39-4 18-2 13 8-15 9-15-3z" fill="#f3e8d3" stroke="#615d58" stroke-width="3" stroke-linejoin="round" />
+      <path d="m103 100 20-3m15 1 19 3" stroke="#394250" stroke-width="7" stroke-linecap="round" />
+      <path d="m109 108 12-2m21 0 11 2" stroke="#b9f5ff" stroke-width="4" stroke-linecap="round" />
+      <path d="m126 103-8 19 12 7 12-8-7-17z" fill="url(#skin)" stroke="#774d46" stroke-width="4" stroke-linejoin="round" />
+      <path d="M91 117q-10 10-1 29l-4 24 17-7 4 28 18-9 13 16 10-22 19 2-5-27q14-29-2-38l-18 13-17 8-18-12z" fill="url(#beard)" stroke="#374959" stroke-width="6" stroke-linejoin="round" />
+      <path d="m93 121 19 12 15-7 18 7 17-13m-61 22 16 10 11-12 13 11 14-8" stroke="#fff9e9" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m99 151 5 19 12-11 7 20 9-12 8 21 9-29 11 13" stroke="#83a6ae" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="m88 120 19-5 20 10 18-9 23 5-12 17-25-5-20 5z" fill="#e5e5dc" stroke="#4c5960" stroke-width="4" stroke-linejoin="round" />
+      <path d="m102 123 19 8m20-3 15-8" stroke="#fffdf0" stroke-width="4" stroke-linecap="round" />
+      <path d="m101 183 25-8 14 16" stroke="#d9efed" stroke-width="4" stroke-linecap="round" />
+      <path d="m19 256-11-11 8 18-10 6 15 1m34 9 10-16-8 20 12 5-18 3" stroke="#3b92c4" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" opacity=".12" />
+      <path d="m19 256-11-11 8 18-10 6 15 1m34 9 10-16-8 20 12 5-18 3" stroke="#e8fcff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" opacity=".12" />
+      <path d="m127 183-5 14 6-5 4 10" stroke="#b8f2ff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
+    </g>
+  </g>
+</svg>

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>希梅斯特的掠夺</title>
+  <polygon points="7,2 14,4 19,9 16,15 6,13 2,8" fill="#b84944" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="25,2 18,4 13,9 16,15 26,13 30,8" fill="#b84944" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="4,8 9,6 13,10 7,11" fill="#ee8e61" stroke="#b84944" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="28,8 23,6 19,10 25,11" fill="#ee8e61" stroke="#b84944" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="14,12 18,12 19,29 13,29" fill="#765439" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="11,13 21,13 22,17 10,17" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <rect x="14" y="24" width="4" height="3" fill="#f6d58b"/>
+  <rect x="13" y="28" width="6" height="3" fill="#10252d"/>
+</svg>

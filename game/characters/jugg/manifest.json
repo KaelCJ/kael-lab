@@ -22,6 +22,18 @@
     }
   ],
   "assets": {
+    "runtime": {
+      "source": "art/runtime/jugg-hero.svg",
+      "idle": "art/runtime/jugg-idle-a.svg",
+      "idleAlternate": "art/runtime/jugg-idle-alt.svg",
+      "walk": ["art/runtime/jugg-walk-a.svg", "art/runtime/jugg-walk-b.svg"],
+      "dash": "art/runtime/jugg-dash.svg",
+      "attackWindup": "art/runtime/jugg-attack-windup.svg",
+      "attack": "art/runtime/jugg-attack.svg",
+      "attackRelease": "art/runtime/jugg-attack-release.svg",
+      "skill": "art/runtime/jugg-skill.svg",
+      "format": "svg-poses"
+    },
     "character": [
       "jugg.svg",
       "jugg-step.svg",

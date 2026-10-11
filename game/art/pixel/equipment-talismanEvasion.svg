@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>闪避护符</title>
+  <path d="M17 2L22 4L27 10L26 18L22 24L16 28L9 24L5 18L5 12L9 8L11 15L16 19L21 14L22 9L18 6Z" fill="#4a9e82" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <polygon points="16,5 20,8 21,12 18,16 15,14 13,9" fill="#9ce6ac" stroke="#4a9e82" stroke-width="1" stroke-linejoin="miter"/>
+  <polygon points="6,17 10,20 15,21 11,25 7,22" fill="#dba65e" stroke="#10252d" stroke-width="2" stroke-linejoin="miter"/>
+  <circle cx="16" cy="23" r="3" fill="#9fdcf5" stroke="#4389af" stroke-width="1"/>
+  <rect x="15" y="0" width="2" height="3" fill="#f6d58b"/>
+</svg>
