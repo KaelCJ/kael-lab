@@ -32,6 +32,15 @@
       "attack": "art/runtime/bulwark-attack.svg",
       "attackRelease": "art/runtime/bulwark-attack-release.svg",
       "skill": "art/runtime/bulwark-skill.svg",
+      "sideSource": "art/runtime/bulwark-side.svg",
+      "sideIdle": "art/runtime/bulwark-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/bulwark-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/bulwark-side-walk-a.svg", "art/runtime/bulwark-side-walk-b.svg"],
+      "sideDash": "art/runtime/bulwark-side-dash.svg",
+      "sideAttackWindup": "art/runtime/bulwark-side-attack-windup.svg",
+      "sideAttack": "art/runtime/bulwark-side-attack.svg",
+      "sideAttackRelease": "art/runtime/bulwark-side-attack-release.svg",
+      "sideSkill": "art/runtime/bulwark-side-skill.svg",
       "format": "svg-poses"
     },
     "character": [

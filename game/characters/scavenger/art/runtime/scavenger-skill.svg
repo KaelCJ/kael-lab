@@ -72,13 +72,13 @@
       <path d="M42 159q17-16 37-9l-8 37-30 8z" fill="#a2ad73" stroke="#56664e" stroke-width="3" />
       <path d="M36 204 67 213l-8 43-32-7-8-28z" fill="url(#scavMetal)" stroke="#29363b" stroke-width="6" />
       <path d="m34 217 29 8m-31 10 29 7" stroke="#d6bc78" stroke-width="5" stroke-linecap="round" />
-      <g id="pose-swing-arm" transform="rotate(-8 184 154)">
+      <g id="pose-swing-arm" transform="rotate(-4 184 154)">
         <path d="M183 144q30 5 40 29l-5 44-32 11-24-42z" fill="#657453" stroke="#293638" stroke-width="6" />
         <path d="M181 157q22-2 33 15l-4 33-30-10z" fill="#a1ad75" stroke="#56664e" stroke-width="3" />
         <path d="M190 204 216 212l7 39-29 11-16-35z" fill="url(#scavMetal)" stroke="#29363b" stroke-width="6" />
         <path d="m187 218 30 7m-29 10 29 5" stroke="#d6bc78" stroke-width="5" stroke-linecap="round" />
         <path d="M194 250q13-12 26-1l6 17-15 17-21-8-5-14z" fill="#829162" stroke="#35443f" stroke-width="5" />
-        <g id="pose-melee-weapon">
+        <g id="pose-melee-weapon" opacity="0">
           <path d="M210 263l22 27" fill="none" stroke="#293b3d" stroke-width="11" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M210 263l22 27" fill="none" stroke="#bd9158" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
           <path d="M221 280l21 -8 11 20-16 18-23-13z" fill="#8ca1a0" stroke="#263b40" stroke-width="5" stroke-linejoin="round" />
@@ -104,7 +104,7 @@
       <path d="m125 92 9 5 8-4-5 13-11-2z" fill="#4d6a4a" stroke="#2d423b" stroke-width="3" />
       <path d="m119 108 13 5 15-7-7 15-16 2z" fill="#5b3d39" stroke="#2e3436" stroke-width="4" />
       <path d="m111 106 8 10m29-13-9 11" stroke="#b7de7a" stroke-width="3" stroke-linecap="round" />
-      <g id="hero-weapon" transform="translate(-5 -26) rotate(-12 204 199)">
+      <g id="hero-weapon" opacity="1" transform="rotate(-4 184 154)">
         <path d="M191 168h18l2 14 12 13-2 21-18 9-18-11-1-19 11-13z" fill="url(#scavGlass)" stroke="#243b41" stroke-width="5" stroke-linejoin="round" />
         <path d="M195 169v-13h10v13" fill="#bf8f51" stroke="#423b35" stroke-width="4" />
         <path d="M188 198q15 8 32-1v13q-15 10-32 0z" fill="url(#scavAcid)" stroke="#4e8750" stroke-width="2">

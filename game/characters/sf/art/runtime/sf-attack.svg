@@ -41,20 +41,20 @@
       <path d="m124 168 6 17 12-3 6 20-16 15-15-13 3-20z" fill="url(#sfCore)" stroke="#ffb957" stroke-width="4" stroke-linejoin="round" />
       <path d="m128 177 8 7m-14 7 13 8" stroke="#ffe6a0" stroke-width="3" stroke-linecap="round" opacity=".95" />
       <g id="hero-weapon">
-        <g id="pose-left-arm" transform="rotate(17 88 139)">
+        <g id="pose-left-arm" transform="rotate(-40 88 139)">
           <path d="M88 128q-29-7-44 17l-16 45 31 13 36-41z" fill="#291d3d" stroke="#0c0e1a" stroke-width="7" stroke-linejoin="round" />
           <path d="M43 166l-23 18 15 20 23-13" fill="url(#sfClaw)" stroke="#0c0e1a" stroke-width="6" stroke-linejoin="round" />
           <path d="M25 195q-10 13-5 25l13 8 5-17 13 9 5-8-16-16z" fill="url(#sfClaw)" stroke="#0b0d18" stroke-width="5" stroke-linejoin="round" />
           <path d="M26 223l-16 16 20-3-5 14 16-19" stroke="#bd7eb7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="31" cy="204" r="12" fill="url(#sfSoul)" />
         </g>
-        <g id="pose-right-arm" transform="rotate(-17 168 139)">
+        <g id="pose-right-arm" transform="rotate(40 168 139)">
           <path d="M168 128q29-7 44 17l16 45-31 13-36-41z" fill="#291d3d" stroke="#0c0e1a" stroke-width="7" stroke-linejoin="round" />
           <path d="M213 166l23 18-15 20-23-13" fill="url(#sfClaw)" stroke="#0c0e1a" stroke-width="6" stroke-linejoin="round" />
           <path d="M231 195q10 13 5 25l-13 8-5-17-13 9-5-8 16-16z" fill="url(#sfClaw)" stroke="#0b0d18" stroke-width="5" stroke-linejoin="round" />
           <path d="M230 223l16 16-20-3 5 14-16-19" stroke="#bd7eb7" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
+          <circle cx="225" cy="204" r="12" fill="url(#sfSoul)" />
         </g>
-        <circle cx="31" cy="204" r="12" fill="url(#sfSoul)" />
-        <circle cx="225" cy="204" r="12" fill="url(#sfSoul)" />
       </g>
       <path d="M91 93q-14-29 2-56l17 20 18-38 17 37 24-26q17 35-2 67z" fill="#17152b" stroke="#080b15" stroke-width="7" stroke-linejoin="round" />
       <path d="m101 72 20-16 9 13 15-14 13 14 18-13-5 35-29 23-34-16z" fill="#302142" stroke="#0a0c18" stroke-width="6" stroke-linejoin="round" />

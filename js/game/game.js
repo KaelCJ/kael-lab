@@ -35,6 +35,15 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
     { id: 'jugg', hp: 38, stats: { speed: 8 }, name: '剑圣' },
     { id: 'sf', hp: 32, stats: {}, name: '影魔' }
   ];
+  const UPCOMING_HEROES = [
+    { id: 'kael', names: ['Kael', 'Kael', 'Kael'] },
+    { id: 'meepo', names: ['Meepo', 'Meepo', 'Meepo'] },
+    { id: 'terrorblade', names: ['灵魂守卫', '靈魂守衛', 'Terror<wbr>blade'] },
+    { id: 'druid', names: ['德鲁伊', '德魯伊', 'Lone Druid'] },
+    { id: 'night-stalker', names: ['夜魔', '夜魔', 'Night Stalker'] },
+    { id: 'pom', names: ['POM', 'POM', 'POM'] },
+    { id: 'luna', names: ['Luna', 'Luna', 'Luna'] }
+  ];
   const BIOMES = [
     { id: 'docks', name: '赤沙废港', icon: '◈', desc: '灼热沙尘与失控机械', ground: '#263238', grid: '#40515a', accent: '#ffba72', hazard: '热流喷口' },
     { id: 'grove', name: '荧菌裂谷', icon: '✿', desc: '发光菌簇与腐蚀孢雾', ground: '#26303c', grid: '#3f4c61', accent: '#d6a0f1', hazard: '孢雾爆发' },
@@ -221,7 +230,7 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
 
 
 
-    pauseEquipment: '当前装备', equipmentStripAria: '已持有装备', recipesTitle: '固定合成',
+    pauseEquipment: '当前装备', equipmentStripAria: '已持有装备', recipesTitle: '固定合成', equipmentCatalog: '查看装备图鉴', equipmentCatalogNewTab: '新标签查看装备图鉴',
     equipmentGrade: '{grade}级装备', fullEquipment: '装备格已满', equipmentSold: '装备已卖出',
     emptyEquipment: '暂无装备', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackDamage: '基础攻击力',
     });
@@ -230,7 +239,7 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
 
 
 
-    pauseEquipment: '目前裝備', equipmentStripAria: '已持有裝備', recipesTitle: '固定合成',
+    pauseEquipment: '目前裝備', equipmentStripAria: '已持有裝備', recipesTitle: '固定合成', equipmentCatalog: '查看裝備圖鑑', equipmentCatalogNewTab: '在新分頁查看裝備圖鑑',
     equipmentGrade: '{grade}級裝備', fullEquipment: '裝備格已滿', equipmentSold: '裝備已賣出',
     emptyEquipment: '暫無裝備', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackDamage: '基礎攻擊力',
     });
@@ -239,15 +248,15 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
 
 
 
-    pauseEquipment: 'Current equipment', equipmentStripAria: 'Held equipment', recipesTitle: 'Fixed recipes',
+    pauseEquipment: 'Current equipment', equipmentStripAria: 'Held equipment', recipesTitle: 'Fixed recipes', equipmentCatalog: 'View equipment archive', equipmentCatalogNewTab: 'Open equipment archive in new tab',
     equipmentGrade: 'Grade {grade}', fullEquipment: 'Equipment slots full', equipmentSold: 'Equipment sold',
     emptyEquipment: 'No equipment', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackDamage: 'Basic attack damage',
     });
 
   const HERO_UI = {
-    'zh-CN': { active: '主动', passive: '被动', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，其余组件', statAttackDamage: '物理攻击', statSpellBonus: '法术攻击', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '魂 {count}/36 · 每魂攻击+0.55', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '六名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，少量中间件和成品。固定配方不占装备格，满格仍能合成释放组件格。' },
-    'zh-TW': { active: '主動', passive: '被動', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，其餘組件', statAttackDamage: '物理攻擊', statSpellBonus: '法術攻擊', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '魂 {count}/36 · 每魂攻擊+0.55', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '六名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，少量中間件和成品。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
-    en: { active: 'Active', passive: 'Passive', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate; otherwise components', statAttackDamage: 'Physical attack', statSpellBonus: 'Magic attack', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count}/36 · +0.55 attack each', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Six heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, with rare intermediate and finished items. Fixed recipes take no slot; crafting also works with a full inventory.' }
+    'zh-CN': { active: '主动', passive: '被动', availableHeroes: '可玩英雄', upcomingHeroes: '待制作英雄', unavailableHero: '未开放', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，其余组件', statAttackDamage: '物理攻击', statSpellBonus: '法术攻击', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '魂 {count}/36 · 每魂攻击+0.55', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '六名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，少量中间件和成品。固定配方不占装备格，满格仍能合成释放组件格。' },
+    'zh-TW': { active: '主動', passive: '被動', availableHeroes: '可玩英雄', upcomingHeroes: '待製作英雄', unavailableHero: '未開放', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，其餘組件', statAttackDamage: '物理攻擊', statSpellBonus: '法術攻擊', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '魂 {count}/36 · 每魂攻擊+0.55', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '六名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，少量中間件和成品。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
+    en: { active: 'Active', passive: 'Passive', availableHeroes: 'Playable heroes', upcomingHeroes: 'Planned heroes', unavailableHero: 'Unavailable', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate; otherwise components', statAttackDamage: 'Physical attack', statSpellBonus: 'Magic attack', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count}/36 · +0.55 attack each', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Six heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, with rare intermediate and finished items. Fixed recipes take no slot; crafting also works with a full inventory.' }
   };
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], HERO_UI[locale]);
   function modeName(id) { return selectedLocale === 'en' ? (id === 'endless' ? 'Endless' : 'Expedition') : selectedLocale === 'zh-TW' ? (id === 'endless' ? '無盡' : '遠征') : (id === 'endless' ? '无尽' : '远征'); }
@@ -306,17 +315,14 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
     ...UPGRADES.slice(0, 14).map((_, index) => `upgrade-${index}`),
     ...BIOMES.flatMap(({ id }) => ['ground', 'tree', 'rock', 'water', 'trap', 'preview'].map(kind => `map-${id}-${kind}`))
   ];
-  const HERO_ART = {
-    rover: './characters/rover/art/runtime/rover-idle-a.svg',
-    bulwark: './characters/bulwark/art/runtime/bulwark-idle-a.svg',
-    conductor: './characters/conductor/art/runtime/conductor-idle-a.svg',
-    scavenger: './characters/scavenger/art/runtime/scavenger-idle-a.svg',
-    jugg: './characters/jugg/art/runtime/jugg-idle-a.svg',
-    sf: './characters/sf/art/runtime/sf-idle-a.svg'
-  };
+  const HERO_ART_VERSION = '?v=20261012-3';
+  const HERO_ART = Object.fromEntries(['rover', 'bulwark', 'conductor', 'scavenger', 'jugg', 'sf'].map(id =>
+    [id, `./characters/${id}/art/runtime/${id}-idle-a.svg${HERO_ART_VERSION}`]));
   const HERO_POSE_ART = Object.fromEntries(Object.keys(HERO_ART).flatMap(id =>
-    ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill'].map(pose =>
-      [`${id}-${pose}`, `./characters/${id}/art/runtime/${id}-${pose}.svg`])));
+    ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
+      'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
+      'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
+      [`${id}-${pose}`, `./characters/${id}/art/runtime/${id}-${pose}.svg${HERO_ART_VERSION}`])));
   const EQUIPMENT_ART = Object.fromEntries(EQUIPMENT_IDS.map(id => [`equipment-${id}`, `./art/pixel/equipment-${id}.svg`]));
   const SKIN_ART = {
     draft: { ...ART_PATHS, ...HERO_ART, ...EQUIPMENT_ART },
@@ -677,7 +683,15 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
   }
   function renderTitle() {
     updateSkinButtons();
-    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="selection-card hero-card" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}"><span class="hero-portrait">${artIcon(c.id, '')}</span><span class="hero-card-copy"><strong>${c.name}</strong><small>${c.profession}</small><small>${c.desc}</small><small class="skill-preview">${t('passive')}: ${SKILLS[c.id][1].name} · ${t('active')}: ${SKILLS[c.id][0].name}</small></span></button>`).join('');
+    $('character-list').innerHTML = CHARACTERS.map(c => `<button class="hero-tile" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}" aria-controls="hero-details"><span class="hero-avatar">${artIcon(c.id, '')}</span><span class="hero-tile-name">${c.name}</span></button>`).join('');
+    $('upcoming-hero-list').innerHTML = UPCOMING_HEROES.map(hero => `<div class="hero-tile hero-tile-unavailable"><span class="hero-avatar"><img class="art-icon" src="./art/hero-pending.svg" alt=""></span><span class="hero-tile-name">${hero.names[SUPPORTED_LOCALES.indexOf(selectedLocale)]}</span><span class="hero-tile-status">${t('unavailableHero')}</span></div>`).join('');
+    const selectedHero = CHARACTERS.find(c => c.id === selectedCharacter);
+    const details = $('hero-details');
+    if (details.dataset.hero !== selectedHero.id || details.dataset.locale !== selectedLocale) {
+      details.innerHTML = `<div class="hero-details-art">${artIcon(selectedHero.id, '')}</div><div class="hero-details-copy"><h3>${selectedHero.name}</h3><p class="hero-profession">${selectedHero.profession}</p><p>${selectedHero.desc}</p><p class="hero-skill"><span>${t('passive')}</span> ${SKILLS[selectedHero.id][1].name}</p><p class="hero-skill"><span>${t('active')}</span> ${SKILLS[selectedHero.id][0].name}</p></div>`;
+      details.dataset.hero = selectedHero.id;
+      details.dataset.locale = selectedLocale;
+    }
     $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${artIcon(`map-${b.id}-preview`, b.icon)}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
     $('difficulty-list').innerHTML = DIFFICULTIES.map(d => `<button type="button" data-difficulty="${d.id}" aria-pressed="${selectedDifficulty === d.id}">${d.name}</button>`).join('');
     $('pace-list').innerHTML = PACES.map(p => `<button type="button" data-pace="${p.id}" aria-pressed="${selectedPace === p.id}">${p.name}</button>`).join('');
@@ -708,7 +722,7 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
     const difficulty = DIFFICULTIES.find(d => d.id === selectedDifficulty);
     const stats = { armor: 0, speed: 0, elemental: 0, attackDamage: 0, attackRange: 0, critDamage: 80, abilityHaste: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, manaRegen: 2, ...character.stats };
     run = {
-      character, biome, difficulty, mode: selectedMode, stats, player: { x: WORLD.w / 2, y: WORLD.h / 2, radius: 17, hp: character.hp, maxHp: character.hp, mana: 100, maxMana: 100, facing: 0, attackFacing: 0, attackPose: 0, attackClock: 0, pendingAttack: null, skillPose: 0, skillClock: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
+      character, biome, difficulty, mode: selectedMode, stats, player: { x: WORLD.w / 2, y: WORLD.h / 2, radius: 17, hp: character.hp, maxHp: character.hp, mana: 100, maxMana: 100, facing: 0, attackFacing: 0, visualSide: false, visualMirror: 1, attackPose: 0, attackClock: 0, pendingAttack: null, skillPose: 0, skillClock: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       baseAttack: createBaseAttack(CHARACTER_ATTACKS[character.id]),
@@ -2267,14 +2281,22 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
     ctx.save(); ctx.translate(p.x, p.y);
     ctx.fillStyle = '#0007'; ctx.beginPath(); ctx.ellipse(0, 14, 19, 7, 0, 0, TAU); ctx.fill();
     if (p.invuln > 0 && Math.floor(ambientTime * 18) % 2 === 0) ctx.globalAlpha = .6;
-    const direction = id === 'bulwark' ? p.facing : p.attackPose > 0 || s.jump ? p.attackFacing : p.facing;
-    let mirror = Math.cos(direction) < -.15 ? -1 : 1;
+    const direction = p.dashTime > 0 ? Math.atan2(p.dashY, p.dashX)
+      : id === 'bulwark' ? p.facing : p.attackPose > 0 || s.jump ? p.attackFacing : p.facing;
     const moving = run.movedThisFrame;
+    if (moving || p.attackPose > 0 || p.dashTime > 0 || s.jump) {
+      p.visualSide = Math.abs(Math.cos(direction)) >= .55;
+      p.visualMirror = Math.cos(direction) < 0 ? -1 : 1;
+    }
+    let mirror = p.visualMirror;
     const pose = p.dashTime > 0 ? 'dash' : p.skillPose > 0 || s.jump || s.spin || s.requiem?.delay > 0 || s.thunder ? 'skill'
       : p.attackPose > 0 ? 'attack' : moving ? 'walk' : 'idle';
+    const walkFrame = moving
+      ? `walk-${Math.floor(p.animTime * (s.rageTime > 0 ? 11 : 8)) % 2 ? 'b' : 'a'}`
+      : null;
     let frame;
     if (pose === 'walk') {
-      frame = `walk-${Math.floor(p.animTime * (s.rageTime > 0 ? 11 : 8)) % 2 ? 'b' : 'a'}`;
+      frame = walkFrame;
     } else if (pose === 'attack') {
       // A short anticipation, contact, and follow-through make automatic fire
       // readable at the real in-game size. The hit is still resolved at the
@@ -2284,7 +2306,10 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
     } else {
       frame = pose === 'idle' && Math.floor(run.totalTime * 2.5) % 2 ? 'idle-alt' : pose;
     }
-    const image = artImage(`${id}-${frame}`) || artImage(id);
+    const image = (p.visualSide && artImage(`${id}-side-${frame}`)) || artImage(`${id}-${frame}`) || artImage(id);
+    const footImage = moving && p.attackPose > 0 && !p.dashTime && walkFrame
+      ? ((p.visualSide && artImage(`${id}-side-${walkFrame}`)) || artImage(`${id}-${walkFrame}`))
+      : null;
     const walkPhase = p.animTime * 13;
     const stride = moving ? Math.sin(walkPhase) : 0;
     const attackProgress = p.attackPose > 0 ? clamp(p.attackClock / .42, 0, 1) : 0;
@@ -2311,7 +2336,8 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
       scaleX = 1.025 + attackSnap * .045;
       scaleY = 1 + attackSnap * .025;
       lift += attackSnap * 4;
-      lean += attackSnap * (id === 'jugg' || id === 'scavenger' || id === 'bulwark' ? .16 : -.08);
+      // The selected front or side frame carries the arm and weapon motion.
+      lean += attackSnap * (id === 'jugg' ? .04 : id === 'scavenger' ? .028 : .012);
     }
     if (s.spin) { const turn = (3 - s.spin.time) * 18; scaleX = .76 + .24 * Math.abs(Math.cos(turn)); mirror = Math.cos(turn) < 0 ? -1 : 1; }
     if (s.rageTime > 0) { scaleX *= 1.04; scaleY *= 1.025; }
@@ -2329,6 +2355,19 @@ import { EQUIPMENT, EQUIPMENT_CAPACITY } from './equipment.js';
         ctx.restore();
       }
       ctx.drawImage(image, -width / 2, 16 - height, width, height);
+      if (footImage && footImage !== image) {
+        // Automatic attacks can occupy most of a fast walk cycle. Keep the
+        // attack pose for the upper body, while the lower crop follows the
+        // same alternating walk frames used during non-attacking movement.
+        const footWidth = height * footImage.naturalWidth / footImage.naturalHeight;
+        const footTop = 16 - height + height * .66;
+        ctx.save();
+        ctx.beginPath();
+        ctx.rect(-Math.max(width, footWidth) / 2 - 2, footTop, Math.max(width, footWidth) + 4, height * .36 + 2);
+        ctx.clip();
+        ctx.drawImage(footImage, -footWidth / 2, 16 - height, footWidth, height);
+        ctx.restore();
+      }
     }
     ctx.restore();
     if (run.aimTarget) { ctx.strokeStyle = '#ffe69c'; ctx.lineWidth = 2; ctx.globalAlpha = run.aimTarget.life; ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1; }

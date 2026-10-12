@@ -32,6 +32,15 @@
       "attack": "art/runtime/conductor-attack.svg",
       "attackRelease": "art/runtime/conductor-attack-release.svg",
       "skill": "art/runtime/conductor-skill.svg",
+      "sideSource": "art/runtime/conductor-side.svg",
+      "sideIdle": "art/runtime/conductor-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/conductor-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/conductor-side-walk-a.svg", "art/runtime/conductor-side-walk-b.svg"],
+      "sideDash": "art/runtime/conductor-side-dash.svg",
+      "sideAttackWindup": "art/runtime/conductor-side-attack-windup.svg",
+      "sideAttack": "art/runtime/conductor-side-attack.svg",
+      "sideAttackRelease": "art/runtime/conductor-side-attack-release.svg",
+      "sideSkill": "art/runtime/conductor-side-skill.svg",
       "format": "svg-poses"
     },
     "character": [

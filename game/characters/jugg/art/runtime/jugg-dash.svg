@@ -105,7 +105,7 @@
         <circle cx="325" cy="337" r="4" fill="#d8b270" stroke-width="2" />
         <circle cx="351" cy="335" r="4" fill="#d8b270" stroke-width="2" />
       </g>
-      <g id="right-arm" transform="rotate(-14 158 331)">
+      <g id="right-arm" transform="rotate(-10 158 331)">
         <path d="M177 326C151 314 124 327 116 351L108 390 126 415 153 401C162 375 171 362 183 351Z" fill="url(#skin)" />
         <path d="M133 351C117 364 114 385 121 402L135 406C132 387 145 375 151 358Z" fill="#5d833d" stroke="none" />
         <path d="M111 385C125 382 140 391 151 400L148 435 112 453 97 425Z" fill="url(#iron)" />
@@ -158,7 +158,7 @@
         <path d="M255 152C271 164 270 183 263 195L255 178 244 167Z" fill="#d4643b" stroke-width="4" />
       </g>
     </g>
-    <g id="hero-weapon" transform="rotate(9 253 500) rotate(-14 158 331) rotate(-5 151 458)">
+    <g id="hero-weapon" transform="rotate(9 253 500) rotate(-10 158 331)">
       <g id="sword">
         <path d="M91 397L108 387 167 448 150 463Z" fill="#4b4233" stroke-width="5" />
         <path d="M98 399L111 400M107 409L121 408M117 419L130 420M128 430L140 431M138 441L151 441" stroke="#bc9960" stroke-width="4" />

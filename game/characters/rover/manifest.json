@@ -32,6 +32,15 @@
       "attack": "art/runtime/rover-attack.svg",
       "attackRelease": "art/runtime/rover-attack-release.svg",
       "skill": "art/runtime/rover-skill.svg",
+      "sideSource": "art/runtime/rover-side.svg",
+      "sideIdle": "art/runtime/rover-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/rover-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/rover-side-walk-a.svg", "art/runtime/rover-side-walk-b.svg"],
+      "sideDash": "art/runtime/rover-side-dash.svg",
+      "sideAttackWindup": "art/runtime/rover-side-attack-windup.svg",
+      "sideAttack": "art/runtime/rover-side-attack.svg",
+      "sideAttackRelease": "art/runtime/rover-side-attack-release.svg",
+      "sideSkill": "art/runtime/rover-side-skill.svg",
       "format": "svg-poses"
     },
     "concept": {

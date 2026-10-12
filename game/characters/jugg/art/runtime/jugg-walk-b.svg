@@ -25,7 +25,7 @@
   <desc>Editable static SVG action frame; no autonomous SVG animation.</desc>
   <g id="hero-motion" stroke="#232a28" stroke-width="6" stroke-linejoin="round" stroke-linecap="round" transform="translate(0 -6)">
     <g id="hero-accessory">
-      <g id="banner" transform="rotate(2 334 100)">
+      <g id="banner" transform="rotate(1.125 334 100)">
         <path d="M334 97C372 102 399 91 439 111L420 151 448 194C403 177 379 211 328 188Z" fill="url(#cloth)" />
         <path d="M342 107C382 116 402 101 432 112L415 144C391 135 368 155 337 149Z" fill="#e27b3d" stroke="none" />
         <path d="M336 150C374 161 396 134 415 145L433 180C399 172 378 196 331 181Z" fill="#ac342d" stroke="none" />
@@ -155,7 +155,7 @@
         <path d="M255 152C271 164 270 183 263 195L255 178 244 167Z" fill="#d4643b" stroke-width="4" />
       </g>
     </g>
-    <g id="hero-weapon" transform="rotate(4 253 500) rotate(-9 158 331) rotate(-8 151 458)">
+    <g id="hero-weapon" transform="rotate(4 253 500) rotate(-9 158 331)">
       <g id="sword">
         <path d="M91 397L108 387 167 448 150 463Z" fill="#4b4233" stroke-width="5" />
         <path d="M98 399L111 400M107 409L121 408M117 419L130 420M128 430L140 431M138 441L151 441" stroke="#bc9960" stroke-width="4" />

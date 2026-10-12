@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>rover · right-facing attack</title>
+  <desc>Static side pose with independent head and staggered legs; hand and weapon articulate from shoulder and elbow.</desc>
+  <defs>
+    <linearGradient id="rover-side-coat" x1="80" y1="150" x2="188" y2="304" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#5f8668" />
+      <stop offset=".54" stop-color="#365c50" />
+      <stop offset="1" stop-color="#203d39" />
+    </linearGradient>
+    <linearGradient id="rover-side-beard" x1="138" y1="96" x2="185" y2="199" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff8df" />
+      <stop offset=".53" stop-color="#d9ddcf" />
+      <stop offset="1" stop-color="#8e9c97" />
+    </linearGradient>
+    <linearGradient id="rover-side-metal" x1="151" y1="164" x2="251" y2="257" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#d3d5b3" />
+      <stop offset=".5" stop-color="#80938d" />
+      <stop offset="1" stop-color="#435e5b" />
+    </linearGradient>
+    <linearGradient id="rover-side-leather" x1="66" y1="62" x2="210" y2="349" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ba8754" />
+      <stop offset=".54" stop-color="#7a5237" />
+      <stop offset="1" stop-color="#45372f" />
+    </linearGradient>
+  </defs>
+  <g id="side-motion" transform="translate(-8 19) scale(.96)" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="129" cy="343" rx="73" ry="13" fill="#071118" opacity=".4" />
+    <g id="side-back">
+      <path d="M86 173q-30 9-39 39l7 59 32 7 31-43-10-60z" fill="#415c47" stroke="#263b36" stroke-width="6" />
+      <path d="M62 206l-7 50 23 8 15-42z" fill="#755039" stroke="#3b342e" stroke-width="5" />
+      <path d="M58 222l33 8m-31 8 28 7" stroke="#b08457" stroke-width="3" />
+      <path d="M90 167q-20-3-29 18l9 27 27-3 17-34z" fill="url(#rover-side-metal)" stroke="#42514a" stroke-width="6" />
+      <circle cx="80" cy="184" r="4" fill="#dab46d" />
+    </g>
+    <g id="side-far-leg">
+      <path d="M100 267q-25 16-26 54l21 19 30-8 9-54z" fill="#344c49" stroke="#223937" stroke-width="7" />
+      <path d="M71 313l31 2 18 22-11 18-52-3-12-14z" fill="url(#rover-side-leather)" stroke="#3b302b" stroke-width="7" />
+      <path d="M68 326l37 4m-45 13q25 7 47 2" stroke="#d6ae6d" stroke-width="4" />
+    </g>
+    <g id="side-far-arm">
+      <path d="M98 160q-27 10-26 36l16 39 28 7 15-25-15-49z" fill="#42664f" stroke="#243932" stroke-width="7" />
+      <path d="M77 177q11-18 32-16l12 24-28 17-18-9z" fill="url(#rover-side-metal)" stroke="#3e5550" stroke-width="5" />
+      <path d="M84 189l23-11m-9 40 17 9" stroke="#ddb879" stroke-width="3" />
+      <path d="M104 219q17-3 29 13l-3 16-21 2-16-17z" fill="#e3b48a" stroke="#684a39" stroke-width="5" />
+    </g>
+    <g id="side-body" transform="rotate(3 132 207)">
+      <path d="M94 151q23-15 53-8 40 10 51 52l-8 62q-17 29-55 37-38-8-51-42z" fill="url(#rover-side-coat)" stroke="#243832" stroke-width="8" />
+      <path d="M102 167q20-16 39-9l-7 103-34-13z" fill="#4a6d54" stroke="#325046" stroke-width="5" />
+      <path d="M151 156q31 6 38 39l-11 70-29 14z" fill="#2c5047" stroke="#24413d" stroke-width="5" />
+      <path d="M105 168l28 37-12 15-30-38zm52-8-21 44 16 17 30-43z" fill="#b48c54" stroke="#584d35" stroke-width="4" />
+      <path d="M105 182l18 24m42-38-18 37" stroke="#f1d48a" stroke-width="3" />
+      <path d="M90 231q45 20 100 0l-2 29q-51 27-101 2z" fill="#523b32" stroke="#2d3832" stroke-width="6" />
+      <path d="M102 239l36 3 2 27-37-3z" fill="#97703e" stroke="#4a3c2e" stroke-width="4" />
+      <path d="M108 245l25 2" stroke="#e3bd72" stroke-width="3" />
+      <path d="M145 242l31-1-2 26-33 3z" fill="#745337" stroke="#3e3a30" stroke-width="4" />
+      <path d="M151 247h19m-18 8h19" stroke="#cf9b5d" stroke-width="3" />
+      <path d="M92 259q-10 24-17 41l17 18 24-22 10-22zm77 10 25 16-15 35-33-18z" fill="#254940" stroke="#283d37" stroke-width="5" />
+      <path d="M81 288l29-8m43 14 29 11" stroke="#ccac6b" stroke-width="3" />
+    </g>
+    <g id="side-near-leg" transform="translate(3 -2)">
+      <path d="M145 273q22 18 28 48l-12 25-37-3-11-26 9-35z" fill="#3b5550" stroke="#233b39" stroke-width="7" />
+      <path d="M127 303l39 7 4 25-46 3z" fill="#556b62" stroke="#314640" stroke-width="5" />
+      <path d="M134 326l39-5 28 18-4 19-67 1-15-14z" fill="url(#rover-side-leather)" stroke="#3d312b" stroke-width="7" />
+      <path d="M130 334l42-5m-39 18q33 4 59 1" stroke="#d5ac6b" stroke-width="4" />
+    </g>
+    <g id="side-head" transform="translate(3 -2)">
+      <path d="M105 75q14-32 43-34 33 2 45 31l-3 54-31 38-46-13-24-35z" fill="#d9a579" stroke="#694c3b" stroke-width="7" />
+      <path d="M98 63q-3-37 44-40 41-3 53 36l-9 18-58-2-26 13z" fill="url(#rover-side-leather)" stroke="#47392f" stroke-width="7" />
+      <path d="M113 35q22-10 45-2m-52 20q39-16 73-3" stroke="#d7a669" stroke-width="4" />
+      <path d="M93 75q54-15 106-3l-7 15q-64-4-101 8z" fill="#7a553a" stroke="#4c382d" stroke-width="5" />
+      <path d="M157 84q14-11 28 0l-5 13-19-2z" fill="#332c29" />
+      <circle cx="171" cy="85" r="3" fill="#f4d8a5" />
+      <path d="M178 98q17-10 28 3l-2 14-23 3-7-9z" fill="#e3b083" stroke="#78523c" stroke-width="5" />
+      <path d="M111 96q-13-5-17 8l7 22 18 4 7-22z" fill="#c88e64" stroke="#704d3b" stroke-width="5" />
+      <path d="M135 103q17-10 35-1l19 16-2 22-17 38-25-1-20-28z" fill="url(#rover-side-beard)" stroke="#66716b" stroke-width="6" />
+      <path d="M144 105q16 8 28 19l9 21m-48-15q17 26 25 35m-17-35-8 25" stroke="#fff9e8" stroke-width="4" />
+      <path d="M168 118q18-2 25 10l-13 12-17-7z" fill="#f8f1dd" stroke="#8c9386" stroke-width="3" />
+      <path d="M121 149q11 16 28 20l-8 18q-21-2-33-20z" fill="#d9d5bf" stroke="#687269" stroke-width="4" />
+    </g>
+    <g id="side-rig" transform="rotate(4 170 164)">
+      <path d="M169 164q31-2 44 24l-7 29-30 2-25-31z" fill="url(#rover-side-coat)" stroke="#28453c" stroke-width="7" />
+      <path d="M181 170q19-2 26 12l-11 20-28-12z" fill="url(#rover-side-metal)" stroke="#506158" stroke-width="5" />
+      <circle cx="187" cy="183" r="4" fill="#e6bd77" />
+      <g id="side-forearm" transform="rotate(19 204 207)">
+        <path d="M201 202q20 5 28 23l-12 18-21-4-18-25z" fill="#42634b" stroke="#284239" stroke-width="6" />
+        <path d="M197 213l24 7-8 18-25-6z" fill="#a47f4c" stroke="#504338" stroke-width="4" />
+        <g id="side-weapon">
+          <path d="M62 226q39-20 89-10l49 1 13 12-59 17-62 4-31-12z" fill="url(#rover-side-leather)" stroke="#3b312c" stroke-width="6" />
+          <path d="M68 227q48-15 105-5m-98 15 76 1" stroke="#d3a66a" stroke-width="4" />
+          <path d="M170 218l61-16 19 2 5 14-13 9-64 10z" fill="url(#rover-side-metal)" stroke="#3b4b48" stroke-width="6" />
+          <path d="M184 219l61-10m-56 22 55-11" stroke="#eee5c3" stroke-width="3" />
+          <path d="M220 204l-2-11 14-3 6 14m-91 40-17 17" stroke="#393631" stroke-width="5" />
+          <path d="M182 236l9 20 15 2 7-20" fill="#73503a" stroke="#3c3830" stroke-width="4" />
+          <path d="M230 207l8-9m-7 15 10-1m-9 8 8 7" fill="none" stroke="#ffe8a2" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <path d="M201 227q11-8 20 0l4 13-11 11-17-8z" fill="#e1ac81" stroke="#6c4b3b" stroke-width="5" />
+        <path d="M205 231l12 3" stroke="#ffd2a2" stroke-width="3" />
+      </g>
+    </g>
+  </g>
+</svg>

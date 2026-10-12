@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>bulwark · right-facing walk-a</title>
+  <desc>Static side pose with independent head and staggered legs; hand and weapon articulate from shoulder and elbow.</desc>
+  <defs>
+    <linearGradient id="bulwark-side-fur" x1="80" y1="55" x2="203" y2="315" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e3ab6a" />
+      <stop offset=".54" stop-color="#aa6845" />
+      <stop offset="1" stop-color="#634136" />
+    </linearGradient>
+    <linearGradient id="bulwark-side-spine" x1="24" y1="30" x2="143" y2="227" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f4d994" />
+      <stop offset=".55" stop-color="#bc8550" />
+      <stop offset="1" stop-color="#50372d" />
+    </linearGradient>
+    <linearGradient id="bulwark-side-leather" x1="70" y1="171" x2="181" y2="341" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a77348" />
+      <stop offset=".6" stop-color="#694632" />
+      <stop offset="1" stop-color="#3b302b" />
+    </linearGradient>
+  </defs>
+  <g id="side-motion" transform="translate(6 41) scale(.9)" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="129" cy="345" rx="74" ry="13" fill="#071118" opacity=".4" />
+    <g id="side-back">
+      <path d="M96 97L50 20l61 53L92 14l48 69-6-53 30 67-17 108-71 36-35-60z" fill="url(#bulwark-side-spine)" stroke="#4a352b" stroke-width="7" />
+      <path d="M83 117L28 64l38 67-53-34 38 61-36-10 40 45 36 23 51-91z" fill="#9b6943" stroke="#49352d" stroke-width="6" />
+      <path d="M75 88L48 40m49 52L86 41m32 41 2-34M64 145 34 119m31 50-34-11" stroke="#ffe1a2" stroke-width="3" />
+      <path d="M51 224q-18 17-13 37l20 18 23-17-5-33z" fill="#7b563c" stroke="#51392f" stroke-width="5" />
+    </g>
+    <g id="side-far-leg" transform="translate(-7 0) rotate(-7 102 273)">
+      <path d="M106 268q-26 19-28 51l17 26 29-2 18-54z" fill="#8a5b3e" stroke="#4e3c30" stroke-width="7" />
+      <path d="M83 313l25 5 18 18-12 20-43-5-10-22z" fill="#6c5039" stroke="#45372e" stroke-width="7" />
+      <path d="M78 344q24 8 41 2m-30-26 24 4" stroke="#c69b61" stroke-width="4" />
+    </g>
+    <g id="side-far-arm" transform="rotate(8 102 170)">
+      <path d="M99 169q-31-1-40 32l14 47 30 7 21-24-13-48z" fill="#995f3f" stroke="#533b2f" stroke-width="7" />
+      <path d="M64 198q21-20 40-9l-1 25-33 13z" fill="#bb7e50" stroke="#704832" stroke-width="5" />
+      <path d="M76 238q15-7 28 4l2 22-26 9-17-19z" fill="#a46b47" stroke="#573f31" stroke-width="5" />
+      <path d="M73 248l10 8m2-15 12 10" stroke="#d39761" stroke-width="3" />
+    </g>
+    <g id="side-body" transform="translate(1 -3)">
+      <path d="M92 139q33-24 70-6 33 22 42 69l-13 64q-21 35-56 42-44-11-57-50l-1-62z" fill="url(#bulwark-side-fur)" stroke="#543b2f" stroke-width="8" />
+      <path d="M96 158q-22 54 8 104l23 18-35-5-18-36 4-56z" fill="#795039" stroke="#543b30" stroke-width="5" />
+      <path d="M130 147q50 12 54 62l-8 45q-19 25-45 23 31-34 9-88z" fill="#c48755" stroke="#86583e" stroke-width="5" />
+      <path d="M91 234q37 24 101 13l-8 30q-52 30-91-9z" fill="url(#bulwark-side-leather)" stroke="#4d392d" stroke-width="6" />
+      <path d="M99 252q37 11 77 4m-64 17 4 20m45-23-3 22" stroke="#d5a36b" stroke-width="4" />
+      <path d="M92 273l-18 45 28 20 27-43zm67 8 33 26-22 32-34-34z" fill="#765137" stroke="#4d3c2f" stroke-width="5" />
+      <path d="M96 296l23 12m29 2 24 17" stroke="#c48d59" stroke-width="3" />
+      <path d="M123 242l31 6-4 28-34-5z" fill="#e2b975" stroke="#735238" stroke-width="5" />
+      <path d="M129 248l16 3-2 17-16-3z" fill="#645041" stroke="#ad8650" stroke-width="3" />
+    </g>
+    <g id="side-near-leg" transform="translate(8 -3) rotate(7 148 278)">
+      <path d="M148 286q20 13 25 37l-10 26-42-3-14-22 15-35z" fill="#9d6944" stroke="#553f30" stroke-width="7" />
+      <path d="M129 322l41-3 28 17-6 23-62 2-20-17z" fill="#6b5139" stroke="#45382f" stroke-width="7" />
+      <path d="M129 331l32-3m-26 23q28 4 53-2" stroke="#d3a56d" stroke-width="4" />
+    </g>
+    <g id="side-head" transform="translate(1 -2)">
+      <path d="M110 79q16-37 54-35 37 7 44 46l-14 69-37 23-48-25-12-42z" fill="url(#bulwark-side-fur)" stroke="#543b2e" stroke-width="8" />
+      <path d="M104 91L80 74l9 34 18 16zm43-48-7-30 26 24m-50 19-17-23 28 11" fill="#9b683f" stroke="#52382d" stroke-width="5" />
+      <path d="M155 87q25-17 39 0l-7 22-31 3z" fill="#c48655" stroke="#714a35" stroke-width="5" />
+      <path d="M169 91l17-3-6 13-14 1z" fill="#2d2726" />
+      <circle cx="177" cy="92" r="3" fill="#ffd494" />
+      <path d="M185 111q19-15 44-2l7 21-15 22-36-5-14-22z" fill="#cb8e5b" stroke="#694835" stroke-width="7" />
+      <path d="M210 119q13-6 22 5l-7 17-24 2-8-16z" fill="#96543f" stroke="#694034" stroke-width="5" />
+      <ellipse cx="216" cy="129" rx="6" ry="8" fill="#65382f" />
+      <path d="M171 133q-10 27 7 39 12-3 23-18l-11-12z" fill="#eac18b" stroke="#875b3d" stroke-width="5" />
+      <path d="M181 146q7-12 21-7l-7 11" stroke="#fff0ba" stroke-width="3" />
+      <path d="M115 140q15 30 43 33l-8 22q-28-3-41-22z" fill="#85573c" stroke="#553b2e" stroke-width="5" />
+    </g>
+    <g id="side-rig" transform="rotate(6 170 164)">
+      <path d="M169 158q31-2 47 24l-4 31-33 6-23-29z" fill="#a66f48" stroke="#553d30" stroke-width="8" />
+      <path d="M177 166q21-4 33 15l-9 19-28-7z" fill="#d39a60" stroke="#8d613f" stroke-width="4" />
+      <g id="side-forearm" transform="rotate(-5 204 207)">
+        <path d="M205 197q27 0 36 25l-12 23-28-5-16-24z" fill="#a97149" stroke="#573f31" stroke-width="7" />
+        <path d="M203 211l28 5-8 23-26-4z" fill="url(#bulwark-side-leather)" stroke="#564030" stroke-width="5" />
+        <g id="side-weapon">
+          <path d="M221 220l20-25 1 28 20-11-11 30 8 18-26-8z" fill="url(#bulwark-side-spine)" stroke="#69503a" stroke-width="6" />
+          <path d="M235 207l-6 24 18-11m-4 4-6 24" stroke="#fff0bc" stroke-width="3" />
+        </g>
+        <path d="M218 226q16-4 23 10l-8 19-21-3-5-15z" fill="#bd8051" stroke="#694634" stroke-width="6" />
+        <path d="M220 235l12 4m-14 2 11 5" stroke="#e6ab70" stroke-width="3" />
+      </g>
+    </g>
+  </g>
+</svg>

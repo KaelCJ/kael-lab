@@ -157,6 +157,19 @@ def prepare_parts(root: ET.Element, hero: str) -> dict[str, ET.Element]:
     body = element(root, "hero-body")
     parts: dict[str, ET.Element] = {}
     if hero == "rover":
+        # The rifle is held with both hands. Move the sleeves, bracers, hands,
+        # and stock through the same recoil transform while retaining the
+        # source's paint order around the face and coat.
+        parts["left-arm"] = group_paths(
+            body,
+            ("M67 145", "M43 158", "M45 167", "M31 211", "M33 227"),
+            "pose-rifle-left-arm",
+        )
+        parts["right-arm"] = group_paths(
+            body,
+            ("M167 143", "M175 150", "M177 158", "M191 211", "M192 231"),
+            "pose-rifle-right-arm",
+        )
         weapon = element(root, "hero-weapon")
         children = list(body)
         index = children.index(weapon)
@@ -190,7 +203,7 @@ def prepare_parts(root: ET.Element, hero: str) -> dict[str, ET.Element]:
     elif hero == "conductor":
         parts["arm"] = group_paths(
             body,
-            ("m182 188", "m180 219", "m181 181", "m190 189"),
+            ("M175 131", "m182 188", "m180 219", "m181 181", "m190 189"),
             "pose-hammer-arm",
         )
         parts["cast-arm"] = group_paths(
@@ -271,11 +284,29 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
     body_angles = {"idle-alt": -1.5, "walk-a": -4, "walk-b": 4,
                    "attack": -4, "skill": 3, "dash": 9}
     b = body_angles[name]
-    if hero in {"bulwark", "sf"} and name in {"attack", "skill"}:
-        b = -8 if name == "attack" else 8
+    if hero == "bulwark" and name == "attack":
+        b = -3
+    elif hero == "sf" and name == "attack":
+        b = -8
+    elif hero in {"bulwark", "sf"} and name == "skill":
+        b = 8
+    if hero == "bulwark" and name == "skill":
+        b = 3
+    if hero in {"rover", "bulwark", "conductor", "scavenger"} and name == "dash":
+        b = 0
+    if hero == "rover" and name == "walk-b":
+        b = -1
     lift = {"idle-alt": -2, "walk-a": -3, "walk-b": -3,
             "attack": -2, "skill": -4, "dash": -3}[name] * scale
+    if is_jugg and release:
+        lift -= 12  # Keep the long sword tip inside its original canvas.
     shift = -5 * scale if name == "dash" else 0
+    if is_jugg and windup:
+        shift = -32
+    elif is_jugg and name == "skill":
+        shift = -20
+    elif hero == "conductor" and name == "dash":
+        shift = 0
     motion.set("transform", f"translate({shift} {lift})")
     body.set("transform", f"rotate({b:g} {cx} {body_pivot})")
 
@@ -290,6 +321,14 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
             "dash": (20, -18),
         }
         a, z = leg_angles[name]
+        if hero == "conductor" and name in {"walk-a", "walk-b"}:
+            a *= .2
+            z *= .2
+        elif hero == "conductor" and name == "attack":
+            a = z = 0
+        elif hero == "conductor" and name == "dash":
+            a *= .5
+            z *= .5
         hip_y = 500 if is_jugg else 261
         left.set("transform", f"rotate({a:g} {cx - 12 * scale} {hip_y})")
         right.set("transform", f"rotate({z:g} {cx + 12 * scale} {hip_y})")
@@ -315,33 +354,42 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
     if is_jugg:
         arm = element(root, "right-arm")
         arm_angle = {"idle-alt": -2, "walk-a": 9, "walk-b": -9,
-                     "attack": 29, "skill": -22, "dash": -14}[name]
+                     "attack": 36, "skill": -14, "dash": -10}[name]
         if windup:
-            arm_angle = 25
+            arm_angle = -15
         elif release:
-            arm_angle = 38
+            arm_angle = 50
         arm.set("transform", f"rotate({arm_angle:g} 158 331)")
+        # The sword and the overlaid grip fingers are siblings of hero-body
+        # in the source. Give them the body's and sword arm's exact transforms:
+        # an extra wrist rotation would pull the fingers off the handle.
         weapon.set(
             "transform",
-            f"rotate({b:g} 253 500) rotate({arm_angle:g} 158 331) "
-            f"rotate({w:g} {wx} {wy})",
+            f"rotate({b:g} 253 500) rotate({arm_angle:g} 158 331)",
         )
         banner = element(root, "banner")
-        banner.set("transform", f"rotate({-w / 4:g} 334 100)")
+        banner.set("transform", f"rotate({-arm_angle / 8:g} 334 100)")
     else:
         if hero == "rover":
-            parts["arm"].set("transform", f"rotate({w:g} 118 228)")
-            weapon.set("transform", "rotate(0 118 228)")
+            recoil = {"idle-alt": -1, "walk-a": -4, "walk-b": -8,
+                      "attack": 0, "skill": 22, "dash": 0}[name]
+            if windup:
+                recoil = -14
+            elif release:
+                recoil = -5
+            arm_transform = f"rotate({recoil:g} 128 171)"
+            for part in (parts["left-arm"], parts["right-arm"], parts["arm"]):
+                part.set("transform", arm_transform)
         elif hero == "conductor":
             raise_angle = {"idle-alt": -3, "walk-a": 10, "walk-b": -10,
-                           "attack": -28, "skill": -38, "dash": -13}[name]
+                           "attack": 12, "skill": -20, "dash": -13}[name]
             cast_angle = {"idle-alt": 0, "walk-a": -5, "walk-b": 5,
                           "attack": -55, "skill": -68, "dash": -18}[name]
             if windup:
-                raise_angle = -13
+                raise_angle = -12
                 cast_angle = -28
             elif release:
-                raise_angle = -36
+                raise_angle = 20
                 cast_angle = -68
             parts["arm"].set("transform", f"rotate({raise_angle:g} 180 151)")
             parts["cast-arm"].set("transform", f"rotate({cast_angle:g} 72 132)")
@@ -350,52 +398,55 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
                     if spark.tag == f"{{{SVG}}}path" and spark.get("d", "").startswith("m19 256"):
                         spark.set("opacity", ".12")
                 append_path(parts["cast-arm"], "M18 261l-12 -14 7 19-9 5", stroke="#d9f8ff", width=5)
-            hammer_angle = 30 if name == "attack" else 35 if name == "skill" else 0
-            if windup:
-                hammer_angle = 16
-            weapon.set(
-                "transform",
-                f"rotate({raise_angle:g} 180 151) rotate({hammer_angle:g} 185 194)",
-            )
+            # hero-weapon and pose-hammer-arm are both children of hero-body.
+            # One shoulder transform keeps hammer, wrist, and armor connected.
+            weapon.set("transform", f"rotate({raise_angle:g} 180 151)")
             accessory.set(
                 "transform",
-                "translate(0 12)" if name in {"attack", "skill"}
+                "translate(-15 12)" if name == "skill" else "translate(0 12)" if name == "attack"
                 else f"rotate({raise_angle:g} 180 151)",
             )
         elif hero == "scavenger":
             arm_angle = {"idle-alt": 0, "walk-a": -6, "walk-b": 6,
-                         "attack": 42, "skill": -8, "dash": -14}[name]
+                         "attack": 42, "skill": -4, "dash": 2}[name]
             if windup:
-                arm_angle = -22
+                arm_angle = 6
             elif release:
                 arm_angle = 54
             parts["arm"].set("transform", f"rotate({arm_angle:g} 184 154)")
-            weapon.set("transform", f"rotate({w:g} {wx} {wy})")
+            # The flask is a skill prop. In basic attacks the right fist holds
+            # the club built into pose-swing-arm; do not leave a second prop
+            # floating beside the same hand.
+            weapon.set("opacity", "0" if name == "attack" else "1")
+            element(root, "pose-melee-weapon").set(
+                "opacity", "1" if name == "attack" else "0"
+            )
             if name == "skill":
-                weapon.set("transform", "translate(-5 -26) rotate(-12 204 199)")
+                weapon.set("transform", f"rotate({arm_angle:g} 184 154)")
             element(root, "chemical-tank").set(
                 "transform", f"rotate({-w / 3:g} 174 181)"
             )
             accessory.set("transform", f"rotate({-w / 2:g} 128 199)")
         elif hero == "bulwark":
             arm_angle = {"idle-alt": 0, "walk-a": -5, "walk-b": 5,
-                         "attack": 42, "skill": -12, "dash": -17}[name]
+                         "attack": 42, "skill": 2, "dash": 2}[name]
             if windup:
-                arm_angle = -25
+                arm_angle = 5
             elif release:
                 arm_angle = 53
             parts["arm"].set("transform", f"rotate({arm_angle:g} 184 151)")
-            weapon.set("transform", f"rotate({w:g} {wx} {wy})")
+            quill_angle = 0 if name == "skill" or name == "walk-b" else w
+            weapon.set("transform", f"rotate({quill_angle:g} {wx} {wy})")
             accessory.set("transform", f"rotate({-w / 2:g} 128 205)")
         elif hero == "sf":
             left_angle, right_angle = {
-                "idle-alt": (-2, 2), "walk-a": (5, -5), "walk-b": (-5, 5),
-                "attack": (17, -17), "skill": (-27, 27), "dash": (-14, 14),
+                "idle-alt": (-2, 2), "walk-a": (3, -3), "walk-b": (-5, 5),
+                "attack": (-40, 40), "skill": (-27, 27), "dash": (-14, 14),
             }[name]
             if windup:
-                left_angle, right_angle = -20, 20
+                left_angle, right_angle = -10, 10
             elif release:
-                left_angle, right_angle = 26, -26
+                left_angle, right_angle = -20, 20
             parts["left-arm"].set("transform", f"rotate({left_angle:g} 88 139)")
             parts["right-arm"].set("transform", f"rotate({right_angle:g} 168 139)")
             accessory.set("transform", f"rotate({-w / 2:g} 128 145)")
@@ -404,28 +455,28 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
 
     # A single static impact accent belongs in the event frame, not in the
     # idle loop. It also identifies distant gunfire, thunder and alchemy.
-    if name == "attack" and not windup and hero == "rover":
+    if output_name == "attack" and hero == "rover":
         append_path(weapon, "M245 177l9 -7m-8 8 9 1m-10 0 4 9", stroke="#ffe49a", width=5)
     elif name == "skill" and hero == "rover":
-        append_path(weapon, "M244 177l13 -18M244 177l20 0M244 177l13 15", stroke="#ffe39a", width=6)
-    elif name == "attack" and not windup and hero == "bulwark":
+        append_path(weapon, "M242 177l8 -14M242 177l8 0M242 177l8 14", stroke="#ffe39a", width=6)
+    elif output_name == "attack" and hero == "bulwark":
         append_path(weapon, "M46 183l-20 -24M95 163l-9 -25M204 185l22 -23", stroke="#f2c06d", width=6)
     elif name == "skill" and hero == "bulwark":
         append_path(weapon, "M45 215l-28 -8M60 177l-24 -26M112 158l-5 -28M172 161l12 -27M208 192l28 -22M215 227l27 0", stroke="#f7d084", width=6)
     elif name == "skill" and hero == "conductor":
         append_path(accessory, "M229 42l10 -13-4 19 13-8", stroke="#efffff", width=5)
         append_path(accessory, "M174 68l-18 -19 5 24-17-7M206 65l22 -24-6 27 17-9", stroke="#9cefff", width=6)
-    elif name == "attack" and not windup and hero == "conductor":
+    elif output_name == "attack" and hero == "conductor":
         append_path(accessory, "M208 83l19 -12-7 18", stroke="#e4faff", width=5)
-    elif name == "attack" and not windup and hero == "scavenger":
+    elif output_name == "attack" and hero == "scavenger":
         append_path(element(root, "pose-melee-weapon"), "M225 279q22 -14 27-6", stroke="#e0eabf", width=6)
         append_path(element(root, "pose-melee-weapon"), "M222 285l17 -8", stroke="#fff0b6", width=7)
     elif name == "skill" and hero == "scavenger":
         append_path(weapon, "M222 196l13 -6-7 13 12 2", stroke="#bfff72", width=5)
         append_path(weapon, "M188 180q18 -22 34 0M191 213q14 14 28 2", stroke="#c5ff90", width=6)
-    elif name == "attack" and not windup and hero == "sf":
-        for x in (31, 225):
-            ET.SubElement(weapon, f"{{{SVG}}}circle", {
+    elif output_name == "attack" and hero == "sf":
+        for group, x in ((parts["left-arm"], 31), (parts["right-arm"], 225)):
+            ET.SubElement(group, f"{{{SVG}}}circle", {
                 "cx": str(x), "cy": "204", "r": "12", "fill": "url(#sfSoul)",
             })
     elif name == "skill" and hero == "sf":
@@ -434,7 +485,7 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
             accessory, f"{{{SVG}}}circle",
             {"cx": "132", "cy": "192", "r": "23", "fill": "none", "stroke": "#ffad65", "stroke-width": "5"},
         )
-    elif name == "attack" and not windup and hero == "jugg":
+    elif output_name == "attack" and hero == "jugg":
         append_path(weapon, "M174 469Q275 550 407 593", stroke="#f5f2c9", width=8)
     elif name == "skill" and hero == "jugg":
         append_path(motion, "M89 330Q49 435 108 521M388 300Q456 410 397 516", stroke="#f0bd73", width=11)
