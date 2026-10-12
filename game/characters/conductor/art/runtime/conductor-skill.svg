@@ -41,13 +41,13 @@
   </defs>
   <g id="hero-motion" transform="translate(0 -4)">
     <g id="hero-body" transform="rotate(3 128 350)">
-      <g id="hero-accessory" transform="translate(0 12)">
+      <g id="hero-accessory" transform="translate(-15 12)">
         <path d="m211 28 9-17-3 19 15-8-12 17m17 15 11-5-12 13 7 12-16-9m-37-36-8-16 1 20-12-9 7 17" stroke="#4da8d7" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" />
         <path d="m211 28 9-17-3 19 15-8-12 17m17 15 11-5-12 13 7 12-16-9m-37-36-8-16 1 20-12-9 7 17" stroke="#edfaff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
         <path d="M229 42l10 -13-4 19 13-8" fill="none" stroke="#efffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
         <path d="M174 68l-18 -19 5 24-17-7M206 65l22 -24-6 27 17-9" fill="none" stroke="#9cefff" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" />
       </g>
-      <g id="hero-weapon" transform="rotate(-38 180 151) rotate(35 185 194)">
+      <g id="hero-weapon" transform="rotate(-20 180 151)">
         <path d="m194 88 15 9-28 111-14-7z" fill="#825d40" stroke="#27323a" stroke-width="5" stroke-linejoin="round" />
         <path d="m201 91 5 3-28 110-5-3z" fill="#e0b46a" />
         <path d="m184 130 12 7m-17 15 12 7m-18 16 12 7" stroke="#2f3941" stroke-width="5" stroke-linecap="round" />
@@ -96,16 +96,16 @@
         <path d="m20 279 19 7-2 12m5-12 11 3" stroke="#825044" stroke-width="4" stroke-linecap="round" />
         <path d="M18 261l-12 -14 7 19-9 5" fill="none" stroke="#d9f8ff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
       </g>
-      <path d="M175 131q28 3 40 24l-4 38-34 11-26-34z" fill="url(#steel)" stroke="#253748" stroke-width="6" stroke-linejoin="round" />
-      <path d="M35 151q20-14 40-9l-11 36-33 8zm137-7q21-3 33 14l-6 29-32-10z" fill="url(#brightSteel)" stroke="#43647a" stroke-width="3" stroke-linejoin="round" />
-      <path d="m31 183 31-6m111-2 29 9" stroke="#d6c18b" stroke-width="5" stroke-linecap="round" />
-      <path d="m40 162 10 7 10-12m120 0 10 12 9-8" stroke="#b9ebee" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
-      <g id="pose-hammer-arm" transform="rotate(-38 180 151)">
+      <g id="pose-hammer-arm" transform="rotate(-20 180 151)">
+        <path d="M175 131q28 3 40 24l-4 38-34 11-26-34z" fill="url(#steel)" stroke="#253748" stroke-width="6" stroke-linejoin="round" />
         <path d="m182 188 27-5 9 47-11 27-26-4-8-30z" fill="url(#steel)" stroke="#263849" stroke-width="6" stroke-linejoin="round" />
         <path d="m180 219 31-3 1 21-26 8z" fill="url(#brightSteel)" stroke="#39566c" stroke-width="4" />
         <path d="m181 181 23-11 14 11-1 23-20 11-17-11z" fill="url(#skin)" stroke="#4e4140" stroke-width="5" stroke-linejoin="round" />
         <path d="m190 189 11-5m-9 15 14-6" stroke="#f1c99c" stroke-width="4" stroke-linecap="round" />
       </g>
+      <path d="M35 151q20-14 40-9l-11 36-33 8zm137-7q21-3 33 14l-6 29-32-10z" fill="url(#brightSteel)" stroke="#43647a" stroke-width="3" stroke-linejoin="round" />
+      <path d="m31 183 31-6m111-2 29 9" stroke="#d6c18b" stroke-width="5" stroke-linecap="round" />
+      <path d="m40 162 10 7 10-12m120 0 10 12 9-8" stroke="#b9ebee" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" />
       <path d="M91 64q24-34 58-18 24 10 24 42l-7 48-17 20-49-9-22-41z" fill="url(#skin)" stroke="#3d4144" stroke-width="6" stroke-linejoin="round" />
       <path d="m83 77-14 4 5 30 18 13m77-44 12 2-6 27-15 16" fill="url(#skin)" stroke="#5a4441" stroke-width="5" stroke-linejoin="round" />
       <path d="m86 78 2-29 18-20 34 3 22 17 9 25-19 12-51 3z" fill="url(#steel)" stroke="#263947" stroke-width="6" stroke-linejoin="round" />

@@ -1,0 +1,90 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>sf · right-facing attack-windup</title>
+  <desc>Static side pose with independent head and staggered legs; hand and weapon articulate from shoulder and elbow.</desc>
+  <defs>
+    <linearGradient id="sf-side-shadow" x1="88" y1="45" x2="192" y2="331" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#614076" />
+      <stop offset=".54" stop-color="#382650" />
+      <stop offset="1" stop-color="#211a3b" />
+    </linearGradient>
+    <linearGradient id="sf-side-fire" x1="197" y1="172" x2="248" y2="269" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff1a1" />
+      <stop offset=".45" stop-color="#ff9c6b" />
+      <stop offset="1" stop-color="#b63d68" />
+    </linearGradient>
+    <linearGradient id="sf-side-armor" x1="120" y1="140" x2="220" y2="268" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#956097" />
+      <stop offset=".55" stop-color="#59365f" />
+      <stop offset="1" stop-color="#302244" />
+    </linearGradient>
+  </defs>
+  <g id="side-motion" transform="translate(-8 15)" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="128" cy="344" rx="72" ry="12" fill="#071118" opacity=".46" />
+    <g id="side-back">
+      <path d="M90 151q-26-21-19-49 12 13 13 30 7-24 23-37-8 29 12 48l-13 29z" fill="url(#sf-side-fire)" stroke="#9b3c62" stroke-width="4" />
+      <path d="M158 152q4-25 26-45-3 23 5 36 13-17 24-19-12 21-10 43l-32 20z" fill="url(#sf-side-fire)" stroke="#9b3c62" stroke-width="4" />
+      <path d="M107 146q-33 42-73 109l38 5-35 34 48 8-25 31 69-19 14-109z" fill="#2d2145" stroke="#1a1830" stroke-width="7" />
+      <path d="M90 189q-12 43-45 69m42-34-30 63m49-32-29 57" stroke="#694779" stroke-width="4" />
+      <path d="M83 69L56 4l47 52 5-57 28 71z" fill="#382847" stroke="#1b192f" stroke-width="7" />
+      <path d="M70 32l19 38m27-52-5 48" stroke="#874875" stroke-width="3" />
+      <path d="M58 117q-18-29-10-45 12 15 12 27 8-27 18-32-4 30 7 50z" fill="url(#sf-side-fire)" opacity=".88" />
+    </g>
+    <g id="side-far-leg">
+      <path d="M102 255q-28 28-39 77l17 13 27-13 29-58z" fill="#302343" stroke="#1b1a31" stroke-width="7" />
+      <path d="M66 325l28 3 14 20-45 5-17-12z" fill="#3d2b4c" stroke="#1c1a31" stroke-width="6" />
+      <path d="M68 339l29-3" stroke="#98537f" stroke-width="3" />
+    </g>
+    <g id="side-far-arm">
+      <path d="M98 160q-25-2-39 23l9 49 30 17 24-21-7-52z" fill="#362648" stroke="#1d1a30" stroke-width="7" />
+      <path d="M64 181q14-21 36-14l11 21-36 15z" fill="url(#sf-side-armor)" stroke="#36243e" stroke-width="5" />
+      <path d="M83 218l23 5 14 27-24 10-25-19z" fill="#523356" stroke="#271e39" stroke-width="5" />
+      <path d="M84 250l-19 10 15 1-2 18 17-14 9 14 4-28z" fill="#77447a" stroke="#2d203d" stroke-width="5" />
+      <path d="M75 248l-29 7 16 5-13 22 28-17 12 22 4-23" fill="url(#sf-side-fire)" stroke="#9b3c62" stroke-width="4" />
+      <circle cx="78" cy="256" r="7" fill="url(#sf-side-fire)" />
+    </g>
+    <g id="side-body" transform="rotate(-3 132 207)">
+      <path d="M98 132q32-24 72-3 31 24 38 76l-23 65-55 44-47-36-7-72z" fill="url(#sf-side-shadow)" stroke="#1c1931" stroke-width="8" />
+      <path d="M113 155q36-15 62 11l7 73-31 32-44-20-11-62z" fill="#4c315b" stroke="#292039" stroke-width="5" />
+      <path d="M105 175l43 20 32-18m-58 54 26 17 27-16" stroke="#85518a" stroke-width="4" />
+      <path d="M117 191l25-17 33 25-26 32-31-15z" fill="#783e68" stroke="#3e2347" stroke-width="5" />
+      <path d="M140 182l18 18-12 18-16-17z" fill="url(#sf-side-fire)" stroke="#b24b6a" stroke-width="3" />
+      <path d="M119 243q40 23 80-7l-6 33q-39 29-72 0z" fill="#2a203f" stroke="#1a1830" stroke-width="6" />
+      <path d="M130 263l-14 68 28-14 12 27 18-67z" fill="#39274c" stroke="#1d1a31" stroke-width="6" />
+      <path d="M137 278l7 46m17-50-3 51" stroke="#89507c" stroke-width="3" />
+      <path d="M153 255l24-12-2 22-17 15-12-13z" fill="#c86672" stroke="#672f59" stroke-width="4" />
+    </g>
+    <g id="side-near-leg" transform="translate(-2 0)">
+      <path d="M158 267q25 30 29 66l-27 16-26-18-5-46z" fill="#332441" stroke="#1b1a30" stroke-width="7" />
+      <path d="M160 323l25 4 21 16-20 16-43-14z" fill="#402b4b" stroke="#1d1a31" stroke-width="6" />
+      <path d="M156 338l34 10" stroke="#9a5584" stroke-width="3" />
+    </g>
+    <g id="side-head" transform="translate(-2 -1)">
+      <path d="M112 62q15-37 51-29 35 12 40 51l-8 56-32 28-43-21-22-40z" fill="url(#sf-side-shadow)" stroke="#1c1931" stroke-width="8" />
+      <path d="M117 54L100 8l31 25 8-33 21 38 25-31-1 47z" fill="#422b56" stroke="#1d1931" stroke-width="7" />
+      <path d="M148 39q-9-32 2-39l13 31m-40 5-14-22m68 19 19-21" stroke="#915180" stroke-width="3" />
+      <path d="M113 76q32-30 68-8l14 27-8 30-42 7-29-26z" fill="#332344" stroke="#1d1a31" stroke-width="6" />
+      <path d="M162 84l21-2 11 13-13 10-22-8z" fill="url(#sf-side-fire)" stroke="#7b3659" stroke-width="3" />
+      <path d="M167 89l20 2-8 6-14-2z" fill="#fff0a0" />
+      <path d="M185 103l23 10-9 17-22-2z" fill="#4f2e54" stroke="#221b34" stroke-width="5" />
+      <path d="M176 120l18 8-20 16-22-9z" fill="#6a345c" stroke="#2d203b" stroke-width="4" />
+      <path d="M171 132l6 17-12 12-17-21z" fill="url(#sf-side-fire)" />
+      <path d="M109 95q-19-8-21 8l11 24 20 5 5-22z" fill="#4c2f58" stroke="#221b34" stroke-width="5" />
+      <path d="M113 144q16 22 42 22l-8 20q-29 1-48-23z" fill="#382748" stroke="#1e1a31" stroke-width="5" />
+    </g>
+    <g id="side-rig" transform="rotate(30 170 164)">
+      <path d="M170 160q32 0 44 27l-10 33-30 3-24-32z" fill="url(#sf-side-armor)" stroke="#292039" stroke-width="7" />
+      <path d="M180 170q19-3 27 15l-11 18-26-12z" fill="#7c497b" stroke="#422747" stroke-width="4" />
+      <g id="side-forearm" transform="rotate(10 204 207)">
+        <path d="M203 202q26 6 34 28l-14 22-27-9-16-27z" fill="#4b2f57" stroke="#241d36" stroke-width="7" />
+        <path d="M201 213l26 13-10 17-25-12z" fill="#7d4878" stroke="#3c2747" stroke-width="4" />
+        <g id="side-weapon">
+          <circle cx="232" cy="254" r="18" fill="url(#sf-side-fire)" stroke="#7d365e" stroke-width="5" />
+          <path d="M234 237q-5-19 9-31-1 19 9 25m-10 33q8 10 3 23-10-10-22-13" fill="#f07777" stroke="#8d385f" stroke-width="3" />
+          <circle cx="229" cy="250" r="7" fill="#fff1a9" />
+        </g>
+        <path d="M210 231q15-6 27 9l-6 17-22-1-10-16z" fill="#8e4d81" stroke="#3c2646" stroke-width="5" />
+        <path d="M219 236l7 13 8-12m-13 14-6 14" stroke="#f2a175" stroke-width="3" />
+      </g>
+    </g>
+  </g>
+</svg>

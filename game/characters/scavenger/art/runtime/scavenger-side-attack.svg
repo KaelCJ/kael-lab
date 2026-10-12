@@ -1,0 +1,106 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>scavenger · right-facing attack</title>
+  <desc>Static side pose with independent head and staggered legs; hand and weapon articulate from shoulder and elbow.</desc>
+  <defs>
+    <linearGradient id="scavenger-side-ogre" x1="83" y1="105" x2="205" y2="311" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#b1ad72" />
+      <stop offset=".55" stop-color="#797c56" />
+      <stop offset="1" stop-color="#4d5b46" />
+    </linearGradient>
+    <linearGradient id="scavenger-side-goblin" x1="62" y1="39" x2="153" y2="136" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#bbdf69" />
+      <stop offset=".58" stop-color="#72a945" />
+      <stop offset="1" stop-color="#3d743c" />
+    </linearGradient>
+    <linearGradient id="scavenger-side-metal" x1="83" y1="120" x2="236" y2="309" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f0e2b2" />
+      <stop offset=".5" stop-color="#a6a693" />
+      <stop offset="1" stop-color="#5e7269" />
+    </linearGradient>
+    <linearGradient id="scavenger-side-flask" x1="47" y1="66" x2="121" y2="255" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#efffac" />
+      <stop offset=".48" stop-color="#94de55" />
+      <stop offset="1" stop-color="#2d8d58" />
+    </linearGradient>
+  </defs>
+  <g id="side-motion" transform="translate(-20 15) scale(.96)" stroke-linejoin="round" stroke-linecap="round">
+    <ellipse cx="131" cy="345" rx="77" ry="13" fill="#071118" opacity=".4" />
+    <g id="side-back">
+      <path d="M88 127q-30-10-42 20l-6 68 30 19 35-28 21-65z" fill="#514d39" stroke="#353e33" stroke-width="7" />
+      <path d="M53 131l34-8 20 24-10 71-47 4-8-40z" fill="#716643" stroke="#3e4433" stroke-width="6" />
+      <path d="M55 140l29-6 13 17-5 57-39 3z" fill="url(#scavenger-side-flask)" stroke="#537b4c" stroke-width="5" />
+      <path d="M57 151l27-7m-22 23 28-8m-27 27 28-7" stroke="#efffa8" stroke-width="3" opacity=".75" />
+      <path d="M50 145l-13-3-2 49 14 4m45-51 13-8 9 52-16 4" stroke="#b88a4c" stroke-width="7" />
+      <path d="M77 81L47 24l15 63" stroke="#75654b" stroke-width="9" />
+      <path d="M57 23l12-7 12 15-4 19-18-8z" fill="url(#scavenger-side-flask)" stroke="#5b7e52" stroke-width="5" />
+    </g>
+    <g id="side-far-leg">
+      <path d="M103 270q-28 19-29 47l21 27 33-6 13-57z" fill="#66684b" stroke="#424d3b" stroke-width="7" />
+      <path d="M71 311l27 5 29 20-17 21-52-5-13-20z" fill="#756248" stroke="#463c34" stroke-width="7" />
+      <path d="M65 341l46 7m-35-30 31 12" stroke="#b59a68" stroke-width="4" />
+    </g>
+    <g id="side-far-arm">
+      <path d="M91 163q-31 6-32 37l15 50 33 4 20-28-15-48z" fill="#747b55" stroke="#414d3d" stroke-width="7" />
+      <path d="M65 192q17-25 44-14l-1 25-32 13z" fill="url(#scavenger-side-metal)" stroke="#647063" stroke-width="5" />
+      <path d="M71 211l34-5m-26 25 24 6" stroke="#d6c992" stroke-width="3" />
+      <path d="M87 245q13-9 26 5l-3 21-26 3-11-15z" fill="#85875b" stroke="#48533d" stroke-width="5" />
+    </g>
+    <g id="side-body" transform="rotate(3 132 207)">
+      <path d="M95 146q34-28 77-6 38 21 42 69l-19 68q-22 28-66 31-44-16-54-54l2-65z" fill="url(#scavenger-side-ogre)" stroke="#444d3b" stroke-width="8" />
+      <path d="M111 162q32-14 63 3l12 73q-22 38-57 37-25-13-31-41z" fill="#919162" stroke="#5a6648" stroke-width="5" />
+      <path d="M134 175q16 29 14 70m29-61q17 27 3 62" stroke="#c7b881" stroke-width="3" />
+      <path d="M82 170l73 51-12 18-68-41z" fill="#694b3c" stroke="#433e34" stroke-width="6" />
+      <path d="M92 172l58 46" stroke="#c79c60" stroke-width="3" />
+      <path d="M83 236q51 24 117 6l-4 31q-63 27-110-4z" fill="#6e5540" stroke="#493e32" stroke-width="6" />
+      <path d="M100 249l41 1 1 27-39-4z" fill="#d3ac6f" stroke="#6b533b" stroke-width="5" />
+      <path d="M110 256l23 1" stroke="#f5d796" stroke-width="3" />
+      <path d="M148 249l34-3 4 27-38 3z" fill="#4b513d" stroke="#353e33" stroke-width="5" />
+      <path d="M151 257l31-3m-24 13 25-3" stroke="#9faa64" stroke-width="3" />
+      <path d="M87 271l-14 45 27 21 28-44zm89 3 25 33-27 31-30-45z" fill="#776044" stroke="#4e4939" stroke-width="5" />
+      <path d="M85 308l30 9m40-17 25 25" stroke="#c0a673" stroke-width="3" />
+    </g>
+    <g id="side-near-leg" transform="translate(3 -2)">
+      <path d="M151 281q22 15 26 40l-9 26-42-4-16-22 16-36z" fill="#747955" stroke="#485440" stroke-width="7" />
+      <path d="M128 313l40 8 7 22-47 1z" fill="url(#scavenger-side-metal)" stroke="#6f7966" stroke-width="5" />
+      <path d="M130 330l43-4 28 13-4 22-66 1-21-17z" fill="#76644c" stroke="#4c4339" stroke-width="7" />
+      <path d="M133 337l39-3m-35 17q30 6 57 1" stroke="#c2aa7c" stroke-width="4" />
+    </g>
+    <g id="side-head" transform="translate(3 -2)">
+      <path d="M110 72q23-31 57-20 35 11 43 45l-13 70-38 25-48-23-13-50z" fill="url(#scavenger-side-ogre)" stroke="#48513c" stroke-width="8" />
+      <path d="M111 81q40-20 67 1l15 18-9 18-59-2z" fill="#777a50" stroke="#55603f" stroke-width="5" />
+      <path d="M164 102q18-13 31-3l-5 14-21 2z" fill="#3b372c" />
+      <circle cx="182" cy="105" r="3" fill="#f0d394" />
+      <path d="M183 123q26-15 44 1l1 24-20 18-31-15z" fill="#88905f" stroke="#5c6649" stroke-width="7" />
+      <path d="M204 141l20-5-8 14-17 1z" fill="#596647" stroke="#49523c" stroke-width="4" />
+      <path d="M182 150l11 15-12 12-7-18z" fill="#f1ddb0" stroke="#8d7e5e" stroke-width="4" />
+      <path d="M106 111q-15-8-20 10l9 23 18 1 7-23z" fill="#85885d" stroke="#515d42" stroke-width="5" />
+      <path d="M115 159q24 24 55 23l-10 19q-33 0-54-24z" fill="#69744e" stroke="#49563e" stroke-width="5" />
+      <path d="M72 57q11-28 39-25 32 5 37 29l-11 33-30 21-33-15-14-25z" fill="url(#scavenger-side-goblin)" stroke="#3b6740" stroke-width="6" />
+      <path d="M79 65L53 51l12 28 17 4zm49 2 32-15-13 28-23 6z" fill="#74ab4c" stroke="#3e6a40" stroke-width="5" />
+      <path d="M91 58q18-11 34 3l-2 17-30 3z" fill="#cfbf72" stroke="#6e7547" stroke-width="5" />
+      <path d="M91 69l15-1m13 2 10 2" stroke="#3c4637" stroke-width="5" />
+      <circle cx="105" cy="71" r="4" fill="#dffb92" />
+      <circle cx="121" cy="71" r="4" fill="#dffb92" />
+      <path d="M117 78l14 5-11 10-12-7z" fill="#83b449" stroke="#497347" stroke-width="4" />
+      <path d="M89 98q19 10 34-1l6 20-21 14-23-11z" fill="#624e35" stroke="#3d4434" stroke-width="5" />
+      <path d="M97 108l22 4" stroke="#d1ad68" stroke-width="3" />
+      <path d="M71 115q18 15 32 8m29-11 24 18" stroke="#78a84e" stroke-width="9" />
+    </g>
+    <g id="side-rig" transform="rotate(17 170 164)">
+      <path d="M172 166q30 0 45 28l-10 31-29 5-23-34z" fill="url(#scavenger-side-ogre)" stroke="#4a5842" stroke-width="8" />
+      <path d="M182 172q21 0 29 16l-8 19-29-12z" fill="url(#scavenger-side-metal)" stroke="#667461" stroke-width="5" />
+      <g id="side-forearm" transform="rotate(21 204 207)">
+        <path d="M203 207q25 1 36 24l-11 22-27-5-17-27z" fill="#8d9162" stroke="#515b43" stroke-width="7" />
+        <path d="M201 221l26 8-9 22-25-7z" fill="#9d9870" stroke="#687054" stroke-width="5" />
+        <g id="side-weapon">
+          <path d="M215 248l38 52" stroke="#5d4536" stroke-width="11" />
+          <path d="M215 248l38 52" stroke="#d5a96e" stroke-width="5" />
+          <path d="M230 278q23-19 40-6l-4 29q-16 11-32 0z" fill="url(#scavenger-side-metal)" stroke="#596b63" stroke-width="6" />
+          <path d="M242 282l17 14m-10-21-2 28" stroke="#f1e8c0" stroke-width="3" />
+          <path d="M230 279l10-15m-5 28 9 5" fill="none" stroke="#bdf58a" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+        <path d="M213 232q13-9 25 1l4 15-14 14-19-10z" fill="#a4a074" stroke="#5f664b" stroke-width="6" />
+      </g>
+    </g>
+  </g>
+</svg>

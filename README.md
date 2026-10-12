@@ -11,10 +11,11 @@
 
 README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Agent 的稳定工作边界。它们是回源导航，不代替当前代码、页面或运行验证。
 
-AI Center 采用零依赖纯静态实现：
+AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功能不依赖运行时构建，统计脚本独立加载：
 
 - `index.html`、`css/styles.css`、`js/app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，六类角色帮助入口、协作方法和 Evidence Lab。
 - `css/shared/ecosystem.css`、`js/shared/ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页；共享资源的消费者和边界见 `css/shared/README.md`。
+- `js/analytics.js`：全站共用的 Google Analytics 4 加载器；各实际 HTML 页面只保留一行相对路径引用，Measurement ID 为 `G-FVG65R5M0D`；当前契约见 `js/README.md`。
 - `kael/`：人机协作总循环、工作项上下文、任务内增益与跨任务判断升级。
 - `meepo/`：组合根、产品 Agent、公共 Framework 与 Nest 候选能力的当前模块视图。
 - `nest/`：Jugg/Nest 业务伴生治理、五类支撑、六层资产与知识产品候选核心。
@@ -23,7 +24,7 @@ AI Center 采用零依赖纯静态实现：
 - `workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `css/workspace-assistant.css`、`js/workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `games.html`、`css/games.css`：游戏选择页；给以后新增的游戏保留独立入口。
-- `game/`：首款原创网页生存肉鸽《星核幸存者》，支持桌面和手机横竖屏游玩；页面、素材和设计资料在 `game/`，样式和脚本分别在 `css/game/`、`js/game/`。实现、玩法和验证入口见 `game/README.md`。
+- `game/`：首款原创网页生存肉鸽《星核幸存者》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 34 件装备的三阶段合成图鉴。页面、素材和设计资料在 `game/`，样式和脚本分别在 `css/game/`、`js/game/`。实现、玩法和验证入口见 `game/README.md`。
 - `favicon.svg`：站点与游戏共享的公开矢量图标，保留根路径以兼容浏览器默认图标请求。
 - `404.html`：静态托管失败页。
 
@@ -45,6 +46,8 @@ python -m http.server 4173
 
 然后访问 `http://localhost:4173/` 查看 AI Center，或访问 `http://localhost:4173/games.html` 选择游戏。
 
+部署后可在 Google Analytics 4 的 Realtime 页面验证公开 URL 的访问；本地静态服务器只用于检查公共脚本的相对路径和页面不依赖统计脚本也能加载。
+
 ## 公开边界
 
 - 本仓库只保存公开派生内容，不镜像任何内部知识库或项目文档。
@@ -52,8 +55,8 @@ python -m http.server 4173
 - 四个产品空间进一步区分 `Current`、`Building`、`Candidate` 与 `Direction`，架构节点和演讲分镜都是公开静态表达。
 - Workspace Assistant 只使用脱敏模拟数据，不连接真实工作区、模型、Codex 或 API。
 - 帮助页中的人物、工作项、进度、贡献、运行和测试记录全部是固定演示数据，不代表真实组织状态或人员绩效。
-- 首版没有服务端、账号、统计、评论、私密 API Key 或第三方 CDN。
-- 游戏页面的“支持开发”入口只跳转到外部爱发电主页；本站不处理支付、账号、订单或游戏内购买权益。
+- 站点没有服务端、账号、评论或私密 API Key；页面通过 `js/analytics.js` 统一加载 Google Analytics 4，因此会请求 Google 的第三方统计脚本。
+- 游戏选择页及游戏页面的“支持开发”入口跳转到外部爱发电主页 `https://afdian.com/a/kael-lab`；本站不处理支付、账号、订单或游戏内购买权益。从 `games.html` 进入游戏后可核对选择页、标题页与结果页的链接目标。
 - 浏览器实验成绩只保存在访问者当前设备的 LocalStorage 中。
 - 游戏借鉴生存肉鸽玩法，角色视觉以 Warcraft III／DotA1 原型为参考；当前运行图由本仓库重新绘制，不是相关作品的官方移植。游戏设置与记录保存在当前浏览器的 LocalStorage 中。
 

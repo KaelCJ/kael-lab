@@ -32,6 +32,15 @@
       "attack": "art/runtime/sf-attack.svg",
       "attackRelease": "art/runtime/sf-attack-release.svg",
       "skill": "art/runtime/sf-skill.svg",
+      "sideSource": "art/runtime/sf-side.svg",
+      "sideIdle": "art/runtime/sf-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/sf-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/sf-side-walk-a.svg", "art/runtime/sf-side-walk-b.svg"],
+      "sideDash": "art/runtime/sf-side-dash.svg",
+      "sideAttackWindup": "art/runtime/sf-side-attack-windup.svg",
+      "sideAttack": "art/runtime/sf-side-attack.svg",
+      "sideAttackRelease": "art/runtime/sf-side-attack-release.svg",
+      "sideSkill": "art/runtime/sf-side-skill.svg",
       "format": "svg-poses"
     },
     "character": [

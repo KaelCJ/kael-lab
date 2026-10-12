@@ -26,3 +26,15 @@ coverage/
 /.agents/skills/nest-workspace-sync/
 /.claude/commands/nest-work-report.md
 /.claude/commands/nest-workspace-sync.md
+
+# Local workspace state and generated QA outputs
+/.workspace-assistant/
+/artifacts/
+
+# Scratch scripts, previews, and Python caches
+/.tmp-*
+/tmp-*/
+/tmp-*.png
+/tmp_*.js
+**/__pycache__/
+*.py[cod]

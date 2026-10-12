@@ -12,6 +12,8 @@ button:focus-visible,a:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .title-heading{align-self:center;max-width:560px}
 .home-link{display:inline-block;margin-bottom:clamp(14px,3vw,46px);color:var(--mint);text-decoration:none;font-weight:700;letter-spacing:.03em}
 .home-link:hover{text-decoration:underline}
+.equipment-catalog-link{display:inline-block;margin-top:14px;padding:9px 13px;border:1px solid #81a9a6;background:#203844;color:var(--mint);font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;text-decoration:none}
+.equipment-catalog-link:hover{border-color:var(--amber);color:var(--amber)}
 .eyebrow,.modal-kicker{color:var(--mint);font-size:.72rem;font-weight:800;letter-spacing:.22em;text-transform:uppercase}
 h1,h2,h3,p{margin-top:0}
 h1{font-size:clamp(3rem,6.6vw,6.5rem);line-height:1.08;letter-spacing:-.07em;margin:.12em 0 .22em;text-shadow:0 5px 35px #0008}
@@ -26,9 +28,29 @@ h1 span{color:var(--amber)}
 .selection-card:hover,.selection-card[aria-pressed="true"]{border-color:var(--amber);background:#324037}
 .selection-card[aria-pressed="true"]{box-shadow:inset 3px 0 var(--amber)}
 .selection-icon{flex:none;width:35px;height:35px;border-radius:9px;display:grid;place-items:center;background:#274956;color:var(--amber);font-size:1.25rem}
-.hero-portrait{flex:none;width:52px;height:72px;display:block}
-.hero-portrait .art-icon{width:100%;height:100%;object-fit:contain}
-.hero-card-copy{min-width:0}
+.hero-group-title{margin:0 0 8px;color:#d9e6e1;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600}
+.hero-group-title:not(:first-of-type){margin-top:16px}
+.hero-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(78px,1fr));gap:7px}
+.hero-tile{min-width:0;display:flex;flex-direction:column;align-items:stretch;gap:4px;padding:5px;background:#142b35;border:1px solid #45616b;border-radius:9px;text-align:center}
+button.hero-tile:hover,button.hero-tile[aria-pressed="true"]{border-color:var(--amber);background:#324037}
+button.hero-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--amber)}
+.hero-avatar{display:block;width:100%;aspect-ratio:1;overflow:hidden;border-radius:5px;background:#203a43}
+.hero-avatar .art-icon{width:100%;height:100%;object-fit:contain}
+.hero-tile-name{font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:500;overflow-wrap:anywhere}
+.hero-tile-unavailable{background:#1b262b;border-color:#45555c;color:#d2d7d8;cursor:default}
+.hero-tile-unavailable .hero-avatar{background:#28343a}
+.hero-tile-unavailable .art-icon{filter:grayscale(1);opacity:.7}
+.hero-tile-status{font-size:var(--game-caption-size);line-height:var(--game-caption-line);color:#c7cdd0;overflow-wrap:anywhere}
+.hero-details{display:grid;grid-template-columns:64px minmax(0,1fr);gap:12px;min-width:0;margin-top:16px;padding:12px;background:#0d222b;border:1px solid #45616b;border-radius:10px}
+.hero-details-art{height:96px}
+.hero-details-art .art-icon{width:100%;height:100%;object-fit:contain}
+.hero-details-copy{min-width:0}
+.hero-details h3{margin:0;font-size:var(--game-title-size);line-height:var(--game-title-line)}
+.hero-details p{margin:2px 0 0;font-size:var(--game-label-size);line-height:var(--game-label-line);color:#d3dfdc}
+.hero-details .hero-profession{color:var(--mint)}
+.hero-details .hero-skill span{color:var(--amber)}
+.setup-upcoming{grid-column:1/-1;min-width:0}
+.setup-upcoming .hero-grid{grid-template-columns:repeat(7,minmax(0,1fr))}
 .art-icon{display:block;width:100%;height:100%;object-fit:contain}
 .selection-card strong{display:block;font-size:.9rem}
 .selection-card small{display:block;color:var(--muted);font-size:.7rem;line-height:1.35;margin-top:2px}
@@ -43,6 +65,10 @@ h1 span{color:var(--amber)}
 .setup-footer{grid-column:1/-1;display:flex;align-items:center;justify-content:space-between;gap:12px;border-top:1px solid #66808a55;padding-top:18px}
 .setup-footer p{margin:0;color:var(--muted);font-size:.8rem}
 .setup-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px}
+.recipe-heading-row{display:flex;align-items:baseline;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:18px}
+.recipe-heading-row .recipe-heading{margin:0!important}
+.recipe-heading-row a{color:var(--mint);font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;text-underline-offset:3px}
+.recipe-heading-row a:hover{color:var(--amber)}
 .support-link{display:inline-flex;min-height:44px;padding:7px 14px;flex-direction:column;align-items:flex-start;justify-content:center;border:1px solid #7ad8bd;background:#173a3b;color:#e6fff2;text-decoration:none;border-radius:10px;line-height:1.15}
 .support-link strong{font-size:.86rem;font-weight:800}
 .support-link small{margin-top:3px;color:#b9d8cc;font-size:.65rem;line-height:1.2}
@@ -169,12 +195,13 @@ h1 span{color:var(--amber)}
 .noscript a{color:var(--mint)}
 .game-shell[data-skin="pixel"]{--amber:#ffd178;--mint:#8be4bd;--panel:#142631f5}
 .game-shell[data-skin="pixel"] #arena,.game-shell[data-skin="pixel"] .art-icon{image-rendering:pixelated;image-rendering:crisp-edges}
-.game-shell[data-skin="pixel"] :is(.setup-panel,.modal-card,.selection-card,.selection-icon,.hud-group,.skin-toggle,.skill-slot,.offer-card,.inventory-item,.choice-option,.pause-stat,.pause-skill,.small-button,.primary-button,.secondary-button){border-radius:2px}
+.game-shell[data-skin="pixel"] :is(.setup-panel,.modal-card,.selection-card,.selection-icon,.hero-tile,.hero-avatar,.hero-details,.hud-group,.skin-toggle,.skill-slot,.offer-card,.inventory-item,.choice-option,.pause-stat,.pause-skill,.small-button,.primary-button,.secondary-button){border-radius:2px}
 .game-shell[data-skin="pixel"] :is(.setup-panel,.modal-card){box-shadow:5px 5px 0 #06131b,inset 0 1px #a2d2c134;backdrop-filter:none}
 .game-shell[data-skin="pixel"] :is(.selection-card[aria-pressed="true"],.skill-slot.is-ready){box-shadow:inset 4px 0 #ffd178}
 @media (pointer:fine){.touch-controls{display:none!important}}
-@media (max-width:900px){.title-screen{grid-template-columns:1fr 1.3fr;gap:16px;padding:12px 20px}.home-link{margin-bottom:12px}.title-heading p{font-size:.82rem}.setup-panel{gap:12px;padding:14px}.selection-card{min-height:44px;padding:5px}.selection-icon{width:30px;height:30px}.controls-note{font-size:.64rem}.hud-wave span:last-child{display:none}.hud-group{font-size:.7rem;padding:4px 6px}.hud-bottom{margin-left:140px;margin-right:95px}.hud-stats{display:none}}
-@media (max-height:520px){.title-screen{align-items:start}.title-heading h1{font-size:clamp(2.1rem,6vw,3.8rem)}.title-heading p{line-height:1.35}.setup-panel{align-self:start}.selection-grid{gap:4px}.selection-card small{display:none}.setting-row{margin-top:6px}.setup-footer{padding-top:8px}.controls-note{align-self:start}.modal-card{padding:12px 16px}.modal-card h2{font-size:1.4rem}.modal-card p{font-size:.72rem}.choice-grid{margin-top:8px}.choice-option{min-height:100px;padding:8px}.choice-option .choice-icon{font-size:1.35rem}.shop-offers{margin-top:8px}.offer-card{min-height:145px}.shop-card h3{margin:8px 0 5px}.inventory-item{min-height:58px}.hud{padding-top:4px;padding-bottom:4px}.hud-bottom{margin-bottom:0}.skill-strip{top:calc(env(safe-area-inset-top) + 48px)}.skill-slot{min-height:34px;padding:2px 5px}.combat-actions{bottom:calc(env(safe-area-inset-bottom) + 12px);gap:11px}.skill-button{width:64px;height:64px}.combat-actions .skill-button{font-size:var(--game-label-size);line-height:var(--game-label-line)}.touch-controls{padding-bottom:12px}.joystick{width:94px;height:94px}.joystick-knob{width:42px;height:42px}.dash-button{width:64px;height:64px}.toast{top:calc(env(safe-area-inset-top) + 135px)}}
+@media (max-width:900px){.title-screen{grid-template-columns:1fr 1.3fr;gap:16px;padding:12px 20px}.home-link{margin-bottom:12px}.title-heading p{font-size:.82rem}.setup-panel{gap:12px;padding:14px}.setup-upcoming .hero-grid{grid-template-columns:repeat(4,minmax(0,1fr))}.selection-card{min-height:44px;padding:5px}.selection-icon{width:30px;height:30px}.controls-note{font-size:.64rem}.hud-wave span:last-child{display:none}.hud-group{font-size:.7rem;padding:4px 6px}.hud-bottom{margin-left:140px;margin-right:95px}.hud-stats{display:none}}
+@media (min-width:681px) and (max-width:760px){.title-screen{grid-template-columns:1fr}}
+@media (max-height:520px){.title-screen{align-items:start}.title-heading{align-self:start}.title-heading h1{font-size:clamp(2.1rem,6vw,3.8rem)}.title-heading p{line-height:1.35}.setup-panel{align-self:start}.selection-grid{gap:4px}.selection-card small{display:none}.setting-row{margin-top:6px}.setup-footer{padding-top:8px}.controls-note{align-self:start}.modal-card{padding:12px 16px}.modal-card h2{font-size:1.4rem}.modal-card p{font-size:.72rem}.choice-grid{margin-top:8px}.choice-option{min-height:100px;padding:8px}.choice-option .choice-icon{font-size:1.35rem}.shop-offers{margin-top:8px}.offer-card{min-height:145px}.shop-card h3{margin:8px 0 5px}.inventory-item{min-height:58px}.hud{padding-top:4px;padding-bottom:4px}.hud-bottom{margin-bottom:0}.skill-strip{top:calc(env(safe-area-inset-top) + 48px)}.skill-slot{min-height:34px;padding:2px 5px}.combat-actions{bottom:calc(env(safe-area-inset-bottom) + 12px);gap:11px}.skill-button{width:64px;height:64px}.combat-actions .skill-button{font-size:var(--game-label-size);line-height:var(--game-label-line)}.touch-controls{padding-bottom:12px}.joystick{width:94px;height:94px}.joystick-knob{width:42px;height:42px}.dash-button{width:64px;height:64px}.toast{top:calc(env(safe-area-inset-top) + 135px)}}
 @media (max-height:520px){.selection-card .skill-preview{display:block}}
 @media (max-width:680px){.title-screen{grid-template-columns:1fr;gap:10px}.title-heading{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0 10px}.title-heading .home-link{grid-column:1/-1;margin:0}.title-heading .eyebrow{display:none}.title-heading h1{font-size:2rem;margin:0}.title-heading p{margin:0;font-size:.72rem}.setup-panel{gap:8px}.selection-icon{display:none}.selection-card strong{font-size:.75rem}.selection-card small{font-size:.6rem}.setting-row{font-size:.68rem}.segmented button{font-size:.65rem;padding:3px 5px}.setup-footer .primary-button{padding:8px}.controls-note{font-size:.62rem}.hud-top{grid-template-columns:1fr 135px 1fr;gap:4px}.hud-wave{gap:4px}.hud-wave strong{font-size:.95rem}.hud-vitals .meter{height:16px;font-size:.58rem}.hud-vitals .exp-meter{height:10px}.hud-right{gap:4px}.shop-offers{grid-template-columns:repeat(2,1fr)}.offer-card{min-height:120px}.inventory{grid-template-columns:repeat(3,1fr)}.choice-grid{gap:5px}.choice-option strong{font-size:.75rem}.choice-option span:last-child{font-size:.66rem}}
 @media (orientation:portrait) and (max-width:680px){
@@ -184,7 +211,10 @@ h1 span{color:var(--amber)}
   .title-heading h1{font-size:2.5rem;margin:0 0 8px}
   .title-heading p{font-size:.875rem;line-height:1.5;margin:0}
   .setup-panel{grid-template-columns:1fr;gap:16px;margin-top:18px;padding:16px}
-  #character-list{grid-template-columns:1fr}
+  .setup-upcoming{order:2}
+  .setup-panel>.setup-column:not(.hero-picker){order:3}
+  .setup-footer{order:4}
+  #character-list,#upcoming-hero-list{grid-template-columns:repeat(3,minmax(0,1fr))}
   .selection-card{min-height:52px;padding:7px;gap:7px}
   .selection-icon{display:grid;width:28px;height:28px;font-size:1rem}
   .selection-card strong{font-size:.8125rem}
@@ -321,8 +351,8 @@ h1 span{color:var(--amber)}
 .game-shell[data-skin="pixel"] :is(.eyebrow,.modal-kicker){font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-weight:600;letter-spacing:0}
 .game-shell[data-skin="pixel"] .hud{text-shadow:2px 2px 0 #07131b}
 .game-shell[data-skin="pixel"] :is(.setup-panel,.modal-card){background:#172d38;border:2px solid #719fa0;box-shadow:6px 6px 0 #07131b;backdrop-filter:none}
-.game-shell[data-skin="pixel"] :is(.selection-card,.choice-option,.offer-card,.inventory-item,.pause-stat,.pause-skill,.result-stats div){background:#203844;border:1px solid #71949a;box-shadow:inset -3px -3px 0 #152a35}
-.game-shell[data-skin="pixel"] :is(.selection-card[aria-pressed="true"],.choice-option:hover){background:#354640;border-color:var(--amber);box-shadow:inset 4px 0 0 var(--amber),inset -3px -3px 0 #21362f}
+.game-shell[data-skin="pixel"] :is(.selection-card,.hero-tile:not(.hero-tile-unavailable),.hero-details,.choice-option,.offer-card,.inventory-item,.pause-stat,.pause-skill,.result-stats div){background:#203844;border:1px solid #71949a;box-shadow:inset -3px -3px 0 #152a35}
+.game-shell[data-skin="pixel"] :is(.selection-card[aria-pressed="true"],.hero-tile[aria-pressed="true"],.choice-option:hover){background:#354640;border-color:var(--amber);box-shadow:inset 0 0 0 1px var(--amber),inset -3px -3px 0 #21362f}
 .game-shell[data-skin="pixel"] .selection-icon{background:#18303b;border:1px solid #7eb3aa}
 .game-shell[data-skin="pixel"] .selection-card small{font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
 .game-shell[data-skin="pixel"] .selection-card strong{font-size:var(--game-body-size);line-height:var(--game-body-line)}

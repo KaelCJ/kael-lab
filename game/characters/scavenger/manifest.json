@@ -32,6 +32,15 @@
       "attack": "art/runtime/scavenger-attack.svg",
       "attackRelease": "art/runtime/scavenger-attack-release.svg",
       "skill": "art/runtime/scavenger-skill.svg",
+      "sideSource": "art/runtime/scavenger-side.svg",
+      "sideIdle": "art/runtime/scavenger-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/scavenger-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/scavenger-side-walk-a.svg", "art/runtime/scavenger-side-walk-b.svg"],
+      "sideDash": "art/runtime/scavenger-side-dash.svg",
+      "sideAttackWindup": "art/runtime/scavenger-side-attack-windup.svg",
+      "sideAttack": "art/runtime/scavenger-side-attack.svg",
+      "sideAttackRelease": "art/runtime/scavenger-side-attack-release.svg",
+      "sideSkill": "art/runtime/scavenger-side-skill.svg",
       "format": "svg-poses"
     },
     "character": [

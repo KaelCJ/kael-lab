@@ -32,6 +32,15 @@
       "attack": "art/runtime/jugg-attack.svg",
       "attackRelease": "art/runtime/jugg-attack-release.svg",
       "skill": "art/runtime/jugg-skill.svg",
+      "sideSource": "art/runtime/jugg-side.svg",
+      "sideIdle": "art/runtime/jugg-side-idle-a.svg",
+      "sideIdleAlternate": "art/runtime/jugg-side-idle-alt.svg",
+      "sideWalk": ["art/runtime/jugg-side-walk-a.svg", "art/runtime/jugg-side-walk-b.svg"],
+      "sideDash": "art/runtime/jugg-side-dash.svg",
+      "sideAttackWindup": "art/runtime/jugg-side-attack-windup.svg",
+      "sideAttack": "art/runtime/jugg-side-attack.svg",
+      "sideAttackRelease": "art/runtime/jugg-side-attack-release.svg",
+      "sideSkill": "art/runtime/jugg-side-skill.svg",
       "format": "svg-poses"
     },
     "character": [
