@@ -1,0 +1,137 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="384" height="384" viewBox="0 0 384 384" fill="none">
+  <title>月之骑士 · 黑豹骑乘前视运行角色</title>
+  <desc>Moon Rider mounted on a four-legged black panther, holding a silver three-crescent throwing glaive with a short central grip. The glaive uses the same paths as luna-glaive.svg.</desc>
+  <defs>
+    <linearGradient id="lunaPanther" x1="36" y1="180" x2="217" y2="354" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#34436f" />
+      <stop offset=".42" stop-color="#151d3b" />
+      <stop offset="1" stop-color="#080d1e" />
+    </linearGradient>
+    <linearGradient id="lunaPantherFace" x1="74" y1="225" x2="183" y2="337" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#3b4f83" />
+      <stop offset=".45" stop-color="#182343" />
+      <stop offset="1" stop-color="#0a1024" />
+    </linearGradient>
+    <linearGradient id="lunaArmor" x1="74" y1="100" x2="181" y2="226" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#7083c7" />
+      <stop offset=".45" stop-color="#35437f" />
+      <stop offset="1" stop-color="#171d49" />
+    </linearGradient>
+    <linearGradient id="lunaMetal" x1="173" y1="82" x2="240" y2="225" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fffef0" />
+      <stop offset=".32" stop-color="#c9eaff" />
+      <stop offset=".72" stop-color="#7898d7" />
+      <stop offset="1" stop-color="#3c4f8d" />
+    </linearGradient>
+    <linearGradient id="lunaSkin" x1="105" y1="44" x2="162" y2="125" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f4d0cd" />
+      <stop offset=".55" stop-color="#c986a1" />
+      <stop offset="1" stop-color="#694876" />
+    </linearGradient>
+    <linearGradient id="lunaCape" x1="74" y1="126" x2="98" y2="238" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#403c87" />
+      <stop offset="1" stop-color="#141837" />
+    </linearGradient>
+    <radialGradient id="lunaGlow" cx="50%" cy="50%" r="50%">
+      <stop stop-color="#fffbe8" />
+      <stop offset=".32" stop-color="#c5eaff" />
+      <stop offset=".72" stop-color="#8298ff" stop-opacity=".8" />
+      <stop offset="1" stop-color="#7267da" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <g id="hero-motion" stroke-linejoin="round" stroke-linecap="round">
+    <g id="hero-body">
+      <ellipse cx="190" cy="345" rx="145" ry="11" fill="#050c18" opacity=".35" />
+      <g id="luna-panther-legs">
+        <path d="M94 249q-22 22-23 46l-23 28 5 20 36-1 4-12-14-6 34-29 14-38z" fill="#131d35" stroke="#070d1b" stroke-width="7" />
+        <path d="M126 252q15 26 4 45l-11 29 10 12h34l1-14-21-5 21-39-7-26z" fill="#22314e" stroke="#090f21" stroke-width="7" />
+        <path d="M251 240l-4 60-18 26 7 16h35l4-14-13-8 13-29 4-46z" fill="#152039" stroke="#080e1c" stroke-width="7" />
+        <path d="M291 237q10 38 1 68l-1 23 29 6 6 13h-45l-11-15 2-41-7-47z" fill="#263954" stroke="#090f21" stroke-width="7" />
+        <path d="M52 339h31M239 338h29M284 344h36" stroke="#778fbc" stroke-width="3" />
+      </g>
+      <g id="luna-panther-back">
+        <path d="M88 243C40 244 14 218 19 189Q22 169 44 177Q16 184 36 207Q55 226 95 220" fill="none" stroke="#0a1121" stroke-width="16" />
+        <path d="M88 243C40 244 14 218 19 189Q22 169 44 177" fill="none" stroke="#5b7197" stroke-width="4" />
+        <path d="M70 236Q75 199 122 198L237 198Q284 186 311 216L311 255Q287 276 240 276L139 282Q92 282 72 257Z" fill="#111a2e" stroke="#070d1b" stroke-width="8" />
+        <path d="M84 227Q111 209 148 211L235 211Q269 199 294 214" fill="none" stroke="#4a607f" stroke-width="6" />
+        <path d="M91 247Q125 267 163 264L227 259Q272 271 294 245" fill="none" stroke="#283952" stroke-width="6" />
+        <path d="M134 200q32-8 68 0l-3 54q-33 13-65 0z" fill="#283960" stroke="#0d142a" stroke-width="5" />
+        <path d="M142 207q26 7 52 0m-53 41q26 10 51 0" fill="none" stroke="#a5bce2" stroke-width="4" />
+        <path d="M205 208l17 63" fill="none" stroke="#968558" stroke-width="7" />
+      </g>
+      <g id="luna-panther-head">
+        <path d="M246 212Q264 186 299 190Q332 191 347 216L341 253 316 279 278 279 250 254Z" fill="#192a40" stroke="#070d1b" stroke-width="8" />
+        <path d="M254 210l-8-34 31 18m38 1 28-22-4 41" fill="#263d57" stroke="#090f21" stroke-width="7" />
+        <path d="M257 182l16 15m52 0 11-14" fill="none" stroke="#6a84ac" stroke-width="3" />
+        <path d="M260 223l26 2-5 11-17-5zm47 2 28-5-6 12-16 5z" fill="#b3f0ff" stroke="#070d1b" stroke-width="4" />
+        <path d="M274 225v8m46-8v9" stroke="#10172a" stroke-width="4" />
+        <path d="M284 245q13-10 27 0l-7 12-13-1z" fill="#080f1e" stroke="#6c84a7" stroke-width="3" />
+        <path d="M296 255v10m-18 1q18 6 37-1" fill="none" stroke="#9bafca" stroke-width="3" />
+        <path d="M268 248l-19-5m77 4 20-7" fill="none" stroke="#607c9b" stroke-width="3" />
+      </g>
+      <g id="luna-mounted-rider" transform="translate(73 52) scale(.72)">
+        <path d="M89 171q-6 26-17 52l-18 19 12 15 32-10 16-48z" fill="#303d79" stroke="#101638" stroke-width="7" stroke-linejoin="round" />
+        <path d="M164 172q9 26 20 50l18 19-12 15-33-10-15-48z" fill="#303d79" stroke="#101638" stroke-width="7" stroke-linejoin="round" />
+        <path d="M54 240l20-5 9 16-20 8zm148 0-20-5-9 16 20 8z" fill="#10162f" stroke="#7f95cf" stroke-width="4" />
+        <path d="M66 213q60 25 125 0" stroke="#d8c17b" stroke-width="6" stroke-linecap="round" />
+        <path d="M78 119q-24 31-20 76l15 38 36-22 5-75z" fill="url(#lunaCape)" stroke="#111538" stroke-width="7" stroke-linejoin="round" />
+        <path d="M72 145q-11 35-2 65m16-57q-5 30 3 52" stroke="#7180c9" stroke-width="4" stroke-linecap="round" opacity=".8" />
+        <path d="M82 110q23-21 48-20 31 1 45 27l12 82q-41 24-91 1l-16-46z" fill="url(#lunaArmor)" stroke="#11183e" stroke-width="8" stroke-linejoin="round" />
+        <path d="M91 132q36-16 71 2l12 51-16 26q-34 17-63-1l-13-42z" fill="#4e61a3" stroke="#202c68" stroke-width="5" />
+        <path d="m98 151 26 14 32-15 12 25-17 29-35 6-26-24z" fill="#7691d0" stroke="#2b3b79" stroke-width="4" />
+        <path d="m124 162 8 14-9 14-12-14z" fill="#effaff" stroke="#86a9dd" stroke-width="3" />
+        <path d="M88 188q40 16 78 0l3 25q-40 19-84 0z" fill="#171d4a" stroke="#0f1538" stroke-width="5" />
+        <path d="m100 201 54 0" stroke="#d8bf7a" stroke-width="5" stroke-linecap="round" />
+        <path d="m122 195 16 0 1 19-18 1z" fill="#d9efff" stroke="#5068a7" stroke-width="3" />
+        <path d="M81 111q-25-8-39 13l-5 27 33 7 30-25z" fill="url(#lunaArmor)" stroke="#11183e" stroke-width="7" />
+        <path d="M43 124q20-14 38-5l-12 23-27 3z" fill="#9eb2e8" stroke="#30417f" stroke-width="4" />
+        <path d="M40 148l28 7-3 39-26-7-7-20z" fill="#5268aa" stroke="#17214d" stroke-width="7" />
+        <path d="M35 190q17-12 30 2l-2 23-26 4-10-14z" fill="url(#lunaSkin)" stroke="#463368" stroke-width="5" />
+        <g id="luna-weapon-arm">
+          <path d="M173 116q26-6 39 18l-4 29-34 3-25-28z" fill="url(#lunaArmor)" stroke="#11183e" stroke-width="7" />
+          <path d="M185 127q18-7 24 12l-9 18-25-10z" fill="#9eb2e8" stroke="#30417f" stroke-width="4" />
+          <path d="M186 151l22-3 29 29-6 21-26-5-25-25z" fill="#5268aa" stroke="#17214d" stroke-width="7" />
+          <path d="M200 160l28 15-3 17-24-13z" fill="#a1b9e7" stroke="#41568d" stroke-width="4" />
+          <g id="hero-weapon">
+            <g transform="translate(225 185) scale(1.16)">
+              <g id="luna-glaive-shape" stroke-linejoin="round" stroke-linecap="round">
+                <g fill="#c5dfff" stroke="#253560" stroke-width="2.5">
+                  <path d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+                  <path transform="rotate(120)" d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+                  <path transform="rotate(240)" d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+                </g>
+                <g fill="#f6fcff">
+                  <path d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+                  <path transform="rotate(120)" d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+                  <path transform="rotate(240)" d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+                </g>
+                <circle r="12" fill="#35487f" stroke="#e5f5ff" stroke-width="3" />
+                <path d="M-7-2H7V3H-7Z" fill="#c6a36d" stroke="#17254b" stroke-width="2" />
+                <path d="M-4-2V3M0-2V3M4-2V3" stroke="#f0d5a2" stroke-width="1.5" />
+              </g>
+            </g>
+          </g>
+          <path d="M216 180q8-6 16 0l1 10-9 6-10-6z" fill="#edc2c6" stroke="#493466" stroke-width="3" />
+          <path d="M219 182v7m5-8v9m5-8v6" stroke="#ad708b" stroke-width="2" />
+        </g>
+        <path d="M91 65q13-33 43-35 32 3 45 33l-6 46-31 30-42-15-17-31z" fill="url(#lunaSkin)" stroke="#472f63" stroke-width="7" />
+        <path d="M95 66 71 51l12 29 22 8m64-21 25-14-14 32-20 8" fill="url(#lunaSkin)" stroke="#472f63" stroke-width="6" />
+        <path d="M89 57q10-31 42-43 34 7 48 39l-13 23-59 5z" fill="#262a5d" stroke="#13183c" stroke-width="7" />
+        <path d="M101 48q27-16 62 0l-5 18-54 5z" fill="#7184c3" stroke="#29366e" stroke-width="4" />
+        <path d="M119 15q9-14 20-16 15 12 13 28-13-8-25 2z" fill="url(#lunaMetal)" stroke="#42538e" stroke-width="5" />
+        <path d="M128 18q8-9 15-9-5 9-11 15" stroke="#fff" stroke-width="3" stroke-linecap="round" />
+        <path d="M101 77q23-14 57-6l9 20-8 19-34 14-29-17z" fill="#40305c" stroke="#342752" stroke-width="6" />
+        <path d="M111 87q12-9 23-6m12 2q11-5 19 4" stroke="#281d48" stroke-width="6" stroke-linecap="round" />
+        <path d="M112 94l14 4m20-3 12-5" stroke="#f8e2db" stroke-width="3" stroke-linecap="round" />
+        <path d="M137 95q-7 10 4 14l10-5-5-9z" fill="#d694a4" stroke="#59385f" stroke-width="3" />
+        <path d="M105 115q18 18 39 14l-3 17q-26 8-44-14z" fill="#b67d9c" stroke="#523663" stroke-width="5" />
+        <g id="hero-accessory">
+          <circle cx="47" cy="101" r="15" fill="url(#lunaGlow)" opacity=".6" />
+          <circle cx="205" cy="88" r="12" fill="url(#lunaGlow)" opacity=".58" />
+          <path d="M66 111q-17-18-5-34 4 13 13 17m118 17q17-18 5-34-4 13-13 17" stroke="#c9eaff" stroke-width="4" stroke-linecap="round" opacity=".82" />
+          <path d="M77 105q-14-10-24-4m127-1q14-10 24-4" stroke="#f2f5ff" stroke-width="3" stroke-linecap="round" />
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>
