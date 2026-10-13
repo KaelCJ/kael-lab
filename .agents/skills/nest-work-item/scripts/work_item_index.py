@@ -199,8 +199,8 @@ def validate_item(root: Path, item: Any, archived: bool) -> None:
         raise ValueError(f"{item_id} title must not be empty")
     for field in ("type", "product"):
         value = item[field]
-        if isinstance(value, bool) or not isinstance(value, int) or value < 0:
-            raise ValueError(f"{item_id} {field} must be a non-negative integer")
+        if isinstance(value, bool) or not isinstance(value, int):
+            raise ValueError(f"{item_id} {field} must be an integer")
     if item["priority"] not in PRIORITIES:
         raise ValueError(f"{item_id} priority is invalid: {item['priority']}")
 
