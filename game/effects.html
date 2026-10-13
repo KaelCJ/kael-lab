@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101a19">
+  <meta name="description" content="DotaRogue的陨石、火与风特效：观察燃烧岩石、焰舌、火星与旋转气流。">
+  <title>陨石 · 特效预览 · DotaRogue</title>
+  <link rel="icon" href="../favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/game/effects.css">
+  <noscript><style>.effects-lab, .effect-picker { display: none; }</style></noscript>
+  <script src="../js/analytics.js"></script>
+  <script type="module" src="../js/game/effects-preview.js"></script>
+</head>
+<body>
+  <a class="skip-link" href="#preview">跳到特效</a>
+  <header class="site-bar">
+    <a class="brand" href="index.html"><img src="../favicon.svg" width="28" height="28" alt=""><span>DotaRogue</span></a>
+    <a class="back-link" href="studio.html">设计工作台<svg viewBox="0 0 20 20" aria-hidden="true"><path d="M4 10h12m-5-5 5 5-5 5"/></svg></a>
+  </header>
+  <main>
+    <div class="page-heading">
+      <div><p class="eyebrow">元素特效 · 陨石、火与风</p><h1 id="effect-title">岩石，携火而来。</h1><p class="lead" id="effect-lead">炽热裂缝穿过岩壳，火焰沿运动方向向后舒展。</p></div>
+      <span class="sample-badge" id="effect-badge">已接入 · 卡尔混沌陨石</span>
+    </div>
+    <fieldset class="effect-picker"><legend class="sr-only">选择特效</legend><div class="choices">
+      <label><input type="radio" name="effect" value="meteor" checked><span>火 · 陨石</span></label>
+      <label><input type="radio" name="effect" value="fire"><span>火 · 燃烧</span></label>
+      <label><input type="radio" name="effect" value="wind"><span>风 · 龙卷</span></label>
+    </div></fieldset>
+    <section id="preview" class="effects-lab" aria-label="元素特效预览与调节">
+      <div class="stage-column">
+        <div class="stage" id="effect-stage">
+          <div class="stage-heading"><span class="element-name" id="effect-name">火 / 混沌陨石</span><span id="scene-name">苔地</span></div>
+          <canvas id="effect-canvas" role="img" aria-label="燃烧陨石：带有炽热裂缝的岩石滚动，后方拖出火焰、火星与淡烟。">元素特效样张：陨石滚动，火的焰舌上升，风的气流盘旋。</canvas>
+          <div class="stage-footer"><span id="preview-state" role="status">启用 JavaScript 后可播放</span><span id="scale-label">大图观察</span></div>
+        </div>
+        <div class="playback">
+          <button id="play-toggle" class="primary-button" type="button" disabled>暂停</button>
+          <button id="restart" type="button" disabled>重新落下</button>
+          <button id="retry" type="button" hidden>重新加载</button>
+          <span class="playback-note">暂停后可调节，细看形态与层次。</span>
+        </div>
+      </div>
+      <fieldset id="effect-controls" class="controls" disabled>
+        <legend class="sr-only">调节当前特效</legend>
+        <div class="controls-heading"><span class="eyebrow" id="controls-eyebrow">观察陨石</span><h2 id="controls-title">岩壳、裂缝与火尾。</h2></div>
+        <div class="control-block" id="intensity-controls" hidden>
+          <div class="range-heading"><label for="intensity" id="intensity-label">火势</label><output for="intensity" id="intensity-value">100%</output></div>
+          <input id="intensity" type="range" min="60" max="140" step="10" value="100" aria-valuetext="100%">
+          <div class="range-ends" aria-hidden="true"><span>轻柔</span><span>强劲</span></div>
+        </div>
+        <fieldset class="control-block" id="direction-controls"><legend>运动方向</legend><div class="choices">
+          <label><input type="radio" name="direction" value="1" checked><span>向右</span></label>
+          <label><input type="radio" name="direction" value="-1"><span>向左</span></label>
+        </div></fieldset>
+        <fieldset class="control-block" id="spin-controls" hidden><legend>旋转方向</legend><div class="choices">
+          <label><input type="radio" name="spin" value="1" checked><span>顺时针</span></label>
+          <label><input type="radio" name="spin" value="-1"><span>逆时针</span></label>
+        </div></fieldset>
+        <fieldset class="control-block"><legend>观看尺寸</legend><div class="choices">
+          <label><input type="radio" name="size" value="large" checked><span>大图观察</span></label>
+          <label><input type="radio" name="size" value="combat"><span>小尺寸</span></label>
+        </div><p class="control-note" id="size-note">小尺寸与战斗一致，岩石主体直径约 50px。</p></fieldset>
+        <fieldset class="control-block"><legend>衬底场景</legend><div class="choices scene-choices">
+          <label><input type="radio" name="scene" value="moss" checked><span>苔地</span></label>
+          <label><input type="radio" name="scene" value="sand"><span>沙地</span></label>
+          <label><input type="radio" name="scene" value="night"><span>夜色</span></label>
+        </div></fieldset>
+        <p class="controls-footnote">此处只观察形态与节奏，没有伤害、碰撞或技能判定。</p>
+      </fieldset>
+    </section>
+    <noscript><p class="noscript-note">当前禁用了 JavaScript，无法播放或切换特效。火样张表现焰舌、火星和烟气；陨石组合岩石与火焰，已用于卡尔混沌陨石；风模块已用于卡尔混沌之风，此页单独观察。你仍可返回游戏或游戏列表。</p></noscript>
+    <section class="observation" aria-label="观察要点">
+      <div><span class="observation-number">01</span><h2 id="note-shape-title">燃烧的岩石</h2><p id="note-shape">暗色岩壳保留体积，火焰包住外缘，裂缝透出热光。</p></div>
+      <div><span class="observation-number">02</span><h2 id="note-motion-title">滚动与火尾</h2><p id="note-motion">固定位置观察滚动与火尾；重新落下可看入场。</p></div>
+      <div><span class="observation-number">03</span><h2>缩小后观察</h2><p>切到小尺寸，检查实际大小的辨识度。</p></div>
+    </section>
+  </main>
+  <footer><span>Kael Lab · DotaRogue</span><a href="../games.html">游戏列表</a></footer>
+</body>
+</html>
