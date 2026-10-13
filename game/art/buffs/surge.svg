@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>奔腾</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M25 7H35L28 20H38L18 41L22 28H12Z" fill="#e6b954" stroke="#0c1720" stroke-width="2"/><path d="M28 10L19 24H28L21 35L34 23H24Z" fill="#fff0a8" stroke="none" stroke-width="0"/><path d="M8 17H17M6 23H13M9 33H17" fill="none" stroke="#6ec6cb" stroke-width="2"/><rect x="35" y="10" width="4" height="3" fill="#bbebea"/>
+</svg>

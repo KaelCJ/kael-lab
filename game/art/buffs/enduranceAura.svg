@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>耐久光环</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M18 10H29V26L36 30V36H13V30L18 26Z" fill="#bc9253" stroke="#0c1720" stroke-width="2"/><path d="M18 10H29V16H18Z" fill="#eee0a5" stroke="#0c1720" stroke-width="2"/><path d="M17 17L8 13L10 22L17 27Z" fill="#cbdce2" stroke="#0c1720" stroke-width="2"/><path d="M29 17L39 11L37 21L29 27Z" fill="#dcecf0" stroke="#0c1720" stroke-width="2"/><path d="M14 36H36V40H12V36Z" fill="#ecbd63" stroke="#0c1720" stroke-width="2"/><path d="M20 19H27M20 23H27" fill="none" stroke="#f4d78c" stroke-width="2"/>
+</svg>

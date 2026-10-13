@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>嗜血术</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M11 9L17 13L19 8L24 14L29 8L31 13L37 9L35 26L29 32H19L13 26Z" fill="#ad5349" stroke="#0c1720" stroke-width="2"/><path d="M16 17L24 20L32 17L30 26L25 30L18 27Z" fill="#e38758" stroke="none" stroke-width="0"/><path d="M16 18L21 22L18 24ZM32 18L27 22L30 24Z" fill="#ffda81" stroke="#0c1720" stroke-width="2"/><path d="M20 31H28V37H33V41H15V37H20Z" fill="#c6a56c" stroke="#0c1720" stroke-width="2"/><path d="M23 23H26V28H23Z" fill="#ffcc87" stroke="none" stroke-width="0"/>
+</svg>

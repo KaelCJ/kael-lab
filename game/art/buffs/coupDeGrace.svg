@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>恩赐解脱</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M11 10L19 14L29 30L24 34L13 20Z" fill="#c0d4da" stroke="#0c1720" stroke-width="2"/><path d="M37 10L29 14L19 30L24 34L35 20Z" fill="#e3e7d7" stroke="#0c1720" stroke-width="2"/><path d="M10 11L15 17L26 32M37 11L32 17L22 32" fill="none" stroke="#f6f5cb" stroke-width="2"/><path d="M18 30L28 37M30 30L20 37" fill="none" stroke="#ad6673" stroke-width="4"/><path d="M24 35L28 42M24 35L20 42" fill="none" stroke="#7b474a" stroke-width="4"/><rect x="23" y="7" width="3" height="5" fill="#d17479"/>
+</svg>

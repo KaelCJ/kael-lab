@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>臂章</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M11 15L20 10L34 15L38 32L29 39L15 35Z" fill="#8b6268" stroke="#0c1720" stroke-width="2"/><path d="M15 18L22 15L31 19L33 30L28 34L19 31Z" fill="#cba580" stroke="#0c1720" stroke-width="2"/><path d="M20 20L28 19L31 26L25 32L18 27Z" fill="#b33d51" stroke="#0c1720" stroke-width="2"/><path d="M22 21L26 21L28 25L24 28L21 26Z" fill="#f59683" stroke="none" stroke-width="0"/><path d="M12 19L7 16L9 26L14 27M30 15L33 7L37 19M18 35L17 41L26 38" fill="#d3c7a8" stroke="#0c1720" stroke-width="2"/>
+</svg>

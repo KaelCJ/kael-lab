@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>活体护甲</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M13 13L20 10L24 15L28 10L35 13L38 21L31 24V37L24 41L17 37V24L10 21Z" fill="#916644" stroke="#0c1720" stroke-width="2"/><path d="M20 19L17 33L23 38L25 25L29 19L27 36" fill="none" stroke="#c49b63" stroke-width="2"/><path d="M11 18L10 11L17 11L20 16L17 22Z" fill="#8fc479" stroke="#0c1720" stroke-width="2"/><path d="M29 15L32 9L39 10L37 18L31 21Z" fill="#5f9e69" stroke="#0c1720" stroke-width="2"/><path d="M22 26L18 22L21 18L26 19L29 24L26 29Z" fill="#9ed483" stroke="#0c1720" stroke-width="2"/>
+</svg>

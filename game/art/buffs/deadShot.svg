@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>弹无虚发</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M28 23L34 21L39 25V32L34 36L28 33L26 28Z" fill="#935c4d" stroke="#0c1720" stroke-width="2"/><path d="M29 24H35L37 27V31L33 33L29 30Z" fill="#c58b68"/>
+<path d="M14 8H20L24 13V19L19 23L13 20L11 14Z" fill="#935c4d" stroke="#0c1720" stroke-width="2"/><path d="M15 10H19L22 14V17L18 20L14 17Z" fill="#c58b68"/><path d="M14 14H16V16H14ZM19 14H21V16H19Z" fill="#0c1720"/>
+<path d="M7 36L32 28L19 15" fill="none" stroke="#0c1720" stroke-width="6"/><path d="M7 36L32 28L19 15" fill="none" stroke="#72c9ba" stroke-width="3"/>
+<path d="M29 21L23 15L17 12L19 18L25 25Z" fill="#d5ac67" stroke="#0c1720" stroke-width="2"/><path d="M25 20L20 15L22 19Z" fill="#fff0bf"/>
+<path d="M33 23V26M34 28H39M32 31V35" fill="none" stroke="#e4f4d3" stroke-width="2"/><path d="M8 29L16 27M14 39L22 36" fill="none" stroke="#4e8f87" stroke-width="2"/>
+</svg>
