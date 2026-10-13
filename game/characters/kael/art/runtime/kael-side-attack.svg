@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none">
+  <title>kael · right-facing attack</title>
+  <desc>Static side pose with independent head and staggered legs; hand and weapon articulate from shoulder and elbow.</desc>
+  <defs>
+    <linearGradient id="robe" x1="94" y1="148" x2="183" y2="340" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#dc4356" />
+      <stop offset=".55" stop-color="#a32444" />
+      <stop offset="1" stop-color="#591f39" />
+    </linearGradient>
+    <linearGradient id="cloak" x1="59" y1="145" x2="141" y2="347" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a43148" />
+      <stop offset="1" stop-color="#3c1b31" />
+    </linearGradient>
+    <linearGradient id="gold" x1="79" y1="123" x2="168" y2="317" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff0ad" />
+      <stop offset=".38" stop-color="#dcb05c" />
+      <stop offset=".65" stop-color="#af7935" />
+      <stop offset="1" stop-color="#f1d38b" />
+    </linearGradient>
+    <linearGradient id="hair" x1="111" y1="69" x2="135" y2="192" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff1bb" />
+      <stop offset=".5" stop-color="#e4be64" />
+      <stop offset="1" stop-color="#a37136" />
+    </linearGradient>
+    <linearGradient id="skin" x1="139" y1="91" x2="173" y2="154" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#fff0d5" />
+      <stop offset=".62" stop-color="#e9c3ac" />
+      <stop offset="1" stop-color="#c38b84" />
+    </linearGradient>
+    <radialGradient id="ice" cx=".3" cy=".25">
+      <stop stop-color="#f3ffff" />
+      <stop offset=".42" stop-color="#8ae4ff" />
+      <stop offset="1" stop-color="#287fc9" />
+    </radialGradient>
+    <radialGradient id="storm" cx=".3" cy=".25">
+      <stop stop-color="#fff0ff" />
+      <stop offset=".42" stop-color="#d1a0ff" />
+      <stop offset="1" stop-color="#7944c5" />
+    </radialGradient>
+    <radialGradient id="fire" cx=".3" cy=".25">
+      <stop stop-color="#fff8d0" />
+      <stop offset=".4" stop-color="#ffcc66" />
+      <stop offset="1" stop-color="#e95c36" />
+    </radialGradient>
+  </defs>
+  <g id="side-motion" stroke="#392538" stroke-width="5" stroke-linecap="round" stroke-linejoin="round">
+    <ellipse cx="128" cy="366" rx="68" ry="10" fill="#15182b" opacity=".4" stroke="none" />
+    <g id="side-back">
+      <path d="M108 144Q74 145 66 181q-7 53-31 158l24 18 45-22 27-58 7-107z" fill="url(#cloak)" stroke-width="7" />
+      <path d="M80 175q-1 66-31 161l12 10 35-19" stroke="#d3a15b" />
+      <path d="m97 187-21 121 27-27" stroke="#d54c5c" opacity=".6" />
+    </g>
+    <g id="side-far-leg">
+      <path d="m105 287 35 8-7 41 6 21-15 11-37-1-6-11 17-18z" fill="#48283c" />
+      <path d="m96 335 28 4-1 14-35 3z" fill="#795243" />
+      <path d="M88 360h36" stroke="#dfb461" />
+    </g>
+    <g id="side-far-arm">
+      <path d="M108 166q-20-6-27 16l-10 38 24 12 29-44z" fill="#902b42" />
+      <path d="m76 208 22 10-6 14-23-8z" fill="url(#gold)" />
+      <path d="m73 220-14-13-7 3 6 23 18 9 15-12-3-9z" fill="url(#skin)" />
+    </g>
+    <g id="side-body" transform="rotate(3 132 207)">
+      <path d="M108 151q32-20 55 5l23 99 1 82-24 12-42-21-32 15-8-25 10-79z" fill="url(#robe)" stroke-width="7" />
+      <path d="m132 174 10 69-35 82 16 4 33-69 11 74 15-2-18-88-10-72" fill="#73273e" stroke="#d6a34c" />
+      <path d="m149 253-18 53 18 19 12-13z" fill="url(#gold)" stroke-width="3" />
+      <path d="M99 236q34 14 76 1l3 17q-35 15-81-2z" fill="#472c3b" stroke="#d9ac57" />
+      <path d="m157 234 13 9-11 15-13-10z" fill="url(#gold)" />
+      <path d="M98 128q25 4 33 29l21 4 28-28-4 34-24 29-24-3-23-26z" fill="#781e36" stroke="url(#gold)" stroke-width="7" />
+    </g>
+    <g id="side-near-leg" transform="translate(3 -2)">
+      <path d="m140 297 32-4 2 47 18 14-9 14-40-2-10-10 5-18z" fill="#512c3e" />
+      <path d="m143 336 28-2 2 11 12 10-42 1z" fill="#825747" />
+      <path d="M145 361h39" stroke="#e7bd69" />
+    </g>
+    <g id="side-rig" transform="rotate(-8 170 164)">
+      <path d="M158 166q19-11 32 7l20 36-19 18-33-34z" fill="url(#robe)" />
+      <path d="m164 159 26 9 4 20-20 12-16-20z" fill="url(#gold)" />
+      <path d="m173 170 12 8-9 10-7-11z" fill="#ad3248" stroke-width="3" />
+      <g id="side-forearm" transform="rotate(7 204 207)">
+        <path d="m192 203 21 5 14 26-14 15-29-21z" fill="#a22a43" />
+        <path d="m205 216 18 13-9 20-20-16z" fill="url(#gold)" />
+        <path d="m218 239 8-7 7-13 7 2-1 16-5 11 14-4 3 6-12 11-21-4-10-11z" fill="url(#skin)" />
+        <path d="m230 240-2 8 11 4" stroke="#b67f79" stroke-width="3" />
+        <g id="side-weapon">
+          <path d="M229 245l12-13m-9 21 15-2" fill="none" stroke="#ffd06e" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" />
+        </g>
+      </g>
+    </g>
+    <g id="side-head" transform="translate(3 -2)">
+      <path d="M111 90q-16 22-18 58l-12 42 24-6 11 8 20-29 16-48z" fill="url(#hair)" />
+      <path d="M135 89q25-5 40 13l-1 16 16 13-15 9-1 13-20 13-22-12-12-29z" fill="url(#skin)" />
+      <path d="m134 106-39-20 16 33 28 10z" fill="url(#skin)" />
+      <path d="m109 102 25 16" stroke="#c99283" stroke-width="3" />
+      <path d="M109 106q-11-27 14-39 25-10 43 7 14 8 14 28l-12 5-15-17-16 9-4 42-16 28-15-13 12-33z" fill="url(#hair)" />
+      <path d="M116 86q11-15 27-12m-16 30-8 42-11 24" stroke="#fff0b2" stroke-width="4" />
+      <path d="m153 113 16 3" stroke="#91603d" stroke-width="4" />
+      <path d="m157 122 11 0" stroke="#47785d" stroke-width="4" />
+      <path d="m159 121 8 0" stroke="#c9f3bd" stroke-width="2" />
+      <path d="m161 147 12-3m-16 15 8-2" stroke="#b17b75" stroke-width="3" />
+      <path d="m149 95 19 5" stroke="url(#gold)" stroke-width="4" />
+      <path d="m163 94 5 6-4 6-5-7z" fill="#b53046" stroke-width="2" />
+    </g>
+  </g>
+</svg>
