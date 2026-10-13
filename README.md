@@ -7,7 +7,7 @@
 | 方向 | 公开入口 | 仓库内上下文 |
 | --- | --- | --- |
 | 人机协作 / AI Center | `index.html`，再进入 Kael、Meepo、Jugg/Nest、Lanox、帮助中心与 Workspace Assistant | 本 README 与根目录 `AGENTS.md` |
-| 网页游戏 | `games.html` 游戏选择页；首款《星核幸存者》在 `game/index.html` | `game/README.md` 与 `game/AGENTS.md` |
+| 网页游戏 | `games.html` 游戏选择页；首款《DotaRogue》在 `game/index.html` | `game/README.md` 与 `game/AGENTS.md` |
 
 README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Agent 的稳定工作边界。它们是回源导航，不代替当前代码、页面或运行验证。
 
@@ -24,7 +24,7 @@ AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功�
 - `workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `css/workspace-assistant.css`、`js/workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `games.html`、`css/games.css`：游戏选择页；给以后新增的游戏保留独立入口。
-- `game/`：首款原创网页生存肉鸽《星核幸存者》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 34 件装备的三阶段合成图鉴。页面、素材和设计资料在 `game/`，样式和脚本分别在 `css/game/`、`js/game/`。实现、玩法和验证入口见 `game/README.md`。
+- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 38 件装备的三阶段合成图鉴。页面、素材和设计资料在 `game/`，样式和脚本分别在 `css/game/`、`js/game/`。实现、玩法和验证入口见 `game/README.md`。
 - `favicon.svg`：站点与游戏共享的公开矢量图标，保留根路径以兼容浏览器默认图标请求。
 - `404.html`：静态托管失败页。
 
