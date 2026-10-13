@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>暗灭</title>
+  <rect width="32" height="32" fill="#10252d"/>
+  <rect x="14" y="2" width="4" height="4" fill="#e9a06f"/><rect x="12" y="6" width="4" height="4" fill="#ba4a4f"/>
+  <rect x="10" y="10" width="4" height="4" fill="#7b293d"/><rect x="8" y="14" width="4" height="4" fill="#d85b55"/>
+  <rect x="6" y="18" width="4" height="4" fill="#7b293d"/><rect x="4" y="22" width="4" height="4" fill="#d85b55"/>
+  <rect x="18" y="6" width="4" height="4" fill="#e9a06f"/><rect x="16" y="10" width="4" height="4" fill="#d85b55"/>
+  <rect x="14" y="14" width="4" height="4" fill="#f6d58b"/><rect x="12" y="18" width="4" height="4" fill="#d85b55"/>
+  <rect x="10" y="22" width="4" height="4" fill="#7b293d"/><rect x="8" y="26" width="4" height="4" fill="#e9a06f"/>
+  <rect x="20" y="10" width="4" height="4" fill="#7b293d"/><rect x="22" y="14" width="4" height="4" fill="#d85b55"/>
+</svg>

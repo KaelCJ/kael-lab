@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b1720">
-  <meta name="description" content="星核幸存者装备图鉴：按基础组件、中间件、成品三个合成阶段查看 34 件装备、真实等级与固定配方。">
-  <title>装备图鉴 · 星核幸存者</title>
+  <meta name="description" content="DotaRogue装备图鉴：38 件装备、17 条固定配方，以及全部成品装备的 Lv.1–3 升阶成长。">
+  <title>装备图鉴 · DotaRogue</title>
   <link rel="icon" href="../favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="../css/game/equipment.css">
-  <script type="module" src="../js/game/equipment-catalog.js"></script>
+  <link rel="stylesheet" href="../css/game/equipment.css?v=20261013-upgrade3">
+  <script type="module" src="../js/game/equipment-catalog.js?v=20261013-upgrade3-dotarogue1"></script>
   <noscript><style>.stage-nav,.catalog-workbench,.locale-switch{display:none}</style></noscript>
 </head>
 <body>
@@ -30,13 +30,13 @@
     <main id="catalog-main">
       <section class="intro" aria-labelledby="catalog-title">
         <div class="intro-copy">
-          <p class="eyebrow">STARCORE SURVIVOR / EQUIPMENT ARCHIVE</p>
+          <p class="eyebrow">DOTAROGUE / EQUIPMENT ARCHIVE</p>
           <h1 id="catalog-title" data-copy="title">装备图鉴</h1>
           <p class="intro-lead" data-copy="lead">从基础组件到中间件，再到成品。三个数字代表合成阶段；每件装备的 1～5 级另行标明。</p>
         </div>
         <div class="intro-metrics" aria-label="图鉴数量">
-          <div><strong>34</strong><span data-copy="itemCount">件当前装备</span></div>
-          <div><strong>13</strong><span data-copy="recipeCount">条固定配方</span></div>
+          <div><strong>38</strong><span data-copy="itemCount">件当前装备</span></div>
+          <div><strong>17</strong><span data-copy="recipeCount">条固定配方</span></div>
           <div><strong>3</strong><span data-copy="stageCount">个合成阶段</span></div>
         </div>
       </section>
@@ -44,7 +44,7 @@
       <nav class="stage-nav" aria-label="合成阶段">
         <a href="#stage-component"><span class="stage-number">01</span><span><strong data-copy="component">基础组件</strong><small data-copy="componentCount">21 件 · 装备 1～2 级</small></span></a>
         <a href="#stage-intermediate"><span class="stage-number">02</span><span><strong data-copy="intermediate">中间件</strong><small data-copy="intermediateCount">5 件 · 装备 3 级</small></span></a>
-        <a href="#stage-finished"><span class="stage-number">03</span><span><strong data-copy="finished">成品</strong><small data-copy="finishedCount">8 件 · 装备 3～5 级</small></span></a>
+        <a href="#stage-finished"><span class="stage-number">03</span><span><strong data-copy="finished">成品</strong><small data-copy="finishedCount">12 件 · 装备 3～5 级</small></span></a>
       </nav>
 
       <div class="catalog-workbench">
@@ -53,6 +53,7 @@
           <div class="detail-head"><img id="detail-icon" src="art/pixel/equipment-mjollnir.svg" alt="" width="96" height="96"><div><span id="detail-stage" class="detail-stage">成品</span><h2 id="detail-title" aria-live="polite">雷神之锤</h2><p id="detail-grade">装备 5 级</p></div></div>
           <p id="detail-description" class="detail-description">物理攻击 +14，攻速 +18%。普攻有25%概率释放强化连锁闪电，最多命中4个目标。</p>
           <div class="detail-meta"><span data-copy="priceLabel">基础价格</span><strong id="detail-price">86</strong></div>
+          <div class="detail-block"><h3 data-copy="upgradeTitle">成品武器升阶</h3><div id="detail-upgrades"></div></div>
           <div class="detail-block"><h3 data-copy="routeTitle">合成路线</h3><div id="detail-route" class="recipe-route"></div></div>
           <div class="detail-block"><h3 data-copy="usedForTitle">可用于合成</h3><div id="detail-uses" class="use-list"></div></div>
           <p class="detail-note" data-copy="detailNote">配方是固定规则，图鉴只供查阅；实际合成需在波间商店手动完成。</p>
@@ -67,13 +68,13 @@
             <div class="item-grid" id="intermediate-list"></div>
           </section>
           <section class="stage-section" id="stage-finished" aria-labelledby="finished-title">
-            <div class="section-heading"><span class="section-number">03 / 03</span><div><h2 id="finished-title" data-copy="finished">成品</h2><p data-copy="finishedHelp">有的经过中间件，有的可由组件直接合成。</p></div><span class="section-count">08</span></div>
+            <div class="section-heading"><span class="section-number">03 / 03</span><div><h2 id="finished-title" data-copy="finished">成品</h2><p data-copy="finishedHelp">有的经过中间件，有的可由组件直接合成。</p></div><span class="section-count">12</span></div>
             <div class="item-grid" id="finished-list"></div>
           </section>
         </div>
       </div>
 
-      <section class="rules-note" aria-labelledby="rules-title"><span class="rules-index">FIELD NOTE / 01</span><div><h2 id="rules-title" data-copy="rulesTitle">合成与等级</h2><p data-copy="rulesBody">阶段表示组件、中间件、成品的关系；装备等级仍按游戏中的 1～5 级显示。合成消耗配方材料，结果装备的属性与效果替换材料效果。部分成品直接由组件合成。</p></div></section>
+      <section class="rules-note" aria-labelledby="rules-title"><span class="rules-index">FIELD NOTE / 01</span><div><h2 id="rules-title" data-copy="rulesTitle">合成与等级</h2><p data-copy="rulesBody">阶段表示组件、中间件、成品的关系；装备等级仍按游戏中的 1～5 级显示。合成消耗配方材料，结果装备的属性与效果替换材料效果。部分成品直接由组件合成。</p><h2 data-copy="upgradeTitle">成品装备升阶</h2><p data-copy="upgradeRules">全部成品装备均可升阶，包括防御、鞋类和吸血类。波间商店免费手动合并：3 件同名同级成品变成 1 件高一级成品，释放 2 格。Lv.3 封顶；不同强化等级不能混用，组件和中间件不参与。</p><p data-copy="upgradeStats">各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。</p></div></section>
 
       <noscript>
         <section class="no-script" aria-labelledby="no-script-title">
@@ -83,13 +84,17 @@
           <p>秘银锤（1）、加速手套（1）、鹰角弓（2）、治疗指环（1）、大剑（2）、阔剑（2）、虚无宝石（2）、小圆盾（1）、活力之球（1）、攻击之爪（1）、恶魔刀锋（2）、短棍（1）、闪避护符（2）、吸血面具（1）、铁艺头盔（1）、希梅斯特的掠夺（2）、魔力法杖（2）、法师长袍（1）、艺人面具（1）、精气之球（2）、速度之鞋（1）。</p>
           <h3>02 中间件 · 5 件</h3>
           <ul><li>秘银锤 + 加速手套 → 漩涡（3）</li><li>治疗指环 + 虚无宝石 → 坚韧球（3）</li><li>阔剑 + 攻击之爪 → 水晶剑（3）</li><li>铁艺头盔 + 吸血面具 → 支配头盔（3）</li><li>魔力法杖 + 法师长袍 + 艺人面具 → 空明杖（3）</li></ul>
-          <h3>03 成品 · 8 件</h3>
-          <ul><li>漩涡 + 鹰角弓 → 雷神之锤（5）</li><li>大剑 + 阔剑 + 坚韧球 → 狂战斧（5）</li><li>水晶剑 + 恶魔刀锋 → 大炮（5）</li><li>鹰角弓 + 短棍 + 闪避护符 → 蝴蝶（5）</li><li>小圆盾 + 活力之球 + 治疗指环 → 先锋盾（4）</li><li>支配头盔 + 希梅斯特的掠夺 → 撒旦之邪力（5）</li><li>精气之球 + 空明杖 → 蓝杖（5）</li><li>速度之鞋 + 加速手套 + 活力之球 → 动力鞋（3）</li></ul>
+          <h3>03 成品 · 12 件</h3>
+          <ul><li>漩涡 + 鹰角弓 → 雷神之锤（5）</li><li>大剑 + 阔剑 + 坚韧球 → 狂战斧（5）</li><li>水晶剑 + 恶魔刀锋 → 大炮（5）</li><li>鹰角弓 + 短棍 + 闪避护符 → 蝴蝶（5）</li><li>小圆盾 + 活力之球 + 治疗指环 → 先锋盾（4）</li><li>支配头盔 + 希梅斯特的掠夺 → 撒旦之邪力（5）</li><li>精气之球 + 空明杖 → 蓝杖（5）</li><li>速度之鞋 + 加速手套 + 活力之球 → 动力鞋（3）</li><li>恶魔刀锋 + 坚韧球 → 辉耀（5）</li><li>恶魔刀锋 + 水晶剑 → 暗灭（5）</li><li>精气之球 + 活力之球 + 闪避护符 → 冰眼（5）</li><li>短棍 + 速度之鞋 + 闪避护符 → 分身斧（5）</li></ul>
+          <h3>成品装备强化 Lv.1–3</h3>
+          <p>全部 12 件成品装备均支持三合一，包括先锋盾、动力鞋和撒旦之邪力；组件与中间件不参与升阶。固定配方与商店直购提供 Lv.1。3 件同名 Lv.1 合成 1 件 Lv.2，3 件同名 Lv.2 合成 1 件 Lv.3，最高 Lv.3。每次在波间商店免费手动操作，释放 2 个装备格；不同强化等级不可混用，满 12 格仍可合并合格材料。</p>
+          <p>强化等级独立于括号中的基础等级。可加属性按 1／3／9 倍保留，同类被动只取最强的一份。暴击率最多 90%、闪避最多 55%、主动冷却缩减最多 60%，基础攻击间隔最短 0.09 秒；超过上限的贡献不会额外生效。Lv.2 与 Lv.3 的卖价分别为 Lv.1 的 3 倍与 9 倍。</p>
+          <ul><li>雷神之锤：闪电概率 25%／30%／35%，首目标基础伤害 42／84／126，最多命中 4／5／6 个目标。</li><li>狂战斧：仅近战基础攻击分裂，伤害系数 35%／45%／60%，半径 88／108／132。</li><li>大炮：暴击率加值 14%／42%／126%，暴击伤害加值 45%／135%／405%。</li><li>蝴蝶：攻速加值 25%／75%／225%，闪避加值 16%／48%／144%。</li><li>先锋盾：最大生命 16／48／144，护甲 4／12／36，每 5 秒回血 3／9／27；各级均有 35% 概率格挡 3 点有来源伤害。</li><li>动力鞋：最大生命 10／30／90，移速 12%／36%／108%，攻速 22%／66%／198%。</li><li>撒旦之邪力：物理攻击 12／36／108，最大生命 14／42／126，护甲 4／12／36，物理普攻吸血 18%／54%／162%，每 5 秒回血 1／3／9；总吸血上限 65%。各级生命低于 35% 时触发 5 秒额外 12% 吸血，冷却 20 秒。</li><li>蓝杖：已接入主动强化的伤害或增益倍率 1.25／1.40／1.60；不增加蓝耗，不叠乘多把蓝杖。</li><li>辉耀：灼热基础伤害每秒 8／16／24，半径 165／185／205；再受所有伤害加成。</li><li>暗灭：后续物理普攻伤害提高 18%／26%／35%，持续 4 秒；同类取最强。</li><li>冰眼：移动减速 45%／55%／65%，持续 2.5／3／3.5 秒；不增加冻结。</li><li>分身斧：固定每 5 次基础攻击发射两道幻影，每道倍率 65%／85%／110%；幻影不暴击、不吸血、不触发其他装备被动。</li></ul>
           <p><a href="index.html">返回游戏</a></p>
         </section>
       </noscript>
     </main>
-    <footer><span>Kael Lab · Starcore Survivor</span><a href="../games.html" data-copy="gameList">选择游戏</a></footer>
+    <footer><span>Kael Lab · DotaRogue</span><a href="../games.html" data-copy="gameList">选择游戏</a></footer>
   </div>
 </body>
 </html>
