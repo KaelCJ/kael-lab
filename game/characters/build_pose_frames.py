@@ -1,4 +1,4 @@
-"""Build static, editable hero pose SVGs from the six layered runtime sources.
+"""Build static, editable hero pose SVGs from layered runtime sources.
 
 Run from the repository root with ``python game/characters/build_pose_frames.py``.
 The source ``*-hero.svg`` files are never changed. Static frames contain no SVG
@@ -18,7 +18,7 @@ ET.register_namespace("", SVG)
 HERE = Path(__file__).resolve().parent
 POSES = ("idle-alt", "walk-a", "walk-b", "attack", "skill", "dash")
 OUTPUT_POSES = ("idle-a", *POSES, "attack-windup", "attack-release")
-HEROES = ("rover", "bulwark", "conductor", "scavenger", "jugg", "sf")
+HEROES = ("rover", "bulwark", "conductor", "scavenger", "jugg", "sf", "luna", "kael")
 
 
 def element(root: ET.Element, identity: str) -> ET.Element:
@@ -73,6 +73,8 @@ def split_pair(path: ET.Element) -> tuple[ET.Element, ET.Element]:
 
 
 def split_legs(root: ET.Element, hero: str) -> tuple[ET.Element, ET.Element] | None:
+    if hero == "kael":
+        return element(root, "left-leg"), element(root, "right-leg")
     if hero == "sf":
         return None  # The shadow body floats; it has no planted feet.
 
@@ -227,6 +229,11 @@ def prepare_parts(root: ET.Element, hero: str) -> dict[str, ET.Element]:
         })
         append_path(club, "M225 289l17 -4", stroke="#e4ecce", width=3)
         parts["arm"] = arm
+    elif hero == "kael":
+        # Kael already keeps each sleeve and hand in editable groups. Generated
+        # combat frames remove the source orbs so Canvas owns their orbit.
+        parts["left-arm"] = element(root, "left-arm")
+        parts["right-arm"] = element(root, "right-arm")
     elif hero == "sf":
         # The original has paired arm subpaths. Split them into two manipulable
         # groups so the basic soul shot and the requiem channel pose differ.
@@ -265,6 +272,27 @@ def prepare_parts(root: ET.Element, hero: str) -> dict[str, ET.Element]:
 
 
 def pose(root: ET.Element, hero: str, name: str) -> None:
+    if hero == "luna":
+        # Four-legged mount locomotion is independent of the seated rider.
+        if name in ("walk-a", "walk-b", "dash"):
+            sign = 1 if name != "walk-b" else -1
+            stride = 4 if name != "dash" else 7
+            for index, limb in enumerate(list(element(root, "luna-panther-legs"))[:4]):
+                direction = sign if index % 2 == 0 else -sign
+                limb.set("transform", f"translate({direction * stride} {-2 if direction > 0 else 0})")
+            element(root, "hero-motion").set("transform", "translate(0 -3)")
+        elif name == "idle-alt":
+            element(root, "luna-panther-head").set("transform", "translate(0 -2)")
+        angle = {"attack-windup": 24, "attack": -38, "attack-release": -12, "skill": -42}.get(name, 0)
+        # Rotate the entire throwing arm: fingers stay on the glaive's central grip.
+        element(root, "luna-weapon-arm").set("transform", f"rotate({angle} 184 140)")
+        if name == "skill":
+            ET.SubElement(element(root, "hero-accessory"), f"{{{SVG}}}circle", {
+                "cx": "128", "cy": "168", "r": "54", "fill": "none", "stroke": "#bfe8ff", "stroke-width": "4", "opacity": ".85",
+            })
+        root.find(f"{{{SVG}}}title").text = f"luna · black-panther mounted {name}"
+        root.find(f"{{{SVG}}}desc").text = "Static mounted pose: a four-legged black panther and a rider holding the same three-crescent silver glaive used by her projectile."
+        return
     output_name = name
     windup = name == "attack-windup"
     release = name == "attack-release"
@@ -342,15 +370,16 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
         "scavenger": (204, 199, (4, -16, 16, 0, -12, 8)),
         "sf": (128, 188, (-3, 12, -12, 0, 0, 2)),
         "jugg": (151, 458, (-3, 8, -8, -70, -24, -5)),
+        "kael": (128, 155, (0, 0, 0, 0, 0, 0)),
     }
     wx, wy, angles = swing[hero]
     w = angles[POSES.index(name)]
     if windup:
         w = {"rover": -43, "bulwark": -17, "conductor": 0,
-             "scavenger": 3, "jugg": -90, "sf": 0}[hero]
+             "scavenger": 3, "jugg": -90, "sf": 0, "kael": 0}[hero]
     elif release:
         w = {"rover": -38, "bulwark": 24, "conductor": -36,
-             "scavenger": 24, "jugg": 32, "sf": 28}[hero]
+             "scavenger": 24, "jugg": 32, "sf": 28, "kael": 0}[hero]
     if is_jugg:
         arm = element(root, "right-arm")
         arm_angle = {"idle-alt": -2, "walk-a": 9, "walk-b": -9,
@@ -370,7 +399,22 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
         banner = element(root, "banner")
         banner.set("transform", f"rotate({-arm_angle / 8:g} 334 100)")
     else:
-        if hero == "rover":
+        if hero == "kael":
+            arm_angles = {
+                "idle-alt": (-2, 2), "walk-a": (7, -6), "walk-b": (-7, 6),
+                "attack": (-24, 24), "skill": (-34, 34), "dash": (10, -10),
+            }
+            left_angle, right_angle = arm_angles[name]
+            if windup:
+                left_angle, right_angle = -8, 8
+            elif release:
+                left_angle, right_angle = -42, 42
+            parts["left-arm"].set("transform", f"rotate({left_angle:g} 76 178)")
+            parts["right-arm"].set("transform", f"rotate({right_angle:g} 180 178)")
+            if name == "skill":
+                append_path(parts["left-arm"], "M30 213l-16-14 7 20-11 6", stroke="#8beaff", width=4)
+                append_path(parts["right-arm"], "M213 213l16-14-7 20 11 6", stroke="#ffcf72", width=4)
+        elif hero == "rover":
             recoil = {"idle-alt": -1, "walk-a": -4, "walk-b": -8,
                       "attack": 0, "skill": 22, "dash": 0}[name]
             if windup:
@@ -494,7 +538,7 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
     if name == "dash":
         color = {
             "rover": "#8ee3dc", "bulwark": "#eab779", "conductor": "#b6eeff",
-            "scavenger": "#b6eb83", "jugg": "#e89a65", "sf": "#dc648a",
+            "scavenger": "#b6eb83", "jugg": "#e89a65", "sf": "#dc648a", "kael": "#e8bd66",
         }[hero]
         streaks = ET.Element(f"{{{SVG}}}g", {"id": "pose-speed-trails"})
         if is_jugg:
@@ -515,17 +559,41 @@ def pose(root: ET.Element, hero: str, name: str) -> None:
         body.set("transform", f"rotate({b:g} 128 345) skewX({-b / 2:g})")
 
 
+def remove_group(root: ET.Element, identity: str) -> None:
+    matches = [(parent, child) for parent in root.iter() for child in list(parent) if child.get("id") == identity]
+    if len(matches) != 1:
+        raise ValueError(f"Expected one {identity}, found {len(matches)}")
+    matches[0][0].remove(matches[0][1])
+
+
+def write_portrait(source_bytes: bytes, directory: Path, hero: str) -> None:
+    root = ET.fromstring(source_bytes)
+    clean_animations(root)
+    title = root.find(f"{{{SVG}}}title")
+    desc = root.find(f"{{{SVG}}}desc")
+    if title is not None:
+        title.text = f"{hero} · portrait"
+    if desc is not None:
+        desc.text = "Static portrait with three independent elemental orbs; battle frames animate only the body."
+    ET.indent(root, space="  ")
+    (directory / f"{hero}-portrait.svg").write_text(ET.tostring(root, encoding="unicode") + "\n", encoding="utf-8")
+
+
 def build(hero: str) -> None:
     directory = HERE / hero / "art" / "runtime"
     source = directory / f"{hero}-hero.svg"
     if not source.is_file():
         raise FileNotFoundError(source)
     source_bytes = source.read_bytes()
+    if hero == "kael":
+        write_portrait(source_bytes, directory, hero)
     for name in OUTPUT_POSES:
         root = ET.fromstring(source_bytes)
-        if root.get("viewBox") != ("0 0 512 768" if hero == "jugg" else "0 0 256 384"):
+        if root.get("viewBox") != ("0 0 512 768" if hero == "jugg" else "0 0 384 384" if hero == "luna" else "0 0 256 384"):
             raise ValueError(f"Unexpected {hero} viewBox")
         clean_animations(root)
+        if hero == "kael":
+            remove_group(root, "kael-orbs")
         if name == "idle-a":
             title = root.find(f"{{{SVG}}}title")
             desc = root.find(f"{{{SVG}}}desc")
