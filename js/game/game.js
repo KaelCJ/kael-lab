@@ -732,8 +732,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
       skills: { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0, manualPickups: 0, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0,
         souls: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageAmp: 1,
         thunder: null, requiem: null, bloodTime: 0, bloodCooldown: 0,
-        kaelPassiveTimer: 5, lastPassiveSpell: null, kaelGhostTime: 0, kaelAlacrityTime: 0,
-        kaelSunStrike: null, kaelMeteor: null, kaelIceWall: null, kaelSpirits: [],
+        kaelPassiveTimer: 5, lastPassiveSpell: null,
+        kaelMeteor: null, kaelIceWall: null, kaelSpirits: [],
         eclipse: null },
       terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
@@ -771,8 +771,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
     Object.assign(run.skills, { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0,
       manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
       thunder: null, requiem: null, bloodTime: 0, souls,
-      kaelPassiveTimer: 5, kaelGhostTime: 0, kaelAlacrityTime: 0,
-      kaelSunStrike: null, kaelMeteor: null, kaelIceWall: null, kaelSpirits: [], eclipse: null });
+      kaelPassiveTimer: 5,
+      kaelMeteor: null, kaelIceWall: null, kaelSpirits: [], eclipse: null });
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
     run.waveStartKills = run.kills;
@@ -1354,15 +1354,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
   function dealSkillDamage(e, amount, active = false) {
     if (!e || e.dead) return;
     damageEnemy(e, amount * (active ? activeAmplify() : 1), false);
-    const snap = e.kaelColdSnap;
-    if (!e.dead && snap && run.totalTime < snap.until && snap.triggers > 0 && !e.kaelSnapProcessing) {
-      snap.triggers -= 1;
-      e.kaelSnapProcessing = true;
-      damageEnemy(e, 8 + run.stats.elemental * .35, false);
-      e.kaelSnapProcessing = false;
-      pulse(e.x, e.y, e.r + 9, '#a9e8ff', .24, 'cold-snap');
-      if (snap.triggers <= 0) delete e.kaelColdSnap;
-    }
   }
   function pulse(x, y, r, color, life = .35, kind = 'pulse') { run.effects.push({ kind, x, y, r, color, life, maxLife: life }); }
   function equippedUpgradeLevel(id) {
@@ -1436,7 +1427,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function kaelSpellBusy() {
     const s = run.skills;
-    return !!s.kaelSunStrike || !!s.kaelMeteor || !!s.kaelIceWall || s.kaelGhostTime > 0 || s.kaelAlacrityTime > 0 || s.kaelSpirits.length > 0;
+    return !!s.kaelMeteor || !!s.kaelIceWall || s.kaelSpirits.length > 0;
   }
   function kaelPushEnemy(e, amount, angle) {
     moveThroughTerrain(e, Math.cos(angle) * amount, Math.sin(angle) * amount);
@@ -1446,14 +1437,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const s = run.skills, p = run.player, fromActive = source === 'active', target = kaelNearbyTarget();
     const damage = (enemy, amount) => dealSkillDamage(enemy, amount, fromActive);
     switch (id) {
-      case 'cold-snap':
-        if (!target) return false;
-        target.kaelColdSnap = { until: run.totalTime + 4, triggers: 4 };
-        pulse(target.x, target.y, target.r + 12, '#a9e8ff', .5); break;
-      case 'ghost-walk':
-        s.kaelGhostTime = 2.2;
-        for (const e of run.enemies) if (!e.dead && distance(e, p) <= 190 + e.r) e.kaelSlowUntil = run.totalTime + 2.2;
-        pulse(p.x, p.y, 70, '#b7d6ff', .45); break;
       case 'tornado': {
         if (!target) return false;
         const angle = p.facing;
@@ -1465,14 +1448,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
         if (!target) return false;
         for (const e of run.enemies) if (!e.dead && distance(e, p) <= 190 + e.r) damage(e, 22 + run.stats.elemental * .65);
         p.mana = Math.min(p.maxMana, p.mana + 12); pulse(p.x, p.y, 190, '#78cbff', .5); break;
-      case 'alacrity':
-        s.kaelAlacrityTime = 5; pulse(p.x, p.y, 62, '#fff2a1', .55); break;
-      case 'sun-strike': {
-        const marked = kaelNearbyTarget(Infinity, e => e.id === 'boss' || isElite(e)) || target;
-        if (!marked) return false;
-        s.kaelSunStrike = { delay: .75, x: marked.x, y: marked.y, target: marked };
-        pulse(marked.x, marked.y, marked.r + 15, '#ffe5a0', .75); break;
-      }
       case 'chaos-meteor':
         if (!target) return false;
         s.kaelMeteor = { x: p.x + Math.cos(p.facing) * 38, y: p.y + Math.sin(p.facing) * 38, r: 10, angle: p.facing, life: 1.8, tick: 0, travel: 0, trailAngle: p.facing };
@@ -1617,18 +1592,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const s = run.skills, p = run.player;
     s.kaelPassiveTimer -= dt;
     if (s.kaelPassiveTimer <= 0) s.kaelPassiveTimer = tryKaelPassiveSpell() ? 5 : kaelSpellBusy() ? .25 : 2;
-    s.kaelGhostTime = Math.max(0, s.kaelGhostTime - dt);
-    s.kaelAlacrityTime = Math.max(0, s.kaelAlacrityTime - dt);
-    if (s.kaelSunStrike) {
-      s.kaelSunStrike.delay -= dt;
-      if (s.kaelSunStrike.delay <= 0) {
-        const cast = s.kaelSunStrike;
-        const target = cast.target && !cast.target.dead ? cast.target : run.enemies.filter(e => !e.dead && distance(e, cast) < 52).sort((a, b) => distance(a, cast) - distance(b, cast))[0];
-        if (target) dealSkillDamage(target, (55 + run.stats.elemental * 1.5) * (target.id === 'boss' ? .65 : 1));
-        pulse(cast.x, cast.y, 58, '#ffe9a5', .5, 'sun-strike');
-        s.kaelSunStrike = null;
-      }
-    }
     if (s.kaelMeteor) {
       const meteor = s.kaelMeteor;
       meteor.life -= dt; meteor.tick += dt;
@@ -1777,7 +1740,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
       const fromRear = Math.abs(Math.atan2(Math.sin(relative), Math.cos(relative))) >= Math.PI - 70 * Math.PI / 180;
       if (fromRear) damage *= .6;
     }
-    if (contact && run.character.id === 'kael' && s.kaelGhostTime > 0) damage *= .55;
     if (contact && s.spin) damage *= .65;
     const block = equipmentPassive('damageBlock');
     if (source && block && Math.random() < block.chance) damage = Math.max(0, damage - block.amount);
@@ -2132,7 +2094,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
 
   function baseAttackDamage(w) { const def = BASE_ATTACKS[w.id]; return def.damage + (def.type === 'elemental' ? run.stats.elemental : physicalBonus()); }
-  function attackSpeed() { return run.stats.attackSpeed + buffAttackSpeed(run) + (run.skills.rageTime > 0 ? 40 * run.skills.rageAmp : 0) + (run.character.id === 'kael' && run.skills.kaelAlacrityTime > 0 ? 45 : 0); }
+  function attackSpeed() { return run.stats.attackSpeed + buffAttackSpeed(run) + (run.skills.rageTime > 0 ? 40 * run.skills.rageAmp : 0); }
   function registerBaseAttackHit(e, hit) {
     const s = run.skills;
     if (s.lastBasicAttack === hit.attackId) return;
@@ -2150,7 +2112,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     return candidates.sort((a, b) => distance(a, p) - distance(b, p))[0];
   }
   function addShot(x, y, angle, w, damage, options = {}) {
-    const def = BASE_ATTACKS[w.id], speed = (def.speed || 700) * (run.character.id === 'kael' && run.skills.kaelAlacrityTime > 0 ? 1.25 : 1);
+    const def = BASE_ATTACKS[w.id], speed = def.speed || 700;
     const shot = { x, y, vx: Math.cos(angle) * speed, vy: Math.sin(angle) * speed,
       life: basicRange() / speed, damage, r: w.id === 'sf' ? 5 : 3, color: options.color || def.color,
       pierce: options.pierce || 1, hit: new Set(), skill: !!options.skill, illusion: !!options.illusion, kaelSpell: options.kaelSpell, hero: w.id,
@@ -2464,8 +2426,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
     }
     if (run.character.id === 'kael') {
       const p = run.player, s = run.skills;
-      if (s.kaelGhostTime > 0) { ctx.strokeStyle = '#b7d6ff'; ctx.lineWidth = 3; ctx.globalAlpha = .6; ctx.beginPath(); ctx.arc(p.x, p.y, 38 + Math.sin(run.totalTime * 8) * 4, 0, TAU); ctx.stroke(); }
-      if (s.kaelAlacrityTime > 0) { ctx.strokeStyle = '#fff2a1'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(p.x, p.y, 28 + Math.sin(run.totalTime * 7) * 3, 0, TAU); ctx.stroke(); }
       if (s.kaelIceWall) { const wall = s.kaelIceWall; ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle); ctx.strokeStyle = '#a7ecff'; ctx.lineWidth = 8; ctx.globalAlpha = .72; ctx.beginPath(); ctx.moveTo(-58, 0); ctx.lineTo(58, 0); ctx.stroke(); ctx.restore(); }
       for (const spirit of s.kaelSpirits) { ctx.fillStyle = '#ffb979'; ctx.globalAlpha = .9; ctx.beginPath(); ctx.arc(spirit.x, spirit.y, 9, 0, TAU); ctx.fill(); ctx.strokeStyle = '#fff0c0'; ctx.lineWidth = 2; ctx.stroke(); }
     }
