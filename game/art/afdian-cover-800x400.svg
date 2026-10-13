@@ -1,5 +1,5 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="800" height="400" viewBox="0 0 800 400" shape-rendering="crispEdges">
-  <title>星核幸存者：赤沙废港</title>
+  <title>DotaRogue：赤沙废港</title>
   <defs>
     <linearGradient id="sky" x1="0" y1="0" x2="0" y2="1">
       <stop offset="0" stop-color="#081c2a"/>
@@ -73,12 +73,11 @@
   <rect x="28" y="26" width="350" height="148" rx="4" fill="url(#panel)" stroke="#75c5b2" stroke-width="2"/>
   <path d="M28 61h350" stroke="#ffd178" stroke-width="3"/>
   <text x="50" y="52" fill="#8be4bd" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="16" font-weight="700" letter-spacing="3">KAEL LAB · BROWSER GAME</text>
-  <text x="49" y="111" fill="#f4f5e9" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="900">星核</text>
-  <text x="166" y="111" fill="#ffd178" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="900">幸存者</text>
+  <text x="49" y="111" fill="#f4f5e9" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="42" font-weight="900">DotaRogue</text>
   <text x="52" y="143" fill="#d5e8df" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="15">在赤沙废港活过 20 波，或进入无尽模式。</text>
   <text x="52" y="162" fill="#8be4bd" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="12" letter-spacing="2">SURVIVE · UPGRADE · RETURN</text>
 
   <rect x="28" y="352" width="744" height="2" fill="#ffd178" opacity=".7"/>
-  <text x="30" y="379" fill="#e4f4ea" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">原创网页生存肉鸽 · 桌面与手机均可游玩</text>
+  <text x="30" y="379" fill="#e4f4ea" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">Dota 启发的网页生存肉鸽 · 桌面与手机均可游玩</text>
   <text x="770" y="379" text-anchor="end" fill="#8be4bd" font-family="Microsoft YaHei, Noto Sans CJK SC, sans-serif" font-size="13">KAEL LAB</text>
 </svg>
