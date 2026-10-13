@@ -1,8 +1,8 @@
-# R6ey3cb6cEEk61kufTRY 星核幸存者·众神之王独立设计
+# R6ey3cb6cEEk61kufTRY DotaRogue·众神之王独立设计
 
 ## 记忆摘要
 
-这是《星核幸存者》六名角色独立设计之一。角色命名、英雄姓名、种族和职业按 dota/英雄.md 回源；技能、台词、音效和图像为本游戏重新设计。角色概念资料仍保留 Concept 来源；本轮运行 SVG 与动作帧已接入并通过所列真实入口验收。
+这是《DotaRogue》六名角色独立设计之一。角色命名、英雄姓名、种族和职业按 dota/英雄.md 回源；技能、台词、音效和图像为本游戏重新设计。角色概念资料仍保留 Concept 来源；本轮运行 SVG 与动作帧已接入并通过所列真实入口验收。
 
 本工作项独立负责“众神之王”，运行 ID 为 conductor。先前完整 Lanox Image2 提示词已保存，四次任务均因 `model_service_unavailable` 失败，没有 AI PNG。用户随后要求改用 SVG；现已另绘透明运行 SVG 并在 `game.js` 中引用，不能把它登记为 AI 生成图。
 
