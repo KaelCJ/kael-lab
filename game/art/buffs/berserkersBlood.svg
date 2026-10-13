@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>狂战士之血</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M8 20L13 13H19L24 18L29 13H35L40 20V27L24 41L8 27Z" fill="#be6146" stroke="#0c1720" stroke-width="2"/><path d="M13 18H18L24 23L29 18H34L35 25L24 35L13 25Z" fill="#ef9b66" stroke="none" stroke-width="0"/><path d="M25 18L21 25L26 29L22 38" fill="none" stroke="#662d39" stroke-width="3"/><path d="M12 13L10 7L17 11M36 13L38 7L31 11" fill="#e5c28a" stroke="#0c1720" stroke-width="2"/><rect x="11" y="20" width="4" height="4" fill="#ffd5a1"/>
+</svg>

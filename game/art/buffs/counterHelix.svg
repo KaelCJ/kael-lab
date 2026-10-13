@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>反击螺旋</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M14 40L18 42L34 12L30 10Z" fill="#a3754c" stroke="#0c1720" stroke-width="2"/><path d="M24 10L27 17L23 24L13 22L11 15L16 9Z" fill="#b8c7c8" stroke="#0c1720" stroke-width="2"/><path d="M31 14L37 16L40 23L35 29L27 28L27 21Z" fill="#d4dfd9" stroke="#0c1720" stroke-width="2"/><path d="M12 15L17 18L24 19M33 18L36 23L30 26" fill="none" stroke="#f0e8c4" stroke-width="2"/><path d="M8 29L9 36L17 39M31 37L39 32L40 27" fill="none" stroke="#c46d55" stroke-width="3"/><path d="M35 35L31 37L36 39" fill="#e39b6f" stroke="#0c1720" stroke-width="2"/>
+</svg>

@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>祭品</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M14 11H34L38 19L35 29L29 34L24 40L19 34L13 29L10 19Z" fill="#acb5a4" stroke="#0c1720" stroke-width="2"/><path d="M13 15L8 8L7 22L12 25M35 15L40 8L41 22L36 25" fill="#b35460" stroke="#0c1720" stroke-width="2"/><path d="M14 20L21 21L20 26L16 25ZM34 20L27 21L28 26L32 25Z" fill="#732e43" stroke="#0c1720" stroke-width="2"/><path d="M24 24L20 30H28Z" fill="#4d434a" stroke="#0c1720" stroke-width="2"/><path d="M18 29L20 36L22 30M30 29L28 36L26 30" fill="#f1dfae" stroke="#0c1720" stroke-width="2"/><rect x="22" y="33" width="4" height="4" fill="#d47c73"/>
+</svg>

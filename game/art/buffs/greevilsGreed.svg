@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>贪魔的贪婪</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<path d="M15 19L12 11L21 13L24 10L28 13L36 10L33 20L39 30L36 39H13L9 31Z" fill="#977048" stroke="#0c1720" stroke-width="2"/><path d="M15 21L32 21L35 30L32 35H16L13 30Z" fill="#c69752" stroke="none" stroke-width="0"/><path d="M15 19H33V23H15Z" fill="#603f39" stroke="#0c1720" stroke-width="2"/><path d="M22 26H29L33 30V36L29 40H22L18 36V30Z" fill="#eac769" stroke="#0c1720" stroke-width="2"/><path d="M24 29H28V37H24Z" fill="#fff0ac" stroke="none" stroke-width="0"/><rect x="9" y="8" width="4" height="4" fill="#f0d68b"/>
+</svg>
