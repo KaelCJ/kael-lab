@@ -29,12 +29,16 @@ coverage/
 
 # Local workspace state and generated QA outputs
 /.workspace-assistant/
-/artifacts/
+/.tmp/
 
-# Scratch scripts, previews, and Python caches
+# Legacy output locations: new scratch files belong in .tmp/
+/artifacts/
 /.tmp-*
 /tmp-*/
 /tmp-*.png
 /tmp_*.js
+/temp-*
+
+# Python caches
 **/__pycache__/
 *.py[cod]
