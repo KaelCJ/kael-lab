@@ -6,7 +6,8 @@ export const CHARACTERS = [
   { id: 'jugg', hp: 38, stats: { speed: 8 }, name: '剑圣' },
   { id: 'sf', hp: 32, stats: {}, name: '影魔' },
   { id: 'kael', hp: 30, stats: { elemental: 4 }, name: '召唤师' },
-  { id: 'luna', hp: 32, stats: { speed: 6 }, name: '月之骑士' }
+  { id: 'luna', hp: 32, stats: { speed: 6 }, name: '月之骑士' },
+  { id: 'tb', hp: 36, stats: { armor: 1 }, name: '灵魂守卫' }
 ];
 
 export const BASE_ATTACKS = {
@@ -17,14 +18,18 @@ export const BASE_ATTACKS = {
   jugg: { type: 'melee', damage: 20, cooldown: .75, range: 122, color: '#f8e6ba' },
   sf: { type: 'ranged', damage: 9, cooldown: .6, range: 500, speed: 640, color: '#ef6754' },
   kael: { type: 'elemental', damage: 8, cooldown: .72, range: 470, speed: 880, color: '#c99aff' },
-  luna: { type: 'ranged', damage: 10, cooldown: .62, range: 440, speed: 820, color: '#d9e9ff' }
+  luna: { type: 'ranged', damage: 10, cooldown: .62, range: 440, speed: 820, color: '#d9e9ff' },
+  tb: { type: 'melee', damage: 14, cooldown: .65, range: 110, color: '#9ce96b' }
 };
+
+export const TB_DEMON_ATTACK = { type: 'ranged', damage: 14, cooldown: .65, range: 420, speed: 760, color: '#9ce96b' };
 
 export const ACTIVE_SKILL_CONFIG = {
   rover: { cooldown: 9, manaCost: 30 }, bulwark: { cooldown: 8, manaCost: 28 },
   conductor: { cooldown: 16, manaCost: 40 }, scavenger: { cooldown: 16, manaCost: 36 },
   jugg: { cooldown: 12, manaCost: 36 }, sf: { cooldown: 16, manaCost: 42 },
-  kael: { cooldown: 8, manaCost: 35 }, luna: { cooldown: 18, manaCost: 42 }
+  kael: { cooldown: 8, manaCost: 35 }, luna: { cooldown: 18, manaCost: 42 },
+  tb: { cooldown: 24, manaCost: 40 }
 };
 
 export const HERO_TEXT = {
@@ -36,7 +41,8 @@ export const HERO_TEXT = {
     jugg: ['剑圣', '兽族 · 兽人剑圣／战士', '近战物理 · 跳劈切入与旋转清场', '剑刃风暴', '旋转3秒，138范围持续伤害、接触减伤35%；普攻同时进行，伤害随物理与法术成长。12秒／36蓝。', '跃空斩', '每5次有效近战攻击跳起斩击，落地范围伤害与0.28秒短暂无敌；不会跨越地形。'],
     sf: ['影魔', '中立 · 火元素／火焰领主', '远程物理 · 收魂成长与魔法魂波', '魂之挽歌', '蓄力0.55秒，释放魂波；同敌整次只受一次伤害，随物理、法术攻击与魂数成长，普攻同时进行。16秒／42蓝。', '收魂', '普通击杀1魂、精英3魂、首领6魂，最多36；每魂物理攻击+0.55，跨波保留。'],
     kael: ['召唤师', '血精灵 · 元素法师', '远程法术 · 随机法术与记忆回响', '回响施法', '消耗35魔法，重放最近一次被动随机出的法术。8秒冷却。', '万象轮转', '每5秒从六个当前法术中随机施放一个；成功后记录最近法术。'],
-    luna: ['月之骑士', '暗夜精灵 · 月光猎手', '远程物理 · 月刃弹射与范围落月', '月蚀', '以施法位置为中心，2.5秒内随机落下10道月光；每名敌人最多被命中2道。18秒／42蓝。', '月刃弹射', '基础月刃首次命中后，向190范围内最多2名未命中的敌人弹射，伤害衰减70%／49%。']
+    luna: ['月之骑士', '暗夜精灵 · 月光猎手', '远程物理 · 月刃弹射与范围落月', '月蚀', '以施法位置为中心，2.5秒内随机落下10道月光；每名敌人最多被命中2道。18秒／42蓝。', '月刃弹射', '基础月刃首次命中后，向190范围内最多2名未命中的敌人弹射，伤害衰减70%／49%。'],
+    tb: ['灵魂守卫', '暗夜精灵 · 伊利丹恶魔猎手原型', '近战／远程物理 · 双刃蓄影与恶魔集火', '恶魔变身', '变成远程大恶魔8秒，基础射程420，普攻原始伤害+40%。24秒／40蓝。', '魔影', '每6次有效普攻生成5秒魔影，最多2个，各以30%未暴击普攻伤害跟随攻击；随本体变身，不触发装备。']
   },
   'zh-TW': {
     rover: ['矮人火槍手', '人族 · 矮人火槍手', '遠程物理 · 遠距點殺與散彈清群', '散彈齊射', '7枚扇形彈，每枚55%普攻傷害；同敵最多2枚。9秒／30魔。', '增程瞄準', '基礎攻擊射程增加140；裝備與升級繼續增加射程。'],
@@ -46,7 +52,8 @@ export const HERO_TEXT = {
     jugg: ['劍聖', '獸族 · 獸人劍聖／戰士', '近戰物理 · 跳劈切入與旋轉清場', '劍刃風暴', '旋轉3秒，138範圍持續傷害、接觸減傷35%；普攻同時進行，傷害隨物理與法術成長。12秒／36魔。', '躍空斬', '每5次有效近戰攻擊跳起斬擊，落地範圍傷害與0.28秒短暫無敵；不會跨越地形。'],
     sf: ['影魔', '中立 · 火元素／火焰領主', '遠程物理 · 收魂成長與魔法魂波', '魂之輓歌', '蓄力0.55秒，釋放魂波；同敵整次只受一次傷害，隨物理、法術攻擊與魂數成長，普攻同時進行。16秒／42魔。', '收魂', '普通擊殺1魂、精英3魂、首領6魂，最多36；每魂物理攻擊+0.55，跨波保留。'],
     kael: ['召喚師', '血精靈 · 元素法師', '遠程法術 · 隨機法術與記憶迴響', '迴響施法', '消耗35魔力，重放最近一次被動隨機出的法術。8秒冷卻。', '萬象輪轉', '每5秒從六個當前法術中隨機施放一個；成功後記錄最近法術。'],
-    luna: ['月之騎士', '暗夜精靈 · 月光獵手', '遠程物理 · 月刃彈射與範圍落月', '月蝕', '以施法位置為中心，2.5秒內隨機落下10道月光；每名敵人最多被命中2道。18秒／42魔。', '月刃彈射', '基礎月刃首次命中後，向190範圍內最多2名未命中的敵人彈射，傷害衰減70%／49%。']
+    luna: ['月之騎士', '暗夜精靈 · 月光獵手', '遠程物理 · 月刃彈射與範圍落月', '月蝕', '以施法位置為中心，2.5秒內隨機落下10道月光；每名敵人最多被命中2道。18秒／42魔。', '月刃彈射', '基礎月刃首次命中後，向190範圍內最多2名未命中的敵人彈射，傷害衰減70%／49%。'],
+    tb: ['靈魂守衛', '暗夜精靈 · 伊利丹惡魔獵手原型', '近戰／遠程物理 · 雙刃蓄影與惡魔集火', '惡魔變身', '變成遠程大惡魔8秒，基礎射程420，普攻原始傷害+40%。24秒／40魔。', '魔影', '每6次有效普攻生成5秒魔影，最多2個，各以30%未暴擊普攻傷害跟隨攻擊；隨本體變身，不觸發裝備。']
   },
   en: {
     rover: ['Dwarven Sniper', 'Human · Dwarven rifleman', 'Ranged physical · Long shots and shotgun volleys', 'Shotgun Volley', 'Fire 7 fan-shaped shots at 55% basic damage each, up to 2 hits per enemy. 9 sec / 30 MP.', 'Take Aim', 'Basic attack range +140; equipment and upgrades add further range.'],
@@ -56,15 +63,16 @@ export const HERO_TEXT = {
     jugg: ['Juggernaut', 'Orc · Blademaster / warrior', 'Melee physical · Leaping strikes and Blade Fury', 'Blade Fury', 'Spin for 3 sec, dealing damage within 138 range and reducing contact damage by 35%. Basic attacks continue and damage scales with physical and magic attack. 12 sec / 36 MP.', 'Leaping Strike', 'Every 5 successful melee attacks leap and slash on landing, with 0.28 sec invulnerability. Never jumps through terrain.'],
     sf: ['Shadow Fiend', 'Neutral · Fire elemental / firelord', 'Ranged physical · Soul growth and magic waves', 'Requiem of Souls', 'Channel for 0.55 sec, then release soul waves. Each enemy takes damage once per cast, scaling with physical attack, magic attack and souls while basic attacks continue. 16 sec / 42 MP.', 'Necromastery', 'Normal kills grant 1 soul, elites 3, bosses 6, up to 36. Each adds 0.55 physical attack; souls persist between waves.'],
     kael: ['Invoker', 'Blood elf · Elemental mage', 'Ranged magic · Random spells and remembered echoes', 'Echo Cast', 'Spend 35 mana to replay the last spell rolled by the passive. 8 sec cooldown.', 'Prismatic Cycle', 'Every 5 sec, randomly cast one of six current spells and remember it after a successful cast.'],
-    luna: ['Moon Rider', 'Night elf · Moonlight hunter', 'Ranged physical · Lunar glaives and falling moonlight', 'Eclipse', 'For 2.5 sec, call down 10 random moonbeams around the cast position; each enemy can be hit twice. 18 sec / 42 MP.', 'Lunar Glaives', 'The first hit of each basic glaive bounces to up to 2 nearby unhit enemies for 70% / 49% damage.']
+    luna: ['Moon Rider', 'Night elf · Moonlight hunter', 'Ranged physical · Lunar glaives and falling moonlight', 'Eclipse', 'For 2.5 sec, call down 10 random moonbeams around the cast position; each enemy can be hit twice. 18 sec / 42 MP.', 'Lunar Glaives', 'The first hit of each basic glaive bounces to up to 2 nearby unhit enemies for 70% / 49% damage.'],
+    tb: ['Terrorblade', 'Night elf · Illidan demon hunter archetype', 'Melee / ranged physical · Build images and unleash the demon', 'Metamorphosis', 'Become a ranged demon for 8 sec: 420 base range and +40% raw basic damage. 24 sec / 40 MP.', 'Conjure Image', 'Every 6 successful basic attacks summon a 5 sec image, up to 2. Each follows attacks for 30% non-critical basic damage, shares your form and triggers no equipment effects.']
   }
 };
 
 export const KAEL_SPELLS = [
   { id: 'tornado', names: { 'zh-CN': '混沌之风', 'zh-TW': '混沌之風', en: 'Tornado' }, desc: { 'zh-CN': '沿施法朝向发出直线前进的龙卷风，穿透并推离路径上的敌人。', 'zh-TW': '沿施法朝向發出直線前進的龍捲風，穿透並推離路徑上的敵人。', en: 'Launch a tornado straight ahead, piercing and pushing enemies along its path.' } },
-  { id: 'emp', names: { 'zh-CN': '电磁脉冲', 'zh-TW': '電磁脈衝', en: 'EMP' }, desc: { 'zh-CN': '以自身为中心释放脉冲，造成范围伤害并返还魔法。', 'zh-TW': '以自身為中心釋放脈衝，造成範圍傷害並返還魔力。', en: 'Pulse around yourself, dealing area damage and restoring mana.' } },
+  { id: 'emp', names: { 'zh-CN': '电磁脉冲', 'zh-TW': '電磁脈衝', en: 'EMP' }, desc: { 'zh-CN': '向附近敌人释放雷电，在命中点爆炸，造成范围伤害并返还魔法。', 'zh-TW': '向附近敵人釋放雷電，在命中點爆炸，造成範圍傷害並返還魔力。', en: 'Strike nearby enemies with lightning, then detonate at each hit point while restoring mana.' } },
   { id: 'chaos-meteor', names: { 'zh-CN': '混沌陨石', 'zh-TW': '混沌隕石', en: 'Chaos Meteor' }, desc: { 'zh-CN': '燃烧的岩石沿面向落下并滚动，对路径上的敌人持续伤害。', 'zh-TW': '燃燒的岩石沿面向落下並滾動，對路徑上的敵人持續傷害。', en: 'Drop a burning rock that rolls forward for repeated path damage.' } },
   { id: 'ice-wall', names: { 'zh-CN': '寒冰之墙', 'zh-TW': '寒冰之牆', en: 'Ice Wall' }, desc: { 'zh-CN': '在面前生成冰墙，减速并伤害穿越的敌人。', 'zh-TW': '在面前生成冰牆，減速並傷害穿越的敵人。', en: 'Raise an ice wall that slows and damages enemies crossing it.' } },
-  { id: 'forge-spirit', names: { 'zh-CN': '炽魂召唤', 'zh-TW': '熾魂召喚', en: 'Forge Spirit' }, desc: { 'zh-CN': '召唤两个短寿命炽魂，自动攻击附近敌人。', 'zh-TW': '召喚兩個短壽命熾魂，自動攻擊附近敵人。', en: 'Summon two short-lived forge spirits to attack nearby enemies.' } },
-  { id: 'deafening-blast', names: { 'zh-CN': '震荡波', 'zh-TW': '震盪波', en: 'Deafening Blast' }, desc: { 'zh-CN': '以自身为中心造成范围伤害并击退敌人。', 'zh-TW': '以自身為中心造成範圍傷害並擊退敵人。', en: 'Blast around yourself, dealing area damage and knocking enemies back.' } }
+  { id: 'forge-spirit', names: { 'zh-CN': '炽魂召唤', 'zh-TW': '熾魂召喚', en: 'Forge Spirit' }, desc: { 'zh-CN': '召唤两个短寿命小怪物炽魂，协助攻击附近敌人。', 'zh-TW': '召喚兩個短壽命小怪物熾魂，協助攻擊附近敵人。', en: 'Summon two short-lived forge spirit creatures to help attack nearby enemies.' } },
+  { id: 'deafening-blast', names: { 'zh-CN': '震荡波', 'zh-TW': '震盪波', en: 'Deafening Blast' }, desc: { 'zh-CN': '沿面向推出三道弧形冲击波，伤害并推离前方敌人。', 'zh-TW': '沿面向推出三道弧形衝擊波，傷害並推離前方敵人。', en: 'Send three arcing shock waves forward to damage and push enemies away.' } }
 ];

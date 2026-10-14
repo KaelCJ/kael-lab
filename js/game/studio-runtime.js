@@ -44,7 +44,7 @@ export function createStudioRuntime(api) {
     const variant = item.variants?.find(entry => entry.id === input.variant) || item.variants?.[0];
     const level = Number.isInteger(input.level) ? input.level : 1;
     const stacks = Number.isInteger(input.stacks) ? input.stacks : 1;
-    return Object.freeze({ category: category.id, id: item.id, variant: variant?.id || '',
+    return Object.freeze({ category: category.id, id: item.id, variant: variant?.id || '', duration: item.duration || 8,
       level: item.levels === 3 ? Math.max(1, Math.min(3, level)) : 1,
       stacks: item.stacks ? Math.max(1, Math.min(99, stacks)) : 1,
       ...viewOptions(input), playing });
@@ -62,7 +62,7 @@ export function createStudioRuntime(api) {
     time += dt;
     api.trigger(selection, time, dt);
     api.tick(dt);
-    if (time >= 8 && ['heroes', 'equipment', 'buffs'].includes(selection.category)) reset();
+    if (time >= selection.duration && ['heroes', 'equipment', 'buffs'].includes(selection.category)) reset();
   }
 
   window.addEventListener('message', event => {

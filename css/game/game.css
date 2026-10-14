@@ -108,6 +108,9 @@ button.hero-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--amber)}
 .skill-slot span{display:block;color:#c6d9d5}
 .skill-slot.is-ready{border-color:var(--mint)}
 .skill-slot.is-cooling{border-color:#bfaa86;color:#d4d5ce}
+.skill-strip[data-hero="tb"]{top:calc(env(safe-area-inset-top) + 82px)}
+.skill-strip[data-hero="tb"] .skill-slot{width:180px}
+@media (max-height:520px){.skill-strip[data-hero="tb"]{top:calc(env(safe-area-inset-top) + 70px)}}
 .combat-actions{position:absolute;right:calc(env(safe-area-inset-right) + 20px);bottom:calc(env(safe-area-inset-bottom) + 25px);display:flex;flex-direction:column;align-items:center;gap:16px;pointer-events:auto;text-shadow:none}
 .combat-actions button{display:flex;flex-direction:column;justify-content:center;align-items:center;font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:700}
 .combat-actions button small{font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-weight:500}
