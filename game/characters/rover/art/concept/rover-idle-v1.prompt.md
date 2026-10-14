@@ -14,7 +14,7 @@
 
 ## 交付规格
 
-- 角色：矮人火枪手；运行 ID `rover`；Kardel Sharpeye / Dwarven Sniper；人族（矮人）／火枪手，回源 [英雄.md](../../../../../dota/英雄.md)。
+- 角色：矮人火枪手；运行 ID `rover`；Kardel Sharpeye / Dwarven Sniper；人族（矮人）／火枪手，回源 [英雄.md](../../../../dota/英雄.md)。
 - 第一阶段：精致 2D 手绘卡通单角色全身待机图，参考 Kingdom Rush 的小尺寸辨识与表现方法；细节重新绘制。
 - 当前选定文件：`rover-idle-v1-clean.png`，保留真实 alpha；原始生成 `rover-idle-v1-source.png` 和自动透明 `rover-idle-v1.png` 均保留。
 - 实际尺寸：1707×2560，约 2:3；与请求 3:4 不一致，保留完整原画面。预览最长边 128px／64px，分别为 85×128／43×64。

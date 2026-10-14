@@ -3,7 +3,7 @@ const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const fract = value => value - Math.floor(value);
 
 async function loadSmoke() {
-  const url = new URL('../../../game/art/effects/fire/png/smoke.png', import.meta.url);
+  const url = new URL('../../../../game/art/effects/fire/png/smoke.png', import.meta.url);
   const image = new Image();
   image.src = url.href;
   try { await image.decode(); }

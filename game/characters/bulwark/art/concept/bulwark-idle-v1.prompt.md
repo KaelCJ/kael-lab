@@ -12,7 +12,7 @@
 ## 目标与回源
 
 - 角色：刚背兽；Rigwarl / Bristleback；运行 ID `bulwark`。
-- 身份：中立（野猪人）／野猪人战士（设计候选），按 [英雄.md](../../../../../dota/英雄.md) 回源。
+- 身份：中立（野猪人）／野猪人战士（设计候选），按 [英雄.md](../../../../dota/英雄.md) 回源。
 - 第一阶段：精致 2D 手绘卡通小角色，参考 Kingdom Rush 的小尺寸辨识与表现，覆盖此前先画 32×32 像素 SVG 的方案。
 - 交付：单独角色、完整全身、待机姿态、真正透明背景 PNG；作为美术 Concept 供用户审阅。
 - 已保存：原图 `bulwark-idle-v1-source.png`，初次透明图 `bulwark-idle-v1.png`；所选审阅版为 `bulwark-idle-v1-clean.png`，均与本提示词同目录且保留所有版本。

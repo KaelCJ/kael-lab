@@ -4,7 +4,7 @@ const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const fract = value => value - Math.floor(value);
 
 async function loadSprite(path) {
-  const url = new URL(`../../../game/art/effects/wind/${path}`, import.meta.url);
+  const url = new URL(`../../../../game/art/effects/wind/${path}`, import.meta.url);
   const image = new Image();
   image.src = url.href;
   try { await image.decode(); }
