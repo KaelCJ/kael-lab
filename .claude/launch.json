@@ -1,0 +1,15 @@
+{
+  "version": "0.0.1",
+  "configurations": [
+    {
+      "name": "kael-lab-static",
+      "runtimeExecutable": "python",
+      "runtimeArgs": [
+        "-B", "-I", "-c",
+        "import http.server, os; http.server.ThreadingHTTPServer.request_queue_size = 128; http.server.test(HandlerClass=http.server.SimpleHTTPRequestHandler, ServerClass=http.server.ThreadingHTTPServer, port=int(os.environ.get('PORT', '4187')), bind='127.0.0.1')"
+      ],
+      "port": 4187,
+      "autoPort": true
+    }
+  ]
+}
