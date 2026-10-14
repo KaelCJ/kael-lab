@@ -3788,7 +3788,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     return [
       { id: 'heroes', label: '英雄', items: CHARACTERS.map(hero => {
         const text = HERO_TEXT['zh-CN'][hero.id];
-        return { id: hero.id, name: text[0], description: text[2], icon: HERO_ART[hero.id], source: '../js/game/heroes.js', duration: hero.id === 'tb' ? 12 : 8, variants: [
+        return { id: hero.id, name: text[0], description: text[2], icon: HERO_ART[hero.id], source: '../static/js/game/heroes.js', duration: hero.id === 'tb' ? 12 : 8, variants: [
           { id: 'idle', name: '待机', description: '观察待机形态与呼吸。' },
           { id: 'walk', name: '移动', description: '沿当前方向往返，使用真实移动与动作帧。' },
           { id: 'basic', name: '普通攻击', description: '持续攻击静止演示目标。' },
@@ -3798,15 +3798,15 @@ import { createMeteorRenderer } from './effects/meteor.js';
         ] };
       }) },
       { id: 'equipment', label: '武器 / 装备', items: Object.entries(EQUIPMENT).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: `./art/pixel/equipment-${id}.svg`, source: '../js/game/equipment.js', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1 })) },
+        icon: `./art/pixel/equipment-${id}.svg`, source: '../static/js/game/equipment.js', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1 })) },
       { id: 'buffs', label: 'Buff', items: Object.entries(BUFFS).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: def.icon, source: '../js/game/buffs.js', stacks: true })) },
+        icon: def.icon, source: '../static/js/game/buffs.js', stacks: true })) },
       { id: 'effects', label: '特效', items: [
         { id: 'meteor', name: '陨石', description: '燃烧岩石与火尾。与卡尔混沌陨石共用绘制模块。' },
         { id: 'fire', name: '火', description: '焰舌、烟气与火星。也是陨石火尾的组成部分。' },
         { id: 'wind', name: '风', description: '直立旋转气流。与卡尔混沌之风共用绘制模块。' }
-      ].map(item => ({ ...item, source: `../js/game/effects/${item.id}.js` })) },
-      { id: 'maps', label: '地图', items: BIOMES.map(biome => ({ id: biome.id, name: biome.name, description: biome.desc, source: '../js/game/maps.js',
+      ].map(item => ({ ...item, source: `../static/js/game/effects/${item.id}.js` })) },
+      { id: 'maps', label: '地图', items: BIOMES.map(biome => ({ id: biome.id, name: biome.name, description: biome.desc, source: '../static/js/game/maps.js',
         variants: [{ id: 'overview', name: '全图', description: '同一地形布局的全景，水道与树石位置来自游戏定义。' },
           { id: 'ground', name: '地面细节', description: '观察出生点附近的真实地形与装饰。' }] })) }
     ];

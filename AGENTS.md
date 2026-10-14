@@ -9,9 +9,13 @@ Kael Lab 是公开静态站点。处理本仓库时遵守以下边界：
 - 修改页面后至少检查桌面与移动布局、键盘操作、控制台错误、静态资源路径和无 JavaScript 的基础可读性。
 - 发布、域名、第三方统计、评论、外部 API、提交、推送和删除仍服从当前任务的明确授权。
 - `AGENTS.md` 与 `CLAUDE.md` 内容必须保持一致。
+- 浏览器工具证据写入 `.playwright-mcp/`，其他临时截图、脚本、变体和抓取原文统一写入 `.tmp/<任务或用途>/`；两目录都不提交。输出路径以脚本位置或显式参数确定，不依赖当前工作目录；不向根目录新增散落图片、`tmp-*`、`temp-*` 或 `artifacts/`。
+- 正式素材与需要长期公开保留的参考归入所属游戏或模块目录，登记用途、来源与引用；不可全局忽略图片类型。任务结束时清点产物并记录保留／待清理项，不覆盖既有证据，也不未经授权删除。
+- 正式 CSS／JavaScript 统一放在 `static/css/`、`static/js/`，保留所有者子目录，不回建根部 `css/`、`js/`。正式页面使用 `work/`、`game/` 下的物理地址；资源移动后运行 `python -B -X utf8 scripts/check_static_paths.py`，并实际检查动态图片、特效和 iframe，不能只凭静态路径检查宣称页面可用。
+- 暂存或提交前运行 `python -B -X utf8 scripts/check_workspace_hygiene.py`；先解决根目录污染和已跟踪本机产物，其他已跟踪忽略文件按报告单独确认所有权，不自动清除工作项或协作基座。详细边界见根 README。
 
 ## 方向与回源
 
-- 人机协作方向覆盖首页、`kael/`、`meepo/`、`nest/`、`lanox/`、`help/` 与 Workspace Assistant。先读根目录 `README.md` 定位入口，再以当前页面、代码和可核对的来源确认能力状态。
-- 网页游戏方向以 `games.html` 为选择入口。涉及《DotaRogue》的设计、UI、代码或文档时，先读 `game/README.md` 与 `game/AGENTS.md`，再按其指引读取 `game/core/协作上下文.md` 和任务相关专题；新增游戏时使用独立目录，并把入口登记到选择页。
+- 人机协作方向统一归属 `work/`：工作首页、四生态、`work/help/` 与 `work/workspace-assistant.html`。先读根目录 `README.md` 与 `work/README.md`，再回到当前实现。根目录业务入口只保留 `index.html` 与 `games.html`；只有根首页保留轻量跳转。不要恢复外层生态、帮助或助手的旧兼容目录／页面；根首页跳转保留查询参数和锚点，并提供无 JavaScript 的访问链接。
+- 网页游戏方向以 `games.html` 为选择入口。涉及《DotaRogue》的设计、UI、代码或文档时，先读 `game/README.md` 与 `game/AGENTS.md`，再按其指引读取 `game/core/协作上下文.md` 和任务相关专题；`game/dota/` 是游戏参考资料，不是独立业务域或当前能力证明；新增游戏时使用独立目录，并把入口登记到选择页。
 - 实现或入口变化后更新相应 README 的当前事实与验证方法。聊天记忆和过期文档不能代替当前实现；未验证的设想明确标为计划。
