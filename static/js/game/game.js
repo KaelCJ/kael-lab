@@ -1,7 +1,7 @@
 import { createStudioRuntime } from './studio-runtime.js?v=20261014-tb1';
 import { createFireRenderer } from './effects/fire.js';
 import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js';
-import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261014-tb1';
+import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261015-kael1';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffPhysicalAmp } from './buffs.js?v=20261013-deadshot1';
 import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261013-upgrade3';
@@ -232,9 +232,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], BUFF_UI[locale]);
 
   const HERO_UI = {
-    'zh-CN': { active: '主动', passive: '被动', availableHeroes: '可玩英雄', upcomingHeroes: '待制作英雄', unavailableHero: '未开放', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位', statAttackDamage: '物理攻击', statSpellBonus: '法术攻击', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '魂 {count}/36 · 每魂攻击+0.55', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '九名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，另有可重复购买的永久增益。固定配方不占装备格，满格仍能合成释放组件格。' },
-    'zh-TW': { active: '主動', passive: '被動', availableHeroes: '可玩英雄', upcomingHeroes: '待製作英雄', unavailableHero: '未開放', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位', statAttackDamage: '物理攻擊', statSpellBonus: '法術攻擊', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '魂 {count}/36 · 每魂攻擊+0.55', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '九名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，另有可重複購買的永久增益。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
-    en: { active: 'Active', passive: 'Passive', availableHeroes: 'Playable heroes', upcomingHeroes: 'Planned heroes', unavailableHero: 'Unavailable', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot', statAttackDamage: 'Physical attack', statSpellBonus: 'Magic attack', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count}/36 · +0.55 attack each', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Nine heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, plus repeatable permanent buffs. Fixed recipes take no slot; crafting also works with a full inventory.' }
+    'zh-CN': { active: '主动', passive: '被动', availableHeroes: '可玩英雄', upcomingHeroes: '待制作英雄', unavailableHero: '未开放', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位', statAttackDamage: '物理攻击', statSpellBonus: '法术攻击', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '累计收魂 {count} · 攻击 +{attack}', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '九名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，另有可重复购买的永久增益。固定配方不占装备格，满格仍能合成释放组件格。' },
+    'zh-TW': { active: '主動', passive: '被動', availableHeroes: '可玩英雄', upcomingHeroes: '待製作英雄', unavailableHero: '未開放', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位', statAttackDamage: '物理攻擊', statSpellBonus: '法術攻擊', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '累計收魂 {count} · 攻擊 +{attack}', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '九名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，另有可重複購買的永久增益。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
+    en: { active: 'Active', passive: 'Passive', availableHeroes: 'Playable heroes', upcomingHeroes: 'Planned heroes', unavailableHero: 'Unavailable', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot', statAttackDamage: 'Physical attack', statSpellBonus: 'Magic attack', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count} · Attack +{attack}', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Nine heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, plus repeatable permanent buffs. Fixed recipes take no slot; crafting also works with a full inventory.' }
   };
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], HERO_UI[locale]);
 
@@ -737,8 +737,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
       skills: { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0, manualPickups: 0, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0,
         souls: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageAmp: 1,
         thunder: null, requiem: null, bloodTime: 0, bloodCooldown: 0,
-        kaelPassiveTimer: 5, lastPassiveSpell: null,
-        kaelMeteor: null, kaelIceWall: null, kaelBlast: null, kaelSpirits: [],
+        kaelPassiveTimer: 5, lastPassiveSpell: null, kaelSpellRank: 1,
+        kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [],
         eclipse: null, tb: createTerrorbladeState() },
       terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
@@ -777,7 +777,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
       thunder: null, requiem: null, bloodTime: 0, souls,
       kaelPassiveTimer: 5,
-      kaelMeteor: null, kaelIceWall: null, kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState() });
+      kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState() });
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
     run.waveStartKills = run.kills;
@@ -950,9 +950,18 @@ import { createMeteorRenderer } from './effects/meteor.js';
     showPhase('level');
     $('level-options').querySelector('button')?.focus({ preventScroll: true });
   }
+  function kaelVolleyText(count) {
+    return selectedLocale === 'en' ? `Tornado / Meteor: ${count} each`
+      : selectedLocale === 'zh-TW' ? `風／隕石：各 ${count} 個` : `风／陨石：各 ${count} 个`;
+  }
+  function levelChoiceDescription(choice) {
+    if (run.character.id !== 'kael' || !choice.bonus.elemental) return choice.desc;
+    const rank = run.skills.kaelSpellRank;
+    return `${choice.desc} · ${kaelVolleyText(rank < 3 ? `${rank} → ${rank + 1}` : '3 / 3')}`;
+  }
   function renderLevelChoices() {
     $('levels-left').textContent = t('levelsLeft', { count: run.pendingLevels });
-    $('level-options').innerHTML = run.levelChoices.map((u, i) => `<button class="choice-option" type="button" data-level="${i}"><span class="choice-icon">${artIcon(`upgrade-${UPGRADES.indexOf(u)}`, u.icon)}</span><strong>${u.name}</strong><span>${u.desc}</span></button>`).join('');
+    $('level-options').innerHTML = run.levelChoices.map((u, i) => `<button class="choice-option" type="button" data-level="${i}"><span class="choice-icon">${artIcon(`upgrade-${UPGRADES.indexOf(u)}`, u.icon)}</span><strong>${u.name}</strong><span>${levelChoiceDescription(u)}</span></button>`).join('');
   }
   function finishWave() {
     if (phase !== 'combat') return;
@@ -1144,7 +1153,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
   function statSummary() {
     const s = run.stats;
     const signed = value => `${value >= 0 ? '+' : ''}${value}`;
-    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackDamage')} ${signed(physicalBonus().toFixed(1))} · ${t('statSpellBonus')} ${signed(s.elemental)} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${s.armor}`;
+    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackDamage')} ${signed(Number(physicalBonus().toFixed(2)))} · ${t('statSpellBonus')} ${signed(s.elemental)} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${s.armor}`;
   }
   function renderEquipmentStrip() {
     $('equipment-strip').innerHTML = run.equipment.map(item => {
@@ -1218,7 +1227,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const hp = Math.round(def.hp * healthScale * (small ? .45 : 1));
     const speed = def.speed * (1 + run.wave * .008) * endlessSpeedFactor();
     const damage = Math.max(1, Math.round(def.damage * (1 + factor)));
-    const enemy = { id, variant, x, y, hp, maxHp: hp, r: def.radius * (small ? .7 : 1), speed, damage, value: small ? 0 : def.value,
+    const enemy = { id, variant, x, y, hp, maxHp: hp, r: def.radius * (small ? .7 : 1), speed, damage, value: small ? 0 : def.value, summoned: small,
       attackClock: rand(.6, 2.1), chargeClock: rand(1.5, 3.5), charging: 0, windup: 0, enrage: 0, enraged: false, chargeX: 0, chargeY: 0, attackPose: 0, biteCooldown: 0, animTime: rand(0, 1), hitFlash: 0, stuckTime: 0, dead: false };
     run.enemies.push(enemy);
     return enemy;
@@ -1351,7 +1360,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
     );
   }
 
-  function physicalBonus() { return run.stats.attackDamage + (run.character.id === 'sf' ? run.skills.souls * .55 : 0); }
+  function soulAttackBonus() { return Math.min(36, run.skills.souls) * .55 + Math.max(0, run.skills.souls - 36) * .05; }
+  function physicalBonus() { return run.stats.attackDamage + (run.character.id === 'sf' ? soulAttackBonus() : 0); }
   function baseAttackDefinition(id = run.baseAttack.id) { return id === 'tb' && run.skills.tb.time > 0 ? TB_DEMON_ATTACK : BASE_ATTACKS[id]; }
   function basicRange() { return Math.max(48, baseAttackDefinition().range + run.stats.attackRange + (run.character.id === 'rover' ? 140 : 0)); }
   function equipmentPassive(id) {
@@ -1429,31 +1439,35 @@ import { createMeteorRenderer } from './effects/meteor.js';
     p.attackFacing = angle;
     playSfx('blade');
   }
-  function kaelNearbyTarget(range = Infinity, predicate = () => true) {
-    return run.enemies.filter(e => !e.dead && predicate(e) && distance(e, run.player) <= range)
+  function kaelNearbyTarget(range, predicate = () => true) {
+    return run.enemies.filter(e => !e.dead && predicate(e) && distance(e, run.player) <= range + e.r)
       .sort((a, b) => distance(a, run.player) - distance(b, run.player))[0] || null;
-  }
-  function kaelSpellBusy() {
-    const s = run.skills;
-    return !!s.kaelMeteor || !!s.kaelIceWall || s.kaelSpirits.length > 0;
   }
   function kaelPushEnemy(e, amount, angle) {
     moveThroughTerrain(e, Math.cos(angle) * amount, Math.sin(angle) * amount);
     e.kaelSlowUntil = Math.max(e.kaelSlowUntil || 0, run.totalTime + .7);
   }
   function castKaelSpell(id, source = 'active') {
-    const s = run.skills, p = run.player, fromActive = source === 'active', target = kaelNearbyTarget();
+    const s = run.skills, p = run.player, fromActive = source === 'active';
+    const range = { tornado: 774, emp: 190, 'chaos-meteor': 720, 'ice-wall': 240, 'forge-spirit': 340, 'deafening-blast': 170 }[id];
+    if (!range) return false;
+    const target = kaelNearbyTarget(range, e => !['chaos-meteor', 'forge-spirit'].includes(id)
+      || !terrainLineBlocked(p.x, p.y, e.x, e.y, 10));
+    if (!target) return false;
+    const angle = Math.atan2(target.y - p.y, target.x - p.x);
     const damage = (enemy, amount) => dealSkillDamage(enemy, amount, fromActive);
     switch (id) {
       case 'tornado': {
-        if (!target) return false;
-        const angle = p.facing;
-        const tornado = addShot(p.x + Math.cos(angle) * 22, p.y + Math.sin(angle) * 22, angle, { id: 'kael' }, 18 + run.stats.elemental * .75, { skill: true, pierce: 8, kaelSpell: id });
-        tornado.startedAt = run.totalTime;
+        for (let i = 0; i < s.kaelSpellRank; i++) {
+          const direction = angle + [0, -.24, .24][i];
+          const tornado = addShot(p.x, p.y, direction, { id: 'kael' }, 18 + run.stats.elemental * .75,
+            { skill: true, pierce: 8, kaelSpell: id });
+          Object.assign(tornado, { vx: Math.cos(direction) * 430, vy: Math.sin(direction) * 430,
+            life: 1.8, r: 26, active: fromActive, startedAt: run.totalTime });
+        }
         break;
       }
       case 'emp': {
-        if (!target) return false;
         const affected = run.enemies.filter(e => !e.dead && distance(e, p) <= 190 + e.r);
         for (const [index, e] of affected.entries()) {
           const angle = Math.atan2(e.y - p.y, e.x - p.x), originX = p.x + Math.cos(angle) * 18, originY = p.y + Math.sin(angle) * 18;
@@ -1466,31 +1480,40 @@ import { createMeteorRenderer } from './effects/meteor.js';
         }
         p.mana = Math.min(p.maxMana, p.mana + 12); break;
       }
-      case 'chaos-meteor':
-        if (!target) return false;
-        s.kaelMeteor = { x: p.x + Math.cos(p.facing) * 38, y: p.y + Math.sin(p.facing) * 38, r: 10, angle: p.facing, life: 1.8, tick: 0, travel: 0, trailAngle: p.facing };
-        pulse(s.kaelMeteor.x, s.kaelMeteor.y, 28, '#ff9e6a', .45); break;
+      case 'chaos-meteor': {
+        const forward = Math.min(38, Math.max(0, distance(target, p) - 72));
+        for (let i = 0; i < s.kaelSpellRank; i++) {
+          const side = [0, -76, 76][i];
+          const meteor = { x: p.x, y: p.y,
+            r: 10, angle, life: 3, tick: 0, travel: 0, trailAngle: angle, active: fromActive };
+          moveThroughTerrain(meteor, Math.cos(angle) * forward - Math.sin(angle) * side,
+            Math.sin(angle) * forward + Math.cos(angle) * side);
+          s.kaelMeteors.push(meteor);
+          pulse(meteor.x, meteor.y, 40, '#ff9e6a', .45);
+        }
+        break;
+      }
       case 'ice-wall':
-        if (!target) return false;
-        s.kaelIceWall = { x: p.x + Math.cos(p.facing) * 78, y: p.y + Math.sin(p.facing) * 78, angle: p.facing, life: 4, maxLife: 4, age: 0, tick: 0 };
-        pulse(s.kaelIceWall.x, s.kaelIceWall.y, 55, '#a7ecff', .55); break;
+        s.kaelIceWalls.push({ x: target.x, y: target.y, angle, life: 6, maxLife: 6, age: 0, tick: .4, active: fromActive });
+        pulse(target.x, target.y, 85, '#a7ecff', .55); break;
       case 'forge-spirit':
-        if (!target) return false;
-        s.kaelSpirits = [-1, 1].map(side => ({ x: p.x + side * 38, y: p.y + 4, r: 9, life: 7, attack: 0, attackFlash: 0, attackAngle: p.facing, facing: p.facing, side }));
+        s.kaelSpirits = [-1, 1].map(side => ({ x: p.x + side * 38, y: p.y + 4, r: 9, life: 7, attack: 0,
+          attackFlash: 0, attackAngle: angle, facing: angle, side, active: fromActive }));
         pulse(p.x, p.y, 58, '#ffbd7d', .5); break;
       case 'deafening-blast': {
         const blastTargets = run.enemies.filter(e => {
           if (e.dead) return false;
-          const dx = e.x - p.x, dy = e.y - p.y, along = dx * Math.cos(p.facing) + dy * Math.sin(p.facing);
-          const across = -dx * Math.sin(p.facing) + dy * Math.cos(p.facing);
+          const dx = e.x - p.x, dy = e.y - p.y, along = dx * Math.cos(angle) + dy * Math.sin(angle);
+          const across = -dx * Math.sin(angle) + dy * Math.cos(angle);
           return along >= -e.r && along <= 170 + e.r && Math.abs(across) <= Math.max(34, along * .85) + e.r;
         });
         if (!blastTargets.length) return false;
-        for (const e of blastTargets) { damage(e, 28 + run.stats.elemental * .8); kaelPushEnemy(e, 70, p.facing); }
-        s.kaelBlast = { x: p.x, y: p.y, angle: p.facing, age: 0, life: .78, maxLife: .78 }; break;
+        for (const e of blastTargets) { damage(e, 28 + run.stats.elemental * .8); kaelPushEnemy(e, 70, angle); }
+        s.kaelBlast = { x: p.x, y: p.y, angle, age: 0, life: .78, maxLife: .78 }; break;
       }
       default: return false;
     }
+    p.facing = p.attackFacing = angle;
     p.skillPose = .56; p.skillClock = 0;
     showToast(`${source === 'passive' ? '✦' : '↻'} ${kaelSpellName(id)}`);
     playSfx('kael-spell');
@@ -1498,9 +1521,11 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function tryKaelPassiveSpell() {
     const s = run.skills;
-    if (run.character.id !== 'kael' || kaelSpellBusy() || !kaelNearbyTarget()) return false;
+    if (run.character.id !== 'kael') return false;
+    const candidates = [...KAEL_SPELLS];
     for (let attempt = 0; attempt < 3; attempt++) {
-      const spell = pick(KAEL_SPELLS);
+      const spell = pick(candidates);
+      candidates.splice(candidates.indexOf(spell), 1);
       if (castKaelSpell(spell.id, 'passive')) { s.lastPassiveSpell = spell.id; return true; }
     }
     return false;
@@ -1570,7 +1595,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (id === 'kael') {
       if (!s.lastPassiveSpell) return;
       if (p.mana < cfg.manaCost) { showToast(t('needMana')); updateHUD(); return; }
-      if (!castKaelSpell(s.lastPassiveSpell, 'active')) return;
+      if (!castKaelSpell(s.lastPassiveSpell, 'active')) { showToast(t('noTarget')); return; }
       p.mana -= cfg.manaCost;
       s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
       addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
@@ -1598,7 +1623,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       for (const e of targets) pulse(e.x, e.y, e.r + 12, '#d5f4ff', .55, 'thunder-mark');
     } else if (id === 'scavenger') { s.rageTime = 6; s.rageAmp = activeAmplify(); pulse(p.x, p.y, 65, '#a4ec6b', .6); }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
-    else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y, souls: s.souls, hit: new Set() };
+    else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y, souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
     else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
@@ -1615,35 +1640,34 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (run.character.id !== 'kael') return;
     const s = run.skills, p = run.player;
     s.kaelPassiveTimer -= dt;
-    if (s.kaelPassiveTimer <= 0) s.kaelPassiveTimer = tryKaelPassiveSpell() ? 5 : kaelSpellBusy() ? .25 : 2;
-    if (s.kaelMeteor) {
-      const meteor = s.kaelMeteor;
-      meteor.life -= dt; meteor.tick += dt;
+    if (s.kaelPassiveTimer <= 0) s.kaelPassiveTimer = tryKaelPassiveSpell() ? 5 : 2;
+    for (const meteor of s.kaelMeteors) {
+      const step = Math.min(dt, meteor.life);
+      meteor.life -= dt; meteor.tick += step;
       const previousX = meteor.x, previousY = meteor.y;
-      moveThroughTerrain(meteor, Math.cos(meteor.angle) * 240 * dt, Math.sin(meteor.angle) * 240 * dt);
+      moveThroughTerrain(meteor, Math.cos(meteor.angle) * 240 * step, Math.sin(meteor.angle) * 240 * step);
       const dx = meteor.x - previousX, dy = meteor.y - previousY;
       meteor.travel += Math.hypot(dx, dy) * ((dx || Math.cos(meteor.angle)) < 0 ? -1 : 1);
       if (dx || dy) meteor.trailAngle = Math.atan2(dy, dx);
-      while (meteor.tick >= .3) {
+      while (meteor.tick >= .3 - 1e-9) {
         meteor.tick -= .3;
-        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= 46 + e.r) dealSkillDamage(e, 12 + run.stats.elemental * .45);
-        pulse(meteor.x, meteor.y, 46, '#ff9c65', .2, 'meteor');
+        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= 68 + e.r) dealSkillDamage(e, 12 + run.stats.elemental * .45, meteor.active);
+        pulse(meteor.x, meteor.y, 68, '#ff9c65', .2, 'meteor');
       }
-      if (meteor.life <= 0) s.kaelMeteor = null;
     }
-    if (s.kaelIceWall) {
-      const wall = s.kaelIceWall;
-      wall.life -= dt; wall.age += dt; wall.tick += dt;
-      while (wall.tick >= .4) {
+    s.kaelMeteors = s.kaelMeteors.filter(meteor => meteor.life > 0);
+    for (const wall of s.kaelIceWalls) {
+      wall.tick += Math.min(dt, wall.life); wall.life -= dt; wall.age += dt;
+      while (wall.tick >= .4 - 1e-9) {
         wall.tick -= .4;
-        const ax = wall.x - Math.sin(wall.angle) * 58, ay = wall.y + Math.cos(wall.angle) * 58;
-        const bx = wall.x + Math.sin(wall.angle) * 58, by = wall.y - Math.cos(wall.angle) * 58;
-        for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + 18) {
-          dealSkillDamage(e, 7 + run.stats.elemental * .25); e.kaelSlowUntil = run.totalTime + .55;
+        const ax = wall.x - Math.sin(wall.angle) * 120, ay = wall.y + Math.cos(wall.angle) * 120;
+        const bx = wall.x + Math.sin(wall.angle) * 120, by = wall.y - Math.cos(wall.angle) * 120;
+        for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + 26) {
+          dealSkillDamage(e, 7 + run.stats.elemental * .25, wall.active); e.kaelSlowUntil = run.totalTime + .55;
         }
       }
-      if (wall.life <= 0) s.kaelIceWall = null;
     }
+    s.kaelIceWalls = s.kaelIceWalls.filter(wall => wall.life > 0);
     if (s.kaelBlast) {
       s.kaelBlast.age += dt; s.kaelBlast.life -= dt;
       if (s.kaelBlast.life <= 0) s.kaelBlast = null;
@@ -1655,7 +1679,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
         const d = distance(target, spirit);
         spirit.facing = Math.atan2(target.y - spirit.y, target.x - spirit.x);
         if (d > 110) moveThroughTerrain(spirit, Math.cos(spirit.facing) * 120 * dt, Math.sin(spirit.facing) * 120 * dt);
-        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = .18; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + run.stats.elemental * .3); pulse(target.x, target.y, 16, '#ffb979', .18); }
+        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = .18; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + run.stats.elemental * .3, spirit.active); pulse(target.x, target.y, 16, '#ffb979', .18); }
       } else moveThroughTerrain(spirit, Math.cos(run.totalTime * 2 + spirit.side) * 20 * dt, Math.sin(run.totalTime * 2 + spirit.side) * 20 * dt);
       return spirit.life > 0;
     });
@@ -1986,7 +2010,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
   function killEnemy(e) {
     if (e.dead) return;
     e.dead = true; run.kills += 1;
-    if (run.character.id === 'sf') run.skills.souls = Math.min(36, run.skills.souls + (e.id === 'boss' ? 6 : isElite(e) ? 3 : 1));
+    if (run.character.id === 'sf' && !e.summoned) run.skills.souls += e.id === 'boss' ? 6 : isElite(e) ? 3 : 1;
     if (run.character.id === 'scavenger' && (isElite(e) || e.id === 'boss')) { const extra = e.id === 'boss' ? 10 : 3; run.money += extra; run.earned += extra; }
     const bonus = Math.random() * 100 < run.stats.luck * .5 ? 1 : 0;
     const materialCount = e.value > 0 && Math.random() < endlessDropChance() ? e.value + bonus : 0;
@@ -2270,7 +2294,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
         const count = b.hitCounts?.get(e) || 0;
         if (!b.hitCounts || count < b.maxHits) {
           b.hitCounts?.set(e, count + 1);
-          if (b.kaelSpell) dealSkillDamage(e, b.damage);
+          if (b.kaelSpell) dealSkillDamage(e, b.damage, b.active);
           else if (b.deadShotChain) {
             const dealt = damageEnemy(e, b.damage, false, null, true);
             addDeadShotBounce(e, b, dealt);
@@ -2344,7 +2368,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (id === 'jugg') return t('leapCount', { count: s.attackHits }) + (s.leapCooldown > 0 ? ` · ${s.leapCooldown.toFixed(1)}s` : '');
     if (id === 'luna') return selectedLocale === 'en' ? 'Bounces 2' : selectedLocale === 'zh-TW' ? '彈射 2' : '弹射 2';
     if (id === 'tb') return `${selectedLocale === 'en' ? 'Charge' : selectedLocale === 'zh-TW' ? '蓄影' : '蓄影'} ${s.tb.hits}/6 · ${selectedLocale === 'en' ? 'Images' : '魔影'} ${s.tb.images.length}/2`;
-    return t('soulCount', { count: s.souls });
+    return t('soulCount', { count: s.souls, attack: Number(soulAttackBonus().toFixed(2)) });
   }
   function renderSkillStrip() {
     const skills = SKILLS[run.character.id];
@@ -2363,7 +2387,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const s = run.stats, p = run.player;
     const stats = [
       [t('statLife'), `${Math.ceil(p.hp)} / ${p.maxHp}`], [t('statArmor'), s.armor], [t('statMove'), `${s.speed}%`], [t('statAttackSpeed'), `${attackSpeed().toFixed(0)}%`],
-      [t('statAttackDamage'), physicalBonus().toFixed(1)], [t('statSpellBonus'), s.elemental], [t('statAllDamage'), `${s.damage}%`],
+      [t('statAttackDamage'), Number(physicalBonus().toFixed(2))], [t('statSpellBonus'), s.elemental], [t('statAllDamage'), `${s.damage}%`],
       [t('statCrit'), `${Math.min(90, s.crit)}%`], [t('statCritDamage'), `${100 + s.critDamage}%`], [t('statDodge'), `${Math.min(55, s.dodge)}%`], [t('statLifesteal'), `${Math.min(65, s.lifesteal)}%`],
       [t('statRegen5'), s.regen], [t('statPickup'), 75 + s.pickup], [t('statLuck'), s.luck],
       [t('statBaseAttackRange'), basicRange()], [t('mana'), `${Math.floor(p.mana)} / ${p.maxMana}`],
@@ -2380,8 +2404,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
       return `<div class="pause-buff" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)} ×${buffCount(id)}</strong>${buffRarityBadge(def)}${chargeNote}<p>${buffDesc(def)}</p></div></div>`;
     }).join('') || `<p class="equipment-empty">${t('buffEmpty')}</p>`;
     $('pause-buffs').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
+    $('pause-skills').dataset.hero = run.character.id;
     $('pause-skills').innerHTML = SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${t(i ? 'passive' : 'active')} · ${skill.name}</strong><p>${skill.desc}</p><small>${t('current', { status: skillStatus(i) })}</small></div>`).join('')
-      + (run.character.id === 'kael' ? `<div class="pause-skill"><strong>${selectedLocale === 'en' ? 'Spell pool' : selectedLocale === 'zh-TW' ? '法術池' : '法术池'}</strong>${KAEL_SPELLS.map(spell => `<p${run.skills.lastPassiveSpell === spell.id ? ' class="is-current"' : ''}><strong>${kaelSpellName(spell.id)}</strong> · ${kaelSpellDesc(spell.id)}</p>`).join('')}</div>` : '');
+      + (run.character.id === 'kael' ? `<div class="pause-skill"><strong>${selectedLocale === 'en' ? 'Spell pool' : selectedLocale === 'zh-TW' ? '法術池' : '法术池'}</strong><p>${kaelVolleyText(run.skills.kaelSpellRank)}</p>${KAEL_SPELLS.map(spell => `<p${run.skills.lastPassiveSpell === spell.id ? ' class="is-current"' : ''}><strong>${kaelSpellName(spell.id)}</strong> · ${kaelSpellDesc(spell.id)}</p>`).join('')}</div>` : '');
   }
   function updateHUD() {
     if (!run) return;
@@ -3076,12 +3101,22 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function drawProjectiles(cam) {
     for (const b of run.bullets) {
-      if (!visible(b, cam)) continue;
+      if (!visible(b, cam, b.kaelSpell === 'tornado' ? 170 : 100)) continue;
       if (b.kaelSpell === 'tornado' && windRenderer) {
         const age = run.totalTime - b.startedAt;
         // The foot follows the projectile; the upright funnel uses the paused game clock.
         windRenderer.draw(ctx, { x: b.x, y: b.y, time: motionPreference.matches ? 1.4 : age,
-          scale: .34, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
+          scale: .56, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
+        continue;
+      }
+      if (b.kaelSpell === 'tornado') {
+        const angle = Math.atan2(b.vy, b.vx), opacity = Math.min(1, (run.totalTime - b.startedAt) / .06, b.life / .1);
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(angle); ctx.globalAlpha = opacity;
+        ctx.strokeStyle = '#d8c7ff'; ctx.lineWidth = 4;
+        for (let i = 0; i < 3; i++) {
+          ctx.beginPath(); ctx.ellipse(-10 + i * 8, 0, 10 + i * 3, 16 + i * 4, 0, 0, TAU); ctx.stroke();
+        }
+        ctx.restore();
         continue;
       }
       const angle = Math.atan2(b.vy, b.vx);
@@ -3452,10 +3487,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (run.character.id === 'kael') {
       const s = run.skills;
       ctx.save();
-      if (s.kaelIceWall) {
-        const wall = s.kaelIceWall;
+      for (const wall of s.kaelIceWalls) {
         const build = clamp(wall.age / .18, 0, 1), fade = clamp(wall.life / .5, 0, 1);
-        ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle); ctx.globalAlpha = .78 * fade;
+        ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle); ctx.scale(1.45, 120 / 58); ctx.globalAlpha = .78 * fade;
         ctx.fillStyle = '#7bbfd6'; ctx.beginPath(); ctx.ellipse(0, 0, 19 * build, 63 * build, 0, 0, TAU); ctx.fill();
         const chunks = [
           [-10, -49, 17, 34, '#bcefff'], [5, -39, 19, 43, '#75c8e2'], [-7, -22, 22, 38, '#a5e5f5'],
@@ -3556,19 +3590,17 @@ import { createMeteorRenderer } from './effects/meteor.js';
     }
     ctx.globalAlpha = 1;
   }
-  function drawKaelMeteor() {
-    const meteor = run.skills.kaelMeteor;
-    if (!meteor) return;
-    const age = clamp(1.8 - meteor.life, 0, 1.8), reduced = motionPreference.matches;
+  function drawKaelMeteor(meteor) {
+    const age = clamp(3 - meteor.life, 0, 3), reduced = motionPreference.matches;
     // Ground position, lifetime and damage still belong to the existing skill.
     const lift = reduced ? 0 : 72 * Math.max(0, 1 - age / .15) ** 2;
     if (meteorRenderer) {
       meteorRenderer.draw(ctx, { x: meteor.x, y: meteor.y, angle: meteor.trailAngle,
-        time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel, lift,
+        time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel / 1.45, lift, scale: 1.45,
         opacity: Math.min(1, age / .04, meteor.life / .12), detail: reduced ? 0 : .6 });
     } else {
       ctx.save(); ctx.fillStyle = '#59392c'; ctx.strokeStyle = '#ff9c65'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(meteor.x, meteor.y - 24 - lift, 24, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
+      ctx.beginPath(); ctx.arc(meteor.x, meteor.y - 35 - lift, 35, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
     }
   }
   function drawCombat() {
@@ -3582,20 +3614,20 @@ import { createMeteorRenderer } from './effects/meteor.js';
         .map(o => ({ y: o.y, scenery: o }));
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
       for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 24)) layers.push({ y: spirit.y + 10, spirit });
-      if (run.skills.kaelMeteor) layers.push({ y: run.skills.kaelMeteor.y, meteor: true });
+      for (const meteor of run.skills.kaelMeteors) layers.push({ y: meteor.y, meteor });
       layers.push({ y: run.player.y + 16, player: true });
       layers.sort((a, b) => a.y - b.y);
       for (const layer of layers) {
         if (layer.scenery) drawScenery(layer.scenery);
         else if (layer.enemy) drawEnemy(layer.enemy);
         else if (layer.spirit) drawKaelSpirit(layer.spirit);
-        else if (layer.meteor) drawKaelMeteor();
+        else if (layer.meteor) drawKaelMeteor(layer.meteor);
         else drawPlayer();
       }
     } else {
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) drawEnemy(e);
       drawKaelSpirits();
-      drawKaelMeteor();
+      for (const meteor of run.skills.kaelMeteors) drawKaelMeteor(meteor);
       drawPlayer();
     }
     drawHazards(cam);
@@ -3716,7 +3748,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
       if (!button || phase !== 'level') return;
       const choice = run.levelChoices[Number(button.dataset.level)];
       if (!choice) return;
-      applyBonus(choice.bonus); run.pendingLevels -= 1; playSfx('level');
+      applyBonus(choice.bonus);
+      if (run.character.id === 'kael' && choice.bonus.elemental) run.skills.kaelSpellRank = Math.min(3, run.skills.kaelSpellRank + 1);
+      run.pendingLevels -= 1; playSfx('level');
       if (run.pendingLevels > 0) levelOffers(); else openShop();
     });
     $('shop-offers').addEventListener('click', event => {
@@ -3879,7 +3913,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const p = run.player;
     if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: '使用游戏的地形定义、绘制与两套画面主题。此处不生成敌潮或地形伤害。' };
     if (selection.category === 'effects') return { summary: '独立效果 · 与游戏共用绘制模块', detail: '观察场景控制位置与时间；技能的伤害、碰撞和寿命由真实游戏负责。' };
-    let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 物攻加成 ${physicalBonus().toFixed(1)} · 法攻 ${run.stats.elemental} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
+    let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 物攻加成 ${Number(physicalBonus().toFixed(2))} · 法攻 ${run.stats.elemental} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
     if (selection.category === 'equipment') detail += `。${equipmentDesc(equipmentDef(run.equipment[0]))}；概率被动按实际概率触发。`;
     if (selection.category === 'buffs') detail += `。${selection.stacks} 层；定时承受轻伤，用于观察受击、吸收和回复。光环减速 ${(buffAuraSlow(run, 100) * 100).toFixed(0)}%，物理增伤 ${(buffPhysicalAmp(run, 100) * 100).toFixed(0)}%。`;
     if (run.character.id === 'sf') detail += ` · 灵魂 ${run.skills.souls}`;
