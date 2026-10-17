@@ -100,6 +100,16 @@
       "createdAt": "2026-10-13T21:10:30+08:00",
       "updatedAt": "2026-10-14T00:30:38+08:00",
       "entry": "2026-10-13_ReXtbuEvPnuexNkUuk5o_seo-agent-feishu/README.md"
+    },
+    {
+      "id": "R7bzdl3n6GmDZ1a34BV8",
+      "title": "DotaRogue·装备合成交互优化",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-16T23:18:11+08:00",
+      "updatedAt": "2026-10-16T23:49:49+08:00",
+      "entry": "2026-10-16_R7bzdl3n6GmDZ1a34BV8_equipment-merge-usability/README.md"
     }
   ]
 }
