@@ -437,15 +437,14 @@ button.hero-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--amber)}
 
 /* Reinforcement levels are independent of the equipment's base grade. */
 .shop-card .equipment-upgrade-rule{color:#d8e5df;font-size:var(--game-body-size);line-height:var(--game-body-line)}
-.inventory:has([data-upgrade-level="1"], [data-upgrade-level="2"], [data-upgrade-level="3"]){grid-template-columns:repeat(3,minmax(0,1fr))}
 .inventory-item[data-upgrade-level]:focus-visible{outline:3px solid #fff;outline-offset:3px}
 .inventory-item[data-upgrade-level] strong{overflow-wrap:anywhere}
-.inventory-item .upgrade-preview{margin:4px 0;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.quick-craft-card .upgrade-preview{margin:0;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
 .upgrade-preview summary{cursor:pointer;color:#bcebdd;padding:7px 0;font-size:var(--game-label-size);line-height:var(--game-label-line)}
 .upgrade-preview summary:focus-visible{outline:3px solid white;outline-offset:2px}
-.inventory-item .upgrade-preview p{margin:6px 0}
-.inventory-item .upgrade-button{min-height:40px;padding:8px;color:#122b30;background:#9be5c7;border:1px solid #c2f3df;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600}
-.game-shell .inventory-item .upgrade-button:disabled{opacity:1;background:#344b54;color:#d4e0df;border-color:#6b8288}
+.quick-craft-card .upgrade-preview p{margin:6px 0}
+.quick-craft-card .upgrade-button{min-height:40px;padding:8px;color:#122b30;background:#9be5c7;border:1px solid #c2f3df;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600}
+.game-shell .quick-craft-card .upgrade-button:disabled{opacity:1;background:#344b54;color:#d4e0df;border-color:#6b8288}
 .upgrade-max{color:#ffe0a2;font-size:var(--game-label-size);line-height:var(--game-label-line);padding:8px 0}
 [data-upgrade-level="2"],[data-upgrade-level="3"]{position:relative}
 [data-upgrade-level="2"]::after,[data-upgrade-level="3"]::after{content:"";pointer-events:none;position:absolute;right:3px;top:3px;width:8px;height:8px;border-top:2px solid #bcebdd;border-right:2px solid #bcebdd}
@@ -454,5 +453,63 @@ button.hero-tile[aria-pressed="true"]{box-shadow:inset 0 0 0 1px var(--amber)}
 .just-upgraded .art-icon{animation:equipment-gather .45s ease-out}
 @keyframes equipment-upgrade{0%{box-shadow:inset 0 0 0 3px #bcebdd}55%{box-shadow:inset 0 0 0 2px #ffe0a2}100%{box-shadow:inset 0 0 0 0 transparent}}
 @keyframes equipment-gather{0%{filter:drop-shadow(-18px 0 #a9e5d4) drop-shadow(18px 0 #a9e5d4);transform:scale(.8)}60%{filter:drop-shadow(0 0 #a9e5d4);transform:scale(1.15)}100%{filter:none;transform:scale(1)}}
-@media(max-width:680px){.inventory:has([data-upgrade-level="1"], [data-upgrade-level="2"], [data-upgrade-level="3"]){grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:430px){.inventory:has([data-upgrade-level="1"], [data-upgrade-level="2"], [data-upgrade-level="3"]){grid-template-columns:1fr}}
+
+/* Keep actionable recipes together; the shop remains the only scrolling surface. */
+.craft-hub{margin-top:12px}
+.shop-card .craft-hub h3{margin:0 0 3px;font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;letter-spacing:0}
+.shop-card #craft-hub-summary{margin:0 0 7px;color:#d8e5df;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.quick-craft-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
+.craft-progress{grid-column:1/-1;min-width:0}
+.craft-progress>summary{min-height:44px;padding:12px 8px;border:1px solid #71949a;border-radius:6px;background:#203a43;color:#bcebdd;cursor:pointer;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;overflow-wrap:anywhere}
+.craft-progress>summary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.craft-progress>.quick-craft-list{margin-top:7px}
+.quick-craft-card{min-width:0;padding:9px;border:1px solid #6b8a8e;border-radius:8px;background:#122a35;display:grid;align-content:start;gap:5px}
+.quick-craft-card strong{display:flex;align-items:center;gap:6px;min-width:0;font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;overflow-wrap:anywhere}
+.quick-craft-card strong .art-icon{width:24px;height:24px;flex:none}
+.quick-craft-card p{margin:0;color:#d8e5df;font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.craft-meta{display:flex;align-items:center;flex-wrap:wrap;gap:5px 8px;color:#d8e5df;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.craft-kind{padding:1px 5px;border:1px solid #71949a;border-radius:4px;color:#bcebdd;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.craft-actions{display:flex;align-items:stretch;flex-wrap:wrap;gap:6px;margin-top:2px}
+.craft-actions button{flex:1}
+.craft-actions button,.offer-craft-actions button,.chest-craft-actions button,.recipe-card>button{min-width:0;min-height:40px;padding:8px;border:1px solid #a8d8c0;border-radius:6px;background:#294957;color:var(--ink);font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;white-space:normal;overflow-wrap:anywhere}
+.craft-actions button:hover:not(:disabled),.offer-craft-actions button:hover:not(:disabled),.chest-craft-actions button:hover:not(:disabled),.recipe-card>button:hover:not(:disabled){border-color:var(--amber)}
+.game-shell :is(.craft-actions,.offer-craft-actions,.chest-craft-actions,.recipe-card) button:disabled{opacity:1;background:#344b54;color:#d4e0df;border-color:#6b8288}
+.shop-card .craft-empty{grid-column:1/-1;margin:0;padding:8px 10px;border:1px dashed #6b8a8e;border-radius:7px;color:#d8e5df;font-size:var(--game-body-size);line-height:var(--game-body-line)}
+.all-recipes{margin-top:18px;border-top:1px solid #6b8a8e;padding-top:5px}
+.all-recipes>summary{cursor:pointer;padding:9px 0;color:var(--mint);font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600}
+.all-recipes>summary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.all-recipes .recipe-heading-row{margin:4px 0 8px}
+.all-recipes .recipe-heading{font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;letter-spacing:0}
+.recipe-progress{color:#bcebdd;font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.recipe-chain{flex-wrap:wrap;overflow:visible}
+.recipe-card.is-ready,.quick-craft-card.is-ready{border-color:var(--mint);box-shadow:inset 3px 0 0 var(--mint)}
+.inventory-item{font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.inventory-item strong{font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;overflow-wrap:anywhere}
+.inventory-item small{font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.inventory-item .inventory-count{align-self:flex-start;padding:1px 5px;border:1px solid #71949a;border-radius:4px;color:#ffe0a2;font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-variant-numeric:tabular-nums}
+.inventory-item button[data-sell]{min-height:40px;padding:7px;font-size:var(--game-label-size);line-height:var(--game-label-line);white-space:normal;overflow-wrap:anywhere}
+.inventory-item.empty{opacity:1;color:#b8c9c9;background:transparent;border-style:dashed}
+.game-shell[data-skin] .offer-card .offer-craft-hint{margin:4px 0 0;color:#bcebdd;font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.offer-craft-actions{display:grid;gap:5px;margin:4px 0}
+.offer-craft-actions button{width:100%}
+details.offer-craft-actions{display:block}
+.offer-craft-actions>summary,.chest-organize>summary{min-height:44px;padding:12px 8px;border:1px solid #71949a;border-radius:6px;background:#203a43;color:#bcebdd;cursor:pointer;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;overflow-wrap:anywhere}
+.offer-craft-actions>summary:focus-visible,.chest-organize>summary:focus-visible,#craft-hub-summary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.offer-craft-actions>.craft-actions,.chest-organize>.craft-actions{margin-top:7px}
+.offer-craft-actions .craft-actions{display:grid}
+.chest-craft-actions{display:grid;gap:7px;margin:0 0 12px}
+.chest-craft-actions:empty{display:none}
+.chest-craft-actions p{margin:0;color:#d8e5df;font-size:var(--game-body-size);line-height:var(--game-body-line)}
+.game-shell[data-skin="pixel"] :is(.quick-craft-card,.craft-kind,.craft-empty,.inventory-count){border-radius:2px}
+.game-shell[data-skin="pixel"] .quick-craft-card{background:#203844;border-color:#71949a;box-shadow:inset -3px -3px 0 #152a35}
+.game-shell[data-skin="pixel"] :is(.recipe-card.is-ready,.quick-craft-card.is-ready){border-color:var(--mint);box-shadow:inset 3px 0 0 var(--mint),inset -3px -3px 0 #152a35}
+.game-shell[data-skin="pixel"] :is(.craft-actions,.offer-craft-actions,.chest-craft-actions,.recipe-card)>button{border-radius:2px}
+.game-shell[data-skin="pixel"] :is(.offer-craft-actions,.chest-organize,.craft-progress)>summary{border-radius:2px}
+@media(max-width:680px){
+  .quick-craft-list{grid-template-columns:1fr}
+  .quick-craft-card{padding:8px}
+  .recipe-chain{overflow:visible}
+}
+@media(pointer:coarse), (max-width:680px){
+  .craft-actions button,.offer-craft-actions button,.chest-craft-actions button,.recipe-card>button,.inventory-item button[data-sell],.upgrade-preview summary{min-height:44px}
+}
