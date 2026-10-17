@@ -5,6 +5,7 @@ import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TE
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffPhysicalAmp } from './buffs.js?v=20261013-deadshot1';
 import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261013-upgrade3';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261016-merge1';
 import { createWindRenderer } from './effects/wind.js';
 import { createMeteorRenderer } from './effects/meteor.js';
 
@@ -246,6 +247,74 @@ import { createMeteorRenderer } from './effects/meteor.js';
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], EQUIPMENT_UPGRADE_UI[locale]);
   function modeName(id) { return selectedLocale === 'en' ? (id === 'endless' ? 'Endless' : 'Expedition') : selectedLocale === 'zh-TW' ? (id === 'endless' ? '無盡' : '遠征') : (id === 'endless' ? '无尽' : '远征'); }
   let selectedLocale = DEFAULT_LOCALE;
+  const EARLY_GAME_UI = {
+    'zh-CN': {
+      freeRefresh: '免费刷新（本波首次）', waveSupply: '含通关补给 ◇ {amount}。',
+      shopRates: '随机装备位：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位',
+      shopCaption: '前5波每店首刷免费，至少提供2件基础组件（锁定优先），并优先补齐已有配方。波末未拾材料按80%回收，经验全额保留；合成免费，不占额外配方格。'
+    },
+    'zh-TW': {
+      freeRefresh: '免費刷新（本波首次）', waveSupply: '含通關補給 ◇ {amount}。',
+      shopRates: '隨機裝備位：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位',
+      shopCaption: '前5波每店首刷免費，至少提供2件基礎組件（鎖定優先），並優先補齊已有配方。波末未拾材料按80%回收，經驗全額保留；合成免費，不佔額外配方格。'
+    },
+    en: {
+      freeRefresh: 'Free refresh (first this wave)', waveSupply: 'Includes ◇ {amount} clear bonus.',
+      shopRates: 'Random equipment slots: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot',
+      shopCaption: 'Waves 1–5: first refresh free, at least 2 components (locks take priority), and offers favor missing recipe parts. Uncollected materials return 80% gold and full XP. Crafting is free; recipes use no slot.'
+    }
+  };
+  for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], EARLY_GAME_UI[locale]);
+
+  const CRAFT_UI = {
+    'zh-CN': {
+      quickCraftTitle: '即时合成与升阶', allRecipes: '全部配方与合成路线',
+      upgradeProgress: '升阶进度与预览（{count} 类）',
+      craftSummary: '可合成 {crafts} 项 · 可升阶 {upgrades} 组 · 装备 {used}/{capacity} 格',
+      craftEmpty: '暂时没有可合成项。商品会标注合成用途，全部配方可在下方展开。',
+      craftTarget: '合成{item}', craftChain: '一键合成{item}', craftInputs: '消耗：{items}',
+      craftRoute: '合成路线：{items}', craftResult: '查看结果', craftKind: '固定配方 · 免费',
+      craftProgress: '直接材料 {owned}/{total}', craftUses: '合成用途：{items}',
+      buyCraft: '◇ {cost} 购买并合成{item}', takeCraft: '收下并合成{item}',
+      craftChoices: '可完成 {count} 项配方，选择结果', inventoryCount: '持有 {count} 件 · 共占 {count} 格',
+      sellOne: '卖出一件 ◇{price}', upgradeGroup: 'Lv.{level} · 持有 {count} 件 · 可合 {groups} 组',
+      upgradeBatch: '全部升至 Lv.{level}（{groups} 组）', upgradeBatchDone: '已升阶：{item} · 释放 {slots} 格',
+      buyUpgrade: '◇ {cost} 购买并升至 Lv.2', chestOrganize: '先合成已有装备，腾出空格',
+      chestFullCraft: '装备格已满；可选择合成结果，或先合成已有装备腾出空格。'
+    },
+    'zh-TW': {
+      quickCraftTitle: '即時合成與升階', allRecipes: '全部配方與合成路線',
+      upgradeProgress: '升階進度與預覽（{count} 類）',
+      craftSummary: '可合成 {crafts} 項 · 可升階 {upgrades} 組 · 裝備 {used}/{capacity} 格',
+      craftEmpty: '暫時沒有可合成項。商品會標註合成用途，全部配方可在下方展開。',
+      craftTarget: '合成{item}', craftChain: '一鍵合成{item}', craftInputs: '消耗：{items}',
+      craftRoute: '合成路線：{items}', craftResult: '查看結果', craftKind: '固定配方 · 免費',
+      craftProgress: '直接材料 {owned}/{total}', craftUses: '合成用途：{items}',
+      buyCraft: '◇ {cost} 購買並合成{item}', takeCraft: '收下並合成{item}',
+      craftChoices: '可完成 {count} 項配方，選擇結果', inventoryCount: '持有 {count} 件 · 共占 {count} 格',
+      sellOne: '賣出一件 ◇{price}', upgradeGroup: 'Lv.{level} · 持有 {count} 件 · 可合 {groups} 組',
+      upgradeBatch: '全部升至 Lv.{level}（{groups} 組）', upgradeBatchDone: '已升階：{item} · 釋放 {slots} 格',
+      buyUpgrade: '◇ {cost} 購買並升至 Lv.2', chestOrganize: '先合成已有裝備，騰出空格',
+      chestFullCraft: '裝備格已滿；可選擇合成結果，或先合成已有裝備騰出空格。'
+    },
+    en: {
+      quickCraftTitle: 'Craft & upgrade now', allRecipes: 'All recipes & crafting routes',
+      upgradeProgress: 'Upgrade progress & previews ({count} types)',
+      craftSummary: '{crafts} craft option(s) · {upgrades} upgrade group(s) · Slots {used}/{capacity}',
+      craftEmpty: 'Nothing to craft yet. Offers show their uses; expand all recipes below to plan your build.',
+      craftTarget: 'Craft {item}', craftChain: 'Craft full route: {item}', craftInputs: 'Consumes: {items}',
+      craftRoute: 'Crafting route: {items}', craftResult: 'Preview result', craftKind: 'Fixed recipe · Free',
+      craftProgress: 'Direct parts {owned}/{total}', craftUses: 'Used in: {items}',
+      buyCraft: 'Buy & craft {item} · ◇ {cost}', takeCraft: 'Take & craft {item}',
+      craftChoices: '{count} recipe option(s): choose a result', inventoryCount: '{count} owned · Uses {count} slots',
+      sellOne: 'Sell one · ◇{price}', upgradeGroup: 'Lv.{level} · {count} owned · {groups} merge group(s)',
+      upgradeBatch: 'Upgrade all to Lv.{level} ({groups} groups)', upgradeBatchDone: 'Upgraded: {item} · {slots} slots freed',
+      buyUpgrade: 'Buy & upgrade to Lv.2 · ◇ {cost}', chestOrganize: 'Craft held equipment to free a slot first',
+      chestFullCraft: 'Inventory full. Choose a crafting result, or craft held equipment to free a slot first.'
+    }
+  };
+  for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], CRAFT_UI[locale]);
+
   function t(key, vars = {}) {
     const value = EXTRA_UI[selectedLocale]?.[key] ?? LOCALES[selectedLocale]?.ui?.[key] ?? EXTRA_UI[DEFAULT_LOCALE]?.[key] ?? LOCALES[DEFAULT_LOCALE].ui[key] ?? key;
     return String(value).replace(/\{(\w+)\}/g, (_, name) => vars[name] == null ? '' : String(vars[name]));
@@ -752,8 +821,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
     createRun();
     startWave();
   }
-  function waveDuration() {
-    if (selectedPace === 'quick') return 15 + Math.min(6, run.wave * .3);
+  function waveDuration(pace = selectedPace) {
+    if (pace === 'quick') return 15 + Math.min(6, run.wave * .3);
+    if (run.wave <= 5) return 14 + run.wave * 4;
     return run.wave === MAX_WAVES || (isEndlessRun() && run.wave > MAX_WAVES && run.wave % 10 === 0)
       ? 90 : Math.min(60, 15 + run.wave * 5);
   }
@@ -851,16 +921,15 @@ import { createMeteorRenderer } from './effects/meteor.js';
     return true;
   }
   function equipmentCanFit(extra = 1) { return !!run && run.equipment.length + extra <= run.equipmentCapacity; }
-  function recipeIndices(recipe) {
-    const indices = [];
-    for (const id of recipe || []) {
-      const index = run.equipment.findIndex((item, i) => item.id === id && !indices.includes(i));
-      if (index < 0) return null;
-      indices.push(index);
+  function equipmentGroups() {
+    const groups = new Map();
+    for (const item of run.equipment) {
+      const key = `${item.id}:${equipmentLevel(item)}`;
+      if (!groups.has(key)) groups.set(key, []);
+      groups.get(key).push(item);
     }
-    return indices;
+    return [...groups.values()];
   }
-  function recipeReady(id) { return !!equipmentDef(id)?.recipe && !!recipeIndices(equipmentDef(id).recipe); }
   function addEquipment(id, silent = false) {
     const def = equipmentDef(id);
     if (!def || !equipmentCanFit()) return false;
@@ -869,54 +938,67 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (!silent) showToast(t('acquired', { item: equipmentName(def) }));
     return true;
   }
-  function craftEquipment(id) {
-    const def = equipmentDef(id), recipe = def?.recipe;
-    if (!recipe || !recipeReady(id)) return false;
-    const indices = recipeIndices(recipe);
-    const hp = run.player.hp, maxHp = run.player.maxHp, mana = run.player.mana, maxMana = run.player.maxMana;
-    if (run.equipment.length - indices.length + 1 > run.equipmentCapacity) return false;
-    [...indices].sort((a, b) => b - a).forEach(index => {
-      const component = run.equipment[index];
-      applyEquipmentStats(component, -1);
-      run.equipment.splice(index, 1);
-    });
-    addEquipment(id, true);
-    run.player.hp = clamp(hp + run.player.maxHp - maxHp, 1, run.player.maxHp);
-    run.player.mana = clamp(mana + run.player.maxMana - maxMana, 0, run.player.maxMana);
-    showToast(t('merged', { item: equipmentName(def) }));
+  function craftEquipment(id, incomingId = null) {
+    if (!run || !['shop', 'chest'].includes(phase)) return false;
+    const plan = planEquipmentCraft(run.equipment, id, incomingId);
+    if (!plan || run.equipment.length - plan.consumeUids.length + 1 > run.equipmentCapacity) return false;
+    const consumed = run.equipment.filter(item => plan.consumeUids.includes(item.uid));
+    const delta = { ...equipmentDef(id).stats };
+    for (const item of consumed) {
+      for (const [key, value] of Object.entries(equipmentDef(item).stats)) delta[key] = (delta[key] || 0) - value;
+    }
+    // Apply the final difference once: intermediate recipes must not heal, drain,
+    // or clamp resources while a complete crafting route is being resolved.
+    applyStatBlock(delta);
+    run.equipment = run.equipment.filter(item => !plan.consumeUids.includes(item.uid));
+    run.equipment.push(createEquipment(id));
+    showToast(t('merged', { item: equipmentName(equipmentDef(id)) }));
     playSfx('merge');
     return true;
   }
   function equipmentSellPrice(item) { return equipmentResale(item); }
 
-  function upgradeEquipment(itemUid) {
-    if (!run || phase !== 'shop') return false;
-    const indices = equipmentUpgradeIndices(run.equipment, itemUid);
-    if (!indices || run.equipment.length - 2 > run.equipmentCapacity) return false;
+  function upgradeEquipment(itemUid, batch = false) {
+    if (!run || !['shop', 'chest'].includes(phase)) return false;
     const source = run.equipment.find(item => item.uid === itemUid);
-    const result = createEquipment(source.id, equipmentLevel(source) + 1);
-    // Every additive stat is conserved. Replace the instances atomically without
-    // removing/reapplying HP or mana, which could heal a wounded player.
-    const remaining = run.equipment.filter((_, index) => !indices.includes(index));
-    remaining.splice(Math.min(...indices), 0, result);
-    run.equipment = remaining;
-    renderShop(); renderEquipmentStrip();
-    const card = document.querySelector(`[data-equipment-uid="${result.uid}"]`);
+    if (!source || !equipmentUpgradeIndices(run.equipment, itemUid)) return false;
+    const level = equipmentLevel(source);
+    const count = run.equipment.filter(item => item.id === source.id && equipmentLevel(item) === level && (item.level == null || item.level === level)).length;
+    const groups = batch ? Math.floor(count / 3) : 1;
+    let result;
+    for (let i = 0; i < groups; i++) {
+      const nextSource = run.equipment.find(item => item.id === source.id && equipmentLevel(item) === level);
+      const indices = equipmentUpgradeIndices(run.equipment, nextSource?.uid);
+      if (!indices) return false;
+      result = createEquipment(source.id, level + 1);
+      // Replacing instances preserves all stats, resources and proc timers.
+      const remaining = run.equipment.filter((_, index) => !indices.includes(index));
+      remaining.splice(Math.min(...indices), 0, result);
+      run.equipment = remaining;
+    }
+    if (phase === 'shop') renderShop(); else renderChestReward();
+    renderEquipmentStrip();
+    const card = document.querySelector(`#inventory [data-equipment-id="${result.id}"][data-upgrade-level="${result.level}"]`);
     card?.classList.add('just-upgraded');
-    card?.focus({ preventScroll: true });
-    showToast(t('upgradeDone', { item: equipmentName(equipmentDef(result)) }));
+    focusCraftResult();
+    showToast(t('upgradeBatchDone', { item: equipmentName(equipmentDef(result)), slots: groups * 2 }));
     playSfx(result.level === 3 ? 'merge-max' : 'merge');
     return true;
   }
 
-  function equipmentUpgradeControls(item) {
+  function equipmentUpgradeControls(item, count) {
     if (!EQUIPMENT_UPGRADES[item.id]) return '';
     const level = equipmentLevel(item);
     if (level === 3) return `<span class="upgrade-max">${t('upgradeMax')}</span>`;
-    const count = run.equipment.filter(other => other.id === item.id && equipmentLevel(other) === level).length;
     const next = equipmentDef({ id: item.id, level: level + 1 });
     const actual = t('upgradeActual', { crit: clamp(run.stats.crit, 0, 90), dodge: clamp(run.stats.dodge, 0, 55), haste: clamp(run.stats.abilityHaste, 0, 60) });
-    return `<details class="upgrade-preview"><summary>${t('upgradePreview')}</summary><p><strong>${equipmentName(next)}</strong></p><p>${equipmentUpgradeDescription(next, selectedLocale)}</p><p>${t('upgradeKept')}</p><p>${actual}</p></details><button class="upgrade-button" type="button" data-upgrade="${item.uid}" ${count < 3 ? 'disabled' : ''}>${t('upgradeTo', { level: level + 1, count: Math.min(count, 3) })}</button>`;
+    return `<details class="upgrade-preview"><summary>${t('upgradePreview')}</summary><p><strong>${equipmentName(next)}</strong></p><p>${equipmentUpgradeDescription(next, selectedLocale)}</p><p>${t('upgradeKept')}</p><p>${actual}</p></details><div class="craft-actions"><button class="upgrade-button" type="button" data-upgrade="${item.uid}" ${count < 3 ? 'disabled' : ''}>${t('upgradeTo', { level: level + 1, count })}</button>${count >= 6 ? `<button class="upgrade-button" type="button" data-upgrade="${item.uid}" data-batch="true">${t('upgradeBatch', { level: level + 1, groups: Math.floor(count / 3) })}</button>` : ''}</div>`;
+  }
+
+  function focusCraftResult(id) {
+    const target = phase === 'chest' ? '#chest-craft-list button:not(:disabled), #chest-take-button:not(:disabled), #chest-scrap-button'
+      : id ? `#quick-craft-list [data-craft="${id}"]` : '#craft-hub-summary';
+    (document.querySelector(target) || $('craft-hub-summary')).focus();
   }
 
   function equipmentPool() {
@@ -967,11 +1049,17 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (phase !== 'combat') return;
     if (run.character.id === 'tb') { run.skills.tb = createTerrorbladeState(); run.player.pendingAttack = null; }
     collectRemainingPickups();
+    const paceBonus = !studioMode && run.wave <= 5 && selectedPace === 'quick'
+      ? Math.round((run.money - run.waveStartMoney) * (waveDuration('normal') / waveDuration() - 1)) : 0;
+    const supply = !studioMode && run.wave <= 5
+      ? paceBonus + (run.wave === 1 ? Math.max(24, 40 - run.money - paceBonus) : 10) : 0;
+    run.money += supply; run.earned += supply;
     run.enemies = []; run.enemyBullets = []; run.bullets = [];
     run.waveSummary = {
       wave: run.wave,
       kills: run.kills - run.waveStartKills,
       money: run.money - run.waveStartMoney,
+      supply,
       chests: run.pendingChests - run.waveStartPendingChests,
       level: run.level,
       nextWave: isEndlessRun() || run.wave < MAX_WAVES ? run.wave + 1 : null
@@ -980,14 +1068,14 @@ import { createMeteorRenderer } from './effects/meteor.js';
     playSfx('wave-end');
   }
   function beginWaveSummary() {
-    run.intermission = { kind: 'summary', time: 3.5 };
+    run.intermission = { kind: 'summary', time: run.wave <= 5 ? 2 : 3.5 };
     renderWaveResult();
     showPhase('wave-result');
     $('wave-result-continue').focus({ preventScroll: true });
   }
   function beginNextWaveCountdown() {
     if (!run || (!isEndlessRun() && run.wave >= MAX_WAVES) || phase !== 'shop') return;
-    run.intermission = { kind: 'next', time: 3 };
+    run.intermission = { kind: 'next', time: run.wave <= 5 ? 1 : 3 };
     renderWaveResult();
     showPhase('wave-result');
     $('wave-result-continue').focus({ preventScroll: true });
@@ -1015,7 +1103,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     $('wave-result-title').textContent = isNext ? t('nextWaveTitle', { wave: summary.nextWave }) : t('waveDoneTitle', { wave: summary.wave });
     $('wave-result-message').textContent = isNext
       ? t('nextWaveMessage')
-      : summary.nextWave ? t('lootMessage') : t('finalWaveMessage');
+      : (summary.nextWave ? t('lootMessage') : t('finalWaveMessage')) + (summary.supply ? ` ${t('waveSupply', { amount: summary.supply })}` : '');
     $('wave-result-stats').innerHTML = isNext
       ? `<div><span>${t('aboutToStart')}</span><strong>${t('bestWave', { wave: summary.nextWave })}</strong></div><div><span>${t('currentDifficulty')}</span><strong>${run.difficulty.name}</strong></div>`
       : `<div><span>${t('defeated', { kills: '' }).replace(' ', '')}</span><strong>${summary.kills}</strong></div><div><span>${t('waveMaterials')}</span><strong>◇ ${summary.money}</strong></div><div><span>${t('pendingChests')}</span><strong>${summary.chests}</strong></div><div><span>${t('currentLevel')}</span><strong>${summary.level}</strong></div>`;
@@ -1044,16 +1132,24 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const def = equipmentDef(run.chestReward.id);
     $('chests-left').textContent = run.pendingChests;
     const canTake = equipmentCanFit();
-    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p>${canTake ? '' : `<p class="equipment-full-note">${t('fullEquipment')}</p>`}</div>`;
+    const plans = availableEquipmentCrafts(run.equipment, run.chestReward.id);
+    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p>${canTake ? '' : `<p class="equipment-full-note">${t('chestFullCraft')}</p>`}</div>`;
+    const organize = canTake ? '' : availableEquipmentCrafts(run.equipment).map(plan => `<button type="button" data-chest-organize="${plan.id}">${t('craftTarget', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
+      + equipmentGroups().filter(group => equipmentUpgradeIndices(run.equipment, group[0].uid)).map(group => `<button type="button" data-upgrade="${group[0].uid}">${equipmentName(equipmentDef(group[0]))} · ${t('upgradeTo', { level: equipmentLevel(group[0]) + 1, count: group.length })}</button>`).join('');
+    $('chest-craft-list').innerHTML = plans.map(plan => `<button type="button" data-chest-craft="${plan.id}">${t('takeCraft', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
+      + (organize ? `<details class="chest-organize"><summary>${t('chestOrganize')}</summary><div class="craft-actions">${organize}</div></details>` : '');
     $('chest-scrap-button').textContent = t('scrapFor', { amount: Math.round(def.price * .5) });
     $('chest-take-button').disabled = !canTake;
     $('chest-take-button').title = canTake ? '' : t('fullEquipment');
   }
-  function resolveChest(take) {
+  function resolveChest(take, targetId = null) {
     if (phase !== 'chest' || !run.chestReward) return;
     const item = equipmentDef(run.chestReward.id);
-    if (take && !equipmentCanFit()) return;
-    if (take) addEquipment(run.chestReward.id);
+    if (take && targetId) {
+      if (!craftEquipment(targetId, run.chestReward.id)) return;
+    } else if (take) {
+      if (!equipmentCanFit() || !addEquipment(run.chestReward.id)) return;
+    }
     else {
       const salvage = Math.round(item.price * .5);
       run.money += salvage; run.earned += salvage;
@@ -1061,6 +1157,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     }
     run.pendingChests -= 1;
     run.chestReward = null;
+    renderEquipmentStrip();
     playSfx(take ? 'chest-take' : 'chest-scrap');
     if (run.pendingChests > 0) openChest(); else finishChestSequence();
   }
@@ -1083,23 +1180,93 @@ import { createMeteorRenderer } from './effects/meteor.js';
 
   function openShop() {
     run.rerolls = 0;
-    run.shopOffers = Array.from({ length: SHOP_OFFER_COUNT }, (_, i) => run.shopOffers[i]?.locked ? run.shopOffers[i] : randomShopOffer(i === SHOP_OFFER_COUNT - 1 ? 'buff' : null));
+    restockShop();
     heal(2 + Math.round(run.player.maxHp * .16));
-    showPhase('shop'); renderShop(); $('reroll-button').focus({ preventScroll: true });
+    showPhase('shop'); renderShop();
+    $('shop-screen').querySelector('.shop-card').scrollTop = 0;
+    $('craft-hub-summary').focus({ preventScroll: true });
   }
-  function randomShopOffer(forceKind = null) {
+  function recipeComponentHint(excluded) {
+    const pool = equipmentPool().filter(id => !excluded.has(id));
+    let best = null, bestProgress = 0;
+    for (const def of Object.values(EQUIPMENT)) {
+      if (!def.recipe) continue;
+      const missing = def.recipe.filter(id => !run.equipment.some(item => item.id === id));
+      const progress = (def.recipe.length - missing.length) / def.recipe.length;
+      if (!progress || !missing.length) continue;
+      for (const id of missing.filter(id => pool.includes(id))) {
+        if (progress > bestProgress || (progress === bestProgress && EQUIPMENT[id].price < EQUIPMENT[best].price)) {
+          best = id; bestProgress = progress;
+        }
+      }
+    }
+    return best;
+  }
+  function restockShop() {
+    const offers = Array.from({ length: SHOP_OFFER_COUNT }, (_, i) => run.shopOffers[i]?.locked ? run.shopOffers[i] : null);
+    const used = new Set(offers.filter(offer => offer?.kind === 'equipment').map(offer => offer.id));
+    let components = offers.filter(offer => offer?.kind === 'equipment' && EQUIPMENT[offer.id].kind === 'component').length;
+    let hint = run.wave <= 5 ? recipeComponentHint(used) : null;
+    for (let i = 0; i < SHOP_OFFER_COUNT - 1; i++) {
+      if (offers[i]) continue;
+      offers[i] = randomShopOffer(run.wave <= 5 && components < 2 ? 'component' : null, used, hint);
+      used.add(offers[i].id);
+      if (EQUIPMENT[offers[i].id].kind === 'component') components += 1;
+      hint = null;
+    }
+    offers[SHOP_OFFER_COUNT - 1] ||= randomShopOffer('buff');
+    run.shopOffers = offers;
+  }
+  function randomShopOffer(forceKind = null, excluded = new Set(), hint = null) {
     if (forceKind === 'buff') {
       const id = randomBuff(run.wave, run.stats.luck), def = BUFFS[id];
       const baseCost = def.price + run.wave * 1.4;
       return { kind: 'buff', id, cost: Math.round(baseCost * (1 + endlessFactor() / 5)), locked: false };
     }
     const rates = shopRates(), roll = Math.random();
-    const kind = roll < rates.finished ? 'finished' : roll < rates.finished + rates.intermediate ? 'intermediate' : 'component';
-    const id = weightedEquipment(kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind));
+    const kind = hint ? 'component' : forceKind || (roll < rates.finished ? 'finished' : roll < rates.finished + rates.intermediate ? 'intermediate' : 'component');
+    const pool = (kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind)).filter(id => !excluded.has(id));
+    const id = hint || weightedEquipment(pool);
     const baseCost = EQUIPMENT[id].price + run.wave * 1.4;
     return { kind: 'equipment', id, cost: Math.round(baseCost * (1 + endlessFactor() / 5)), locked: false };
   }
   function equipmentKind(def) { return t(def.kind); }
+  function shopRerollCost() {
+    const freeFirst = run.wave <= 5;
+    if (freeFirst && run.rerolls === 0) return 0;
+    return Math.round((3 + run.wave + Math.max(0, run.rerolls - (freeFirst ? 1 : 0)) * 3) * (1 + endlessFactor() / 5));
+  }
+  function craftSourceText(plan) {
+    const counts = new Map();
+    for (const item of run.equipment.filter(item => plan.consumeUids.includes(item.uid))) counts.set(item.id, (counts.get(item.id) || 0) + 1);
+    return [...counts].map(([id, count]) => `${equipmentName(equipmentDef(id))}${count > 1 ? ` ×${count}` : ''}`).join(' + ');
+  }
+  function recipeProgress(def) {
+    const remaining = run.equipment.map(item => item.id);
+    return def.recipe.reduce((count, id) => {
+      const index = remaining.indexOf(id);
+      if (index < 0) return count;
+      remaining.splice(index, 1);
+      return count + 1;
+    }, 0);
+  }
+  function renderCraftHub(plans, groups) {
+    const upgradeGroups = groups.filter(group => EQUIPMENT_UPGRADES[group[0].id] && equipmentLevel(group[0]) < 3)
+      .sort((a, b) => Number(b.length >= 3) - Number(a.length >= 3));
+    $('craft-hub-summary').textContent = t('craftSummary', { crafts: plans.length,
+      upgrades: upgradeGroups.reduce((total, group) => total + Math.floor(group.length / 3), 0), used: run.equipment.length, capacity: run.equipmentCapacity });
+    const upgradeCard = group => {
+      const item = group[0];
+      return `<div class="quick-craft-card ${group.length >= 3 ? 'is-ready' : ''}"><span class="craft-kind">${t('upgradeGroup', { level: equipmentLevel(item), count: group.length, groups: Math.floor(group.length / 3) })}</span><strong>${equipmentIcon(item.id)} ${equipmentName(equipmentDef(item))}</strong>${equipmentUpgradeControls(item, group.length)}</div>`;
+    };
+    const ready = plans.map(plan => {
+      const def = equipmentDef(plan.id);
+      return `<div class="quick-craft-card is-ready"><span class="craft-kind">${t('craftKind')}</span><strong>${equipmentIcon(plan.id)} ${equipmentName(def)}</strong><p class="craft-meta">${t('craftInputs', { items: craftSourceText(plan) })}</p>${plan.steps.length > 1 ? `<p class="craft-meta">${t('craftRoute', { items: plan.steps.map(id => equipmentName(equipmentDef(id))).join(' → ') })}</p>` : ''}<details class="upgrade-preview"><summary>${t('craftResult')}</summary><p>${equipmentDesc(def)}</p></details><div class="craft-actions"><button type="button" data-craft="${plan.id}">${t(plan.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div></div>`;
+    }).join('') + upgradeGroups.filter(group => group.length >= 3).map(upgradeCard).join('');
+    const incomplete = upgradeGroups.filter(group => group.length < 3);
+    $('quick-craft-list').innerHTML = (ready || `<p class="craft-empty">${t('craftEmpty')}</p>`)
+      + (incomplete.length ? `<details class="craft-progress"><summary>${t('upgradeProgress', { count: incomplete.length })}</summary><div class="quick-craft-list">${incomplete.map(upgradeCard).join('')}</div></details>` : '');
+  }
   function renderShop() {
     $('shop-wave').textContent = t('waveComplete', { wave: run.wave });
     const hasNextWave = isEndlessRun() || run.wave < MAX_WAVES;
@@ -1119,34 +1286,41 @@ import { createMeteorRenderer } from './effects/meteor.js';
       const desc = isBuff ? buffDesc(def) : equipmentDesc(def);
       const icon = isBuff ? buffIcon(def) : equipmentIcon(offer.id);
       const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : `${equipmentKind(def)} · ${t('equipmentGrade', { grade: def.grade })}`;
-      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : ''}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong>${name}</strong><p>${desc}</p><div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
+      const plans = isBuff ? [] : availableEquipmentCrafts(run.equipment, offer.id);
+      const uses = isBuff ? [] : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].recipe?.includes(offer.id));
+      const canUpgrade = !isBuff && EQUIPMENT_UPGRADES[offer.id] && run.equipment.filter(item => item.id === offer.id && equipmentLevel(item) === 1).length >= 2;
+      const craftActions = plans.map(plan => `<button type="button" data-buy="${i}" data-buy-craft="${plan.id}" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyCraft', { cost: offer.cost, item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
+        + (canUpgrade ? `<button type="button" data-buy="${i}" data-buy-upgrade="true" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyUpgrade', { cost: offer.cost })}</button>` : '');
+      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : ''}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong>${name}</strong><p>${desc}</p>${uses.length ? `<p class="offer-craft-hint">${t('craftUses', { items: uses.map(id => equipmentName(equipmentDef(id))).join(' / ') })}</p>` : ''}${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
     }).join('');
-    const rerollCost = Math.round((3 + run.wave + run.rerolls * 3) * (1 + endlessFactor() / 5));
-    $('reroll-button').textContent = t('refresh', { cost: rerollCost });
+    const rerollCost = shopRerollCost();
+    $('reroll-button').textContent = rerollCost === 0 ? t('freeRefresh') : t('refresh', { cost: rerollCost });
     $('reroll-button').disabled = run.money < rerollCost;
-    $('inventory').innerHTML = Array.from({ length: run.equipmentCapacity }, (_, i) => {
-      const item = run.equipment[i];
-      if (!item) return `<div class="inventory-item empty">${t('emptySlot')}</div>`;
+    const groups = equipmentGroups(), plans = availableEquipmentCrafts(run.equipment);
+    renderCraftHub(plans, groups);
+    $('inventory').innerHTML = groups.map(group => {
+      const item = group[0], i = run.equipment.indexOf(item);
       const def = equipmentDef(item);
-      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}" tabindex="-1"><strong>${equipmentIcon(item.id)} ${equipmentName(def)}</strong><small>${equipmentKind(def)} · ${t('equipmentGrade', { grade: def.grade })}</small><p>${equipmentDesc(def)}</p>${equipmentUpgradeControls(item)}<div class="item-actions"><button type="button" data-sell="${i}">${t('sell', { price: equipmentSellPrice(item) })}</button></div></div>`;
-    }).join('');
+      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}" tabindex="-1"><strong>${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count">${t('inventoryCount', { count: group.length })}</span><small>${equipmentKind(def)} · ${t('equipmentGrade', { grade: def.grade })}</small><p>${equipmentDesc(def)}</p>${EQUIPMENT_UPGRADES[item.id] && def.level === 3 ? `<span class="upgrade-max">${t('upgradeMax')}</span>` : ''}<div class="item-actions"><button type="button" data-sell="${i}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
+    }).join('') + Array.from({ length: run.equipmentCapacity - run.equipment.length }, () => `<div class="inventory-item empty">${t('emptySlot')}</div>`).join('');
     $('buff-list').innerHTML = BUFF_IDS.filter(id => buffCount(id) > 0).map(id => {
       const def = BUFFS[id];
       const chargeNote = id === 'shallowGrave' ? `<small>${t('buffNextCharges', { count: buffCount(id) })}</small>` : '';
       return `<div class="buff-item" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)}</strong>${buffRarityBadge(def)}<small>${t('buffStack', { count: buffCount(id) })}</small>${chargeNote}<p>${buffDesc(def)}</p></div></div>`;
     }).join('') || `<p class="buff-empty">${t('buffEmpty')}</p>`;
     $('buff-list').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
-    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe).map(id => {
-      const def = equipmentDef(id), ready = recipeReady(id);
+    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe)
+      .sort((a, b) => Number(!!planEquipmentCraft(run.equipment, b)) - Number(!!planEquipmentCraft(run.equipment, a)) || recipeProgress(equipmentDef(b)) / EQUIPMENT[b].recipe.length - recipeProgress(equipmentDef(a)) / EQUIPMENT[a].recipe.length).map(id => {
+      const def = equipmentDef(id), plan = planEquipmentCraft(run.equipment, id), ready = !!plan;
       const parts = def.recipe.map(part => `<span class="recipe-node ${run.equipment.some(item => item.id === part) ? '' : 'missing'}">${equipmentIcon(part)} ${equipmentName(equipmentDef(part))}</span>`).join('<span class="recipe-arrow" aria-hidden="true">+</span>');
-      return `<div class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}"><strong>${equipmentIcon(id)} ${equipmentName(def)}</strong><span class="recipe-chain">${parts}</span><p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t('merge')}</button></div>`;
+      return `<div class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}"><strong>${equipmentIcon(id)} ${equipmentName(def)}</strong><span class="recipe-chain">${parts}</span><span class="recipe-progress">${t('craftProgress', { owned: recipeProgress(def), total: def.recipe.length })}</span>${plan?.steps.length > 1 ? `<p>${t('craftRoute', { items: plan.steps.map(step => equipmentName(equipmentDef(step))).join(' → ') })}</p>` : ''}<p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t(plan?.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div>`;
     }).join('');
     $('shop-stats').textContent = statSummary();
   }
   function focusShopControl(preferred) {
     const preferredButton = document.querySelector(preferred);
     const nextButton = [preferredButton, ...document.querySelectorAll('#shop-offers [data-buy]'), $('reroll-button'), $('next-wave-button')]
-      .find(button => button && !button.disabled);
+      .find(button => button && !button.disabled && button.getClientRects().length);
     nextButton?.focus({ preventScroll: true });
   }
 
@@ -1161,10 +1335,11 @@ import { createMeteorRenderer } from './effects/meteor.js';
       return `<span class="equipment-slot ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}" role="img" aria-label="${name}" title="${name}: ${equipmentDesc(def)}">${equipmentIcon(item.id)}<small>${EQUIPMENT_UPGRADES[item.id] ? `Lv.${def.level}` : def.grade}</small></span>`;
     }).join('');
   }
-  function buyOffer(index) {
+  function buyOffer(index, targetId = null, upgrade = false) {
     if (!run || phase !== 'shop') return;
     const offer = run.shopOffers[index];
     if (!offer || run.money < offer.cost) return;
+    if ((targetId || upgrade) && offer.kind === 'buff') return;
     if (offer.kind === 'buff') {
       run.money -= offer.cost;
       addBuff(offer.id);
@@ -1173,12 +1348,25 @@ import { createMeteorRenderer } from './effects/meteor.js';
       focusShopControl(`#shop-offers [data-buy="${(index + 1) % run.shopOffers.length}"]`);
       return;
     }
-    if (!equipmentCanFit()) { showToast(t('fullEquipment')); return; }
+    if (targetId) {
+      if (!craftEquipment(targetId, offer.id)) return;
+    } else if (upgrade) {
+      const pair = run.equipment.filter(item => item.id === offer.id && equipmentLevel(item) === 1).slice(0, 2);
+      if (!EQUIPMENT_UPGRADES[offer.id] || pair.length !== 2 || run.equipment.length - 1 > run.equipmentCapacity) return;
+      const ids = new Set(pair.map(item => item.uid));
+      run.equipment = run.equipment.filter(item => !ids.has(item.uid));
+      run.equipment.push(createEquipment(offer.id, 2));
+      applyEquipmentStats(offer.id);
+      showToast(t('upgradeBatchDone', { item: equipmentName(equipmentDef({ id: offer.id, level: 2 })), slots: 1 }));
+    } else {
+      if (!equipmentCanFit()) { showToast(t('fullEquipment')); return; }
+      if (!addEquipment(offer.id)) return;
+    }
     run.money -= offer.cost;
-    addEquipment(offer.id);
     run.shopOffers[index] = null;
     renderShop(); renderEquipmentStrip(); playSfx('buy');
-    focusShopControl(`#shop-offers [data-buy="${(index + 1) % run.shopOffers.length}"]`);
+    if (targetId || upgrade) focusCraftResult(targetId);
+    else focusShopControl(`#shop-offers [data-buy="${(index + 1) % run.shopOffers.length}"]`);
   }
   function sellEquipment(index) {
     const item = run.equipment[index];
@@ -1190,10 +1378,11 @@ import { createMeteorRenderer } from './effects/meteor.js';
     focusShopControl(`#inventory [data-sell="${Math.min(index, run.equipment.length - 1)}"]`);
   }
   function rerollShop() {
-    const cost = Math.round((3 + run.wave + run.rerolls * 3) * (1 + endlessFactor() / 5));
+    if (!run || phase !== 'shop') return;
+    const cost = shopRerollCost();
     if (run.money < cost) return;
     run.money -= cost; run.rerolls += 1;
-    run.shopOffers = run.shopOffers.map((offer, index) => offer?.locked ? offer : randomShopOffer(index === SHOP_OFFER_COUNT - 1 ? 'buff' : null));
+    restockShop();
     renderShop(); playSfx('reroll');
     focusShopControl('#reroll-button');
   }
@@ -1216,7 +1405,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       const viewport = Math.max(viewW, viewH);
       const radius = nearPlayer
         ? rand(110, Math.max(180, Math.min(260, Math.min(viewW, viewH) * .5)))
-        : viewport * .58 + rand(100, 210);
+        : run.wave <= 5 ? Math.min(560, viewport * .45) + rand(100, 160) : viewport * .58 + rand(100, 210);
       x = clamp(p.x + Math.cos(angle) * radius, 45, WORLD.w - 45);
       y = clamp(p.y + Math.sin(angle) * radius, 45, WORLD.h - 45);
     }
@@ -1234,12 +1423,13 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function spawnElite() {
     const id = ELITE_ROTATION[run.eliteIndex++ % ELITE_ROTATION.length];
-    const p = run.player, angle = rand(0, TAU), radius = rand(360, 440);
+    const early = run.wave <= 5;
+    const p = run.player, angle = rand(0, TAU), radius = early ? rand(300, 360) : rand(360, 440);
     for (let i = 0; i < 12; i++) {
       const a = angle + i * TAU / 12;
       const point = nearestWalkable(clamp(p.x + Math.cos(a) * radius, 45, WORLD.w - 45),
         clamp(p.y + Math.sin(a) * radius, 45, WORLD.h - 45), ENEMIES[id].radius);
-      if (distance(point, p) < 320 || distance(point, p) > 500) continue;
+      if (distance(point, p) < (early ? 260 : 320) || distance(point, p) > (early ? 420 : 500)) continue;
       spawnEnemy(id, point.x, point.y);
       return id;
     }
@@ -1249,26 +1439,32 @@ import { createMeteorRenderer } from './effects/meteor.js';
   function spawnWaveEnemies(dt) {
     if (run.timeLeft <= 0) return;
     run.spawnClock -= dt;
-    const interval = Math.max(.26, (1.35 - run.wave * .045) / run.difficulty.spawnRate);
+    const early = run.wave <= 5;
+    const spawnRate = run.difficulty.spawnRate;
+    const interval = Math.max(.26, ((early ? 1.15 : 1.35) - run.wave * .045) / spawnRate);
+    const nearbyRadius = Math.max(260, Math.min(520, Math.max(viewW, viewH) * .7));
+    const cam = camera();
+    let nearby = run.enemies.filter(e => !e.dead && visible(e, cam, 0) && distance(e, run.player) <= nearbyRadius).length;
     if (run.spawnClock <= 0) {
       run.spawnClock += interval;
       if (run.enemies.length < enemyCap()) {
-        const count = Math.min(10, 1 + Math.floor(run.wave / 5) + Math.floor((run.difficulty.spawnRate - 1) * 3) + Math.floor(endlessFactor() / 10));
+        const count = Math.min(10, 1 + Math.floor((run.wave + (early ? 2 : 0)) / 5) + Math.floor((run.difficulty.spawnRate - 1) * 3) + Math.floor(endlessFactor() / 10));
         const pool = enemyPool();
         const nearbyMinimum = nearbyEnemyMinimum();
-        for (let i = 0; i < count && run.enemies.length < enemyCap(); i++) spawnEnemy(pick(pool), undefined, undefined, false, i === 0 && run.enemies.length < nearbyMinimum);
+        for (let i = 0; i < count && run.enemies.length < enemyCap(); i++) {
+          const nearPlayer = i === 0 && nearby < nearbyMinimum;
+          spawnEnemy(pick(pool), undefined, undefined, false, nearPlayer);
+          if (nearPlayer) nearby += 1;
+        }
       }
     }
-    const nearbyRadius = Math.max(260, Math.min(520, Math.max(viewW, viewH) * .7));
-    const cam = camera();
-    const nearby = run.enemies.filter(e => !e.dead && visible(e, cam, 0) && distance(e, run.player) <= nearbyRadius).length;
     run.nearbySpawnClock -= dt;
     if (nearby < nearbyEnemyMinimum() && run.nearbySpawnClock <= 0 && run.enemies.length < enemyCap()) {
       const pool = enemyPool();
       spawnEnemy(pick(pool), undefined, undefined, false, true);
-      run.nearbySpawnClock = .55 / run.difficulty.spawnRate;
+      run.nearbySpawnClock = .55 / spawnRate;
     }
-    if (!run.specialSpawned && run.elapsed > Math.min(7, waveDuration() * .3)) {
+    if (!run.specialSpawned && run.elapsed > Math.min(7, waveDuration() * (early ? .2 : .3))) {
       run.specialSpawned = true;
       const campaignBossWave = run.wave === 10 || run.wave === MAX_WAVES;
       const endlessBossWave = isEndlessRun() && run.wave >= MAX_WAVES && run.wave % 10 === 0;
@@ -3755,21 +3951,35 @@ import { createMeteorRenderer } from './effects/meteor.js';
     });
     $('shop-offers').addEventListener('click', event => {
       const buy = event.target.closest('[data-buy]'), lock = event.target.closest('[data-lock]');
-      if (buy) buyOffer(Number(buy.dataset.buy));
+      if (buy) buyOffer(Number(buy.dataset.buy), buy.dataset.buyCraft || null, buy.dataset.buyUpgrade === 'true');
       if (lock) { const index = Number(lock.dataset.lock), offer = run.shopOffers[index]; if (offer) { offer.locked = !offer.locked; renderShop(); refocus(`[data-lock="${index}"]`); } }
     });
     $('inventory').addEventListener('click', event => {
       if (phase !== 'shop') return;
-      const upgrade = event.target.closest('[data-upgrade]');
-      if (upgrade) { upgradeEquipment(Number(upgrade.dataset.upgrade)); return; }
       const sell = event.target.closest('[data-sell]');
       if (sell) sellEquipment(Number(sell.dataset.sell));
     });
-    $('recipe-list').addEventListener('click', event => {
+    const craftClick = event => {
+      if (phase !== 'shop') return;
+      const upgrade = event.target.closest('[data-upgrade]');
+      if (upgrade) { upgradeEquipment(Number(upgrade.dataset.upgrade), upgrade.dataset.batch === 'true'); return; }
       const craft = event.target.closest('[data-craft]');
       if (craft && craftEquipment(craft.dataset.craft)) {
         renderShop(); renderEquipmentStrip();
-        focusShopControl('#recipe-list .is-ready [data-craft]');
+        focusCraftResult(craft.dataset.craft);
+      }
+    };
+    $('quick-craft-list').addEventListener('click', craftClick);
+    $('recipe-list').addEventListener('click', craftClick);
+    $('chest-craft-list').addEventListener('click', event => {
+      if (phase !== 'chest') return;
+      const reward = event.target.closest('[data-chest-craft]');
+      if (reward) { resolveChest(true, reward.dataset.chestCraft); return; }
+      const upgrade = event.target.closest('[data-upgrade]');
+      if (upgrade) { upgradeEquipment(Number(upgrade.dataset.upgrade)); return; }
+      const organize = event.target.closest('[data-chest-organize]');
+      if (organize && craftEquipment(organize.dataset.chestOrganize)) {
+        renderChestReward(); renderEquipmentStrip(); focusCraftResult();
       }
     });
     $('reroll-button').addEventListener('click', rerollShop);
