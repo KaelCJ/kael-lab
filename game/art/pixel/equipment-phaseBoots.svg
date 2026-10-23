@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>相位鞋</title>
+  <polygon points="12,3 23,3 22,17 28,21 29,27 23,29 6,29 5,24 11,17" fill="#518e91" stroke="#10252d" stroke-width="2"/>
+  <path d="M14 6H21L19 17 13 22H25V26H9V24L14 18Z" fill="#96ddd3"/>
+  <path d="M12 8H22 M12 13H21 M7 27H27" stroke="#dba65e" stroke-width="3"/>
+  <path d="M2 11H7 M1 17H6 M2 23H5" stroke="#96ddd3" stroke-width="2"/>
+  <polygon points="15,18 21,18 18,22 12,22" fill="#f4d9a2"/>
+</svg>

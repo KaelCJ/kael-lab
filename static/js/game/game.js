@@ -4,10 +4,11 @@ import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js';
 import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261015-kael1';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffPhysicalAmp } from './buffs.js?v=20261013-deadshot1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261013-upgrade3';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261017-evolution1';
 import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261016-merge1';
 import { createWindRenderer } from './effects/wind.js';
 import { createMeteorRenderer } from './effects/meteor.js';
+import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261017-evolution2';
 
 (() => {
   'use strict';
@@ -808,7 +809,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
         thunder: null, requiem: null, bloodTime: 0, bloodCooldown: 0,
         kaelPassiveTimer: 5, lastPassiveSpell: null, kaelSpellRank: 1,
         kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [],
-        eclipse: null, tb: createTerrorbladeState() },
+        eclipse: null, tb: createTerrorbladeState(), dagonReadyAt: 6, cycloneReadyAt: 9, necroReadyAt: 12,
+        necroUnits: [], spellHeals: [], lastHurtAt: 0, phaseSpeedUntil: 0, phaseAttackUntil: 0, returnReadyAt: 0 },
       terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
       spawnClock: 0, nearbySpawnClock: 0, hazardClock: 8, specialSpawned: false, eliteIndex: 0, normalChestDropped: false, regenClock: 0, lifeClock: 0,
@@ -847,7 +849,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
       manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
       thunder: null, requiem: null, bloodTime: 0, souls,
       kaelPassiveTimer: 5,
-      kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState() });
+      kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState(),
+      necroUnits: [], phaseSpeedUntil: 0, phaseAttackUntil: 0 });
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
     run.waveStartKills = run.kills;
@@ -1565,16 +1568,43 @@ import { createMeteorRenderer } from './effects/meteor.js';
       .sort((a, b) => b.grade - a.grade || b.level - a.level)[0]?.passive;
   }
   function activeAmplify() { return equipmentPassive('activeAmplify')?.multiplier || 1; }
-  function dealSkillDamage(e, amount, active = false) {
+  function dealSkillDamage(e, amount, active = false, area = true) {
     if (!e || e.dead) return;
-    damageEnemy(e, amount * (active ? activeAmplify() : 1), false);
+    const hp = Math.max(0, e.hp);
+    const dealt = damageEnemy(e, amount * (active ? activeAmplify() : 1), false);
+    restoreSpellHealth(Math.min(hp, dealt), area);
+  }
+  function restoreSpellHealth(damage, area = false) {
+    const passive = equipmentPassive('spellLeech'), s = run.skills, p = run.player;
+    if (!passive || !(damage > 0) || p.hp <= 0 || p.hp >= p.maxHp) return;
+    s.spellHeals = s.spellHeals.filter(entry => run.totalTime - entry.time < 1);
+    const available = Math.max(0, p.maxHp * passive.capPerSecond - s.spellHeals.reduce((sum, entry) => sum + entry.amount, 0));
+    const amount = Math.min(available, damage * passive.ratio * (area ? passive.areaRatio : 1), p.maxHp - p.hp);
+    if (amount <= 0) return;
+    heal(amount); s.spellHeals.push({ time: run.totalTime, amount });
+    if (run.totalTime >= (s.spellHealFxAt || 0)) {
+      s.spellHealFxAt = run.totalTime + .5;
+      addEquipmentUpgradeEffect('bloodstone', passive.level, { x: p.x, y: p.y, r: 26 });
+    }
+  }
+  function triggerOrchid() {
+    const passive = equipmentPassive('soulMark');
+    if (!passive) return;
+    const target = run.enemies.filter(e => !e.dead && run.totalTime < (e.orchidUntil || 0)
+      && distance(e, run.player) <= passive.range + e.r)
+      .sort((a, b) => distance(a, run.player) - distance(b, run.player))[0];
+    if (!target) return;
+    target.orchidUntil = 0;
+    damageEnemy(target, passive.damage + run.stats.elemental * passive.magicRatio, false);
+    addEquipmentUpgradeEffect('orchid', passive.level, { x: target.x, y: target.y, r: target.r + 12 });
   }
   function pulse(x, y, r, color, life = .35, kind = 'pulse') { run.effects.push({ kind, x, y, r, color, life, maxLife: life }); }
   function equippedUpgradeLevel(id) {
     return run.equipment.reduce((level, item) => item.id === id ? Math.max(level, item.level || 1) : level, 0);
   }
   function addEquipmentUpgradeEffect(weapon, level, details = {}) {
-    if (!(level > 1) || window.matchMedia('(prefers-reduced-motion: reduce)').matches) return null;
+    const evolution = ['battlefury', 'dagon', 'manta'].includes(weapon);
+    if (!(evolution || level > 1 || ['bloodstone', 'orchid', 'bladeMail', 'heart', 'phaseBoots', 'cyclone', 'necronomicon'].includes(weapon)) || (motionPreference.matches && !evolution)) return null;
     if (run.effects.filter(fx => fx.kind === 'equipment-upgrade').length >= 24) return null;
     run.upgradeFxTimes ||= {};
     const times = (run.upgradeFxTimes[weapon] || []).filter(time => run.totalTime - time < 1);
@@ -1586,7 +1616,77 @@ import { createMeteorRenderer } from './effects/meteor.js';
     run.effects.push(fx);
     return fx;
   }
+  function inAttackFan(origin, enemy, angle, degrees) {
+    if (degrees >= 360) return true;
+    const delta = Math.atan2(enemy.y - origin.y, enemy.x - origin.x) - angle;
+    const edge = Math.asin(clamp(enemy.r / Math.max(1, distance(enemy, origin)), 0, 1));
+    return Math.abs(Math.atan2(Math.sin(delta), Math.cos(delta))) <= degrees * Math.PI / 360 + edge;
+  }
   function updateEquipmentPassives(dt) {
+    const s = run.skills, p = run.player;
+    const dagon = equipmentPassive('arcaneBurst');
+    if (dagon && run.totalTime >= s.dagonReadyAt) {
+      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= dagon.range + e.r
+        && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
+        .sort((a, b) => Number(b.id === 'boss' || isElite(b)) - Number(a.id === 'boss' || isElite(a)) || distance(a, p) - distance(b, p))[0];
+      if (target) {
+        s.dagonReadyAt = run.totalTime + dagon.cooldown;
+        const angle = Math.atan2(target.y - p.y, target.x - p.x);
+        const others = run.enemies.filter(e => e !== target && !e.dead && distance(e, p) <= dagon.range + e.r
+          && inAttackFan(p, e, angle, dagon.spreadDegrees)
+          && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
+          .sort((a, b) => distance(a, target) - distance(b, target)).slice(0, dagon.targets - 1);
+        const targets = [target, ...others], budget = dagon.damage + run.stats.elemental * dagon.magicRatio;
+        for (let i = 0; i < targets.length; i++) {
+          const share = targets.length === 1 ? 1 : (i === 0 ? 2 : 1) / (targets.length + 1);
+          damageEnemy(targets[i], budget * share, false);
+        }
+        addEquipmentUpgradeEffect('dagon', dagon.level, { x: p.x, y: p.y - 24, r: dagon.range,
+          targets: targets.map(e => ({ x: e.x, y: e.y, r: e.r })) });
+      }
+    }
+    const cyclone = equipmentPassive('cyclone');
+    if (cyclone && run.totalTime >= s.cycloneReadyAt) {
+      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= cyclone.range + e.r)
+        .sort((a, b) => distance(a, p) - distance(b, p))[0];
+      if (target) {
+        s.cycloneReadyAt = run.totalTime + cyclone.cooldown;
+        target.cycloneUntil = run.totalTime + cyclone.duration * (target.id === 'boss' ? .2 : isElite(target) ? .5 : 1);
+        addEquipmentUpgradeEffect('cyclone', cyclone.level, { x: target.x, y: target.y, r: target.r + 12 });
+      }
+    }
+    const restoration = equipmentPassive('restoration');
+    if (restoration && run.totalTime - s.lastHurtAt >= restoration.delay && p.hp < p.maxHp) {
+      heal(p.maxHp * restoration.ratio * dt);
+      if (run.totalTime >= (s.restorationFxAt || 0)) {
+        s.restorationFxAt = run.totalTime + 1;
+        addEquipmentUpgradeEffect('heart', restoration.level, { x: p.x, y: p.y, r: 30 });
+      }
+    }
+    const necro = equipmentPassive('necromancy');
+    if (necro && run.totalTime >= s.necroReadyAt && s.necroUnits.length === 0 && run.enemies.some(e => !e.dead)) {
+      s.necroReadyAt = run.totalTime + necro.cooldown;
+      s.necroUnits = [-1, 1].map(side => ({ ...nearestWalkable(p.x + side * 32, p.y + 20, 10), r: 10,
+        side, life: necro.duration, attack: .3, damage: necro.damage, magicRatio: necro.magicRatio, level: necro.level, facing: p.facing }));
+      addEquipmentUpgradeEffect('necronomicon', necro.level, { x: p.x, y: p.y, r: 38 });
+    }
+    s.necroUnits = s.necroUnits.filter(unit => {
+      unit.life -= dt; unit.attack -= dt; unit.attackFlash = Math.max(0, (unit.attackFlash || 0) - dt);
+      if (unit.life <= 0 || !necro) return false;
+      const ranged = unit.side > 0, range = ranged ? 300 : 58;
+      const target = run.enemies.filter(e => !e.dead && distance(e, unit) <= 480
+        && !terrainLineBlocked(unit.x, unit.y, e.x, e.y, 4, false))
+        .sort((a, b) => distance(a, unit) - distance(b, unit))[0];
+      const toward = target || { x: p.x + unit.side * 32, y: p.y + 20 };
+      const d = distance(toward, unit); unit.facing = Math.atan2(toward.y - unit.y, toward.x - unit.x);
+      if (d > (target ? range * .85 : 40)) moveThroughTerrain(unit, Math.cos(unit.facing) * 155 * dt, Math.sin(unit.facing) * 155 * dt);
+      if (target && d <= range + target.r && unit.attack <= 0) {
+        unit.attack = ranged ? 1.1 : .9; unit.attackFlash = .18;
+        damageEnemy(target, unit.damage + run.stats.elemental * unit.magicRatio, false, null, false, false);
+        if (ranged) run.effects.push({ kind: 'line', x1: unit.x, y1: unit.y - 8, x2: target.x, y2: target.y, color: '#9de8bd', life: .16, maxLife: .16, width: 2 });
+      }
+      return true;
+    });
     const aura = equipmentPassive('radiance');
     if (!aura) { run.skills.radianceClock = 0; return; }
     run.skills.radianceClock -= dt;
@@ -1795,6 +1895,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       p.mana -= cfg.manaCost;
       s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
       addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
+      triggerOrchid();
       updateHUD();
       return;
     }
@@ -1826,6 +1927,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     p.skillPose = .56; p.skillClock = 0;
     s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
     addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
+    triggerOrchid();
     playSfx(`skill-${id}`); updateHUD();
   }
   function countScavengedMaterial() {
@@ -1875,7 +1977,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
         const d = distance(target, spirit);
         spirit.facing = Math.atan2(target.y - spirit.y, target.x - spirit.x);
         if (d > 110) moveThroughTerrain(spirit, Math.cos(spirit.facing) * 120 * dt, Math.sin(spirit.facing) * 120 * dt);
-        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = .18; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + run.stats.elemental * .3, spirit.active); pulse(target.x, target.y, 16, '#ffb979', .18); }
+        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = .18; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + run.stats.elemental * .3, spirit.active, false); pulse(target.x, target.y, 16, '#ffb979', .18); }
       } else moveThroughTerrain(spirit, Math.cos(run.totalTime * 2 + spirit.side) * 20 * dt, Math.sin(run.totalTime * 2 + spirit.side) * 20 * dt);
       return spirit.life > 0;
     });
@@ -1947,10 +2049,19 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const p = run.player, v = movementVector();
     let vx = v.x, vy = v.y;
     const dashing = p.dashTime > 0;
-    if (dashing) { vx = p.dashX * 3.3; vy = p.dashY * 3.3; p.dashTime -= dt; }
+    if (dashing) {
+      vx = p.dashX * 3.3; vy = p.dashY * 3.3; p.dashTime = Math.max(0, p.dashTime - dt);
+      const phaseStrike = equipmentPassive('phaseStrike');
+      if (p.dashTime === 0 && phaseStrike) {
+        run.skills.phaseSpeedUntil = run.totalTime + phaseStrike.duration;
+        run.skills.phaseAttackUntil = run.totalTime + phaseStrike.attackWindow;
+        addEquipmentUpgradeEffect('phaseBoots', phaseStrike.level, { x: p.x, y: p.y, r: 30, angle: Math.atan2(p.dashY, p.dashX) });
+      }
+    }
     else if (Math.hypot(vx, vy) > .05) p.facing = Math.atan2(vy, vx);
     const bonus = run.skills.rageTime > 0 ? 15 * run.skills.rageAmp : run.skills.spin ? 20 : 0;
-    const speed = 215 * Math.max(.2, 1 + (run.stats.speed + bonus + buffMoveSpeed(run)) / 100) * (run.skills.requiem?.delay > 0 ? .65 : 1);
+    const phaseSpeed = run.totalTime < run.skills.phaseSpeedUntil ? equipmentPassive('phaseStrike')?.speed || 0 : 0;
+    const speed = 215 * Math.max(.2, 1 + (run.stats.speed + bonus + phaseSpeed + buffMoveSpeed(run)) / 100) * (run.skills.requiem?.delay > 0 ? .65 : 1);
     const step = dashing ? speed * dt : Math.min(speed * dt, v.remaining ?? Infinity);
     const oldX = p.x, oldY = p.y;
     if (!run.skills.jump) moveThroughTerrain(p, vx * step, vy * step);
@@ -2003,11 +2114,18 @@ import { createMeteorRenderer } from './effects/meteor.js';
       playSfx('shield');
       return;
     }
-    p.hp -= damage; p.invuln = .55; run.screenShake = 7;
+    const lostHp = Math.min(Math.max(0, p.hp), damage);
+    p.hp -= damage; p.invuln = .55; run.screenShake = 7; s.lastHurtAt = run.totalTime;
     run.effects.push({ kind: 'text', x: p.x, y: p.y - 40, text: `-${damage}`, color: '#ff9290', life: .65, maxLife: .65 });
     playSfx('hurt');
+    const attacker = source?.enemy || source, reflected = equipmentPassive('damageReturn');
+    if (reflected && attacker && run.enemies.includes(attacker) && !attacker.dead && run.totalTime >= s.returnReadyAt) {
+      s.returnReadyAt = run.totalTime + reflected.interval;
+        const returned = Math.round(Math.min(reflected.cap, lostHp * reflected.ratio));
+        if (returned > 0) damageEnemy(attacker, returned, false, null, true);
+      addEquipmentUpgradeEffect('bladeMail', reflected.level, { x: attacker.x, y: attacker.y, r: attacker.r + 10 });
+    }
     if (p.hp <= 0) { p.hp = 0; endRun(false); return; }
-    const attacker = source?.enemy || source;
     if (buffCount('frostArmor') && attacker && run.enemies.includes(attacker) && !attacker.dead) {
       attacker.buffSlowUntil = run.totalTime + 2;
       attacker.buffSlow = Math.min(.6, buffCount('frostArmor') * .2);
@@ -2060,6 +2178,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
     }
     for (const e of run.enemies) {
       if (e.dead) continue;
+      if (run.totalTime < (e.cycloneUntil || 0)) { e.moving = false; continue; }
       const dx = p.x - e.x, dy = p.y - e.y;
       const dist = Math.max(1, Math.hypot(dx, dy));
       const blocked = terrainLineBlocked(e.x, e.y, p.x, p.y, e.r);
@@ -2203,18 +2322,20 @@ import { createMeteorRenderer } from './effects/meteor.js';
     run.pickups.push({ kind: 'chest', x: point.x, y: point.y, r: 12, drift: rand(0, TAU) });
     showToast(t('chestDrop'));
   }
-  function killEnemy(e) {
+  function killEnemy(e, rewards = true) {
     if (e.dead) return;
     e.dead = true; run.kills += 1;
-    if (run.character.id === 'sf' && !e.summoned) run.skills.souls += e.id === 'boss' ? 6 : isElite(e) ? 3 : 1;
-    if (run.character.id === 'scavenger' && (isElite(e) || e.id === 'boss')) { const extra = e.id === 'boss' ? 10 : 3; run.money += extra; run.earned += extra; }
-    const bonus = Math.random() * 100 < run.stats.luck * .5 ? 1 : 0;
-    const materialCount = e.value > 0 && Math.random() < endlessDropChance() ? e.value + bonus : 0;
-    dropPickup(e.x, e.y, materialCount);
-    if (isElite(e) || e.id === 'boss') dropChest(e.x, e.y);
-    else if (e.value > 0 && !run.normalChestDropped && Math.random() < .1) {
-      dropChest(e.x, e.y);
-      run.normalChestDropped = true;
+    if (rewards) {
+      if (run.character.id === 'sf' && !e.summoned) run.skills.souls += e.id === 'boss' ? 6 : isElite(e) ? 3 : 1;
+      if (run.character.id === 'scavenger' && (isElite(e) || e.id === 'boss')) { const extra = e.id === 'boss' ? 10 : 3; run.money += extra; run.earned += extra; }
+      const bonus = Math.random() * 100 < run.stats.luck * .5 ? 1 : 0;
+      const materialCount = e.value > 0 && Math.random() < endlessDropChance() ? e.value + bonus : 0;
+      dropPickup(e.x, e.y, materialCount);
+      if (isElite(e) || e.id === 'boss') dropChest(e.x, e.y);
+      else if (e.value > 0 && !run.normalChestDropped && Math.random() < .1) {
+        dropChest(e.x, e.y);
+        run.normalChestDropped = true;
+      }
     }
     const def = enemyDef(e);
     run.effects.push({ kind: 'pulse', x: e.x, y: e.y, r: e.r * 1.8, color: def.color, life: .26, maxLife: .26 });
@@ -2227,8 +2348,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (e.id === 'boss') showToast(t('bossDefeated'));
   }
 
-  function damageEnemy(e, amount, directHit = true, hit = null, resolvedDamage = false) {
+  function damageEnemy(e, amount, directHit = true, hit = null, resolvedDamage = false, rewards = true) {
     if (e.dead) return 0;
+    const hpBefore = Math.max(0, e.hp);
     const crit = directHit && Math.random() * 100 < clamp(run.stats.crit, 0, 90);
     const critical = 1 + Math.max(0, run.stats.critDamage) / 100;
     const desolateAmp = directHit && hit?.type !== 'elemental' && run.totalTime < (e.desolateUntil || 0) ? 1 + (e.desolateMultiplier || 0) : 1;
@@ -2249,7 +2371,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
       const blood = run.skills.bloodTime > 0 ? equipmentPassive('bloodRage')?.lifesteal || 0 : 0;
       heal(damage * clamp(run.stats.lifesteal + blood, 0, 65) / 100);
     }
-    if (e.hp <= 0) killEnemy(e);
+    if (directHit && hit?.type === 'elemental') restoreSpellHealth(Math.min(hpBefore, damage));
+    if (e.hp <= 0) killEnemy(e, rewards);
     if (hit) {
       registerBaseAttackHit(e, hit);
       triggerEquipmentOnHit(e, hit);
@@ -2259,6 +2382,14 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function triggerEquipmentOnHit(target, hit) {
     if (!hit) return;
+    const mark = equipmentPassive('soulMark');
+    if (mark && !target.dead) target.orchidUntil = run.totalTime + mark.duration;
+    const phaseStrike = equipmentPassive('phaseStrike');
+    if (phaseStrike && run.totalTime < run.skills.phaseAttackUntil) {
+      run.skills.phaseAttackUntil = 0;
+      if (!target.dead) damageEnemy(target, phaseStrike.damage + physicalBonus() * phaseStrike.attackRatio, false);
+      addEquipmentUpgradeEffect('phaseBoots', phaseStrike.level, { x: target.x, y: target.y, r: target.r + 8, angle: Math.atan2(target.y - run.player.y, target.x - run.player.x) });
+    }
     const desolate = equipmentPassive('desolate');
     if (!target.dead && desolate && hit.type !== 'elemental') {
       target.desolateUntil = run.totalTime + desolate.duration;
@@ -2294,13 +2425,14 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const cleave = equipmentPassive('cleave');
     if (cleave && hit.type === 'melee' && run.cleaveAttackId !== hit.attackId) {
       run.cleaveAttackId = hit.attackId;
-      let cleaved = false;
-      for (const e of run.enemies) if (e !== target && !e.dead && distance(e, target) <= cleave.radius + e.r) {
+      const origin = cleave.mode === 'impact' ? target : run.player;
+      const angle = Math.atan2(target.y - run.player.y, target.x - run.player.x);
+      for (const e of run.enemies) if (e !== target && !e.dead && distance(e, origin) <= cleave.radius + e.r
+        && inAttackFan(origin, e, angle, cleave.arcDegrees)) {
         damageEnemy(e, hit.damage * cleave.damageRatio, false);
-        cleaved = true;
       }
-      pulse(target.x, target.y, cleave.radius, '#ecd5a1', .24);
-      if (cleaved) addEquipmentUpgradeEffect('battlefury', cleave.level, { x: target.x, y: target.y, r: cleave.radius, angle: Math.atan2(target.y - run.player.y, target.x - run.player.x) });
+      addEquipmentUpgradeEffect('battlefury', cleave.level, { x: origin.x, y: origin.y, r: cleave.radius,
+        angle, mode: cleave.mode, arcDegrees: cleave.arcDegrees });
     }
     const mirror = equipmentPassive('mirrorImage');
     if (mirror && run.skills.mantaProcAttackId !== hit.attackId) {
@@ -2310,9 +2442,12 @@ import { createMeteorRenderer } from './effects/meteor.js';
         run.skills.mantaAttackCount = 0;
         const angle = Math.atan2(target.y - run.player.y, target.x - run.player.x);
         const upgradeFx = addEquipmentUpgradeEffect('manta', mirror.level, { x: run.player.x, y: run.player.y, angle });
-        for (const side of [-1, 1]) addShot(run.player.x + Math.cos(angle) * 21, run.player.y + Math.sin(angle) * 21,
-          angle + side * mirror.spread, run.baseAttack, hit.damage * mirror.ratio,
-          { attackId: hit.attackId, illusion: true, color: '#b9a6ff', upgradeFx });
+        for (let i = 0; i < mirror.projectiles; i++) {
+          const offset = (i / (mirror.projectiles - 1) * 2 - 1) * mirror.spread;
+          addShot(run.player.x + Math.cos(angle) * 21, run.player.y + Math.sin(angle) * 21,
+            angle + offset, run.baseAttack, hit.damage * mirror.ratio * 2 / mirror.projectiles,
+            { attackId: hit.attackId, illusion: true, color: '#b9a6ff', upgradeFx, evolutionLevel: mirror.level });
+        }
         run.effects.push({ kind: 'manta', x: run.player.x, y: run.player.y, r: 42, color: '#c5b4ff', life: .55, maxLife: .55 });
       }
     }
@@ -2375,6 +2510,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       life: basicRange() / speed, damage, r: w.id === 'sf' ? 5 : 3, color: options.color || def.color,
       pierce: options.pierce || 1, hit: new Set(), skill: !!options.skill, illusion: !!options.illusion, kaelSpell: options.kaelSpell, hero: w.id,
       hitCounts: options.hitCounts, maxHits: options.maxHits, attackId: options.attackId, upgradeFx: options.upgradeFx,
+      evolutionLevel: options.evolutionLevel,
       tbAttack: options.tbAttack, tbImage: !!options.tbImage, imageSide: options.imageSide || 0,
       deadShotJumps: options.kaelSpell ? 0 : buffCount('deadShot'),
       type: def.type, range: basicRange(), baseDamage: damage };
@@ -2500,8 +2636,10 @@ import { createMeteorRenderer } from './effects/meteor.js';
             if (!addLunaBounce(e, b.hit, b.damage, b.lunaDepth, b.deadShotJumps)) addDeadShotBounce(e, b, dealt);
             playSfx('luna-bounce');
           } else {
+            const hpBefore = Math.max(0, e.hp);
             const dealt = b.tbImage ? damageTerrorbladeImage(e, b.damage)
               : damageEnemy(e, b.damage, !b.skill && !b.illusion, b.skill || b.illusion ? null : { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage, tbAttack: b.tbAttack });
+            if (b.skill && !b.illusion && !b.tbImage) restoreSpellHealth(Math.min(hpBefore, dealt), true);
             if (dealt > 0) {
               const lunaBounce = b.hero === 'luna' && !b.skill && !b.illusion && b.hit.size === 1
                 && addLunaBounce(e, b.hit, dealt, 0, b.deadShotJumps);
@@ -3046,6 +3184,13 @@ import { createMeteorRenderer } from './effects/meteor.js';
     ctx.fillStyle = '#0007';
     if (selectedSkin === 'pixel') ctx.fillRect(-e.r, e.r * .58, e.r * 2, e.r * .5);
     else { ctx.beginPath(); ctx.ellipse(2, e.r * .75, e.r * .95, e.r * .48, 0, 0, TAU); ctx.fill(); }
+    if (run.totalTime < (e.cycloneUntil || 0)) {
+      ctx.strokeStyle = '#c6f3ed'; ctx.lineWidth = 2;
+      for (let i = 0; i < 3; i++) {
+        ctx.beginPath(); ctx.ellipse(0, 6 - i * 10, e.r + 8 - i * 3, 5, 0, 0, TAU); ctx.stroke();
+      }
+      ctx.translate(0, motionPreference.matches ? -8 : -12 + Math.sin(run.totalTime * 12) * 3);
+    }
     if (e.id === 'elite' && e.windup > 0) {
       ctx.strokeStyle = '#ffc47c'; ctx.lineWidth = 3;
       if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffc47c'; drawPixelArc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
@@ -3101,6 +3246,11 @@ import { createMeteorRenderer } from './effects/meteor.js';
       if (e.id === 'charger' && e.charging > 0) { ctx.strokeStyle = '#fff8c6'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-e.r, 0); ctx.lineTo(e.r * 1.5, 0); ctx.stroke(); }
     }
     ctx.restore();
+    if (run.totalTime < (e.orchidUntil || 0)) {
+      ctx.fillStyle = '#e4a6ed'; ctx.strokeStyle = '#38203e'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(e.x, e.y - e.r - 25); ctx.lineTo(e.x + 5, e.y - e.r - 19);
+      ctx.lineTo(e.x, e.y - e.r - 13); ctx.lineTo(e.x - 5, e.y - e.r - 19); ctx.closePath(); ctx.fill(); ctx.stroke();
+    }
     if (e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
       const width = e.r * 2.2;
       ctx.fillStyle = '#07131be0'; ctx.fillRect(e.x - width / 2, e.y - e.r - 12, width, 5);
@@ -3221,6 +3371,9 @@ import { createMeteorRenderer } from './effects/meteor.js';
     if (s.rageTime > 0) { scaleX *= 1.04; scaleY *= 1.025; }
     if (s.requiem?.delay > 0 || s.thunder) { scaleX *= 1.04; lift += 3; }
     ctx.translate(0, -lift); ctx.rotate(lean); ctx.scale(mirror * scaleX, scaleY);
+    const evolutionLevels = { battlefury: equippedUpgradeLevel('battlefury'), dagon: equippedUpgradeLevel('dagon'), manta: equippedUpgradeLevel('manta') };
+    const evolutionView = { time: run.totalTime, attack: attackSnap, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches };
+    drawEvolutionEquipment(ctx, evolutionLevels, evolutionView);
     if (id === 'kael') drawKaelOrbs(false, mirror);
     if (image) {
       const visibleHeight = id === 'tb' ? (demon ? 126 : 98) : id === 'luna' ? 100 : id === 'scavenger' ? 94 : id === 'rover' ? 82 : id === 'sf' ? 90 : 86;
@@ -3290,6 +3443,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
       ctx.beginPath(); ctx.ellipse(0, -36, 8, 11, 0, 0, TAU); ctx.fill();
       ctx.fillStyle = '#d8a748'; ctx.beginPath(); ctx.arc(0, -43, 11, Math.PI, TAU); ctx.fill();
     }
+    drawEvolutionEquipment(ctx, evolutionLevels, { ...evolutionView, front: true });
     if (id === 'kael') drawKaelOrbs(true, mirror);
     ctx.restore();
     if (run.aimTarget) { ctx.strokeStyle = '#ffe69c'; ctx.lineWidth = 2; ctx.globalAlpha = run.aimTarget.life; ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke(); ctx.globalAlpha = 1; }
@@ -3317,32 +3471,13 @@ import { createMeteorRenderer } from './effects/meteor.js';
       }
       const angle = Math.atan2(b.vy, b.vx);
       ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(angle);
-      if (b.hero === 'tb') {
+      if (b.illusion && !b.tbImage) {
+        drawMirrorStrike(ctx, b.evolutionLevel || 1, { pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches, time: run.totalTime });
+      } else if (b.hero === 'tb') {
         if (b.tbImage) { ctx.globalAlpha = .66; ctx.translate(0, b.imageSide * 7); }
         ctx.fillStyle = '#18352a'; ctx.strokeStyle = '#b2f585'; ctx.lineWidth = 2;
         ctx.beginPath(); ctx.moveTo(11, 0); ctx.quadraticCurveTo(-2, -10, -28, -3); ctx.lineTo(-16, 1); ctx.lineTo(-30, 6); ctx.quadraticCurveTo(-2, 10, 11, 0); ctx.fill(); ctx.stroke();
         ctx.fillStyle = '#ecffd1'; ctx.beginPath(); ctx.ellipse(3, 0, 6, 3, 0, 0, TAU); ctx.fill();
-      } else if (b.illusion) {
-        ctx.globalAlpha = .82;
-        const upgrade = b.upgradeFx?.life > 0 ? b.upgradeFx.level : 0;
-        if (upgrade) {
-          ctx.save(); ctx.globalAlpha *= b.upgradeFx.life / b.upgradeFx.maxLife;
-          ctx.strokeStyle = '#8cbbff'; ctx.lineWidth = upgrade === 3 ? 3 : 2;
-          for (const side of [-1, 1]) {
-            ctx.beginPath(); ctx.moveTo(-5, side * 5);
-            if (selectedSkin === 'pixel') { ctx.lineTo(-19, side * 8); ctx.lineTo(upgrade === 3 ? -38 : -28, side * 4); }
-            else ctx.quadraticCurveTo(-21, side * 11, upgrade === 3 ? -38 : -28, side * 4);
-            ctx.stroke();
-          }
-          ctx.restore();
-        }
-        if (b.hero === 'luna') {
-          ctx.rotate(-angle); drawLunaGlaive(26, motionPreference.matches ? 0 : run.totalTime * 18);
-        } else {
-          ctx.fillStyle = '#8b78d9'; ctx.beginPath(); ctx.moveTo(11, 0); ctx.lineTo(2, -7); ctx.lineTo(-9, -4); ctx.lineTo(-13, 0); ctx.lineTo(-9, 4); ctx.lineTo(2, 7); ctx.closePath(); ctx.fill();
-          ctx.strokeStyle = upgrade === 3 ? '#e5f8ff' : upgrade ? '#bfdcff' : '#e2dcff'; ctx.lineWidth = upgrade === 3 ? 3 : 2; ctx.beginPath(); ctx.moveTo(12, 0); ctx.lineTo(-7, -5); ctx.lineTo(-14, 0); ctx.lineTo(-7, 5); ctx.closePath(); ctx.stroke();
-          ctx.fillStyle = '#ffffff'; ctx.fillRect(-2, -2, 4, 4);
-        }
       } else if (b.hero === 'sf') {
         ctx.fillStyle = '#6c1929'; ctx.beginPath(); ctx.ellipse(-5, 0, 11, 5, 0, 0, TAU); ctx.fill();
         ctx.strokeStyle = '#bd423d'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(-24, -2); ctx.quadraticCurveTo(-10, 5, 3, 0); ctx.stroke();
@@ -3416,13 +3551,45 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function drawEquipmentUpgradeEffect(fx, progress) {
     const pixel = selectedSkin === 'pixel';
+    const view = { pixel, reducedMotion: motionPreference.matches };
+    if (fx.weapon === 'battlefury') { drawEvolutionCleave(ctx, fx, progress, view); return; }
+    if (fx.weapon === 'dagon') { drawDagonFork(ctx, fx, progress, view); return; }
     ctx.save(); ctx.translate(fx.x, fx.y); ctx.lineCap = pixel ? 'butt' : 'round'; ctx.lineJoin = pixel ? 'miter' : 'round';
     const arc = (radius, from, to, color, width = 3) => {
       ctx.strokeStyle = color; ctx.fillStyle = color; ctx.lineWidth = width;
       if (pixel) drawPixelArc(0, 0, radius, from, to, width);
       else { ctx.beginPath(); ctx.arc(0, 0, radius, from, to); ctx.stroke(); }
     };
-    if (fx.weapon === 'mjollnir') {
+    if (fx.weapon === 'bloodstone' || fx.weapon === 'heart') {
+      const color = fx.weapon === 'heart' ? '#b9e78c' : '#e3a4c3';
+      for (let i = 0; i < fx.level + 1; i++) {
+        const x = (i - fx.level / 2) * 13, y = -12 - progress * 20;
+        ctx.fillStyle = color; ctx.fillRect(x - 2, y - 7, 4, 14); ctx.fillRect(x - 7, y - 2, 14, 4);
+      }
+    } else if (fx.weapon === 'orchid') {
+      for (let i = 0; i < 4 + fx.level; i++) {
+        const angle = i * TAU / (4 + fx.level), r = fx.r * (1 - progress * .5);
+        ctx.save(); ctx.rotate(angle); ctx.fillStyle = '#e6adf2';
+        ctx.beginPath(); ctx.moveTo(3, 0); ctx.lineTo(r, -5); ctx.lineTo(r + 8, 0); ctx.lineTo(r, 5); ctx.closePath(); ctx.fill(); ctx.restore();
+      }
+    } else if (fx.weapon === 'bladeMail') {
+      for (let i = 0; i < 3 + fx.level; i++) {
+        const angle = i * TAU / (3 + fx.level), r = 8 + progress * fx.r;
+        ctx.save(); ctx.rotate(angle); ctx.strokeStyle = '#e1d7bd'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.moveTo(r - 6, -5); ctx.lineTo(r + 8, 0); ctx.lineTo(r - 6, 5); ctx.stroke(); ctx.restore();
+      }
+    } else if (fx.weapon === 'phaseBoots') {
+      ctx.rotate(fx.angle); ctx.strokeStyle = '#e6ccff'; ctx.lineWidth = 3;
+      for (let i = 0; i < fx.level + 1; i++) {
+        const x = -i * 9 - progress * 10;
+        ctx.beginPath(); ctx.moveTo(x - 8, -12); ctx.lineTo(x + 4, 0); ctx.lineTo(x - 8, 12); ctx.stroke();
+      }
+    } else if (fx.weapon === 'cyclone') {
+      for (let i = 0; i < 3; i++) arc(fx.r * (1 - i * .18), progress * 3 + i, progress * 3 + i + 4.3, '#b9e5df', 2);
+    } else if (fx.weapon === 'necronomicon') {
+      ctx.scale(1, .45);
+      for (let i = 0; i < fx.level; i++) arc(20 + i * 8 + progress * 10, 0, TAU, '#a4d9b8', 2);
+    } else if (fx.weapon === 'mjollnir') {
       if (fx.level === 3) {
         for (const side of [-1, 0, 1]) {
           ctx.beginPath(); ctx.moveTo(side * 22 - 5, -64);
@@ -3437,20 +3604,6 @@ import { createMeteorRenderer } from './effects/meteor.js';
         ctx.beginPath(); ctx.moveTo(Math.cos(angle) * near, Math.sin(angle) * near);
         ctx.lineTo(Math.cos(angle + .25) * (far - 3), Math.sin(angle + .25) * (far - 3));
         ctx.lineTo(Math.cos(angle) * far, Math.sin(angle) * far); ctx.stroke();
-      }
-    } else if (fx.weapon === 'battlefury') {
-      ctx.rotate(fx.angle);
-      const sweep = -.9 + progress * 1.2;
-      for (let layer = 0; layer < (fx.level === 3 ? 2 : 1); layer++) {
-        const radius = fx.r * (1 - layer * .18), from = sweep - 1.1 - layer * .2, to = sweep + .5 - layer * .2;
-        arc(radius, from, to, '#785031', 6); arc(radius, from, to, '#ffe2a0', 3);
-      }
-      if (fx.level === 3) {
-        ctx.fillStyle = '#eac580';
-        for (let i = 0; i < 4; i++) {
-          const angle = -.9 + i * .6, radius = fx.r * (.4 + progress * .35);
-          ctx.fillRect(Math.round(Math.cos(angle) * radius), Math.round(Math.sin(angle) * radius), 4, 3);
-        }
       }
     } else if (fx.weapon === 'buriza') {
       ctx.rotate(fx.angle + Math.PI / 4);
@@ -3678,6 +3831,30 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function drawKaelSpirits() { for (const spirit of run.skills.kaelSpirits) drawKaelSpirit(spirit); }
 
+  function drawNecroUnit(unit) {
+    const pixel = selectedSkin === 'pixel', ranged = unit.side > 0;
+    ctx.save(); ctx.translate(pixel ? Math.round(unit.x) : unit.x, pixel ? Math.round(unit.y) : unit.y);
+    ctx.globalAlpha = clamp(unit.life / .3, 0, 1);
+    ctx.fillStyle = '#071b20a0'; ctx.beginPath(); ctx.ellipse(0, 12, 12, 5, 0, 0, TAU); ctx.fill();
+    ctx.fillStyle = ranged ? '#397f79' : '#655e92'; ctx.strokeStyle = '#182c35'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-8, -8); ctx.lineTo(8, -8); ctx.lineTo(11, 9); ctx.lineTo(0, 14); ctx.lineTo(-11, 9); ctx.closePath(); ctx.fill(); ctx.stroke();
+    ctx.fillStyle = '#cce0c3'; ctx.fillRect(-6, -18, 12, 10); ctx.fillStyle = '#142e35'; ctx.fillRect(-4, -15, 3, 3); ctx.fillRect(2, -15, 3, 3);
+    ctx.strokeStyle = ranged ? '#99e9cc' : '#e7d7b8'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(-4, 9); ctx.lineTo(-5, 17); ctx.moveTo(5, 9); ctx.lineTo(6, 17); ctx.stroke();
+    for (let i = 1; i < unit.level; i++) { ctx.fillStyle = '#e7dfb1'; ctx.fillRect(-5 + (i - 1) * 7, -5, 3, 3); }
+    ctx.save(); ctx.rotate(unit.facing);
+    const swing = unit.attackFlash > 0 ? (1 - unit.attackFlash / .18) * .8 : 0;
+    if (ranged) {
+      ctx.strokeStyle = '#e0c793'; ctx.beginPath(); ctx.moveTo(13, -13); ctx.quadraticCurveTo(24, 0, 13, 13); ctx.stroke();
+      ctx.strokeStyle = '#bde6ce'; ctx.beginPath(); ctx.moveTo(13, -13); ctx.lineTo(11 - swing * 6, 0); ctx.lineTo(13, 13); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(9, 0); ctx.lineTo(24, 0); ctx.stroke();
+    } else {
+      ctx.rotate(-.55 + swing); ctx.strokeStyle = '#c7d7dc'; ctx.lineWidth = 4; ctx.beginPath(); ctx.moveTo(10, 0); ctx.lineTo(30, 0); ctx.stroke();
+      ctx.strokeStyle = '#d4ac6f'; ctx.lineWidth = 3; ctx.beginPath(); ctx.moveTo(13, -6); ctx.lineTo(13, 6); ctx.stroke();
+    }
+    ctx.restore(); ctx.restore();
+  }
+
   function drawSkillGround() {
     const p = run.player;
     if (run.character.id === 'kael') {
@@ -3711,6 +3888,95 @@ import { createMeteorRenderer } from './effects/meteor.js';
       ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.arc(p.x, p.y, 33, back - half, back + half); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.save(); ctx.translate(p.x + Math.cos(back) * 39, p.y + Math.sin(back) * 39); ctx.rotate(back); ctx.fillStyle = '#ffe4af'; ctx.beginPath(); ctx.moveTo(5, 0); ctx.lineTo(-4, -4); ctx.lineTo(-4, 4); ctx.closePath(); ctx.fill(); ctx.restore();
     }
+  }
+  function drawBuffAuras() {
+    const p = run?.player;
+    if (!p) return;
+    const assaultStacks = buffCount('assaultCuirass');
+    const shivaStacks = buffCount('shivasGuard');
+    if (!assaultStacks && !shivaStacks) return;
+    const time = motionPreference.matches ? 0 : run.totalTime;
+    const footY = p.y + 14;
+    const ellipse = (rx, ry, color, alpha, width, dash = null, offset = 0) => {
+      ctx.save();
+      ctx.globalAlpha = alpha;
+      ctx.strokeStyle = color;
+      ctx.lineWidth = width;
+      ctx.lineCap = 'round';
+      ctx.setLineDash(dash || []);
+      ctx.lineDashOffset = offset;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, rx, ry, 0, 0, TAU);
+      ctx.stroke();
+      ctx.restore();
+    };
+    ctx.save();
+    ctx.translate(p.x, footY);
+    if (assaultStacks) {
+      const pulse = .34 + Math.sin(time * 1.45) * .035;
+      const outerX = 59, outerY = 24;
+      ellipse(outerX, outerY, '#dcefed', pulse, 2);
+      ellipse(outerX - 8, outerY - 3.6, '#f4ffff', pulse * .8, 1.6);
+      ellipse(outerX - 16, outerY - 7.2, '#6f95a2', pulse * .72, 1.25);
+
+      ctx.save();
+      ctx.globalAlpha = .5 + Math.sin(time * 1.2 + .8) * .05;
+      ctx.strokeStyle = '#f4ffff'; ctx.lineWidth = 2; ctx.lineCap = 'round';
+      for (let i = 0; i < 8; i++) {
+        const angle = i * TAU / 8;
+        const inner = .78, outer = 1.08;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * outerX * inner, Math.sin(angle) * outerY * inner);
+        ctx.lineTo(Math.cos(angle) * outerX * outer, Math.sin(angle) * outerY * outer);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      ctx.save();
+      ctx.globalAlpha = .58;
+      ctx.strokeStyle = '#efffff'; ctx.lineWidth = 1.4; ctx.lineJoin = 'round';
+      for (const angle of [Math.PI / 4, Math.PI * 3 / 4, Math.PI * 5 / 4, Math.PI * 7 / 4]) {
+        const nx = Math.cos(angle), ny = Math.sin(angle), tx = -ny, ty = nx;
+        const tip = { x: nx * outerX * 1.16, y: ny * outerY * 1.16 };
+        const base = { x: nx * outerX * 1.01, y: ny * outerY * 1.01 };
+        ctx.beginPath();
+        ctx.moveTo(tip.x, tip.y);
+        ctx.lineTo(base.x + tx * 3.4, base.y + ty * 3.4);
+        ctx.lineTo(base.x - tx * 3.4, base.y - ty * 3.4);
+        ctx.closePath();
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // A narrow travelling highlight keeps the ring alive without rotating the
+      // fixed radial marks, matching the restrained DotA1 line animation.
+      ctx.save();
+      ctx.globalAlpha = .38;
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2.2; ctx.lineCap = 'round';
+      const sweep = time * .22;
+      ctx.beginPath();
+      ctx.ellipse(0, 0, outerX - 4, outerY - 2, 0, sweep, sweep + .32);
+      ctx.stroke();
+      ctx.restore();
+    }
+    if (shivaStacks) {
+      const shivaX = assaultStacks ? 46 : 55, shivaY = assaultStacks ? 18 : 22;
+      const dashOffset = motionPreference.matches ? 0 : -time * 3.5;
+      ellipse(shivaX, shivaY, '#a9d8ef', .38, 1.8, [12, 8], dashOffset);
+      ellipse(shivaX - 6, shivaY - 2.8, '#d8f5ff', .3, 1.2, [7, 9], -dashOffset * .7);
+      ctx.save();
+      ctx.globalAlpha = .48; ctx.strokeStyle = '#bfeeff'; ctx.lineWidth = 1.5;
+      for (let i = 0; i < 6; i++) {
+        const angle = i * TAU / 6 + Math.PI / 6;
+        const inner = .86, outer = 1.1;
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle) * shivaX * inner, Math.sin(angle) * shivaY * inner);
+        ctx.lineTo(Math.cos(angle) * shivaX * outer, Math.sin(angle) * shivaY * outer);
+        ctx.stroke();
+      }
+      ctx.restore();
+    }
+    ctx.restore();
   }
   function drawSkillAreas() {
     const p = run.player, s = run.skills;
@@ -3804,12 +4070,13 @@ import { createMeteorRenderer } from './effects/meteor.js';
     ctx.save();
     if (run.screenShake > 0 && phase === 'combat') ctx.translate(Math.sin(run.totalTime * 71) * run.screenShake, Math.cos(run.totalTime * 83) * run.screenShake);
     ctx.translate(selectedSkin === 'pixel' ? -Math.round(cam.x) : -cam.x, selectedSkin === 'pixel' ? -Math.round(cam.y) : -cam.y);
-    drawBackdrop(cam); drawTerrain(cam); drawSkillGround(); drawPickups(cam);
+    drawBackdrop(cam); drawTerrain(cam); drawSkillGround(); drawBuffAuras(); drawPickups(cam);
     if (selectedSkin === 'pixel') {
       const layers = run.terrain.filter(o => o.kind !== 'water' && o.x + 32 >= cam.x && o.x - 32 <= cam.x + viewW && o.y + 16 >= cam.y && o.y - 80 <= cam.y + viewH)
         .map(o => ({ y: o.y, scenery: o }));
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
       for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 24)) layers.push({ y: spirit.y + 10, spirit });
+      for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) layers.push({ y: unit.y + 12, necro: unit });
       for (const meteor of run.skills.kaelMeteors) layers.push({ y: meteor.y, meteor });
       layers.push({ y: run.player.y + 16, player: true });
       layers.sort((a, b) => a.y - b.y);
@@ -3817,12 +4084,14 @@ import { createMeteorRenderer } from './effects/meteor.js';
         if (layer.scenery) drawScenery(layer.scenery);
         else if (layer.enemy) drawEnemy(layer.enemy);
         else if (layer.spirit) drawKaelSpirit(layer.spirit);
+        else if (layer.necro) drawNecroUnit(layer.necro);
         else if (layer.meteor) drawKaelMeteor(layer.meteor);
         else drawPlayer();
       }
     } else {
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) drawEnemy(e);
       drawKaelSpirits();
+      for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) drawNecroUnit(unit);
       for (const meteor of run.skills.kaelMeteors) drawKaelMeteor(meteor);
       drawPlayer();
     }
@@ -4042,7 +4311,8 @@ import { createMeteorRenderer } from './effects/meteor.js';
         ] };
       }) },
       { id: 'equipment', label: '武器 / 装备', items: Object.entries(EQUIPMENT).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: `./art/pixel/equipment-${id}.svg`, source: '../static/js/game/equipment.js', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1 })) },
+        icon: `./art/pixel/equipment-${id}.svg`, source: '../static/js/game/equipment.js', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
+        duration: id === 'necronomicon' ? 22 : ['dagon', 'cyclone', 'heart'].includes(id) ? 12 : 8 })) },
       { id: 'buffs', label: 'Buff', items: Object.entries(BUFFS).map(([id, def]) => ({ id, name: def.name, description: def.desc,
         icon: def.icon, source: '../static/js/game/buffs.js', stacks: true })) },
       { id: 'effects', label: '特效', items: [
@@ -4057,7 +4327,10 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function resetStudio(selection) {
     studioSelection = selection; studioAttack = false;
-    selectedCharacter = selection.category === 'heroes' ? selection.id : selection.category === 'equipment' && selection.id === 'battlefury' ? 'jugg' : 'rover';
+    selectedCharacter = selection.category === 'heroes' ? selection.id : selection.category === 'equipment' && selection.id === 'battlefury' ? 'jugg'
+      : selection.category === 'equipment' && selection.id === 'bloodstone' ? 'conductor'
+      : selection.category === 'equipment' && selection.id === 'dagon' ? 'kael'
+      : selection.category === 'equipment' && selection.id === 'manta' ? 'luna' : 'rover';
     selectedBiome = selection.category === 'maps' ? selection.id : 'docks';
     selectedDifficulty = 'normal'; selectedMode = 'expedition'; selectedPace = 'normal';
     selectedSkin = selection.skin; soundEnabled = false;
@@ -4075,8 +4348,10 @@ import { createMeteorRenderer } from './effects/meteor.js';
     const passive = selection.category === 'heroes' && selection.variant === 'passive';
     run.skills.kaelPassiveTimer = passive ? 1 : Infinity;
     if (selection.category !== 'maps' && selection.category !== 'effects' && !['idle', 'walk'].includes(selection.variant)) {
-      for (let i = 0; i < 4; i++) {
-        const enemy = spawnEnemy('crawler', run.player.x + 86 + i * 43, run.player.y + (i % 2 ? 25 : -15));
+      const targets = selection.category === 'equipment' && ['battlefury', 'dagon', 'manta'].includes(selection.id)
+        ? [[70, 0], [95, 38], [90, -50], [-105, -25], [-75, 100]] : [[86, -15], [129, 25], [172, -15], [215, 25]];
+      for (const [x, y] of targets) {
+        const enemy = spawnEnemy('crawler', run.player.x + x, run.player.y + y);
         enemy.value = 0;
         enemy.hp = enemy.maxHp = passive && selectedCharacter === 'sf' ? 12 : 15000;
       }
@@ -4094,19 +4369,21 @@ import { createMeteorRenderer } from './effects/meteor.js';
   }
   function triggerStudio(selection, time, dt) {
     const hero = selection.category === 'heroes', passive = hero && selection.variant === 'passive';
+    const crossed = at => time - dt < at - 1e-9 && time >= at - 1e-9;
     studioAttack = selection.category === 'equipment' || selection.category === 'buffs' || (hero && !['idle', 'walk'].includes(selection.variant));
     keys.clear();
     if (hero && selection.variant === 'walk') keys.add((Math.floor(time / 1.5) % 2 === 0) === !selection.direction ? 'd' : 'a');
-    if (time - dt < .35 && time >= .35 && hero && selection.variant !== 'passive') {
+    if (crossed(.35) && hero && selection.variant !== 'passive') {
       if (selection.variant === 'active') {
         if (selectedCharacter === 'kael') run.skills.lastPassiveSpell = 'chaos-meteor';
         tryActiveSkill();
       } else if (KAEL_SPELL_BY_ID[selection.variant]) castKaelSpell(selection.variant, 'passive');
     }
-    if (selection.category === 'equipment' && selection.id === 'aghanim' && time - dt < .5 && time >= .5) tryActiveSkill();
+    if (selection.category === 'equipment' && ['aghanim', 'orchid', 'bloodstone'].includes(selection.id) && crossed(.5)) tryActiveSkill();
+    if (selection.category === 'equipment' && selection.id === 'phaseBoots' && crossed(.35)) tryDash();
     if (Math.floor(time / .8) !== Math.floor((time - dt) / .8)) {
       if ((passive && selectedCharacter === 'bulwark') || selection.category === 'buffs' || selection.category === 'equipment') {
-        if (run.player.hp > 6) hurtPlayer(3, run.enemies.find(enemy => !enemy.dead), true);
+        if (run.player.hp > 6 && !(selection.category === 'equipment' && selection.id === 'heart' && time > 1)) hurtPlayer(3, run.enemies.find(enemy => !enemy.dead), true);
       }
       if (passive && selectedCharacter === 'scavenger') { dropPickup(run.player.x, run.player.y, 1); updatePickups(.01); }
     }

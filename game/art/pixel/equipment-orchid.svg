@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>紫苑</title>
+  <path d="M6 28 22 11" stroke="#10252d" stroke-width="7"/>
+  <path d="M6 28 22 11" stroke="#b69cda" stroke-width="3"/>
+  <polygon points="16,3 23,2 29,7 29,13 24,18 18,17 21,12 25,10 22,6 17,8 13,7" fill="#9365bd" stroke="#10252d" stroke-width="2"/>
+  <polygon points="18,8 22,7 25,10 22,14 18,13" fill="#e2b8f5"/>
+  <path d="M9 20 13 24 M4 26 8 30" stroke="#dba65e" stroke-width="3"/>
+  <rect x="5" y="6" width="3" height="3" fill="#b69cda"/>
+</svg>
