@@ -110,6 +110,36 @@
       "createdAt": "2026-10-16T23:18:11+08:00",
       "updatedAt": "2026-10-16T23:49:49+08:00",
       "entry": "2026-10-16_R7bzdl3n6GmDZ1a34BV8_equipment-merge-usability/README.md"
+    },
+    {
+      "id": "RVFuy8dAXX43xBFZ3AxE",
+      "title": "DotaRogue·八件成品装备扩充",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-17T21:55:36+08:00",
+      "updatedAt": "2026-10-17T22:18:54+08:00",
+      "entry": "2026-10-17_RVFuy8dAXX43xBFZ3AxE_equipment-expansion/README.md"
+    },
+    {
+      "id": "RdWsaEpFAkOhu226wzVA",
+      "title": "DotaRogue·武器形态进化",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-17T23:37:56+08:00",
+      "updatedAt": "2026-10-18T00:09:32+08:00",
+      "entry": "2026-10-17_RdWsaEpFAkOhu226wzVA_weapon-evolution/README.md"
+    },
+    {
+      "id": "Rn60pis02HrEIl3D2ZeZ",
+      "title": "DotaRogue·自有IP改造",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-20T00:27:25+08:00",
+      "updatedAt": "2026-10-20T00:27:25+08:00",
+      "entry": "2026-10-20_Rn60pis02HrEIl3D2ZeZ_owned-ip-transformation/README.md"
     }
   ]
 }
