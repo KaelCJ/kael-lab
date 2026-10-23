@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>风杖</title>
+  <path d="M8 29 19 13" stroke="#10252d" stroke-width="7"/>
+  <path d="M8 29 19 13" stroke="#dba65e" stroke-width="3"/>
+  <path d="M10 7 15 3H24L29 8 26 13H17L14 10 17 7H23 M9 14H23L25 17 22 20H16" fill="none" stroke="#10252d" stroke-width="6"/>
+  <path d="M10 7 15 3H24L29 8 26 13H17L14 10 17 7H23 M9 14H23L25 17 22 20H16" fill="none" stroke="#bde8de" stroke-width="3"/>
+  <path d="M6 27 10 30" stroke="#f4d9a2" stroke-width="2"/>
+</svg>

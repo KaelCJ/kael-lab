@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>死灵书</title>
+  <polygon points="2,6 12,4 16,7 20,4 30,6 30,27 20,25 16,28 12,25 2,27" fill="#756043" stroke="#10252d" stroke-width="2"/>
+  <polygon points="5,8 12,7 15,10 15,24 12,22 5,24" fill="#d7c494"/>
+  <polygon points="17,10 20,7 27,8 27,24 20,22 17,24" fill="#b4ad80"/>
+  <polygon points="9,11 12,11 14,14 13,18 10,20 7,18 6,14" fill="#4c8f70"/>
+  <path d="M8 14H10 M12 14H14 M9 20V22 M12 19V22" stroke="#10252d" stroke-width="2"/>
+  <path d="M20 12H25 M19 16H25 M20 20H24" stroke="#4c8f70" stroke-width="2"/>
+  <path d="M16 8V26" stroke="#10252d" stroke-width="2"/>
+</svg>

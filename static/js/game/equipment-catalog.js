@@ -1,4 +1,4 @@
-import { EQUIPMENT, EQUIPMENT_UPGRADES, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261013-upgrade3';
+import { EQUIPMENT, EQUIPMENT_UPGRADES, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261017-evolution1';
 
 // Legacy key retained so the DotaRogue rename keeps existing browser records.
 const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
@@ -9,7 +9,7 @@ const UI = {
     back: '返回游戏', gameList: '选择游戏', title: '装备图鉴', lead: '从基础组件到中间件，再到成品。三个数字代表合成阶段；每件装备的 1～5 级另行标明。',
     itemCount: '件当前装备', recipeCount: '条固定配方', stageCount: '个合成阶段',
     component: '基础组件', intermediate: '中间件', finished: '成品',
-    componentCount: '21 件 · 装备 1～2 级', intermediateCount: '5 件 · 装备 3 级', finishedCount: '12 件 · 装备 3～5 级',
+    componentCount: '21 件 · 装备 1～2 级', intermediateCount: '5 件 · 装备 3 级', finishedCount: '20 件 · 装备 3～5 级',
     componentHelp: '合成路线的起点，持有时也提供自身属性。', intermediateHelp: '由组件合成，也能作为成品材料。', finishedHelp: '有的经过中间件，有的可由组件直接合成。',
     detailKicker: '装备档案 / 当前版本', priceLabel: '基础价格', routeTitle: '合成路线', usedForTitle: '可用于合成',
     detailNote: '配方是固定规则，图鉴只供查阅；实际合成需在波间商店手动完成。基础价格不等于当波商店售价。',
@@ -20,13 +20,13 @@ const UI = {
     upgradeStats: '各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。',
     upgradeBase: '固定配方合成或商店直购获得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本装备不参与三合一升阶。', upgradeResale: '卖出：{price} 材料',
-    description: 'DotaRogue装备图鉴：38 件装备、17 条固定配方，以及全部成品装备的 Lv.1–3 升阶成长。'
+    description: 'DotaRogue装备图鉴：46 件装备、25 条固定配方，以及全部成品装备的 Lv.1–3 升阶成长。'
   },
   'zh-TW': {
     back: '返回遊戲', gameList: '選擇遊戲', title: '裝備圖鑑', lead: '從基礎組件到中間件，再到成品。三個數字代表合成階段；每件裝備的 1～5 級另行標明。',
     itemCount: '件目前裝備', recipeCount: '條固定配方', stageCount: '個合成階段',
     component: '基礎組件', intermediate: '中間件', finished: '成品',
-    componentCount: '21 件 · 裝備 1～2 級', intermediateCount: '5 件 · 裝備 3 級', finishedCount: '12 件 · 裝備 3～5 級',
+    componentCount: '21 件 · 裝備 1～2 級', intermediateCount: '5 件 · 裝備 3 級', finishedCount: '20 件 · 裝備 3～5 級',
     componentHelp: '合成路線的起點，持有時也提供自身屬性。', intermediateHelp: '由組件合成，也能作為成品材料。', finishedHelp: '有的經過中間件，有的可由組件直接合成。',
     detailKicker: '裝備檔案 / 目前版本', priceLabel: '基礎價格', routeTitle: '合成路線', usedForTitle: '可用於合成',
     detailNote: '配方是固定規則，圖鑑僅供查閱；實際合成需在波間商店手動完成。基礎價格不等於當波商店售價。',
@@ -37,13 +37,13 @@ const UI = {
     upgradeStats: '各級屬性為單件貢獻，按 1／3／9 倍保留投入；升階保留三件材料的屬性總和與總賣價。同類被動只取最強的一份。強化 Lv. 與裝備基礎等級、三個合成階段分別計算。',
     upgradeBase: '固定配方合成或商店直購獲得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本裝備不參與三合一升階。', upgradeResale: '賣出：{price} 材料',
-    description: 'DotaRogue裝備圖鑑：38 件裝備、17 條固定配方，以及全部成品裝備的 Lv.1–3 升階成長。'
+    description: 'DotaRogue裝備圖鑑：46 件裝備、25 條固定配方，以及全部成品裝備的 Lv.1–3 升階成長。'
   },
   en: {
     back: 'Back to game', gameList: 'Choose a game', title: 'Equipment Archive', lead: 'Follow components into intermediate items and finished gear. The three numbers mark crafting stages; each item keeps its actual grade from 1 to 5.',
     itemCount: 'current items', recipeCount: 'fixed recipes', stageCount: 'crafting stages',
     component: 'Components', intermediate: 'Intermediate', finished: 'Finished gear',
-    componentCount: '21 items · grades 1–2', intermediateCount: '5 items · grade 3', finishedCount: '12 items · grades 3–5',
+    componentCount: '21 items · grades 1–2', intermediateCount: '5 items · grade 3', finishedCount: '20 items · grades 3–5',
     componentHelp: 'The start of a crafting route, with useful stats of their own.', intermediateHelp: 'Crafted from components and used in finished gear.', finishedHelp: 'Some use intermediate items; others use components directly.',
     detailKicker: 'ITEM RECORD / CURRENT BUILD', priceLabel: 'Base price', routeTitle: 'Crafting route', usedForTitle: 'Used to craft',
     detailNote: 'These are fixed recipes for reference. Crafting is done manually in the between-wave shop. Base price is not the current shop price.',
@@ -54,7 +54,7 @@ const UI = {
     upgradeStats: 'Stats are per item, scaled by 1 / 3 / 9 to preserve your investment. Merging keeps the three inputs’ total stats and resale value. Only the strongest passive of each type applies. Upgrade levels are separate from item grades and the three crafting stages.',
     upgradeBase: 'Crafting recipes and direct shop purchases provide Lv.1.', upgradeFrom: '3 matching Lv.{level} copies → 1 Lv.{next}',
     upgradeUnavailable: 'This item cannot merge for an upgrade.', upgradeResale: 'Sell: {price} materials',
-    description: 'DotaRogue equipment archive: 38 items, 17 fixed recipes, and Lv.1–3 upgrades for all finished gear.'
+    description: 'DotaRogue equipment archive: 46 items, 25 fixed recipes, and Lv.1–3 upgrades for all finished gear.'
   }
 };
 
