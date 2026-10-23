@@ -14,6 +14,7 @@ README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Ag
 AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功能不依赖运行时构建，统计脚本独立加载：
 
 - `work/index.html`、`static/css/styles.css`、`static/js/app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，六类角色帮助入口、协作方法和 Evidence Lab。
+- `work/start.html`、`static/css/work/start.css`：面向首次访问者的独立新首页预览，以“人 A＋Agent X → 同一工作项与适用方法 → 人 B＋Agent Y”说明可替换参与者如何接手、读取当前依据并回写结果，并说明工作项如何成为个人／项目／组织／企业看板与知识沉淀的事实基础；不加载 JavaScript、统计或外部资源。页面为公开方法与固定 Concept 演示，真实看板聚合、权限和知识库边界见 `work/README.md`；原首页和默认跳转保持原有入口。
 - `static/css/shared/ecosystem.css`、`static/js/shared/ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页；共享资源的消费者和边界见 `static/css/shared/README.md`。
 - `static/js/analytics.js`：全站共用的 Google Analytics 4 加载器；原有实际内容页沿用各自统计引用，Measurement ID 为 `G-FVG65R5M0D`。根首页兼容页不加载统计，避免跳转前后重复统计；当前契约见 `static/js/README.md`。
 - `work/kael/`：人机协作总循环、工作项上下文、任务内增益与跨任务判断升级。
@@ -24,13 +25,13 @@ AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功�
 - `work/workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `static/css/workspace-assistant.css`、`static/js/workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `games.html`、`static/css/games.css`：游戏选择页；给以后新增的游戏保留独立入口。
-- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 38 件装备的三阶段合成图鉴。页面、素材和设计资料在 `game/`，样式和脚本分别在 `static/css/game/`、`static/js/game/`。实现、玩法和验证入口见 `game/README.md`。
+- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 46 件装备的三阶段合成图鉴，狂战斧、红杖与分身斧已有三级攻击形态和角色装备外观。页面、素材和设计资料在 `game/`，样式和脚本分别在 `static/css/game/`、`static/js/game/`。实现、玩法和验证入口见 `game/README.md`。
 - `favicon.svg`：站点与游戏共享的公开矢量图标，保留根路径以兼容浏览器默认图标请求。
 - `404.html`：静态托管失败页。
 
 ## 目录约定
 
-- `work/` 聚合工作方向的 13 个正式页面；`game/` 管理当前游戏与相关资料；`games.html` 保留根目录，本轮不改其内容或行为。
+- `work/` 聚合工作方向的 14 个正式页面（含独立新首页预览）；`game/` 管理当前游戏与相关资料；`games.html` 保留根目录，本轮不改其内容或行为。
 - 根目录业务入口只保留 `index.html` 与 `games.html`：前者轻量跳转到 `work/index.html`，后者保留游戏选择页。外层 `kael/`、`meepo/`、`nest/`、`lanox/`、`help/` 和 `workspace-assistant.html` 已移除，不再兼容这些旧地址；正式内容只在 `work/`。`404.html` 等部署辅助文件保留。根首页跳转保留 query／hash，禁用 JavaScript 时保留访问链接。
 - `static/` 是随站点发布的正式资源目录，与不提交的 `.tmp/` 分开；HTML 按业务域放在 `work/`、`game/`，不建立空的 `static/pages/`。
 - `static/css/`、`static/js/` 按站点、共享、帮助和游戏所有权归档前端资源；只有稳定且有多个真实消费者的机制才进入 `shared` 子目录。详细路径规则见 [static/README.md](static/README.md)。
