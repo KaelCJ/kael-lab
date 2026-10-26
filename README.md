@@ -1,22 +1,24 @@
 # Kael Lab
 
-人与 Agent 共同工作的公开 AI Center，以及独立的网页游戏空间。两个方向共用一个可由 GitHub Pages 直接发布的静态仓库。
+Kael Lab 是一个关于“在 AI 时代，把日常过得更好”的公开静态站点。当前根首页的视觉与叙事已获确认，后续内容围绕它持续发展。工作、休闲、生活是三个并列方向：工作记录人机协作与工程方法，休闲从网页游戏开始，生活方向逐步整理饮食价格、育儿、装修和其他日常知识。
 
 ## 方向与入口
 
 | 方向 | 公开入口 | 仓库内上下文 |
 | --- | --- | --- |
-| 人机协作 / AI Center | `work/index.html`，再进入 `work/` 下的 Kael、Meepo、Jugg/Nest、Lanox、帮助中心与 Workspace Assistant；根 `index.html` 保留兼容入口 | `work/README.md` 与根目录 `AGENTS.md` |
+| 全站首页 | `index.html`：AI 时代下的日常入口，提供工作、休闲、生活三个方向 | 本 README、根目录 `AGENTS.md` 与工作项 `RKymfAuJSzwmwawJmTKU` |
+| 人机协作 / 工作 | `work/index.html`，再进入 `work/` 下的 Kael、Meepo、Jugg/Nest、Lanox、帮助中心与 Workspace Assistant | `work/README.md` 与根目录 `AGENTS.md` |
 | 网页游戏 | `games.html` 游戏选择页；首款《DotaRogue》在 `game/index.html` | `game/README.md` 与 `game/AGENTS.md` |
 
 README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Agent 的稳定工作边界。它们是回源导航，不代替当前代码、页面或运行验证。
 
-AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功能不依赖运行时构建，统计脚本独立加载：
+站点采用可由 GitHub Pages 直接发布的纯静态实现；页面功能不依赖运行时构建，统计脚本独立加载：
 
+- `index.html`、`static/css/home.css`、`static/js/home.js`：全站首页，围绕“人的需要先于工具”组织工作、休闲、生活三个方向；工作与游戏链接到当前页面，生活明确标为建设中。首页不加载统计脚本，不连接服务端或外部 API；正文和三个方向在禁用 JavaScript 时仍可阅读。
 - `work/index.html`、`static/css/styles.css`、`static/js/app.js`：Kael、Meepo、Jugg/Nest、Lanox 四生态首页，六类角色帮助入口、协作方法和 Evidence Lab。
-- `work/start.html`、`static/css/work/start.css`：面向首次访问者的独立新首页预览，以“人 A＋Agent X → 同一工作项与适用方法 → 人 B＋Agent Y”说明可替换参与者如何接手、读取当前依据并回写结果，并说明工作项如何成为个人／项目／组织／企业看板与知识沉淀的事实基础；不加载 JavaScript、统计或外部资源。页面为公开方法与固定 Concept 演示，真实看板聚合、权限和知识库边界见 `work/README.md`；原首页和默认跳转保持原有入口。
+- `work/start.html`、`static/css/work/start.css`：工作分区内的独立方法预览，以“人 A＋Agent X → 同一工作项与适用方法 → 人 B＋Agent Y”说明可替换参与者如何接手、读取当前依据并回写结果，并说明工作项如何成为个人／项目／组织／企业看板与知识沉淀的事实基础；不加载 JavaScript、统计或外部资源。页面为公开方法与固定 Concept 演示，真实看板聚合、权限和知识库边界见 `work/README.md`。
 - `static/css/shared/ecosystem.css`、`static/js/shared/ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页；共享资源的消费者和边界见 `static/css/shared/README.md`。
-- `static/js/analytics.js`：全站共用的 Google Analytics 4 加载器；原有实际内容页沿用各自统计引用，Measurement ID 为 `G-FVG65R5M0D`。根首页兼容页不加载统计，避免跳转前后重复统计；当前契约见 `static/js/README.md`。
+- `static/js/analytics.js`：全站共用的 Google Analytics 4 加载器；原有实际内容页沿用各自统计引用，Measurement ID 为 `G-FVG65R5M0D`。全站首页当前不加载统计；当前契约见 `static/js/README.md`。
 - `work/kael/`：人机协作总循环、工作项上下文、任务内增益与跨任务判断升级。
 - `work/meepo/`：组合根、产品 Agent、公共 Framework 与 Nest 候选能力的当前模块视图。
 - `work/nest/`：Jugg/Nest 业务伴生治理、五类支撑、六层资产与知识产品候选核心。
@@ -25,14 +27,14 @@ AI Center 采用可由 GitHub Pages 直接发布的纯静态实现；页面功�
 - `work/workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `static/css/workspace-assistant.css`、`static/js/workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `games.html`、`static/css/games.css`：游戏选择页；给以后新增的游戏保留独立入口。
-- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供当前 46 件装备的三阶段合成图鉴，狂战斧、红杖与分身斧已有三级攻击形态和角色装备外观。页面、素材和设计资料在 `game/`，样式和脚本分别在 `static/css/game/`、`static/js/game/`。实现、玩法和验证入口见 `game/README.md`。
+- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/equipment.html` 提供49件装备／28配方的图鉴，含23件三级成品、六类羁绊与成员；游戏有待用储备和双目标自动合成，装备与英雄成长的表现已接入，实际验证范围见游戏README。狂战斧、红杖与分身斧保留三级攻击形态和角色装备外观。页面、素材和设计资料在 `game/`，样式和脚本分别在 `static/css/game/`、`static/js/game/`。实现、玩法和验证入口见 `game/README.md`。
 - `favicon.svg`：站点与游戏共享的公开矢量图标，保留根路径以兼容浏览器默认图标请求。
 - `404.html`：静态托管失败页。
 
 ## 目录约定
 
-- `work/` 聚合工作方向的 14 个正式页面（含独立新首页预览）；`game/` 管理当前游戏与相关资料；`games.html` 保留根目录，本轮不改其内容或行为。
-- 根目录业务入口只保留 `index.html` 与 `games.html`：前者轻量跳转到 `work/index.html`，后者保留游戏选择页。外层 `kael/`、`meepo/`、`nest/`、`lanox/`、`help/` 和 `workspace-assistant.html` 已移除，不再兼容这些旧地址；正式内容只在 `work/`。`404.html` 等部署辅助文件保留。根首页跳转保留 query／hash，禁用 JavaScript 时保留访问链接。
+- `work/` 聚合工作方向的 14 个正式页面（含工作方法预览）；`game/` 管理当前游戏与相关资料；`games.html` 保留根目录，本轮不改其内容或行为。
+- 根目录业务入口只保留 `index.html` 与 `games.html`：前者是全站首页，后者是休闲方向的游戏选择页。工作分区正式入口为 `work/index.html`；外层 `kael/`、`meepo/`、`nest/`、`lanox/`、`help/` 和 `workspace-assistant.html` 已移除，不再兼容这些旧地址。`404.html` 等部署辅助文件保留。生活方向尚未建立独立页面，首页只提供建设中说明。
 - `static/` 是随站点发布的正式资源目录，与不提交的 `.tmp/` 分开；HTML 按业务域放在 `work/`、`game/`，不建立空的 `static/pages/`。
 - `static/css/`、`static/js/` 按站点、共享、帮助和游戏所有权归档前端资源；只有稳定且有多个真实消费者的机制才进入 `shared` 子目录。详细路径规则见 [static/README.md](static/README.md)。
 - `work/`、`game/` 分别维护所属 HTML、素材与设计资料；对应 CSS/JavaScript 在 `static/css/`、`static/js/` 下按所有权归档。
@@ -70,7 +72,7 @@ python -B -X utf8 scripts/check_static_paths.py
 python -B -X utf8 -m unittest discover -s scripts -p "test_*.py"
 ```
 
-根首页跳转另有 query／hash、项目子路径和固定同源目标回归检查：
+旧根入口跳转脚本仍保留其独立回归测试；当前根首页本身不再依赖跳转脚本：
 
 ```bash
 node --test scripts/test_redirect.js
@@ -84,7 +86,7 @@ node --test scripts/test_redirect.js
 python -m http.server 4173
 ```
 
-然后访问 `http://localhost:4173/work/` 查看工作空间，或访问 `http://localhost:4173/games.html` 选择游戏；访问根地址会进入工作空间，禁用 JavaScript 时点击兼容页链接继续。
+然后访问 `http://localhost:4173/` 查看全站首页，或访问 `http://localhost:4173/work/index.html` 查看工作空间、`http://localhost:4173/games.html` 选择游戏。根首页的三个方向、生活建设说明和导航在禁用 JavaScript 时仍可阅读。
 
 桌面工具的浏览器预览可使用 `.claude/launch.json` 中的 `kael-lab-static`：同样只运行 Python 静态服务器，使用线程服务器与 128 的连接队列承接游戏素材的并行请求。默认端口 4187；端口占用时接受工具分配的 `PORT`，不停止其他已有服务。此配置不参与 GitHub Pages 发布。
 
