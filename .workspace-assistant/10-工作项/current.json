@@ -140,6 +140,26 @@
       "createdAt": "2026-10-20T00:27:25+08:00",
       "updatedAt": "2026-10-20T00:27:25+08:00",
       "entry": "2026-10-20_Rn60pis02HrEIl3D2ZeZ_owned-ip-transformation/README.md"
+    },
+    {
+      "id": "RKymfAuJSzwmwawJmTKU",
+      "title": "Kael Lab·AI时代日常首页与三方向入口",
+      "type": 0,
+      "product": 0,
+      "priority": "P1",
+      "createdAt": "2026-10-23T17:35:04+08:00",
+      "updatedAt": "2026-10-26T10:29:36+08:00",
+      "entry": "2026-10-23_RKymfAuJSzwmwawJmTKU_ai-daily-home/README.md"
+    },
+    {
+      "id": "RB7aJmSnsGXbmyppt3k7",
+      "title": "DotaRogue·武器系统趣味性与构筑设计",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-23T06:30:45Z",
+      "updatedAt": "2026-10-26T03:42:00Z",
+      "entry": "2026-10-23_RB7aJmSnsGXbmyppt3k7_weapon-system-fun/README.md"
     }
   ]
 }
