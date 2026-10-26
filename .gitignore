@@ -30,6 +30,7 @@ coverage/
 # Local workspace state and generated QA outputs
 /.workspace-assistant/
 /.tmp/
+/.logs/
 
 # Legacy output locations: new scratch files belong in .tmp/
 /artifacts/
