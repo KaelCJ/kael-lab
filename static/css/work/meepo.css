@@ -1,0 +1,116 @@
+/* Meepo owns these standard text roles until the shared shell adopts typography tokens. */
+.meepo-page {
+  --text-micro: 600 11px/15px var(--sans);
+  --text-caption: 400 12px/16px var(--sans);
+  --text-label: 600 13px/18px var(--sans);
+  --text-body: 400 14px/20px var(--sans);
+  --text-title: 600 18px/28px var(--sans);
+  --text-title-lg: 600 20px/28px var(--sans);
+  --text-display-sm: 600 24px/32px var(--sans);
+}
+.meepo-page .space-brand small, .meepo-page .space-nav a, .meepo-page .lab-back,
+.meepo-page .control-label, .meepo-page .hero-kicker, .meepo-page .section-kicker,
+.meepo-page .hero-fact > span, .meepo-page .status-chip, .meepo-page .inspector-head,
+.meepo-page .slide-number, .meepo-page .slide-aside b, .meepo-page .slide-grid b,
+.meepo-page .slide-page, .meepo-page .key-hint, .meepo-page .space-footer > span { font: var(--text-micro); letter-spacing: 0; }
+.meepo-page .control-button, .meepo-page .briefing-nav button, .meepo-page .inspector-link { font: var(--text-label); letter-spacing: 0; }
+.meepo-page .hero-kicker, .meepo-page .section-kicker { color: var(--muted); }
+.meepo-page .hero-fact p, .meepo-page .panel-heading > p, .meepo-page .inspector > p,
+.meepo-page .inspector dd, .meepo-page .space-footer p { font: var(--text-body); }
+.meepo-page .inspector dt { font: var(--text-micro); letter-spacing: 0; }
+.meepo-hero { min-height: 470px; }
+.meepo-hero h1 { font-size: clamp(42px, 6vw, 88px); line-height: 1.03; letter-spacing: -.05em; }
+.meepo-page .brief-slide h2 { line-height: 1.08; }
+.meepo-page .slide-progress span { width: 100%; }
+.meepo-page .briefing-nav button:disabled { color: var(--muted); background: var(--canvas); border-style: dashed; cursor: default; opacity: 1; }
+.meepo-principles { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; padding: 28px 0 0; }
+.meepo-principles article { min-height: 160px; padding: 21px; border: 1px solid var(--line); background: var(--surface); }
+.meepo-principles span, .map-label, .core-index, .route-type, .product-family-lead > span, .engineering-band em { color: var(--muted); font: var(--text-micro); }
+.meepo-principles strong { display: block; margin-top: 31px; font: var(--text-title); }
+.meepo-principles p { margin: 8px 0 0; color: var(--muted); font: var(--text-body); }
+.incubation-map { display: grid; gap: 9px; }
+.incubation-inputs, .incubator-core { padding: 22px; border: 1px solid var(--line); background: var(--canvas); }
+.input-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 7px; margin-top: 15px; }
+.input-grid span { padding: 12px 9px; border: 1px dashed var(--line-strong); color: var(--ink); font: var(--text-label); text-align: center; }
+.incubator-core { display: grid; grid-template-columns: 150px minmax(0, .9fr) minmax(0, 1.5fr); gap: 20px; align-items: center; border-color: var(--orange); background: color-mix(in srgb, var(--orange) 8%, var(--canvas)); }
+.incubator-core strong { font: var(--text-display-sm); }
+.incubator-core p { margin: 0; color: var(--ink); font: var(--text-body); }
+.core-steps { display: flex; grid-column: 1 / -1; gap: 9px; align-items: center; flex-wrap: wrap; color: var(--ink); font: var(--text-micro); }
+.core-steps i { color: var(--muted); font-style: normal; }
+.route-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 9px; }
+.route-card { position: relative; display: flex; flex-direction: column; align-items: flex-start; min-height: 242px; padding: 19px; border: 1px solid var(--line); border-left: 5px solid var(--route-accent, var(--blue)); background: var(--surface); color: var(--ink); text-align: left; cursor: pointer; transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease; }
+.route-card:hover { transform: translateY(-3px); border-color: var(--line-strong); box-shadow: var(--shadow); }
+.route-card.is-selected { box-shadow: inset 0 0 0 1px var(--route-accent, var(--blue)); }
+.route-card.orange { --route-accent: var(--orange); }
+.route-card.green { --route-accent: var(--green); }
+.route-card.blue { --route-accent: var(--blue); }
+.route-card.purple { --route-accent: var(--purple); }
+.route-code { color: var(--route-accent); font: var(--text-title-lg); font-variant-numeric: tabular-nums; }
+.route-type { display: block; margin-top: 6px; }
+.route-card strong { display: block; margin-top: 28px; font: var(--text-title-lg); overflow-wrap: anywhere; }
+.route-card small { display: block; margin-top: 8px; color: var(--muted); font: var(--text-body); }
+.route-card em { display: block; align-self: flex-end; margin-top: auto; padding-top: 20px; color: var(--ink); font: var(--text-caption); font-style: normal; }
+.meepo-inspector { margin-top: 9px; min-height: 0; }
+.meepo-products-panel, .meepo-engineering-panel { padding-top: 25px; }
+.product-family { display: grid; grid-template-columns: minmax(250px, .55fr) minmax(0, 1.45fr); gap: 9px; }
+.product-family-lead { padding: 25px; border: 1px solid var(--purple); background: color-mix(in srgb, var(--purple) 8%, var(--canvas)); }
+.product-family-lead strong { display: block; margin-top: 45px; font: var(--text-display-sm); }
+.product-family-lead p { margin: 12px 0 0; color: var(--ink); font: var(--text-body); }
+.product-list { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); align-content: start; gap: 8px; padding: 20px; border: 1px solid var(--line); background: var(--canvas); }
+.product-item { display: grid; align-content: start; gap: 8px; padding: 14px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); }
+.product-item strong { font: var(--text-label); }
+.product-item small { color: var(--muted); font: var(--text-caption); }
+.product-item.current { border-color: color-mix(in srgb, var(--green) 55%, var(--line)); }
+.product-item.concept { border-style: dashed; }
+.engineering-relations { display: grid; grid-template-columns: repeat(3, 1fr); gap: 9px; margin-bottom: 20px; }
+.engineering-relations p { margin: 0; padding: 20px; border-top: 2px solid var(--blue); background: var(--canvas); }
+.engineering-relations strong { display: block; font: var(--text-title); }
+.engineering-relations span { display: block; margin-top: 8px; color: var(--muted); font: var(--text-body); }
+.engineering-stack { display: grid; gap: 9px; }
+.engineering-band { border: 1px solid var(--line); border-left: 5px solid var(--band-accent, var(--blue)); background: var(--surface); color: var(--ink); }
+.engineering-band summary { display: grid; min-height: 89px; padding: 17px 20px; grid-template-columns: 52px minmax(200px, .65fr) minmax(0, 1.2fr) auto; gap: 20px; align-items: center; text-align: left; cursor: pointer; }
+.engineering-band summary::after { content: ''; width: 9px; height: 9px; grid-column: 4; grid-row: 1; justify-self: end; border-right: 2px solid currentColor; border-bottom: 2px solid currentColor; transform: rotate(45deg); }
+.engineering-band[open] summary::after { transform: rotate(225deg); }
+.engineering-band summary:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.engineering-band:hover { border-color: var(--line-strong); }
+.engineering-band.orange { --band-accent: var(--orange); }
+.engineering-band.green { --band-accent: var(--green); }
+.engineering-band.blue { --band-accent: var(--blue); }
+.engineering-band.purple { --band-accent: var(--purple); }
+.engineering-band summary > span { color: var(--band-accent); font: var(--text-title); }
+.engineering-band strong { font: var(--text-title); }
+.engineering-band small { color: var(--muted); font: var(--text-body); }
+.engineering-band em { grid-column: 2; font-style: normal; }
+.engineering-detail { padding: 0 24px 24px; }
+.engineering-detail p { margin: 0 0 16px; font: var(--text-body); }
+.engineering-detail code { font-family: var(--mono); overflow-wrap: anywhere; }
+.engineering-detail dl { margin: 0; }
+.engineering-detail dt { margin-top: 12px; color: var(--muted); font: var(--text-micro); }
+.engineering-detail dd { margin: 4px 0 0; font: var(--text-body); }
+html:not(.js) .meepo-page .control-deck,
+html:not(.js) .meepo-page .briefing-nav { display: none; }
+@media (max-width: 1000px) {
+  .input-grid { grid-template-columns: repeat(3, 1fr); }
+  .incubator-core { grid-template-columns: 1fr 1fr; }
+  .incubator-core p { grid-column: 1 / -1; }
+  .route-grid { grid-template-columns: 1fr 1fr; }
+  .product-family { grid-template-columns: 1fr; }
+  .engineering-band summary { grid-template-columns: 42px 1fr 18px; gap: 10px 13px; }
+  .engineering-band small, .engineering-band em { grid-column: 2; }
+  .engineering-band summary::after { grid-column: 3; }
+}
+@media (max-width: 600px) {
+  .meepo-hero h1 em span { display: block; }
+  .meepo-page .brief-slide h2 { font-size: clamp(36px, 10vw, 48px); }
+  .meepo-page .control-deck { gap: 9px; }
+  .meepo-page .control-button { padding: 7px; }
+  .meepo-page .control-label { display: none; }
+  .meepo-page .key-hint { display: none; }
+  .meepo-principles, .engineering-relations { grid-template-columns: 1fr; }
+  .input-grid { grid-template-columns: 1fr 1fr; }
+  .incubator-core { grid-template-columns: 1fr; }
+  .incubator-core p { grid-column: auto; }
+  .route-grid, .product-list { grid-template-columns: 1fr; }
+  .route-card { min-height: 185px; }
+  .product-family-lead strong { margin-top: 28px; }
+}

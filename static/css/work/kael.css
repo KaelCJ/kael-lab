@@ -1,0 +1,130 @@
+/* Kael owns its knowledge narrative. Colors and font families come from the shared shell.
+   Standard text roles remain local until the shared shell supplies equivalent tokens. */
+.kael-page {
+  --text-caption: 400 12px/16px var(--sans);
+  --text-label: 500 13px/18px var(--sans);
+  --text-body: 400 14px/20px var(--sans);
+  --text-body-lg: 400 15px/22px var(--sans);
+  --text-title-sm: 600 16px/24px var(--sans);
+  --text-title-lg: 600 20px/28px var(--sans);
+  --text-display-sm: 600 24px/32px var(--sans);
+  font-weight: 400;
+}
+.kael-page :is(h1, h2, h3, strong, b) { font-weight: 600; letter-spacing: 0; }
+.kael-page :is(.space-brand small, .control-label, .hero-kicker, .section-kicker, .hero-fact > span, .slide-number, .slide-aside b, .slide-grid b, .slide-page, .key-hint, .space-footer > span) {
+  font: var(--text-caption);
+  letter-spacing: 0;
+  text-transform: none;
+}
+.kael-page .space-brand strong { font: var(--text-title-sm); }
+.kael-page :is(.space-nav a, .lab-back, .control-button, .briefing-nav button, .skip-link) { font: var(--text-body); font-weight: 500; letter-spacing: 0; text-transform: none; }
+.kael-page :is(.control-button, .briefing-nav button) { min-height: 44px; }
+.kael-page .theme-button { width: 30px; height: 30px; min-width: 30px; margin: 7px; }
+.kael-page .control-deck { min-height: 60px; }
+.kael-page :is(.control-label, .control-button, .space-footer p, .space-footer small, .space-footer > span, .slide-number) { color: var(--ink); }
+.kael-page :is(.hero-kicker, .section-kicker) { color: var(--green); }
+.kael-page .space-hero { min-height: 0; padding: 64px 0 56px; gap: 48px; align-items: center; }
+/* Display roles belong to this editorial page; controls keep the standard roles above. */
+.kael-page .space-hero h1 { margin: 22px 0; font-size: clamp(38px, 4.4vw, 68px); line-height: 1.2; }
+.kael-page .space-hero-copy > p:last-of-type { max-width: 690px; font: var(--text-body-lg); color: var(--ink); }
+.kael-hero-links { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-top: 26px; }
+.kael-hero-links a { padding: 8px 0; color: var(--blue); font: var(--text-body); font-weight: 500; text-underline-offset: 5px; }
+.js .kael-page[data-view="briefing"] .kael-hero-links { display: none; }
+.kael-page .hero-fact { box-shadow: none; }
+.kael-page .hero-fact > span { color: var(--ink); border-color: var(--green); }
+.kael-page .hero-fact strong { margin-top: 28px; font: var(--text-display-sm); }
+.kael-page .hero-fact p { font: var(--text-body-lg); color: var(--ink); }
+.kael-page .hero-fact small { display: block; margin-top: 20px; color: var(--ink); font: var(--text-caption); }
+.kael-page .view-panel { padding: 56px 0 80px; }
+.kael-page .panel-heading { gap: 32px; }
+.kael-page .panel-heading h2 { font-size: clamp(30px, 3.2vw, 46px); line-height: 1.25; }
+.kael-page .panel-heading > p { font: var(--text-body-lg); color: var(--ink); }
+.kael-page :is(#dual-helix, #knowledge-records) { scroll-margin-top: 155px; }
+.dual-helix { margin: 0; padding: 28px; border: 1px solid var(--line); background: var(--surface); }
+.helix-legend { display: flex; justify-content: space-between; gap: 16px; font: var(--text-title-sm); }
+.helix-legend span { display: flex; gap: 10px; align-items: center; }
+.helix-legend span::before { width: 24px; height: 4px; background: var(--orange); content: ""; }
+.helix-legend .ai-strand::before { background: var(--blue); }
+.helix-drawing { display: block; width: 100%; height: auto; margin: 16px 0; overflow: visible; }
+.helix-drawing path { fill: none; }
+.knowledge-axis { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 4 7; }
+.helix-rungs { stroke: var(--line); stroke-width: 2; }
+.helix-drawing :is(.human-curve, .ai-curve) { stroke-width: 5; stroke-linecap: round; }
+.human-curve { stroke: var(--orange); }
+.ai-curve { stroke: var(--blue); }
+.helix-junctions { fill: var(--surface); stroke: var(--green); stroke-width: 3; }
+.helix-milestones { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 20px; margin: 0; padding: 0; list-style: none; }
+.helix-milestones strong { display: block; font: var(--text-title-sm); }
+.helix-milestones span { display: block; margin-top: 6px; font: var(--text-body); color: var(--muted); }
+.dual-helix figcaption { margin-top: 24px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font: var(--text-body); }
+.kael-page .inspector-link { font: var(--text-body); font-weight: 500; text-decoration: underline; text-underline-offset: 4px; }
+.knowledge-contract, .knowledge-records { padding-top: 64px; }
+.knowledge-contract-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 16px; margin: 0; padding: 0; list-style: none; }
+.knowledge-contract-grid li { min-width: 0; padding: 24px; border-top: 2px solid var(--green); background: var(--surface-2); }
+.knowledge-contract-grid span { font: var(--text-caption); color: var(--ink); }
+.knowledge-contract-grid h3 { margin: 22px 0 10px; font: var(--text-title-lg); }
+.knowledge-contract-grid p { margin: 0; font: var(--text-body-lg); color: var(--ink); }
+.knowledge-record { border-top: 1px solid var(--line-strong); }
+.knowledge-record:last-child { border-bottom: 1px solid var(--line-strong); }
+.knowledge-record summary { display: grid; grid-template-columns: 110px minmax(0, 1fr) 24px; gap: 24px; padding: 24px 0; align-items: center; cursor: pointer; list-style: none; }
+.knowledge-record summary::-webkit-details-marker { display: none; }
+.knowledge-record summary > span { color: var(--muted); font: var(--text-label); }
+.knowledge-record summary strong { font: var(--text-title-lg); }
+.knowledge-record summary svg { width: 24px; height: 24px; fill: none; stroke: var(--ink); stroke-width: 1.5; transition: transform .2s; }
+.knowledge-record[open] summary svg { transform: rotate(180deg); }
+.knowledge-record summary:focus-visible { outline: 3px solid var(--orange); outline-offset: 3px; }
+.record-body { max-width: 920px; margin-left: 134px; padding: 0 24px 28px 0; font: var(--text-body-lg); }
+.record-body > p { margin: 0 0 20px; }
+.record-body dl { margin: 0; }
+.record-body dl > div { display: grid; grid-template-columns: 80px minmax(0, 1fr); gap: 20px; margin-top: 14px; }
+.record-body dt { color: var(--muted); font: var(--text-body); }
+.record-body dd { margin: 0; }
+.record-body a { color: var(--blue); text-underline-offset: 4px; }
+.record-body small { display: block; margin-top: 20px; color: var(--muted); font: var(--text-body); }
+.kael-status { margin-top: 48px; padding: 24px; border-left: 3px solid var(--green); background: var(--surface-2); }
+.kael-status strong { font: var(--text-title-sm); }
+.kael-status p { margin: 10px 0 0; font: var(--text-body); }
+.kael-page .brief-slide h2 { font-size: clamp(34px, 4.5vw, 64px); line-height: 1.2; }
+.kael-page .brief-slide-inner { gap: 40px; }
+.kael-page .brief-slide p { font: var(--text-body-lg); color: var(--ink); }
+.kael-page .brief-slide .inspector-link { color: var(--ink); }
+.kael-page .slide-aside strong { margin-top: 24px; font: var(--text-display-sm); }
+.kael-page :is(.slide-aside p, .slide-grid p) { font: var(--text-body); }
+.kael-page .slide-grid strong { margin-top: 24px; font: var(--text-title-lg); }
+.kael-page .briefing-nav button:disabled { color: var(--muted); background: var(--surface-2); cursor: default; }
+.kael-page .slide-progress span { width: 100%; }
+.kael-page .slide-page { font-variant-numeric: tabular-nums; }
+.kael-page .space-footer p { font: var(--text-body); }
+html:not(.js) .kael-page :is(.control-deck, .briefing-nav) { display: none; }
+html:not(.js) .kael-page .brief-slide + .brief-slide { margin-top: 48px; padding-top: 32px; border-top: 1px solid var(--line); }
+@media (max-width: 1120px) {
+  .knowledge-contract-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 800px) {
+  .kael-page .space-hero { padding: 40px 0 36px; gap: 28px; }
+  .kael-page .space-hero h1 { font-size: clamp(32px, 6.8vw, 48px); }
+  .kael-page .panel-heading h2 { font-size: 30px; }
+  .kael-page .view-panel { padding: 40px 0 56px; }
+  .kael-page .control-deck { gap: 8px; align-items: center; }
+  .kael-page .control-group { gap: 2px; }
+  .kael-page .control-button { padding-right: 8px; padding-left: 8px; }
+  .kael-page .theme-button { margin: 7px 4px; }
+  .dual-helix { padding: 20px; }
+  .helix-legend { font: var(--text-body); font-weight: 600; }
+  .helix-legend span { gap: 7px; }
+  .helix-legend span::before { width: 16px; }
+  .helix-milestones { grid-template-columns: 1fr 1fr; gap: 20px 14px; }
+  .knowledge-contract, .knowledge-records { padding-top: 48px; }
+  .knowledge-record summary { grid-template-columns: minmax(0, 1fr) 24px; gap: 10px 16px; }
+  .knowledge-record summary > span { grid-column: 1 / -1; }
+  .record-body { margin-left: 0; padding-right: 0; }
+  .kael-page .brief-slide h2 { font-size: clamp(30px, 6.8vw, 46px); }
+  .kael-page .briefing-stage { padding: 26px 20px; }
+  .kael-page .slide-progress { display: none; }
+  .kael-page .space-footer { gap: 20px; }
+}
+@media (max-width: 510px) {
+  .knowledge-contract-grid { grid-template-columns: 1fr; }
+  .knowledge-contract-grid li { padding: 22px; }
+  .record-body dl > div { grid-template-columns: 1fr; gap: 5px; }
+}
