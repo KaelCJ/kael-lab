@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 32 32" shape-rendering="crispEdges">
+  <title>陨星锤 / Meteor Hammer</title>
+  <desc>Original editable 32px artwork made for DotaRogue, 2026-10-23. A chained volcanic hammer with a glowing stone head. No third-party image or model used; item name references DotA, with game-specific mechanics.</desc>
+  <path d="M4 28 11 21 13 16" fill="none" stroke="#10252d" stroke-width="8"/>
+  <path d="M4 28 11 21 13 16" fill="none" stroke="#67838b" stroke-width="4"/>
+  <path d="M6 26 10 22 M12 19 14 15" stroke="#b2d1ca" stroke-width="2"/>
+  <polygon points="13,3 23,2 30,9 29,20 21,25 11,21 7,12" fill="#765439" stroke="#10252d" stroke-width="2"/>
+  <polygon points="14,5 22,4 27,9 25,15 16,16 10,11" fill="#a46a45"/>
+  <polygon points="13,8 20,6 25,10 22,18 16,19 11,14" fill="#b84944"/>
+  <path d="M19 6 16 11 21 14 18 20 M11 12 16 11 M21 14 26 11" fill="none" stroke="#f6d58b" stroke-width="2"/>
+  <path d="M3 10H5 M7 3V5 M27 27H30" stroke="#ee8e61" stroke-width="2"/>
+</svg>

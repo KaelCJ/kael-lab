@@ -1,4 +1,4 @@
-import { EQUIPMENT } from "./equipment.js";
+import { EQUIPMENT } from "./equipment.js?v=20261026-restore1";
 
 // Plan the entire target before the caller changes inventory, currency or rewards.
 export function planEquipmentCraft(items, targetId, incomingId = null) {

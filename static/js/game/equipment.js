@@ -550,6 +550,36 @@ export const EQUIPMENT = {
     recipe: ["helmDominator", "staffWizardry", "sobiMask"],
     passive: { id: "necromancy", cooldown: 12, duration: 6, damage: 10, magicRatio: .25 }
   },
+  monkeyKingBar: {
+    kind: "finished", grade: 5, price: 96,
+    name: "金箍棒", nameTw: "金箍棒", nameEn: "Monkey King Bar",
+    desc: "物理攻击 +12，攻速 +12%。每4次有效普攻沿命中方向释放贯穿冲击；升阶减少间隔并增加长度、宽度、目标数与伤害。",
+    descTw: "物理攻擊 +12，攻速 +12%。每4次有效普攻沿命中方向釋放貫穿衝擊；升階減少間隔並增加長度、寬度、目標數與傷害。",
+    descEn: "Physical attack +12; attack speed +12%. Every 4 successful basics release a piercing strike along the hit direction; upgrades reduce the interval and increase reach, width, targets and damage.",
+    stats: { attackDamage: 12, attackSpeed: 12 },
+    recipe: ["demonEdge", "quarterstaff", "bladesAttack"],
+    passive: { id: "piercingStrike", hits: 4, range: 460, width: 16, targets: 2, damageRatio: .45 }
+  },
+  meteorHammer: {
+    kind: "finished", grade: 5, price: 84,
+    name: "陨星锤", nameTw: "隕星錘", nameEn: "Meteor Hammer",
+    desc: "物理攻击 +8，法术攻击 +6，每5秒回血 +2。站定0.8秒后轰击450内合法敌人，冷却7秒；升阶缩短蓄力并增加范围与伤害。",
+    descTw: "物理攻擊 +8，法術攻擊 +6，每5秒回血 +2。站定0.8秒後轟擊450內合法敵人，冷卻7秒；升階縮短蓄力並增加範圍與傷害。",
+    descEn: "Physical attack +8; magic attack +6; HP per 5 sec +2. Stand still for 0.8 sec to strike a legal enemy within 450, with a 7 sec cooldown. Upgrades shorten charge time and increase area and damage.",
+    stats: { attackDamage: 8, elemental: 6, regen: 2 },
+    recipe: ["mithrilHammer", "staffWizardry", "ringHealth"],
+    passive: { id: "meteorStrike", cooldown: 7, range: 450, radius: 64, damage: 30, magicRatio: .6, hold: .8 }
+  },
+  divineRapier: {
+    kind: "finished", grade: 5, price: 140, hidden: true,
+    name: "圣剑", nameTw: "聖劍", nameEn: "Divine Rapier",
+    desc: "通关第10波解锁本局商店与铸造。物理攻击 +36；每5次有效普攻释放剑气，持有时承伤增加15%。升阶强化剑气，同时增加承伤风险。",
+    descTw: "通關第10波解鎖本局商店與鑄造。物理攻擊 +36；每5次有效普攻釋放劍氣，持有時承傷增加15%。升階強化劍氣，同時增加承傷風險。",
+    descEn: "Clear wave 10 to unlock this run's shop and forging access. Physical attack +36; every 5 successful basics release a divine edge. Take 15% more damage while equipped; upgrades strengthen the edge and increase this risk.",
+    stats: { attackDamage: 36 },
+    recipe: ["demonEdge", "claymore", "broadsword"],
+    passive: { id: "divineEdge", hits: 5, range: 560, width: 16, targets: 6, damage: 40, attackRatio: .5, incomingAmp: .15 }
+  },
   manta: {
     kind: "finished",
     grade: 5,
@@ -587,7 +617,10 @@ export const EQUIPMENT_UPGRADES = {
   heart: { ratio: [.015, .02, .025] },
   phaseBoots: { speed: [20, 28, 36], damage: [8, 16, 24] },
   cyclone: { duration: [1, 1.3, 1.6] },
-  necronomicon: { duration: [6, 7, 8], damage: [10, 18, 26] }
+  necronomicon: { duration: [6, 7, 8], damage: [10, 18, 26] },
+  monkeyKingBar: { hits: [4, 3, 2], range: [460, 520, 580], width: [16, 20, 24], targets: [2, 3, 4], damageRatio: [.45, .55, .65] },
+  meteorHammer: { hold: [.8, .6, .4], radius: [64, 84, 104], damage: [30, 60, 90] },
+  divineRapier: { hits: [5, 4, 3], width: [16, 24, 32], targets: [6, 8, 10], damage: [40, 80, 120], incomingAmp: [.15, .2, .25] }
 };
 
 export function equipmentLevel(item) {
@@ -656,14 +689,14 @@ function equipmentEvolutionDescription(def, locale, compact) {
       const area = p.mode === 'impact' ? `a ${p.radius}-radius circle around the first hit`
         : p.mode === 'sweep' ? `a ${p.arcDegrees}° arc of radius ${p.radius}, centered on the hero and aimed at the first hit`
           : `a ${p.arcDegrees}° circle of radius ${p.radius} around the hero`;
-      text = `Physical attack +${s.attackDamage}; HP per 5 sec +${s.regen}. Successful melee basics cleave ${area} for ${percent(p.damageRatio)}% of pre-crit attack damage, excluding the first target. Once per attack; highest-level passive only. Cleave cannot crit, lifesteal or trigger basic-hit passives or counters.`;
+      text = `Physical attack +${s.attackDamage}; HP per 5 sec +${s.regen}. Successful melee basics cleave ${area} for ${percent(p.damageRatio)}% of pre-crit attack damage, excluding the first target. Once per attack; highest-level passive only. Cleave cannot crit, trigger physical basic lifesteal or trigger basic-hit passives or counters.`;
       if (!compact) text += ' All-damage bonuses apply once; ranged and elemental basics do not trigger cleave.';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? ` Secondary targets must lie in a ${p.spreadDegrees}° fan aimed at the primary target.` : '';
       text = `Physical attack +${s.attackDamage}; magic attack +${s.elemental}; mana/sec +${s.manaRegen}. Every ${p.cooldown} sec, fire up to ${p.targets} beam${p.targets > 1 ? 's' : ''} at unobstructed enemies within ${p.range}; the primary target prioritizes elites/bosses.${fan} Total base damage per cast: ${p.damage} + magic attack × ${p.magicRatio}. One target takes all; with multiple targets, divide by actual target count using primary weight 2 and weight 1 for each secondary. Stays ready without a target.`;
-      if (!compact) text += ' Only the highest-level passive applies. All-damage bonuses apply once; beams cannot crit, lifesteal or trigger basic-hit passives or counters.';
+      if (!compact) text += ' Only the highest-level passive applies. All-damage bonuses apply once; beams cannot crit, trigger physical basic lifesteal or trigger basic-hit passives or counters.';
     } else {
-      text = `Physical attack +${s.attackDamage}; attack speed +${s.attackSpeed}%; move speed +${s.speed}%; dodge +${s.dodge}% (total cap 55%). Every ${p.hits} successful basics fire ${p.projectiles} mirror projectiles in a fan, dividing a total of ${percent(2 * p.ratio)}% pre-crit attack damage evenly. Mirrors cannot crit, lifesteal or trigger basic-hit passives or counters.`;
+      text = `Physical attack +${s.attackDamage}; attack speed +${s.attackSpeed}%; move speed +${s.speed}%; dodge +${s.dodge}% (total cap 55%). Every ${p.hits} successful basics fire ${p.projectiles} mirror projectiles in a fan, dividing a total of ${percent(2 * p.ratio)}% pre-crit attack damage evenly. Mirrors cannot crit, trigger physical basic lifesteal or trigger basic-hit passives or counters.`;
       if (!compact) text += ` The fan extends about ${halfSpread}° to either side of the triggering hit direction. Each attack counts once even if it hits multiple enemies; all copies share the counter and use the highest-level passive. All-damage bonuses apply once; min attack interval 0.09 sec.`;
     }
     return `${title}. ${text}`;
@@ -673,14 +706,14 @@ function equipmentEvolutionDescription(def, locale, compact) {
       const area = p.mode === 'impact' ? `以首個命中為中心、半徑 ${p.radius} 的圓形`
         : p.mode === 'sweep' ? `以玩家為中心、朝首個命中方向的 ${p.arcDegrees}° 扇面，半徑 ${p.radius}`
           : `以玩家為中心、半徑 ${p.radius} 的 ${p.arcDegrees}° 整周範圍`;
-      text = `物理攻擊 +${s.attackDamage}，每 5 秒回血 +${s.regen}。近戰有效普攻分裂範圍：${area}；首目標以外敵人受到觸發普攻暴擊前傷害的 ${percent(p.damageRatio)}%。每次攻擊僅一次，同類只取最高階；分裂不暴擊、不吸血、不觸發普攻命中被動或計數。`;
+      text = `物理攻擊 +${s.attackDamage}，每 5 秒回血 +${s.regen}。近戰有效普攻分裂範圍：${area}；首目標以外敵人受到觸發普攻暴擊前傷害的 ${percent(p.damageRatio)}%。每次攻擊僅一次，同類只取最高階；分裂不暴擊、不觸發物理普攻吸血、不觸發普攻命中被動或計數。`;
       if (!compact) text += '所有傷害加成只計算一次；遠程與元素普攻不觸發。';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? `副目標限朝向主目標的 ${p.spreadDegrees}° 扇面內。` : '';
       text = `物理攻擊 +${s.attackDamage}，法術攻擊 +${s.elemental}，每秒回魔 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 範圍內無遮擋敵人發射最多 ${p.targets} 束衝擊，主目標優先精英／首領。${fan}單次總基礎傷害 ${p.damage} + 法術攻擊 × ${p.magicRatio}；僅一個目標時全額，多個時依實際目標數分攤，主目標權重 2、每個副目標權重 1。無目標保留就緒。`;
-      if (!compact) text += '同類只取最高階；所有傷害加成只計算一次，衝擊不暴擊、不吸血、不觸發普攻命中被動或計數。';
+      if (!compact) text += '同類只取最高階；所有傷害加成只計算一次，衝擊不暴擊、不觸發物理普攻吸血、不觸發普攻命中被動或計數。';
     } else {
-      text = `物理攻擊 +${s.attackDamage}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，閃避 +${s.dodge}%（總上限 55%）。每 ${p.hits} 次有效普攻扇形發射 ${p.projectiles} 道幻影，將觸發普攻暴擊前傷害的總倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴擊、不吸血、不觸發普攻命中被動或計數。`;
+      text = `物理攻擊 +${s.attackDamage}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，閃避 +${s.dodge}%（總上限 55%）。每 ${p.hits} 次有效普攻扇形發射 ${p.projectiles} 道幻影，將觸發普攻暴擊前傷害的總倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴擊、不觸發物理普攻吸血、不觸發普攻命中被動或計數。`;
       if (!compact) text += `以觸發命中方向為中心，左右各展開至約 ${halfSpread}°。同次攻擊命中多敵僅計一次，多件共用計數、只取最高階；所有傷害加成只計算一次，攻擊間隔最短 0.09 秒。`;
     }
   } else {
@@ -688,14 +721,14 @@ function equipmentEvolutionDescription(def, locale, compact) {
       const area = p.mode === 'impact' ? `以首个命中为中心、半径 ${p.radius} 的圆形`
         : p.mode === 'sweep' ? `以玩家为中心、朝首个命中方向的 ${p.arcDegrees}° 扇面，半径 ${p.radius}`
           : `以玩家为中心、半径 ${p.radius} 的 ${p.arcDegrees}° 整周范围`;
-      text = `物理攻击 +${s.attackDamage}，每 5 秒回血 +${s.regen}。近战有效普攻分裂范围：${area}；首目标以外敌人受到触发普攻暴击前伤害的 ${percent(p.damageRatio)}%。每次攻击仅一次，同类只取最高阶；分裂不暴击、不吸血、不触发普攻命中被动或计数。`;
+      text = `物理攻击 +${s.attackDamage}，每 5 秒回血 +${s.regen}。近战有效普攻分裂范围：${area}；首目标以外敌人受到触发普攻暴击前伤害的 ${percent(p.damageRatio)}%。每次攻击仅一次，同类只取最高阶；分裂不暴击、不触发物理普攻吸血、不触发普攻命中被动或计数。`;
       if (!compact) text += '所有伤害加成只计算一次；远程与元素普攻不触发。';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? `副目标限朝向主目标的 ${p.spreadDegrees}° 扇面内。` : '';
       text = `物理攻击 +${s.attackDamage}，法术攻击 +${s.elemental}，每秒回蓝 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 范围内无遮挡敌人发射最多 ${p.targets} 束冲击，主目标优先精英／首领。${fan}单次总基础伤害 ${p.damage} + 法术攻击 × ${p.magicRatio}；仅一个目标时全额，多个时依实际目标数分摊，主目标权重 2、每个副目标权重 1。无目标保留就绪。`;
-      if (!compact) text += '同类只取最高阶；所有伤害加成只计算一次，冲击不暴击、不吸血、不触发普攻命中被动或计数。';
+      if (!compact) text += '同类只取最高阶；所有伤害加成只计算一次，冲击不暴击、不触发物理普攻吸血、不触发普攻命中被动或计数。';
     } else {
-      text = `物理攻击 +${s.attackDamage}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，闪避 +${s.dodge}%（总上限 55%）。每 ${p.hits} 次有效普攻扇形发射 ${p.projectiles} 道幻影，将触发普攻暴击前伤害的总倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴击、不吸血、不触发普攻命中被动或计数。`;
+      text = `物理攻击 +${s.attackDamage}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，闪避 +${s.dodge}%（总上限 55%）。每 ${p.hits} 次有效普攻扇形发射 ${p.projectiles} 道幻影，将触发普攻暴击前伤害的总倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴击、不触发物理普攻吸血、不触发普攻命中被动或计数。`;
       if (!compact) text += `以触发命中方向为中心，左右各展开至约 ${halfSpread}°。同次攻击命中多敌仅计一次，多件共用计数、只取最高阶；所有伤害加成只计算一次，攻击间隔最短 0.09 秒。`;
     }
   }
@@ -712,36 +745,46 @@ function equipmentExtensionDescription(def, locale) {
   };
   const descriptions = {
     'zh-CN': {
-      bloodstone: () => `英雄技能与元素普攻按实际伤害回复 ${pct(p.ratio)}%；范围／持续伤害效率为 ${pct(p.areaRatio)}%，滚动 1 秒最多回复最大生命的 ${pct(p.capPerSecond)}%。装备追加、幻影和装备召唤伤害不触发。`,
+      monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向释放贯穿冲击，长 ${p.range}、半宽 ${p.width}，最多命中 ${p.targets} 个敌人，各造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}%。同次攻击命中多敌仅计一次；多件共用计数。`,
+      meteorHammer: () => `站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，伤害 ${p.damage} + 法术攻击 × ${p.magicRatio}；释放后冷却 ${p.cooldown} 秒。移动、冲刺或跳跃中断蓄力，没有合法目标不消耗就绪。`,
+      divineRapier: () => `通关第10波后解锁本局商店与铸造。每 ${p.hits} 次有效普攻沿命中方向释放剑气，长 ${p.range}、半宽 ${p.width}，最多 ${p.targets} 个目标，各造成 ${p.damage} + 触发普攻暴击前伤害 × ${p.attackRatio}。持有时承伤增加 ${pct(p.incomingAmp)}%，同类风险只取最高。`,
+      bloodstone: () => `英雄技能与元素普攻按实际伤害回复 ${pct(p.ratio)}%；范围／持续伤害效率为 ${pct(p.areaRatio)}%，滚动 1 秒最多回复最大生命的 ${pct(p.capPerSecond)}%。装备追加、幻影和装备召唤伤害不触发此法术回血。`,
       orchid: () => `普攻标记存活敌人 ${p.duration} 秒；成功施放主动技能时引爆 ${p.range} 范围内最近的一个标记，造成 ${p.damage} + 法术攻击 × ${p.magicRatio} 基础伤害。不沉默，不自动施放 Q。`,
       bladeMail: () => `实际承伤后向存活攻击者反射 ${pct(p.ratio)}% 伤害，每击最多 ${p.cap} 点，共用 ${p.interval} 秒间隔。无来源、闪避或被护盾完全吸收时不触发。反伤不再放大全伤害。`,
       heart: () => `连续 ${p.delay} 秒未实际承伤后，每秒恢复最大生命的 ${pct(p.ratio)}%；再次承伤中断。被闪避或完全吸收的伤害不中断。`,
       phaseBoots: () => `冲刺结束后移速额外 +${p.speed}%，持续 ${p.duration} 秒；${p.attackWindow} 秒内下一次有效普攻追加 ${p.damage} + 物理攻击加值 × ${p.attackRatio} 基础伤害。同次攻击仅一次。`,
       cyclone: () => `每 ${p.cooldown} 秒吹起 ${p.range} 范围内最近敌人 ${p.duration} 秒，暂停其移动与攻击；精英时长减半，首领仅 ${pct(.2)}%。目标仍可受伤，无目标保留就绪。`,
-      necronomicon: () => `每 ${p.cooldown} 秒召唤一名战士和一名射手，持续 ${p.duration} 秒、最多两名。攻击间隔分别 0.9／1.1 秒，各造成 ${p.damage} + 法术攻击 × ${p.magicRatio} 基础伤害。击杀不给材料、宝箱、经验或魂；不触发吸血、英雄和装备被动。`
+      necronomicon: () => `每 ${p.cooldown} 秒召唤一名战士和一名射手，持续 ${p.duration} 秒、最多两名。攻击间隔分别 0.9／1.1 秒，各造成 ${p.damage} + 法术攻击 × ${p.magicRatio} 基础伤害。击杀不给材料、宝箱、经验或魂；不触发物理普攻吸血、英雄和装备被动。`
     },
     'zh-TW': {
-      bloodstone: () => `英雄技能與元素普攻按實際傷害回復 ${pct(p.ratio)}%；範圍／持續傷害效率為 ${pct(p.areaRatio)}%，滾動 1 秒最多回復最大生命的 ${pct(p.capPerSecond)}%。裝備追加、幻影和裝備召喚傷害不觸發。`,
+      monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向釋放貫穿衝擊，長 ${p.range}、半寬 ${p.width}，最多命中 ${p.targets} 個敵人，各造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}%。同次攻擊命中多敵僅計一次；多件共用計數。`,
+      meteorHammer: () => `站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，傷害 ${p.damage} + 法術攻擊 × ${p.magicRatio}；釋放後冷卻 ${p.cooldown} 秒。移動、衝刺或跳躍中斷蓄力，沒有合法目標不消耗就緒。`,
+      divineRapier: () => `通關第10波後解鎖本局商店與鑄造。每 ${p.hits} 次有效普攻沿命中方向釋放劍氣，長 ${p.range}、半寬 ${p.width}，最多 ${p.targets} 個目標，各造成 ${p.damage} + 觸發普攻暴擊前傷害 × ${p.attackRatio}。持有時承傷增加 ${pct(p.incomingAmp)}%，同類風險只取最高。`,
+      bloodstone: () => `英雄技能與元素普攻按實際傷害回復 ${pct(p.ratio)}%；範圍／持續傷害效率為 ${pct(p.areaRatio)}%，滾動 1 秒最多回復最大生命的 ${pct(p.capPerSecond)}%。裝備追加、幻影和裝備召喚傷害不觸發此法術回血。`,
       orchid: () => `普攻標記存活敵人 ${p.duration} 秒；成功施放主動技能時引爆 ${p.range} 範圍內最近的一個標記，造成 ${p.damage} + 法術攻擊 × ${p.magicRatio} 基礎傷害。不沉默，不自動施放 Q。`,
       bladeMail: () => `實際承傷後向存活攻擊者反射 ${pct(p.ratio)}% 傷害，每擊最多 ${p.cap} 點，共用 ${p.interval} 秒間隔。無來源、閃避或被護盾完全吸收時不觸發。反傷不再放大全傷害。`,
       heart: () => `連續 ${p.delay} 秒未實際承傷後，每秒恢復最大生命的 ${pct(p.ratio)}%；再次承傷中斷。被閃避或完全吸收的傷害不中斷。`,
       phaseBoots: () => `衝刺結束後移速額外 +${p.speed}%，持續 ${p.duration} 秒；${p.attackWindow} 秒內下一次有效普攻追加 ${p.damage} + 物理攻擊加值 × ${p.attackRatio} 基礎傷害。同次攻擊僅一次。`,
       cyclone: () => `每 ${p.cooldown} 秒吹起 ${p.range} 範圍內最近敵人 ${p.duration} 秒，暫停其移動與攻擊；精英時長減半，首領僅 ${pct(.2)}%。目標仍可受傷，無目標保留就緒。`,
-      necronomicon: () => `每 ${p.cooldown} 秒召喚一名戰士和一名射手，持續 ${p.duration} 秒、最多兩名。攻擊間隔分別 0.9／1.1 秒，各造成 ${p.damage} + 法術攻擊 × ${p.magicRatio} 基礎傷害。擊殺不給材料、寶箱、經驗或魂；不觸發吸血、英雄和裝備被動。`
+      necronomicon: () => `每 ${p.cooldown} 秒召喚一名戰士和一名射手，持續 ${p.duration} 秒、最多兩名。攻擊間隔分別 0.9／1.1 秒，各造成 ${p.damage} + 法術攻擊 × ${p.magicRatio} 基礎傷害。擊殺不給材料、寶箱、經驗或魂；不觸發物理普攻吸血、英雄和裝備被動。`
     },
     en: {
-      bloodstone: () => `Hero skills and elemental basic attacks heal for ${pct(p.ratio)}% of actual damage. Area/periodic damage heals at ${pct(p.areaRatio)}% efficiency; rolling 1 sec cap: ${pct(p.capPerSecond)}% max HP. Equipment bonus, illusion and equipment-summon damage cannot trigger it.`,
+      monkeyKingBar: () => `Every ${p.hits} successful basics release a piercing strike along the hit direction, ${p.range} long with half-width ${p.width}. Hit up to ${p.targets} enemies for ${pct(p.damageRatio)}% of pre-crit attack damage each. Multi-target basics count once; all copies share the counter.`,
+      meteorHammer: () => `After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + magic attack × ${p.magicRatio} damage. Cooldown after release: ${p.cooldown} sec. Moving, dashing or jumping interrupts charge; stays ready without a legal target.`,
+      divineRapier: () => `Clear wave 10 to unlock this run's shop and forging access. Every ${p.hits} successful basics release a divine edge along the hit direction, ${p.range} long with half-width ${p.width}, hitting up to ${p.targets} targets for ${p.damage} + pre-crit attack damage × ${p.attackRatio} each. Take ${pct(p.incomingAmp)}% more damage while equipped; only the highest risk applies.`,
+      bloodstone: () => `Hero skills and elemental basic attacks heal for ${pct(p.ratio)}% of actual damage. Area/periodic damage heals at ${pct(p.areaRatio)}% efficiency; rolling 1 sec cap: ${pct(p.capPerSecond)}% max HP. Equipment bonus, illusion and equipment-summon damage cannot trigger this spell healing.`,
       orchid: () => `Basic attacks mark surviving enemies for ${p.duration} sec. A successful active skill detonates the nearest mark within ${p.range} for ${p.damage} + magic attack × ${p.magicRatio} base damage. No silence or automatic Q.`,
       bladeMail: () => `Reflect ${pct(p.ratio)}% of actual HP lost to a living attacker, capped at ${p.cap} per hit with a shared ${p.interval} sec interval. No source, dodges and fully absorbed hits do not trigger it. All-damage bonuses do not amplify reflection.`,
       heart: () => `After ${p.delay} sec without losing HP to damage, restore ${pct(p.ratio)}% max HP per second. HP damage interrupts this; dodged or fully absorbed hits do not.`,
       phaseBoots: () => `After a dash ends, gain +${p.speed}% move speed for ${p.duration} sec. The next successful basic attack within ${p.attackWindow} sec deals ${p.damage} + physical attack bonus × ${p.attackRatio} extra base damage, once per attack.`,
       cyclone: () => `Every ${p.cooldown} sec, lift the nearest enemy within ${p.range} for ${p.duration} sec, stopping movement and attacks. Elites receive half duration, bosses ${pct(.2)}%. Targets remain damageable. Stays ready without a target.`,
-      necronomicon: () => `Every ${p.cooldown} sec, summon a warrior and archer for ${p.duration} sec, up to two. They attack every 0.9/1.1 sec for ${p.damage} + magic attack × ${p.magicRatio} base damage each. Kills give no materials, chests, XP or souls; no lifesteal or hero/equipment procs.`
+      necronomicon: () => `Every ${p.cooldown} sec, summon a warrior and archer for ${p.duration} sec, up to two. They attack every 0.9/1.1 sec for ${p.damage} + magic attack × ${p.magicRatio} base damage each. Kills give no materials, chests, XP or souls; no physical basic lifesteal or hero/equipment procs.`
     }
   };
   if (!Object.hasOwn(descriptions[language], def.id)) return '';
   const stats = Object.entries(s).map(([key, value]) => `${labels[language][key]} +${value}${['speed', 'attackSpeed', 'lifesteal'].includes(key) ? '%' : ''}`).join(language === 'en' ? '; ' : '，');
-  return `${stats}。 ${descriptions[language][def.id]()} ${language === 'en' ? 'Highest-level passive only; extra damage cannot crit, lifesteal or trigger other passives. Total physical lifesteal caps at 65%; min attack interval 0.09 sec.' : language === 'zh-TW' ? '同類被動只取最高階；追加傷害不暴擊、不吸血、不觸發其他被動。物理吸血總上限 65%，攻擊間隔最短 0.09 秒。' : '同类被动只取最高阶；追加伤害不暴击、不吸血、不触发其他被动。物理吸血总上限 65%，攻击间隔最短 0.09 秒。'}`;
+  const synergy = language === 'en' ? 'The Lifesteal synergy separately heals from actual damage.' : language === 'zh-TW' ? '吸血羈絆另按實際傷害回復。' : '吸血羁绊另按实际伤害回复。';
+  return `${stats}。 ${descriptions[language][def.id]()} ${synergy} ${language === 'en' ? 'Highest-level passive only; extra damage cannot crit, trigger physical basic lifesteal or trigger other passives. Total physical lifesteal caps at 65%; min attack interval 0.09 sec.' : language === 'zh-TW' ? '同類被動只取最高階；追加傷害不暴擊、不觸發物理普攻吸血、不觸發其他被動。物理吸血總上限 65%，攻擊間隔最短 0.09 秒。' : '同类被动只取最高阶；追加伤害不暴击、不触发物理普攻吸血、不触发其他被动。物理吸血总上限 65%，攻击间隔最短 0.09 秒。'}`;
 }
 
 export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = false) {
@@ -796,38 +839,38 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
   }
   const descriptions = {
     'zh-CN': {
-      mjollnir: () => `物理攻击 +${s.attackDamage}，攻速 +${s.attackSpeed}%。有效普攻有 ${percent(p.chance)}% 概率触发连锁，最多命中 ${p.jumps + 1} 个目标；首跳 ${p.damage} + 法术攻击 × 0.4，每跳保留 70% 伤害，跳距 190。雷锤／漩涡只取最强，共用 0.2 秒间隔；连锁不暴击、不吸血、不触发其他被动。`,
+      mjollnir: () => `物理攻击 +${s.attackDamage}，攻速 +${s.attackSpeed}%。有效普攻有 ${percent(p.chance)}% 概率触发连锁，最多命中 ${p.jumps + 1} 个目标；首跳 ${p.damage} + 法术攻击 × 0.4，每跳保留 70% 伤害，跳距 190。雷锤／漩涡只取最强，共用 0.2 秒间隔；连锁不暴击、不触发物理普攻吸血、不触发其他被动。`,
       buriza: () => `物理攻击 +${s.attackDamage}，暴击率 +${s.crit}%，暴击伤害 +${s.critDamage}%。基础攻击直接命中可暴击，不产生范围伤害。`,
       butterfly: () => `物理攻击 +${s.attackDamage}，攻速 +${s.attackSpeed}%，闪避 +${s.dodge}%。保持原有普攻与闪避规则，不追加攻击或无敌时间。`,
       vanguard: () => `最大生命 +${s.maxHp}，护甲 +${s.armor}，每 5 秒回血 +${s.regen}。有来源的伤害有 ${percent(p.chance)}% 概率格挡 ${p.amount} 点，无来源的伤害不触发。多件只使用最高强化等级的一份格挡，不叠加概率或减免；各级格挡参数不变。`,
       satanic: () => `物理攻击 +${s.attackDamage}，最大生命 +${s.maxHp}，护甲 +${s.armor}，物理普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低于 ${percent(p.threshold)}% 时自动狂热，持续 ${p.duration} 秒、冷却 ${p.cooldown} 秒，期间直接命中的非元素普攻额外获得 ${p.lifesteal}% 吸血，总吸血上限 65%。多件共用狂热与冷却，不叠加额外吸血；各级狂热参数不变。`,
       aghanim: () => `法术攻击 +${s.elemental}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动冷却缩减 +${s.abilityHaste}%。已支持强化的主动伤害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，蓝耗不变，不额外增加持续时间、范围或数量。`,
       powerTreads: () => `最大生命 +${s.maxHp}，移动速度 +${s.speed}%，攻速 +${s.attackSpeed}%。属性随强化等级成长，沿用角色原有移动与基础攻击规则。`,
-      radiance: () => `物理攻击 +${s.attackDamage}，所有伤害 +${s.damage}%。灼热光环每 ${p.interval} 秒对半径 ${p.radius} 内敌人造成 ${p.damage} 基础伤害，再应用一次所有伤害加成。多件只取最高阶光环，不叠加伤害或频率；灼烧不暴击、不吸血、不触发装备被动或普攻计数。`,
+      radiance: () => `物理攻击 +${s.attackDamage}，所有伤害 +${s.damage}%。灼热光环每 ${p.interval} 秒对半径 ${p.radius} 内敌人造成 ${p.damage} 基础伤害，再应用一次所有伤害加成。多件只取最高阶光环，不叠加伤害或频率；灼烧不暴击、不触发物理普攻吸血、不触发装备被动或普攻计数。`,
       desolator: () => `物理攻击 +${s.attackDamage}。物理普攻命中存活目标后施加 ${p.duration} 秒破甲标记，使后续物理普攻伤害提高 ${percent(p.multiplier)}%。首次施加标记的命中不受该标记加成；重复命中刷新持续时间，多件只取最高阶、不叠加倍率。标记不独立造成伤害，不增强技能、元素普攻、灼烧或幻影。`,
       skadi: () => `物理攻击 +${s.attackDamage}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，攻速 +${s.attackSpeed}%。基础攻击命中存活敌人后使其移动速度降低 ${percent(p.slow)}%，持续 ${p.duration} 秒。重复命中刷新持续时间，多件只取最高阶、不叠加减速；减速不独立造成伤害，不改变敌人攻击频率。`,
     },
     'zh-TW': {
-      mjollnir: () => `物理攻擊 +${s.attackDamage}，攻速 +${s.attackSpeed}%。有效普攻有 ${percent(p.chance)}% 機率觸發連鎖，最多命中 ${p.jumps + 1} 個目標；首跳 ${p.damage} + 法術攻擊 × 0.4，每跳保留 70% 傷害，跳距 190。雷錘／漩渦只取最強，共用 0.2 秒間隔；連鎖不暴擊、不吸血、不觸發其他被動。`,
+      mjollnir: () => `物理攻擊 +${s.attackDamage}，攻速 +${s.attackSpeed}%。有效普攻有 ${percent(p.chance)}% 機率觸發連鎖，最多命中 ${p.jumps + 1} 個目標；首跳 ${p.damage} + 法術攻擊 × 0.4，每跳保留 70% 傷害，跳距 190。雷錘／漩渦只取最強，共用 0.2 秒間隔；連鎖不暴擊、不觸發物理普攻吸血、不觸發其他被動。`,
       buriza: () => `物理攻擊 +${s.attackDamage}，暴擊率 +${s.crit}%，暴擊傷害 +${s.critDamage}%。基礎攻擊直接命中可暴擊，不產生範圍傷害。`,
       butterfly: () => `物理攻擊 +${s.attackDamage}，攻速 +${s.attackSpeed}%，閃避 +${s.dodge}%。保持原有普攻與閃避規則，不追加攻擊或無敵時間。`,
       vanguard: () => `最大生命 +${s.maxHp}，護甲 +${s.armor}，每 5 秒回血 +${s.regen}。有來源的傷害有 ${percent(p.chance)}% 機率格擋 ${p.amount} 點，無來源的傷害不觸發。多件只使用最高強化等級的一份格擋，不疊加機率或減免；各級格擋參數不變。`,
       satanic: () => `物理攻擊 +${s.attackDamage}，最大生命 +${s.maxHp}，護甲 +${s.armor}，物理普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低於 ${percent(p.threshold)}% 時自動狂熱，持續 ${p.duration} 秒、冷卻 ${p.cooldown} 秒，期間直接命中的非元素普攻額外獲得 ${p.lifesteal}% 吸血，總吸血上限 65%。多件共用狂熱與冷卻，不疊加額外吸血；各級狂熱參數不變。`,
       aghanim: () => `法術攻擊 +${s.elemental}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動冷卻縮減 +${s.abilityHaste}%。已支援強化的主動傷害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，耗魔不變，不額外增加持續時間、範圍或數量。`,
       powerTreads: () => `最大生命 +${s.maxHp}，移動速度 +${s.speed}%，攻速 +${s.attackSpeed}%。屬性隨強化等級成長，沿用角色原有移動與基礎攻擊規則。`,
-      radiance: () => `物理攻擊 +${s.attackDamage}，所有傷害 +${s.damage}%。灼熱光環每 ${p.interval} 秒對半徑 ${p.radius} 內敵人造成 ${p.damage} 基礎傷害，再套用一次所有傷害加成。多件只取最高階光環，不疊加傷害或頻率；灼燒不暴擊、不吸血、不觸發裝備被動或普攻計數。`,
+      radiance: () => `物理攻擊 +${s.attackDamage}，所有傷害 +${s.damage}%。灼熱光環每 ${p.interval} 秒對半徑 ${p.radius} 內敵人造成 ${p.damage} 基礎傷害，再套用一次所有傷害加成。多件只取最高階光環，不疊加傷害或頻率；灼燒不暴擊、不觸發物理普攻吸血、不觸發裝備被動或普攻計數。`,
       desolator: () => `物理攻擊 +${s.attackDamage}。物理普攻命中存活目標後施加 ${p.duration} 秒破甲標記，使後續物理普攻傷害提高 ${percent(p.multiplier)}%。首次施加標記的命中不受該標記加成；重複命中刷新持續時間，多件只取最高階、不疊加倍率。標記不獨立造成傷害，不增強技能、元素普攻、灼燒或幻影。`,
       skadi: () => `物理攻擊 +${s.attackDamage}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，攻速 +${s.attackSpeed}%。基礎攻擊命中存活敵人後使其移動速度降低 ${percent(p.slow)}%，持續 ${p.duration} 秒。重複命中刷新持續時間，多件只取最高階、不疊加減速；減速不獨立造成傷害，不改變敵人攻擊頻率。`,
     },
     en: {
-      mjollnir: () => `Physical attack +${s.attackDamage}; attack speed +${s.attackSpeed}%. Successful basic attacks have a ${percent(p.chance)}% chance to chain to ${p.jumps + 1} targets: first hit ${p.damage} + magic attack × 0.4, then 70% damage per jump within 190 range. Mjollnir/Maelstrom use only the strongest proc and share a 0.2 sec interval. Lightning cannot crit, lifesteal or trigger other passives.`,
+      mjollnir: () => `Physical attack +${s.attackDamage}; attack speed +${s.attackSpeed}%. Successful basic attacks have a ${percent(p.chance)}% chance to chain to ${p.jumps + 1} targets: first hit ${p.damage} + magic attack × 0.4, then 70% damage per jump within 190 range. Mjollnir/Maelstrom use only the strongest proc and share a 0.2 sec interval. Lightning cannot crit, trigger physical basic lifesteal or trigger other passives.`,
       buriza: () => `Physical attack +${s.attackDamage}; crit chance +${s.crit}%; critical damage +${s.critDamage}%. Direct basic attack hits can crit; no area damage is added.`,
       butterfly: () => `Physical attack +${s.attackDamage}; attack speed +${s.attackSpeed}%; dodge +${s.dodge}%. Existing basic attacks and dodge rules remain; no extra attacks or invulnerability.`,
       vanguard: () => `Max HP +${s.maxHp}; armor +${s.armor}; HP per 5 sec +${s.regen}. Hits with a source have a ${percent(p.chance)}% chance to block ${p.amount} damage; damage without a source cannot trigger it. Only the highest-level block passive applies; chances and reductions do not stack. Block parameters stay the same at every level.`,
       satanic: () => `Physical attack +${s.attackDamage}; max HP +${s.maxHp}; armor +${s.armor}; physical basic attack lifesteal +${s.lifesteal}%; HP per 5 sec +${s.regen}. Below ${percent(p.threshold)}% HP, rage activates for ${p.duration} sec with a ${p.cooldown} sec cooldown. During rage, direct non-elemental basic attack hits gain an extra ${p.lifesteal}% lifesteal, capped at 65% total. All copies share rage and its cooldown; extra lifesteal does not stack. Rage parameters stay the same at every level.`,
       aghanim: () => `Magic attack +${s.elemental}; max HP +${s.maxHp}; max mana +${s.maxMana}; mana per sec +${s.manaRegen}; active cooldown reduction +${s.abilityHaste}%. Supported active damage or buffs ×${p.multiplier.toFixed(2)}; only the highest multiplier applies. Mana cost, duration, range and counts do not change.`,
       powerTreads: () => `Max HP +${s.maxHp}; move speed +${s.speed}%; attack speed +${s.attackSpeed}%. Stats grow with upgrade level, following the hero's existing movement and basic attack rules.`,
-      radiance: () => `Physical attack +${s.attackDamage}; all damage +${s.damage}%. The aura deals ${p.damage} base damage every ${p.interval} sec to enemies within ${p.radius} range, applying all-damage bonuses once. Only the highest-level aura applies; damage and frequency do not stack. Burns cannot crit, lifesteal, trigger equipment passives or count as basic attacks.`,
+      radiance: () => `Physical attack +${s.attackDamage}; all damage +${s.damage}%. The aura deals ${p.damage} base damage every ${p.interval} sec to enemies within ${p.radius} range, applying all-damage bonuses once. Only the highest-level aura applies; damage and frequency do not stack. Burns cannot crit, trigger physical basic lifesteal, trigger equipment passives or count as basic attacks.`,
       desolator: () => `Physical attack +${s.attackDamage}. Physical basic attacks mark surviving targets for ${p.duration} sec, increasing subsequent physical basic attack damage by ${percent(p.multiplier)}%. The first hit that applies the mark does not benefit from it. Further hits refresh the duration; only the highest-level mark applies and multipliers do not stack. The mark deals no damage and does not amplify skills, elemental basic attacks, burns or mirror strikes.`,
       skadi: () => `Physical attack +${s.attackDamage}; max HP +${s.maxHp}; max mana +${s.maxMana}; attack speed +${s.attackSpeed}%. Basic attacks slow surviving enemies' movement by ${percent(p.slow)}% for ${p.duration} sec. Further hits refresh the duration; only the highest-level slow applies and slows do not stack. The slow deals no damage and does not change enemy attack frequency.`,
     }

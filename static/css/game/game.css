@@ -513,3 +513,80 @@ details.offer-craft-actions{display:block}
 @media(pointer:coarse), (max-width:680px){
   .craft-actions button,.offer-craft-actions button,.chest-craft-actions button,.recipe-card>button,.inventory-item button[data-sell],.upgrade-preview summary{min-height:44px}
 }
+
+/* Base grade, reinforcement and build family remain separate readable signals. */
+.game-shell{--equipment-grade-color:#d7e2e0;--equipment-grade-surface:#20353f;--equipment-upgrade-color:#d8e5df}
+[data-grade="1"]{--equipment-grade-color:#d7e2e0;--equipment-grade-surface:#20353f}
+[data-grade="2"]{--equipment-grade-color:#a1e3ba;--equipment-grade-surface:#1c3b34}
+[data-grade="3"]{--equipment-grade-color:#9acfff;--equipment-grade-surface:#19384e}
+[data-grade="4"]{--equipment-grade-color:#dfb4ff;--equipment-grade-surface:#362a48}
+[data-grade="5"]{--equipment-grade-color:#ffe09a;--equipment-grade-surface:#493b25}
+.game-shell[data-skin] :is(.offer-card,.inventory-item,.recipe-card,.quick-craft-card,.equipment-slot,.equipment-item)[data-grade]{border-color:var(--equipment-grade-color);box-shadow:inset 0 3px 0 var(--equipment-grade-color),inset -3px -3px 0 #10232d}
+.game-shell[data-skin] :is(.offer-card,.inventory-item,.recipe-card,.quick-craft-card,.equipment-item)[data-grade="5"]{background:linear-gradient(135deg,#493b25,#203844 75%);box-shadow:inset 0 3px 0 #ffe09a,inset 3px 0 0 #b99550,inset -3px -3px 0 #10232d}
+.game-shell[data-skin] :is(.recipe-card,.quick-craft-card)[data-grade].is-ready{box-shadow:inset 0 3px 0 var(--equipment-grade-color),inset 3px 0 0 var(--mint),inset -3px -3px 0 #10232d}
+.equipment-summary{display:flex;align-items:center;flex-wrap:wrap;gap:4px 6px;min-width:0}
+.equipment-quality,.equipment-level,.equipment-build-tag{display:inline-flex;align-items:center;align-self:flex-start;max-width:100%;min-height:22px;padding:2px 6px;border:1px solid var(--equipment-grade-color);border-radius:4px;background:var(--equipment-grade-surface);color:var(--equipment-grade-color);font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-weight:600;letter-spacing:0;overflow-wrap:anywhere}
+.equipment-level{border-color:#92aaa7;background:#102932;color:#e8f4ef;font-variant-numeric:tabular-nums;white-space:nowrap}
+[data-upgrade-level="2"]>.equipment-level,[data-upgrade-level="2"] .equipment-summary>.equipment-level{border-color:#a4ead4;color:#c7f9e9}
+[data-upgrade-level="3"]>.equipment-level,[data-upgrade-level="3"] .equipment-summary>.equipment-level{border:2px solid #ffe09a;padding:1px 5px;background:#46391f;color:#fff0c8}
+.equipment-build-tag{border-color:#698e98;background:#15323e;color:#d2e8ee;font-weight:400}
+.game-shell[data-skin] :is(.offer-card,.inventory-item,.recipe-card,.quick-craft-card)>strong{font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;letter-spacing:0;overflow-wrap:anywhere}
+.game-shell[data-skin] .offer-card .tier-label{font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-weight:400;letter-spacing:0;color:#d8e5df}
+.offer-card .offer-head{align-items:flex-start}
+.offer-card .offer-head .tier-label{display:flex;align-items:flex-start;justify-content:flex-end;flex-wrap:wrap;gap:4px;min-width:0}
+.offer-card .offer-icon{flex:none}
+.game-shell[data-skin] .offer-card button{min-height:44px;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600}
+.game-shell[data-skin] .offer-card button:disabled{opacity:1;background:#344b54;border-color:#6b8288;color:#d4e0df}
+.game-shell[data-skin] .inventory-item>.art-icon{width:34px;height:34px}
+.inventory-item>strong{display:flex;align-items:center;gap:7px;min-width:0}
+.inventory-item>strong .art-icon{flex:none;width:32px;height:32px}
+.equipment-actions{display:grid;gap:5px;margin-top:auto;min-width:0}
+.equipment-actions label{display:grid;gap:4px;min-width:0;color:#d8e5df;font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.equipment-actions :is(button,select){width:100%;min-width:0;min-height:44px;padding:8px;border:1px solid #82a7a7;border-radius:6px;background:#294957;color:var(--ink);font-family:inherit;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;white-space:normal;overflow-wrap:anywhere}
+.equipment-actions select{font-family:inherit;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:400;color-scheme:dark}
+.equipment-actions button:disabled{opacity:1;background:#344b54;border-color:#6b8288;color:#d4e0df}
+.equipment-actions :is(button,select):focus-visible,.forge-settings :is(input,select):focus-visible{outline:3px solid #fff;outline-offset:3px}
+.forge-settings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;margin:12px 0;padding:12px;border:1px solid #6d9797;border-radius:8px;background:#102b35}
+.forge-settings label{display:flex;align-items:center;flex-wrap:wrap;gap:7px;min-width:0;color:#e5efea;font-size:var(--game-body-size);line-height:var(--game-body-line)}
+.forge-settings select{display:block;width:100%;min-width:0;min-height:44px;padding:8px;border:1px solid #82a7a7;border-radius:6px;background:#203e49;color:var(--ink);font-family:inherit;font-size:var(--game-body-size);line-height:var(--game-body-line);color-scheme:dark}
+.forge-settings label:has(input[type="checkbox"]){grid-column:1/-1;min-height:44px;cursor:pointer}
+.forge-settings input[type="checkbox"]{width:20px;height:20px;flex:none;margin:0;accent-color:var(--mint)}
+.forge-settings>p,.shop-card .forge-settings>p{grid-column:1/-1;margin:0;color:#c5d9d5;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.build-list{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;margin:8px 0 12px}
+.build-list>h3,.build-list>.reserve-caption{grid-column:1/-1}
+.build-panel{margin-top:12px;border:1px solid #597d85;border-radius:7px;background:#102b35}
+.build-panel>summary{min-height:44px;padding:11px 12px;cursor:pointer;color:#b9f5d6;font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600}
+.build-panel>summary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.shop-card .build-panel>.reserve-caption{margin:0 12px 8px}
+.build-panel>.build-list{margin:0 10px 10px}
+.build-card{min-width:0;padding:9px 10px;border:1px solid #597d85;border-radius:7px;background:#152e39;color:#cadbd8}
+.build-card>strong{display:block;overflow-wrap:anywhere;color:#e4eeeb;font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600}
+.build-card>span{display:block;margin-top:3px;color:#c5d9d5;font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.build-card p,.shop-card .build-card p{margin:4px 0 0;overflow-wrap:anywhere;color:#c5d9d5;font-size:var(--game-caption-size);line-height:var(--game-caption-line)}
+.build-card[data-active="true"]{border-color:var(--mint);background:#1c3e39;box-shadow:inset 3px 0 0 var(--mint)}
+.build-card[data-active="true"]>strong{color:#b9f5d6}
+.build-members{margin-top:6px}
+.build-members>summary{min-height:44px;padding:11px 0;cursor:pointer;color:#d2e8ee;font-size:var(--game-label-size);line-height:var(--game-label-line);font-weight:600;overflow-wrap:anywhere}
+.build-members>summary:focus-visible{outline:3px solid #fff;outline-offset:3px}
+.build-members>.equipment-build-tag{margin:0 4px 5px 0}
+.build-members>.equipment-build-tag[data-equipped="true"]{border-color:var(--mint);background:#1c3e39;color:#b9f5d6}
+.reserve-inventory{display:grid;grid-template-columns:repeat(auto-fill,minmax(140px,1fr));gap:6px}
+.reserve-caption,.shop-card .reserve-caption{margin:5px 0 9px;color:#c5d9d5;font-size:var(--game-caption-size);line-height:var(--game-caption-line);overflow-wrap:anywhere}
+.shop-card #equipment-summary{margin:10px 0;color:#d8e5df;font-size:var(--game-body-size);line-height:var(--game-body-line)}
+.forge-unlock,.shop-card .forge-unlock{margin:10px 0;padding:10px 12px;border:1px solid #b99550;border-radius:7px;background:#352f23;color:#ffebb9;font-size:var(--game-body-size);line-height:var(--game-body-line);overflow-wrap:anywhere}
+.equipment-slot{height:52px;padding-bottom:17px;align-items:center}
+.equipment-slot .art-icon{height:calc(100% - 2px)}
+.equipment-slot .equipment-level,.equipment-slot small{position:absolute;bottom:0;right:1px;min-height:16px;max-width:calc(100% - 2px);padding:0 2px;border:0;background:#102932;color:#fff0c8;font-size:var(--game-caption-size);line-height:var(--game-caption-line);font-weight:600}
+.pause-equipment .equipment-item{align-items:flex-start}
+.pause-equipment .equipment-item>div{min-width:0}
+.pause-equipment .equipment-item>span{flex:none}
+.pause-equipment .equipment-item strong{display:block}
+.pause-equipment .equipment-summary{margin:4px 0}
+.game-shell[data-skin="pixel"] :is(.equipment-quality,.equipment-level,.equipment-build-tag,.equipment-actions button,.equipment-actions select,.forge-settings,.forge-settings select,.build-panel,.build-card,.forge-unlock){border-radius:2px}
+@media(max-width:680px){
+  .forge-settings{grid-template-columns:1fr;padding:10px;gap:8px}
+  .forge-settings label:has(input[type="checkbox"]){grid-column:1}
+  .reserve-inventory{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .build-list{grid-template-columns:1fr}
+  .equipment-slot{height:48px}
+}

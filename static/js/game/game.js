@@ -4,8 +4,13 @@ import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js';
 import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261015-kael1';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffPhysicalAmp } from './buffs.js?v=20261013-deadshot1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261017-evolution1';
-import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261016-merge1';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261026-restore1';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261026-restore1';
+import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261026-restore1';
+import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261026-restore1';
+import { createEquipmentCombat } from './equipment-combat.js?v=20261026-restore1';
+import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261026-restore1';
+import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261026-restore1';
 import { createWindRenderer } from './effects/wind.js';
 import { createMeteorRenderer } from './effects/meteor.js';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261017-evolution2';
@@ -800,7 +805,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       baseAttack: createBaseAttack(CHARACTER_ATTACKS[character.id]),
-      equipment: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0 }, shopOffers: [], rerolls: 0,
+      equipment: [], equipmentReserve: [], autoForge: true, forgeTargets: ['', ''], builds: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0 }, shopOffers: [], rerolls: 0,
       equipmentCapacity: EQUIPMENT_CAPACITY,
       pendingChests: 0, chestReward: null, attackSeq: 0, chainProcAttackId: 0, chainReadyAt: 0,
 
@@ -923,10 +928,46 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     showToast(t('buffBought', { item: buffName(def), count: run.buffs[id] }));
     return true;
   }
+  const WEAPON_TEXT = {
+    'zh-CN': { reserve: '待用储备', reserveHint: '满格物品保留在这里，不提供属性、被动或羁绊；可装备、交换或作为合成材料。', reserveEmpty: '储备为空，满格后仍可继续收集。', active: '生效装备', stash: '移入储备', equip: '装备', swap: '交换装备', swapWith: '替换哪件生效装备', auto: '自动合成与同级升阶', target: '合成目标 {n}', none: '未追踪目标', forgeHint: '按目标顺序完成整条配方，重复成品自动三合一。可关闭自动化，继续手动合成。', forged: '自动完成 {count} 次合成／升阶', builds: '装备羁绊', independent: '独立成品 · 机动', members: '搭配装备', buildRule: '仅生效的不同成品计数，同名重复与强化等级不额外计件。', buildActive: '已激活', buildNext: '下一档 {count} 件', stored: '已收入储备：{item}', unlock: '圣剑铸造：通关第10波解锁（{wave}/10）', unlocked: '本局圣剑已解锁：高额剑气伤害，同时增加承伤。', summary: '生效 {active}/12 · 储备 {reserve} 件', quality: '品级 {grade} · {name}', level: '强化 Lv.{level}', qualities: ['普通','精良','稀有','史诗','传说'] },
+    'zh-TW': { reserve: '待用儲備', reserveHint: '滿格物品保留在這裡，不提供屬性、被動或羈絆；可裝備、交換或作為合成材料。', reserveEmpty: '儲備為空，滿格後仍可繼續收集。', active: '生效裝備', stash: '移入儲備', equip: '裝備', swap: '交換裝備', swapWith: '替換哪件生效裝備', auto: '自動合成與同級升階', target: '合成目標 {n}', none: '未追蹤目標', forgeHint: '按目標順序完成整條配方，重複成品自動三合一。可關閉自動化，繼續手動合成。', forged: '自動完成 {count} 次合成／升階', builds: '裝備羈絆', independent: '獨立成品 · 機動', members: '搭配裝備', buildRule: '僅生效的不同成品計數，同名重複與強化等級不額外計件。', buildActive: '已啟用', buildNext: '下一檔 {count} 件', stored: '已收入儲備：{item}', unlock: '聖劍鑄造：通關第10波解鎖（{wave}/10）', unlocked: '本局聖劍已解鎖：高額劍氣傷害，同時增加承傷。', summary: '生效 {active}/12 · 儲備 {reserve} 件', quality: '品級 {grade} · {name}', level: '強化 Lv.{level}', qualities: ['普通','精良','稀有','史詩','傳說'] },
+    en: { reserve: 'Reserve', reserveHint: 'Overflow items stay here without stats, passives or set bonuses. Equip, swap, sell or craft with them.', reserveEmpty: 'Reserve is empty. Full slots never stop collecting.', active: 'Active equipment', stash: 'Store in reserve', equip: 'Equip', swap: 'Swap equipment', swapWith: 'Active item to replace', auto: 'Auto craft and merge', target: 'Crafting priority {n}', none: 'No tracked target', forgeHint: 'Complete whole recipes in priority order; merge matching finished items automatically. Disable to craft manually.', forged: '{count} automatic craft / merge action(s)', builds: 'Equipment synergies', independent: 'Independent · Mobility', members: 'Matching gear', buildRule: 'Count unique active finished items. Copies and upgrade levels do not add set pieces.', buildActive: 'Active', buildNext: 'Next tier: {count} items', stored: 'Stored in reserve: {item}', unlock: 'Divine Rapier: clear wave 10 to unlock ({wave}/10)', unlocked: 'Divine Rapier unlocked for this run: powerful sword waves, with increased damage taken.', summary: 'Active {active}/12 · Reserve {reserve}', quality: 'Grade {grade} · {name}', level: 'Upgrade Lv.{level}', qualities: ['Common','Uncommon','Rare','Epic','Legendary'] }
+  };
+  function wt(key, values = {}) {
+    return Object.entries(values).reduce((value, [name, replacement]) => value.replaceAll(`{${name}}`, replacement), WEAPON_TEXT[selectedLocale][key]);
+  }
+  function equipmentAttributes(def) { return `data-grade="${def.grade}" data-upgrade-level="${EQUIPMENT_UPGRADES[def.id] ? def.level : 0}"`; }
+  function equipmentBadges(def) {
+    return `<span class="equipment-quality">${wt('quality', { grade: def.grade, name: WEAPON_TEXT[selectedLocale].qualities[def.grade - 1] })}</span>${EQUIPMENT_UPGRADES[def.id] ? `<span class="equipment-level">${wt('level', { level: def.level })}</span>` : ''}${equipmentBuilds(def.id).map(id => `<span class="equipment-build-tag">${buildName(id, selectedLocale)}</span>`).join('')}${def.kind === 'finished' && !equipmentBuilds(def.id).length ? `<span class="equipment-build-tag">${wt('independent')}</span>` : ''}`;
+  }
+  function allEquipment() { return [...run.equipment, ...run.equipmentReserve]; }
+  function unlockedEquipment(id) { return !EQUIPMENT[id].hidden || run.wave >= 10; }
+  function craftPlans(incomingId = null) { return availableEquipmentCrafts(allEquipment(), incomingId).filter(plan => unlockedEquipment(plan.id)); }
+  function commitLoadout(next, preserveResources = true) {
+    if (!next) return false;
+    const hp = run.player.hp, mana = run.player.mana, delta = {};
+    for (const [items, sign] of [[run.equipment, -1], [next.active, 1]]) for (const item of items) {
+      for (const [key, value] of Object.entries(equipmentDef(item).stats)) delta[key] = (delta[key] || 0) + sign * value;
+    }
+    applyStatBlock(delta);
+    if (preserveResources) { run.player.hp = Math.min(hp, run.player.maxHp); run.player.mana = Math.min(mana, run.player.maxMana); }
+    run.equipment = next.active; run.equipmentReserve = next.reserve;
+    run.builds = resolveBuilds(run.equipment);
+    equipmentCombat.syncLoadout();
+    return true;
+  }
+  function autoForge() {
+    if (!run.autoForge) return;
+    const targets = [...new Set(run.forgeTargets.filter(id => id && unlockedEquipment(id)))];
+    const next = automate(run.equipment, run.equipmentReserve, targets, createEquipment, run.equipmentCapacity);
+    if (next?.actions.length && commitLoadout(next)) {
+      showToast(wt('forged', { count: next.actions.length })); playSfx('merge');
+    }
+  }
   function equipmentCanFit(extra = 1) { return !!run && run.equipment.length + extra <= run.equipmentCapacity; }
-  function equipmentGroups() {
+  function equipmentGroups(items = allEquipment()) {
     const groups = new Map();
-    for (const item of run.equipment) {
+    for (const item of items) {
       const key = `${item.id}:${equipmentLevel(item)}`;
       if (!groups.has(key)) groups.set(key, []);
       groups.get(key).push(item);
@@ -935,57 +976,29 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
   }
   function addEquipment(id, silent = false) {
     const def = equipmentDef(id);
-    if (!def || !equipmentCanFit()) return false;
-    run.equipment.push(createEquipment(id));
-    applyEquipmentStats(id, 1);
-    if (!silent) showToast(t('acquired', { item: equipmentName(def) }));
+    if (!def || !unlockedEquipment(id)) return false;
+    const next = acquisition(run.equipment, run.equipmentReserve, createEquipment(id), run.equipmentCapacity);
+    if (!commitLoadout(next, false)) return false;
+    if (!silent) showToast(next.location === 'reserve' ? wt('stored', { item: equipmentName(def) }) : t('acquired', { item: equipmentName(def) }));
     return true;
   }
   function craftEquipment(id, incomingId = null) {
-    if (!run || !['shop', 'chest'].includes(phase)) return false;
-    const plan = planEquipmentCraft(run.equipment, id, incomingId);
-    if (!plan || run.equipment.length - plan.consumeUids.length + 1 > run.equipmentCapacity) return false;
-    const consumed = run.equipment.filter(item => plan.consumeUids.includes(item.uid));
-    const delta = { ...equipmentDef(id).stats };
-    for (const item of consumed) {
-      for (const [key, value] of Object.entries(equipmentDef(item).stats)) delta[key] = (delta[key] || 0) - value;
-    }
-    // Apply the final difference once: intermediate recipes must not heal, drain,
-    // or clamp resources while a complete crafting route is being resolved.
-    applyStatBlock(delta);
-    run.equipment = run.equipment.filter(item => !plan.consumeUids.includes(item.uid));
-    run.equipment.push(createEquipment(id));
-    showToast(t('merged', { item: equipmentName(equipmentDef(id)) }));
-    playSfx('merge');
+    if (!run || !['shop', 'chest'].includes(phase) || !unlockedEquipment(id)) return false;
+    const next = craftLoadout(run.equipment, run.equipmentReserve, id, createEquipment, run.equipmentCapacity, incomingId);
+    if (!commitLoadout(next)) return false;
+    showToast(t('merged', { item: equipmentName(equipmentDef(id)) })); playSfx('merge');
+    autoForge();
     return true;
   }
   function equipmentSellPrice(item) { return equipmentResale(item); }
-
   function upgradeEquipment(itemUid, batch = false) {
     if (!run || !['shop', 'chest'].includes(phase)) return false;
-    const source = run.equipment.find(item => item.uid === itemUid);
-    if (!source || !equipmentUpgradeIndices(run.equipment, itemUid)) return false;
-    const level = equipmentLevel(source);
-    const count = run.equipment.filter(item => item.id === source.id && equipmentLevel(item) === level && (item.level == null || item.level === level)).length;
-    const groups = batch ? Math.floor(count / 3) : 1;
-    let result;
-    for (let i = 0; i < groups; i++) {
-      const nextSource = run.equipment.find(item => item.id === source.id && equipmentLevel(item) === level);
-      const indices = equipmentUpgradeIndices(run.equipment, nextSource?.uid);
-      if (!indices) return false;
-      result = createEquipment(source.id, level + 1);
-      // Replacing instances preserves all stats, resources and proc timers.
-      const remaining = run.equipment.filter((_, index) => !indices.includes(index));
-      remaining.splice(Math.min(...indices), 0, result);
-      run.equipment = remaining;
-    }
+    const next = upgradeLoadout(run.equipment, run.equipmentReserve, itemUid, createEquipment, run.equipmentCapacity, batch);
+    if (!commitLoadout(next)) return false;
+    autoForge();
     if (phase === 'shop') renderShop(); else renderChestReward();
-    renderEquipmentStrip();
-    const card = document.querySelector(`#inventory [data-equipment-id="${result.id}"][data-upgrade-level="${result.level}"]`);
-    card?.classList.add('just-upgraded');
-    focusCraftResult();
-    showToast(t('upgradeBatchDone', { item: equipmentName(equipmentDef(result)), slots: groups * 2 }));
-    playSfx(result.level === 3 ? 'merge-max' : 'merge');
+    renderEquipmentStrip(); focusCraftResult();
+    showToast(t('merged', { item: equipmentName(equipmentDef(next.result)) })); playSfx('merge');
     return true;
   }
 
@@ -1129,21 +1142,21 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     renderChestReward();
     showPhase('chest');
     playSfx('chest-open');
-    $(equipmentCanFit() ? 'chest-take-button' : 'chest-scrap-button').focus({ preventScroll: true });
+    $('chest-take-button').focus({ preventScroll: true });
   }
   function renderChestReward() {
     const def = equipmentDef(run.chestReward.id);
     $('chests-left').textContent = run.pendingChests;
     const canTake = equipmentCanFit();
-    const plans = availableEquipmentCrafts(run.equipment, run.chestReward.id);
-    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p>${canTake ? '' : `<p class="equipment-full-note">${t('chestFullCraft')}</p>`}</div>`;
-    const organize = canTake ? '' : availableEquipmentCrafts(run.equipment).map(plan => `<button type="button" data-chest-organize="${plan.id}">${t('craftTarget', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
-      + equipmentGroups().filter(group => equipmentUpgradeIndices(run.equipment, group[0].uid)).map(group => `<button type="button" data-upgrade="${group[0].uid}">${equipmentName(equipmentDef(group[0]))} · ${t('upgradeTo', { level: equipmentLevel(group[0]) + 1, count: group.length })}</button>`).join('');
+    const plans = craftPlans(run.chestReward.id);
+    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p>${equipmentBadges(def)}${canTake ? '' : `<p class="equipment-full-note">${wt('reserveHint')}</p>`}</div>`;
+    const organize = canTake ? '' : craftPlans().map(plan => `<button type="button" data-chest-organize="${plan.id}">${t('craftTarget', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
+      + equipmentGroups().filter(group => equipmentUpgradeIndices(allEquipment(), group[0].uid)).map(group => `<button type="button" data-upgrade="${group[0].uid}">${equipmentName(equipmentDef(group[0]))} · ${t('upgradeTo', { level: equipmentLevel(group[0]) + 1, count: group.length })}</button>`).join('');
     $('chest-craft-list').innerHTML = plans.map(plan => `<button type="button" data-chest-craft="${plan.id}">${t('takeCraft', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
       + (organize ? `<details class="chest-organize"><summary>${t('chestOrganize')}</summary><div class="craft-actions">${organize}</div></details>` : '');
     $('chest-scrap-button').textContent = t('scrapFor', { amount: Math.round(def.price * .5) });
-    $('chest-take-button').disabled = !canTake;
-    $('chest-take-button').title = canTake ? '' : t('fullEquipment');
+    $('chest-take-button').disabled = false;
+    $('chest-take-button').title = canTake ? '' : wt('reserveHint');
   }
   function resolveChest(take, targetId = null) {
     if (phase !== 'chest' || !run.chestReward) return;
@@ -1151,13 +1164,14 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     if (take && targetId) {
       if (!craftEquipment(targetId, run.chestReward.id)) return;
     } else if (take) {
-      if (!equipmentCanFit() || !addEquipment(run.chestReward.id)) return;
+      if (!addEquipment(run.chestReward.id)) return;
     }
     else {
       const salvage = Math.round(item.price * .5);
       run.money += salvage; run.earned += salvage;
       showToast(t('scrapItem', { item: equipmentName(item), amount: salvage }));
     }
+    autoForge();
     run.pendingChests -= 1;
     run.chestReward = null;
     renderEquipmentStrip();
@@ -1182,6 +1196,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
   }
 
   function openShop() {
+    autoForge();
     run.rerolls = 0;
     restockShop();
     heal(2 + Math.round(run.player.maxHp * .16));
@@ -1194,7 +1209,8 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     let best = null, bestProgress = 0;
     for (const def of Object.values(EQUIPMENT)) {
       if (!def.recipe) continue;
-      const missing = def.recipe.filter(id => !run.equipment.some(item => item.id === id));
+      if (!unlockedEquipment(def.id || Object.keys(EQUIPMENT).find(id => EQUIPMENT[id] === def))) continue;
+      const missing = def.recipe.filter(id => !allEquipment().some(item => item.id === id));
       const progress = (def.recipe.length - missing.length) / def.recipe.length;
       if (!progress || !missing.length) continue;
       for (const id of missing.filter(id => pool.includes(id))) {
@@ -1228,7 +1244,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     }
     const rates = shopRates(), roll = Math.random();
     const kind = hint ? 'component' : forceKind || (roll < rates.finished ? 'finished' : roll < rates.finished + rates.intermediate ? 'intermediate' : 'component');
-    const pool = (kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind)).filter(id => !excluded.has(id));
+    const pool = (kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind && unlockedEquipment(id))).filter(id => !excluded.has(id));
     const id = hint || weightedEquipment(pool);
     const baseCost = EQUIPMENT[id].price + run.wave * 1.4;
     return { kind: 'equipment', id, cost: Math.round(baseCost * (1 + endlessFactor() / 5)), locked: false };
@@ -1241,11 +1257,11 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
   }
   function craftSourceText(plan) {
     const counts = new Map();
-    for (const item of run.equipment.filter(item => plan.consumeUids.includes(item.uid))) counts.set(item.id, (counts.get(item.id) || 0) + 1);
+    for (const item of allEquipment().filter(item => plan.consumeUids.includes(item.uid))) counts.set(item.id, (counts.get(item.id) || 0) + 1);
     return [...counts].map(([id, count]) => `${equipmentName(equipmentDef(id))}${count > 1 ? ` ×${count}` : ''}`).join(' + ');
   }
   function recipeProgress(def) {
-    const remaining = run.equipment.map(item => item.id);
+    const remaining = allEquipment().map(item => item.id);
     return def.recipe.reduce((count, id) => {
       const index = remaining.indexOf(id);
       if (index < 0) return count;
@@ -1260,11 +1276,11 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       upgrades: upgradeGroups.reduce((total, group) => total + Math.floor(group.length / 3), 0), used: run.equipment.length, capacity: run.equipmentCapacity });
     const upgradeCard = group => {
       const item = group[0];
-      return `<div class="quick-craft-card ${group.length >= 3 ? 'is-ready' : ''}"><span class="craft-kind">${t('upgradeGroup', { level: equipmentLevel(item), count: group.length, groups: Math.floor(group.length / 3) })}</span><strong>${equipmentIcon(item.id)} ${equipmentName(equipmentDef(item))}</strong>${equipmentUpgradeControls(item, group.length)}</div>`;
+      return `<div class="quick-craft-card ${group.length >= 3 ? 'is-ready' : ''}" ${equipmentAttributes(equipmentDef(item))}><span class="craft-kind">${t('upgradeGroup', { level: equipmentLevel(item), count: group.length, groups: Math.floor(group.length / 3) })}</span><strong>${equipmentIcon(item.id)} ${equipmentName(equipmentDef(item))}</strong>${equipmentUpgradeControls(item, group.length)}</div>`;
     };
     const ready = plans.map(plan => {
       const def = equipmentDef(plan.id);
-      return `<div class="quick-craft-card is-ready"><span class="craft-kind">${t('craftKind')}</span><strong>${equipmentIcon(plan.id)} ${equipmentName(def)}</strong><p class="craft-meta">${t('craftInputs', { items: craftSourceText(plan) })}</p>${plan.steps.length > 1 ? `<p class="craft-meta">${t('craftRoute', { items: plan.steps.map(id => equipmentName(equipmentDef(id))).join(' → ') })}</p>` : ''}<details class="upgrade-preview"><summary>${t('craftResult')}</summary><p>${equipmentDesc(def)}</p></details><div class="craft-actions"><button type="button" data-craft="${plan.id}">${t(plan.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div></div>`;
+      return `<div class="quick-craft-card is-ready" ${equipmentAttributes(def)}><span class="craft-kind">${t('craftKind')}</span><strong>${equipmentIcon(plan.id)} ${equipmentName(def)}</strong><p class="craft-meta">${t('craftInputs', { items: craftSourceText(plan) })}</p>${plan.steps.length > 1 ? `<p class="craft-meta">${t('craftRoute', { items: plan.steps.map(id => equipmentName(equipmentDef(id))).join(' → ') })}</p>` : ''}<details class="upgrade-preview"><summary>${t('craftResult')}</summary><p>${equipmentDesc(def)}</p></details><div class="craft-actions"><button type="button" data-craft="${plan.id}">${t(plan.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div></div>`;
     }).join('') + upgradeGroups.filter(group => group.length >= 3).map(upgradeCard).join('');
     const incomplete = upgradeGroups.filter(group => group.length < 3);
     $('quick-craft-list').innerHTML = (ready || `<p class="craft-empty">${t('craftEmpty')}</p>`)
@@ -1283,42 +1299,66 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       if (!offer) return `<div class="offer-card" aria-label="${t('soldOut')}"><span class="tier-label">${t('soldOut')}</span></div>`;
       const isBuff = offer.kind === 'buff';
       const def = isBuff ? BUFFS[offer.id] : equipmentDef(offer.id);
-      const disabled = run.money < offer.cost || (!isBuff && !equipmentCanFit());
+      const disabled = run.money < offer.cost;
       const reason = run.money < offer.cost ? t('insufficient') : t('fullEquipment');
       const name = isBuff ? buffName(def) : equipmentName(def);
       const desc = isBuff ? buffDesc(def) : equipmentDesc(def);
       const icon = isBuff ? buffIcon(def) : equipmentIcon(offer.id);
-      const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : `${equipmentKind(def)} · ${t('equipmentGrade', { grade: def.grade })}`;
-      const plans = isBuff ? [] : availableEquipmentCrafts(run.equipment, offer.id);
-      const uses = isBuff ? [] : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].recipe?.includes(offer.id));
-      const canUpgrade = !isBuff && EQUIPMENT_UPGRADES[offer.id] && run.equipment.filter(item => item.id === offer.id && equipmentLevel(item) === 1).length >= 2;
+      const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : `${equipmentKind(def)} · ${equipmentBadges(def)}`;
+      const plans = isBuff ? [] : craftPlans(offer.id);
+      const uses = isBuff ? [] : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].recipe?.includes(offer.id) && unlockedEquipment(id));
+      const canUpgrade = !isBuff && EQUIPMENT_UPGRADES[offer.id] && allEquipment().filter(item => item.id === offer.id && equipmentLevel(item) === 1).length >= 2;
       const craftActions = plans.map(plan => `<button type="button" data-buy="${i}" data-buy-craft="${plan.id}" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyCraft', { cost: offer.cost, item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
         + (canUpgrade ? `<button type="button" data-buy="${i}" data-buy-upgrade="true" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyUpgrade', { cost: offer.cost })}</button>` : '');
-      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : ''}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong>${name}</strong><p>${desc}</p>${uses.length ? `<p class="offer-craft-hint">${t('craftUses', { items: uses.map(id => equipmentName(equipmentDef(id))).join(' / ') })}</p>` : ''}${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
+      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : equipmentAttributes(def)}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong>${name}</strong><p>${desc}</p>${uses.length ? `<p class="offer-craft-hint">${t('craftUses', { items: uses.map(id => equipmentName(equipmentDef(id))).join(' / ') })}</p>` : ''}${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
     }).join('');
     const rerollCost = shopRerollCost();
     $('reroll-button').textContent = rerollCost === 0 ? t('freeRefresh') : t('refresh', { cost: rerollCost });
     $('reroll-button').disabled = run.money < rerollCost;
-    const groups = equipmentGroups(), plans = availableEquipmentCrafts(run.equipment);
+    const groups = equipmentGroups(), plans = craftPlans();
     renderCraftHub(plans, groups);
-    $('inventory').innerHTML = groups.map(group => {
-      const item = group[0], i = run.equipment.indexOf(item);
-      const def = equipmentDef(item);
-      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}" tabindex="-1"><strong>${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count">${t('inventoryCount', { count: group.length })}</span><small>${equipmentKind(def)} · ${t('equipmentGrade', { grade: def.grade })}</small><p>${equipmentDesc(def)}</p>${EQUIPMENT_UPGRADES[item.id] && def.level === 3 ? `<span class="upgrade-max">${t('upgradeMax')}</span>` : ''}<div class="item-actions"><button type="button" data-sell="${i}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
-    }).join('') + Array.from({ length: run.equipmentCapacity - run.equipment.length }, () => `<div class="inventory-item empty">${t('emptySlot')}</div>`).join('');
+    renderForgeSettings();
+    $('inventory').innerHTML = inventoryCards(run.equipment, false);
+    $('reserve-inventory').innerHTML = inventoryCards(run.equipmentReserve, true);
+    $('reserve-title').textContent = wt('reserve');
+    $('reserve-caption').textContent = wt('reserveHint');
+    $('active-equipment-title').textContent = wt('active');
+    $('shop-build-title').textContent = wt('builds');
+    $('build-rule').textContent = wt('buildRule');
+    $('shop-builds').innerHTML = buildCards();
     $('buff-list').innerHTML = BUFF_IDS.filter(id => buffCount(id) > 0).map(id => {
       const def = BUFFS[id];
       const chargeNote = id === 'shallowGrave' ? `<small>${t('buffNextCharges', { count: buffCount(id) })}</small>` : '';
       return `<div class="buff-item" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)}</strong>${buffRarityBadge(def)}<small>${t('buffStack', { count: buffCount(id) })}</small>${chargeNote}<p>${buffDesc(def)}</p></div></div>`;
     }).join('') || `<p class="buff-empty">${t('buffEmpty')}</p>`;
     $('buff-list').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
-    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe)
-      .sort((a, b) => Number(!!planEquipmentCraft(run.equipment, b)) - Number(!!planEquipmentCraft(run.equipment, a)) || recipeProgress(equipmentDef(b)) / EQUIPMENT[b].recipe.length - recipeProgress(equipmentDef(a)) / EQUIPMENT[a].recipe.length).map(id => {
-      const def = equipmentDef(id), plan = planEquipmentCraft(run.equipment, id), ready = !!plan;
-      const parts = def.recipe.map(part => `<span class="recipe-node ${run.equipment.some(item => item.id === part) ? '' : 'missing'}">${equipmentIcon(part)} ${equipmentName(equipmentDef(part))}</span>`).join('<span class="recipe-arrow" aria-hidden="true">+</span>');
-      return `<div class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}"><strong>${equipmentIcon(id)} ${equipmentName(def)}</strong><span class="recipe-chain">${parts}</span><span class="recipe-progress">${t('craftProgress', { owned: recipeProgress(def), total: def.recipe.length })}</span>${plan?.steps.length > 1 ? `<p>${t('craftRoute', { items: plan.steps.map(step => equipmentName(equipmentDef(step))).join(' → ') })}</p>` : ''}<p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t(plan?.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div>`;
+    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe && unlockedEquipment(id))
+      .sort((a, b) => Number(!!planEquipmentCraft(allEquipment(), b)) - Number(!!planEquipmentCraft(allEquipment(), a)) || recipeProgress(equipmentDef(b)) / EQUIPMENT[b].recipe.length - recipeProgress(equipmentDef(a)) / EQUIPMENT[a].recipe.length).map(id => {
+      const def = equipmentDef(id), plan = planEquipmentCraft(allEquipment(), id), ready = !!plan;
+      const parts = def.recipe.map(part => `<span class="recipe-node ${allEquipment().some(item => item.id === part) ? '' : 'missing'}">${equipmentIcon(part)} ${equipmentName(equipmentDef(part))}</span>`).join('<span class="recipe-arrow" aria-hidden="true">+</span>');
+      return `<div class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}" ${equipmentAttributes(def)}><strong>${equipmentIcon(id)} ${equipmentName(def)}</strong>${equipmentBadges(def)}<span class="recipe-chain">${parts}</span><span class="recipe-progress">${t('craftProgress', { owned: recipeProgress(def), total: def.recipe.length })}</span>${plan?.steps.length > 1 ? `<p>${t('craftRoute', { items: plan.steps.map(step => equipmentName(equipmentDef(step))).join(' → ') })}</p>` : ''}<p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t(plan?.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div>`;
     }).join('');
     $('shop-stats').textContent = statSummary();
+  }
+  function inventoryCards(items, reserve) {
+    if (!items.length) return `<p class="reserve-caption">${reserve ? wt('reserveEmpty') : t('emptyEquipment')}</p>`;
+    return equipmentGroups(items).map(group => {
+      const item = group[0], def = equipmentDef(item);
+      const swap = reserve && !equipmentCanFit() ? `<label>${wt('swapWith')}<select data-swap-for="${item.uid}">${run.equipment.map(active => `<option value="${active.uid}">${equipmentName(equipmentDef(active))}</option>`).join('')}</select></label>` : '';
+      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" ${equipmentAttributes(def)} tabindex="-1"><strong>${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count">${group.length} ${reserve ? wt('reserve') : wt('active')}</span>${equipmentBadges(def)}<p>${equipmentDesc(def)}</p><div class="equipment-actions">${swap}<button type="button" data-move="${item.uid}" data-to-active="${reserve}">${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('stash')}</button><button type="button" data-sell="${item.uid}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
+    }).join('');
+  }
+  function buildCards() {
+    return (run.builds.length ? run.builds : resolveBuilds(run.equipment)).map(build => {
+      const status = [build.tier ? wt('buildActive') : '', build.next ? wt('buildNext', { count: build.next }) : ''].filter(Boolean).join(' · ');
+      const members = build.members.map(id => `<span class="equipment-build-tag" data-equipped="${build.items.includes(id)}">${equipmentName(EQUIPMENT[id])}${build.items.includes(id) ? ` · ${wt('buildActive')}` : ''}</span>`).join('');
+      return `<div class="build-card" data-build-id="${build.id}" data-active="${build.tier > 0}"><strong>${buildName(build.id, selectedLocale)} · ${build.count}/${build.thresholds.at(-1)}</strong><span>${status}</span><p>${buildDescription(build.id, selectedLocale)}</p><details class="build-members"><summary>${wt('members')}</summary>${members}</details></div>`;
+    }).join('');
+  }
+  function renderForgeSettings() {
+    $('forge-settings').innerHTML = `<label class="forge-auto"><input type="checkbox" id="auto-forge" ${run.autoForge ? 'checked' : ''}>${wt('auto')}</label>` + run.forgeTargets.map((target, index) => `<label>${wt('target', { n: index + 1 })}<select data-forge-target="${index}"><option value="">${wt('none')}</option>${EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === 'finished' && unlockedEquipment(id)).map(id => `<option value="${id}" ${target === id ? 'selected' : ''}>${equipmentName(equipmentDef(id))}</option>`).join('')}</select></label>`).join('') + `<p>${wt('forgeHint')}</p>`;
+    $('equipment-summary').textContent = wt('summary', { active: run.equipment.length, reserve: run.equipmentReserve.length });
+    $('forge-unlock').textContent = wt(run.wave >= 10 ? 'unlocked' : 'unlock', { wave: Math.min(10, run.wave) });
   }
   function focusShopControl(preferred) {
     const preferredButton = document.querySelector(preferred);
@@ -1335,7 +1375,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
   function renderEquipmentStrip() {
     $('equipment-strip').innerHTML = run.equipment.map(item => {
       const def = equipmentDef(item), name = equipmentName(def);
-      return `<span class="equipment-slot ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}" role="img" aria-label="${name}" title="${name}: ${equipmentDesc(def)}">${equipmentIcon(item.id)}<small>${EQUIPMENT_UPGRADES[item.id] ? `Lv.${def.level}` : def.grade}</small></span>`;
+      return `<span class="equipment-slot ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)} role="img" aria-label="${name}" title="${name}: ${equipmentDesc(def)}">${equipmentIcon(item.id)}<small>${EQUIPMENT_UPGRADES[item.id] ? `Lv.${def.level}` : def.grade}</small></span>`;
     }).join('');
   }
   function buyOffer(index, targetId = null, upgrade = false) {
@@ -1354,31 +1394,35 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     if (targetId) {
       if (!craftEquipment(targetId, offer.id)) return;
     } else if (upgrade) {
-      const pair = run.equipment.filter(item => item.id === offer.id && equipmentLevel(item) === 1).slice(0, 2);
-      if (!EQUIPMENT_UPGRADES[offer.id] || pair.length !== 2 || run.equipment.length - 1 > run.equipmentCapacity) return;
-      const ids = new Set(pair.map(item => item.uid));
-      run.equipment = run.equipment.filter(item => !ids.has(item.uid));
-      run.equipment.push(createEquipment(offer.id, 2));
-      applyEquipmentStats(offer.id);
-      showToast(t('upgradeBatchDone', { item: equipmentName(equipmentDef({ id: offer.id, level: 2 })), slots: 1 }));
-    } else {
-      if (!equipmentCanFit()) { showToast(t('fullEquipment')); return; }
-      if (!addEquipment(offer.id)) return;
-    }
+      const pair = allEquipment().filter(item => item.id === offer.id && equipmentLevel(item) === 1).slice(0, 2);
+      if (!EQUIPMENT_UPGRADES[offer.id] || pair.length !== 2) return;
+      const acquired = acquisition(run.equipment, run.equipmentReserve, createEquipment(offer.id), run.equipmentCapacity);
+      if (!acquired) return;
+      const next = upgradeLoadout(acquired.active, acquired.reserve, pair[0].uid, createEquipment, run.equipmentCapacity);
+      if (!commitLoadout(next)) return;
+    } else if (!addEquipment(offer.id)) return;
     run.money -= offer.cost;
     run.shopOffers[index] = null;
+    autoForge();
     renderShop(); renderEquipmentStrip(); playSfx('buy');
     if (targetId || upgrade) focusCraftResult(targetId);
     else focusShopControl(`#shop-offers [data-buy="${(index + 1) % run.shopOffers.length}"]`);
   }
-  function sellEquipment(index) {
-    const item = run.equipment[index];
-    if (!item) return;
+  function sellEquipment(itemUid) {
+    const item = allEquipment().find(item => item.uid === itemUid);
+    if (!item || phase !== 'shop') return;
+    const next = { active: run.equipment.filter(item => item.uid !== itemUid), reserve: run.equipmentReserve.filter(item => item.uid !== itemUid) };
+    if (!commitLoadout(next)) return;
     run.money += equipmentSellPrice(item);
-    applyEquipmentStats(item, -1);
-    run.equipment.splice(index, 1);
-    renderShop(); renderEquipmentStrip(); showToast(t('equipmentSold'));
-    focusShopControl(`#inventory [data-sell="${Math.min(index, run.equipment.length - 1)}"]`);
+    autoForge(); renderShop(); renderEquipmentStrip(); showToast(t('equipmentSold'));
+    focusCraftResult();
+  }
+  function moveEquipment(itemUid, toActive) {
+    if (phase !== 'shop') return;
+    const swap = document.querySelector(`[data-swap-for="${itemUid}"]`);
+    const next = moveLoadout(run.equipment, run.equipmentReserve, itemUid, toActive, run.equipmentCapacity, swap ? Number(swap.value) : null);
+    if (!commitLoadout(next)) return;
+    autoForge(); renderShop(); renderEquipmentStrip(); focusCraftResult();
   }
   function rerollShop() {
     if (!run || phase !== 'shop') return;
@@ -1598,7 +1642,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     damageEnemy(target, passive.damage + run.stats.elemental * passive.magicRatio, false);
     addEquipmentUpgradeEffect('orchid', passive.level, { x: target.x, y: target.y, r: target.r + 12 });
   }
-  function pulse(x, y, r, color, life = .35, kind = 'pulse') { run.effects.push({ kind, x, y, r, color, life, maxLife: life }); }
+  function pulse(x, y, r, color, life = .35, kind = 'pulse') { run.effects.push({ kind, x, y, r, color, life, maxLife: life, heroGrowthTier: heroGrowthTier(run.level) }); }
   function equippedUpgradeLevel(id) {
     return run.equipment.reduce((level, item) => item.id === id ? Math.max(level, item.level || 1) : level, 0);
   }
@@ -1622,7 +1666,9 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     const edge = Math.asin(clamp(enemy.r / Math.max(1, distance(enemy, origin)), 0, 1));
     return Math.abs(Math.atan2(Math.sin(delta), Math.cos(delta))) <= degrees * Math.PI / 360 + edge;
   }
+  const equipmentCombat = createEquipmentCombat({ getRun: () => run, passive: equipmentPassive, damageEnemy, blocked: terrainLineBlocked, pulse, isElite, heal, basicRange, label: id => buildName(id, selectedLocale) });
   function updateEquipmentPassives(dt) {
+    equipmentCombat.update(dt);
     const s = run.skills, p = run.player;
     const dagon = equipmentPassive('arcaneBurst');
     if (dagon && run.totalTime >= s.dagonReadyAt) {
@@ -1856,7 +1902,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       const multiplier = e.id === 'boss' ? .65 : isElite(e) ? .8 : 1;
       dealSkillDamage(e, (24 + run.stats.elemental * .9) * multiplier, true);
     }
-    run.effects.push({ kind: 'lunar-impact', x: beam.x, y: beam.y, r: 52, color: '#e8ddff', life: .46, maxLife: .46 });
+    run.effects.push({ kind: 'lunar-impact', heroGrowthTier: heroGrowthTier(run.level), x: beam.x, y: beam.y, r: 52, color: '#e8ddff', life: .46, maxLife: .46 });
     playSfx('skill-luna');
   }
   function beginLunaEclipse() {
@@ -1895,7 +1941,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       p.mana -= cfg.manaCost;
       s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
       addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
-      triggerOrchid();
+      triggerOrchid(); equipmentCombat.onActive();
       updateHUD();
       return;
     }
@@ -1911,7 +1957,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
           baseAttackDamage(run.baseAttack) * .55 * activeAmplify(), { skill: true, hitCounts, maxHits: 2 });
       }
       p.attackFacing = angle;
-      run.effects.push({ kind: 'muzzle', x: p.x, y: p.y, angle, r: 22, color: '#ffe7a2', life: .2, maxLife: .2 });
+      run.effects.push({ kind: 'muzzle', heroGrowthTier: heroGrowthTier(run.level), x: p.x, y: p.y, angle, r: 22, color: '#ffe7a2', life: .2, maxLife: .2 });
     } else if (id === 'bulwark') quillSpray(true);
     else if (id === 'conductor') {
       const targets = run.enemies.filter(e => !e.dead);
@@ -1927,7 +1973,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     p.skillPose = .56; p.skillClock = 0;
     s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
     addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
-    triggerOrchid();
+    triggerOrchid(); equipmentCombat.onActive();
     playSfx(`skill-${id}`); updateHUD();
   }
   function countScavengedMaterial() {
@@ -2095,7 +2141,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       addEquipmentUpgradeEffect('butterfly', equippedUpgradeLevel('butterfly'), { angle: source ? Math.atan2(source.y - p.y, source.x - p.x) : p.facing });
       return;
     }
-    let damage = rawDamage * (1 + buffCount('bloodrage') * .1) * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)));
+    let damage = rawDamage * (1 + (equipmentPassive('divineEdge')?.incomingAmp || 0)) * (1 + buffCount('bloodrage') * .1) * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)));
     if (source && run.character.id === 'bulwark') {
       const relative = Math.atan2(source.y - p.y, source.x - p.x) - p.facing;
       const fromRear = Math.abs(Math.atan2(Math.sin(relative), Math.cos(relative))) >= Math.PI - 70 * Math.PI / 180;
@@ -2106,6 +2152,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     if (source && block && Math.random() < block.chance) damage = Math.max(0, damage - block.amount);
     damage = Math.round(damage);
     if (damage <= 0) { p.invuln = .18; pulse(p.x, p.y, 25, '#d7e3d0', .2); return; }
+    if (equipmentCombat.blockDamage(damage)) { p.invuln = .55; playSfx('shield'); return; }
     if (absorbBuffDamage(run, damage)) {
       p.invuln = .55;
       run.effects.push({ kind: 'text', x: p.x, y: p.y - 40, text: buffName(BUFFS.shallowGrave), color: '#d9f5ff', life: .8, maxLife: .8 });
@@ -2372,6 +2419,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       heal(damage * clamp(run.stats.lifesteal + blood, 0, 65) / 100);
     }
     if (directHit && hit?.type === 'elemental') restoreSpellHealth(Math.min(hpBefore, damage));
+    equipmentCombat.onDamage(Math.min(hpBefore, damage));
     if (e.hp <= 0) killEnemy(e, rewards);
     if (hit) {
       registerBaseAttackHit(e, hit);
@@ -2382,6 +2430,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
   }
   function triggerEquipmentOnHit(target, hit) {
     if (!hit) return;
+    equipmentCombat.onHit(target, hit);
     const mark = equipmentPassive('soulMark');
     if (mark && !target.dead) target.orchidUntil = run.totalTime + mark.duration;
     const phaseStrike = equipmentPassive('phaseStrike');
@@ -2510,7 +2559,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       life: basicRange() / speed, damage, r: w.id === 'sf' ? 5 : 3, color: options.color || def.color,
       pierce: options.pierce || 1, hit: new Set(), skill: !!options.skill, illusion: !!options.illusion, kaelSpell: options.kaelSpell, hero: w.id,
       hitCounts: options.hitCounts, maxHits: options.maxHits, attackId: options.attackId, upgradeFx: options.upgradeFx,
-      evolutionLevel: options.evolutionLevel,
+      evolutionLevel: options.evolutionLevel, heroGrowthTier: heroGrowthTier(run.level),
       tbAttack: options.tbAttack, tbImage: !!options.tbImage, imageSide: options.imageSide || 0,
       deadShotJumps: options.kaelSpell ? 0 : buffCount('deadShot'),
       type: def.type, range: basicRange(), baseDamage: damage };
@@ -2730,8 +2779,9 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     $('pause-stats').innerHTML = stats.map(([name, value]) => `<div class="pause-stat"><span>${name}</span><strong>${value}</strong></div>`).join('');
     $('pause-equipment').innerHTML = run.equipment.length ? run.equipment.map(item => {
       const def = equipmentDef(item);
-      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-upgrade-level="${EQUIPMENT_UPGRADES[item.id] ? def.level : 0}"><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p></div></div>`;
+      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)}><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong>${equipmentBadges(def)}<p>${equipmentDesc(def)}</p></div></div>`;
     }).join('') : `<p>${t('emptyEquipment')}</p>`;
+    $('pause-builds').innerHTML = `<h3>${wt('builds')}</h3>${buildCards()}<p class="reserve-caption">${wt('summary', { active: run.equipment.length, reserve: run.equipmentReserve.length })}</p>`;
     $('pause-buffs').innerHTML = BUFF_IDS.filter(id => buffCount(id) > 0).map(id => {
       const def = BUFFS[id];
       const chargeNote = id === 'shallowGrave' ? `<small>${t('buffCharges', { count: run.buffState.graveCharges, total: buffCount(id) })}</small>` : '';
@@ -3310,6 +3360,11 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     const demon = id === 'tb' && s.tb.time > 0, artId = demon ? 'tb-demon' : id;
     ctx.save(); ctx.translate(p.x, p.y);
     ctx.fillStyle = '#0007'; ctx.beginPath(); ctx.ellipse(0, 14, id === 'luna' ? 30 : 19, 7, 0, 0, TAU); ctx.fill();
+    if (s.weaponSystem?.shieldReady && s.weaponSystem.shieldTier) {
+      ctx.save(); ctx.strokeStyle = '#3e3825'; ctx.lineWidth = 5;
+      ctx.beginPath(); ctx.ellipse(0, -28, id === 'luna' || demon ? 43 : 31, demon ? 66 : 49, 0, 0, TAU); ctx.stroke();
+      ctx.strokeStyle = '#fff0b3'; ctx.lineWidth = 2; ctx.stroke(); ctx.restore();
+    }
     if (p.invuln > 0 && Math.floor(run.totalTime * 18) % 2 === 0) ctx.globalAlpha = .6;
     const direction = p.dashTime > 0 ? Math.atan2(p.dashY, p.dashX)
       : id === 'bulwark' ? p.facing : p.attackPose > 0 || s.jump ? p.attackFacing : p.facing;
@@ -3457,6 +3512,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
         // The foot follows the projectile; the upright funnel uses the paused game clock.
         windRenderer.draw(ctx, { x: b.x, y: b.y, time: motionPreference.matches ? 1.4 : age,
           scale: .56, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
+        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age }, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
         continue;
       }
       if (b.kaelSpell === 'tornado') {
@@ -3467,6 +3523,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
           ctx.beginPath(); ctx.ellipse(-10 + i * 8, 0, 10 + i * 3, 16 + i * 4, 0, 0, TAU); ctx.stroke();
         }
         ctx.restore();
+        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age: run.totalTime - b.startedAt }, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
         continue;
       }
       const angle = Math.atan2(b.vy, b.vx);
@@ -3502,6 +3559,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
         ctx.fillStyle = '#fff0ba'; ctx.beginPath(); ctx.ellipse(1, 0, b.skill ? 8 : 6, b.skill ? 3.5 : 2.5, 0, 0, TAU); ctx.fill();
         ctx.fillStyle = '#b56739'; ctx.fillRect(-7, -2.5, 4, 5);
       }
+      drawHeroGrowthProjectile(ctx, b, { level: run.level, time: run.totalTime, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
       ctx.restore();
     }
   }
@@ -3698,11 +3756,18 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       for (let i = 0; i < 8; i++) { const a = phase + i * TAU / 8; ctx.beginPath(); ctx.moveTo(p.x + Math.cos(a) * (aura.radius - 12), p.y + Math.sin(a) * (aura.radius - 12)); ctx.lineTo(p.x + Math.cos(a) * aura.radius, p.y + Math.sin(a) * aura.radius); ctx.stroke(); }
       ctx.restore();
     }
+    let emphasized = 0;
     for (const fx of run.effects) {
       const inView = fx.kind === 'line' ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) <= cam.y + viewH : visible(fx, cam, (fx.r || 30) + 180);
       if (!inView) continue;
       const progress = 1 - fx.life / fx.maxLife;
       ctx.globalAlpha = clamp(fx.life / fx.maxLife, 0, 1); ctx.strokeStyle = fx.color; ctx.fillStyle = fx.color;
+      const view = { hero: run.character.id, level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches };
+      if (emphasized < 24 && (fx.weapon || fx.build || ['quills', 'thunder', 'lunar-impact', 'muzzle', 'kael-emp-bolt', 'kael-emp-explosion'].includes(fx.kind))) {
+        emphasized++;
+        if (drawWeaponStrike(ctx, fx, progress, view) || drawBuildFeedback(ctx, fx, progress, view)
+          || drawHeroGrowthEffect(ctx, fx, progress, view)) continue;
+      }
       if (fx.kind === 'equipment-upgrade') drawEquipmentUpgradeEffect(fx, progress);
       else if (fx.kind === 'line') {
         const dx = fx.x2 - fx.x1, dy = fx.y2 - fx.y1, length = Math.hypot(dx, dy) || 1;
@@ -4051,6 +4116,8 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       }
     }
     ctx.globalAlpha = 1;
+    drawHeroGrowthAreas(ctx, { hero: run.character.id, level: run.level, player: p, skills: s,
+      time: run.totalTime, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
   }
   function drawKaelMeteor(meteor) {
     const age = clamp(3 - meteor.life, 0, 3), reduced = motionPreference.matches;
@@ -4064,6 +4131,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       ctx.save(); ctx.fillStyle = '#59392c'; ctx.strokeStyle = '#ff9c65'; ctx.lineWidth = 3;
       ctx.beginPath(); ctx.arc(meteor.x, meteor.y - 35 - lift, 35, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
     }
+    drawHeroGrowthKaelBody(ctx, 'chaos-meteor', meteor, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: reduced });
   }
   function drawCombat() {
     const cam = camera();
@@ -4158,6 +4226,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     const dt = Math.min(.05, (now - (lastFrame || now)) / 1000);
     lastFrame = now;
     if (studio) { drawStudioFrame(dt); requestAnimationFrame(loop); return; }
+    if (phase === 'pause') { requestAnimationFrame(loop); return; }
     ambientTime += dt;
     if (phase === 'combat' && run) updateCombat(dt);
     if (phase === 'wave-result' && run) updateWaveIntermission(dt);
@@ -4223,10 +4292,24 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
       if (buy) buyOffer(Number(buy.dataset.buy), buy.dataset.buyCraft || null, buy.dataset.buyUpgrade === 'true');
       if (lock) { const index = Number(lock.dataset.lock), offer = run.shopOffers[index]; if (offer) { offer.locked = !offer.locked; renderShop(); refocus(`[data-lock="${index}"]`); } }
     });
-    $('inventory').addEventListener('click', event => {
+    const inventoryClick = event => {
       if (phase !== 'shop') return;
-      const sell = event.target.closest('[data-sell]');
+      const sell = event.target.closest('[data-sell]'), move = event.target.closest('[data-move]');
       if (sell) sellEquipment(Number(sell.dataset.sell));
+      if (move) moveEquipment(Number(move.dataset.move), move.dataset.toActive === 'true');
+    };
+    $('inventory').addEventListener('click', inventoryClick);
+    $('reserve-inventory').addEventListener('click', inventoryClick);
+    $('forge-settings').addEventListener('change', event => {
+      if (phase !== 'shop') return;
+      if (event.target.id === 'auto-forge') run.autoForge = event.target.checked;
+      else if (event.target.matches('[data-forge-target]')) {
+        const index = Number(event.target.dataset.forgeTarget), value = event.target.value;
+        run.forgeTargets[index] = value;
+        if (value && run.forgeTargets[1 - index] === value) run.forgeTargets[1 - index] = '';
+      } else return;
+      const selector = event.target.id === 'auto-forge' ? '#auto-forge' : `[data-forge-target="${event.target.dataset.forgeTarget}"]`;
+      autoForge(); renderShop(); renderEquipmentStrip(); document.querySelector(selector)?.focus({ preventScroll: true });
     });
     const craftClick = event => {
       if (phase !== 'shop') return;
@@ -4301,7 +4384,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     return [
       { id: 'heroes', label: '英雄', items: CHARACTERS.map(hero => {
         const text = HERO_TEXT['zh-CN'][hero.id];
-        return { id: hero.id, name: text[0], description: text[2], icon: HERO_ART[hero.id], source: '../static/js/game/heroes.js', duration: hero.id === 'tb' ? 12 : 8, variants: [
+        return { id: hero.id, name: text[0], description: text[2], levels: 3, icon: HERO_ART[hero.id], source: '../static/js/game/heroes.js', duration: hero.id === 'tb' ? 12 : 8, variants: [
           { id: 'idle', name: '待机', description: '观察待机形态与呼吸。' },
           { id: 'walk', name: '移动', description: '沿当前方向往返，使用真实移动与动作帧。' },
           { id: 'basic', name: '普通攻击', description: '持续攻击静止演示目标。' },
@@ -4336,6 +4419,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     selectedSkin = selection.skin; soundEnabled = false;
     createRun(); phase = 'combat'; ambientTime = 0; run.wave = 1;
     if (selection.category !== 'maps') run.terrain = [];
+    if (selection.category === 'heroes') run.level = [1, 5, 10][selection.level - 1];
     if (selection.category === 'equipment') {
       const item = createEquipment(selection.id, selection.level);
       run.equipment.push(item); applyEquipmentStats(item);
@@ -4401,6 +4485,7 @@ import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorS
     if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: '使用游戏的地形定义、绘制与两套画面主题。此处不生成敌潮或地形伤害。' };
     if (selection.category === 'effects') return { summary: '独立效果 · 与游戏共用绘制模块', detail: '观察场景控制位置与时间；技能的伤害、碰撞和寿命由真实游戏负责。' };
     let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 物攻加成 ${Number(physicalBonus().toFixed(2))} · 法攻 ${run.stats.elemental} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
+    if (selection.category === 'heroes') detail += ` · 英雄Lv.${run.level}（仅观察成长表现，不额外增加属性）`;
     if (selection.category === 'equipment') detail += `。${equipmentDesc(equipmentDef(run.equipment[0]))}；概率被动按实际概率触发。`;
     if (selection.category === 'buffs') detail += `。${selection.stacks} 层；定时承受轻伤，用于观察受击、吸收和回复。光环减速 ${(buffAuraSlow(run, 100) * 100).toFixed(0)}%，物理增伤 ${(buffPhysicalAmp(run, 100) * 100).toFixed(0)}%。`;
     if (run.character.id === 'sf') detail += ` · 灵魂 ${run.skills.souls}`;

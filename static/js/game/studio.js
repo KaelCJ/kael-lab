@@ -136,6 +136,11 @@ function renderDetails() {
   $('studio-variant').value = selection.variant;
   $('variant-description').textContent = variants.find(variant => variant.id === selection.variant)?.description || '';
   $('level-control').hidden = selected.levels !== 3;
+  const heroGrowth = selection.category === 'heroes';
+  document.querySelector('#level-control label').textContent = heroGrowth ? '英雄成长表现' : '强化等级';
+  [...$('studio-level').options].forEach((option, index) => {
+    option.textContent = heroGrowth ? `英雄 Lv.${[1, 5, 10][index]} · ${['初始', '成长', '成熟'][index]}` : `Lv.${index + 1}`;
+  });
   $('stacks-control').hidden = !selected.stacks;
   const source = safePath(selected.source);
   if (source) {
