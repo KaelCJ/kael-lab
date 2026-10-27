@@ -1,0 +1,72 @@
+{
+  "id": "rover",
+  "displayName": "矮人火枪手",
+  "reference": {
+    "heroName": "Kardel Sharpeye",
+    "englishTitle": "Dwarven Sniper",
+    "race": "人族（矮人）",
+    "class": "火枪手",
+    "alias": "Sniper",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-rover-1",
+      "name": "增程瞄准",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-rover",
+      "name": "散弹齐射",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "runtime": {
+      "source": "art/source/rover-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/rover/rover-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/rover/rover-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/rover/rover-walk-a.svg", "../../../../static/dotarogue/assets/characters/rover/rover-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/rover/rover-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/rover/rover-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/rover/rover-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/rover/rover-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/rover/rover-skill.svg",
+      "sideSource": "art/source/rover-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/rover/rover-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/rover/rover-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/rover/rover-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/rover/rover-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/rover/rover-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/rover/rover-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/rover/rover-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/rover/rover-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/rover/rover-side-skill.svg",
+      "format": "svg-poses"
+    },
+    "concept": {
+      "source": "art/concept/rover-idle-v1-source.png",
+      "automaticAlpha": "art/concept/rover-idle-v1.png",
+      "selected": "art/concept/rover-idle-v1-clean.png",
+      "previews": [
+        "art/concept/rover-idle-v1-clean-128.png",
+        "art/concept/rover-idle-v1-clean-64.png"
+      ]
+    },
+    "character": [
+      "rover.svg",
+      "rover-step.svg",
+      "rover-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-rover.svg",
+      "skill-rover-1.svg"
+    ],
+    "activeEffect": "effect-rover.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

@@ -1,0 +1,63 @@
+{
+  "id": "jugg",
+  "displayName": "剑圣",
+  "reference": {
+    "heroName": "Yurnero",
+    "englishTitle": "Juggernaut",
+    "race": "兽族（兽人）",
+    "class": "剑圣／战士",
+    "alias": "Jugg",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-jugg-1",
+      "name": "跃空斩",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-jugg",
+      "name": "剑刃风暴",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "runtime": {
+      "source": "art/source/jugg-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/jugg/jugg-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/jugg/jugg-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/jugg/jugg-walk-a.svg", "../../../../static/dotarogue/assets/characters/jugg/jugg-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/jugg/jugg-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/jugg/jugg-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/jugg/jugg-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/jugg/jugg-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/jugg/jugg-skill.svg",
+      "sideSource": "art/source/jugg-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/jugg/jugg-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/jugg/jugg-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/jugg/jugg-side-skill.svg",
+      "format": "svg-poses"
+    },
+    "character": [
+      "jugg.svg",
+      "jugg-step.svg",
+      "jugg-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-jugg.svg",
+      "skill-jugg-1.svg"
+    ],
+    "activeEffect": "effect-jugg.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

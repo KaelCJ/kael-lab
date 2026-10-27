@@ -1,0 +1,63 @@
+{
+  "id": "sf",
+  "displayName": "影魔",
+  "reference": {
+    "heroName": "Nevermore",
+    "englishTitle": "Shadow Fiend",
+    "race": "中立（火元素）",
+    "class": "火焰领主",
+    "alias": "SF",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-sf-1",
+      "name": "收魂",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-sf",
+      "name": "魂之挽歌",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "runtime": {
+      "source": "art/source/sf-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/sf/sf-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/sf/sf-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/sf/sf-walk-a.svg", "../../../../static/dotarogue/assets/characters/sf/sf-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/sf/sf-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/sf/sf-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/sf/sf-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/sf/sf-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/sf/sf-skill.svg",
+      "sideSource": "art/source/sf-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/sf/sf-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/sf/sf-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/sf/sf-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/sf/sf-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/sf/sf-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/sf/sf-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/sf/sf-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/sf/sf-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/sf/sf-side-skill.svg",
+      "format": "svg-poses"
+    },
+    "character": [
+      "sf.svg",
+      "sf-step.svg",
+      "sf-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-sf.svg",
+      "skill-sf-1.svg"
+    ],
+    "activeEffect": "effect-sf.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

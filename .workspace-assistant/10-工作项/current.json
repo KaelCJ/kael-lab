@@ -68,7 +68,7 @@
       "product": 0,
       "priority": "未设置",
       "createdAt": "2026-10-13T09:57:07+08:00",
-      "updatedAt": "2026-10-14T00:47:15+08:00",
+      "updatedAt": "2026-10-27T03:49:21+08:00",
       "entry": "2026-10-13_RZOjTODTqbn1E22j3SeT_shared-combat-effects/README.md"
     },
     {
@@ -148,7 +148,7 @@
       "product": 0,
       "priority": "P1",
       "createdAt": "2026-10-23T17:35:04+08:00",
-      "updatedAt": "2026-10-26T10:29:36+08:00",
+      "updatedAt": "2026-10-27T16:31:32+08:00",
       "entry": "2026-10-23_RKymfAuJSzwmwawJmTKU_ai-daily-home/README.md"
     },
     {
@@ -160,6 +160,26 @@
       "createdAt": "2026-10-23T06:30:45Z",
       "updatedAt": "2026-10-26T03:42:00Z",
       "entry": "2026-10-23_RB7aJmSnsGXbmyppt3k7_weapon-system-fun/README.md"
+    },
+    {
+      "id": "R4HTjPc2Qp2jdlzcnxWs",
+      "title": "DotaRogue·英雄声音与技能音效",
+      "type": 0,
+      "product": 0,
+      "priority": "P1",
+      "createdAt": "2026-10-27T02:49:06+08:00",
+      "updatedAt": "2026-10-27T03:49:21+08:00",
+      "entry": "2026-10-27_R4HTjPc2Qp2jdlzcnxWs_hero-audio-system/README.md"
+    },
+    {
+      "id": "RUslyllsEtU6MJCn7Ll2",
+      "title": "DotaRogue·统一伤害与机制标签攻击结算",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-27T09:56:23+08:00",
+      "updatedAt": "2026-10-27T16:33:49+08:00",
+      "entry": "2026-10-27_RUslyllsEtU6MJCn7Ll2_unified-damage-mechanics/README.md"
     }
   ]
 }

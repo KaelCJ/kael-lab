@@ -1,0 +1,1925 @@
+{
+  "recordedOn": "2026-10-27",
+  "scope": "Source asset relocation; sha256 records pre-update bytes, currentSha256 records the final target after path-only manifest and generator CLI updates.",
+  "identicalRuntimeCopiesCompared": 203,
+  "editableSourcesRetained": 16,
+  "identicalRuntimeOutputsConsolidated": 187,
+  "files": [
+    {
+      "previousPath": "game/art/dota1/README.md",
+      "path": "game/docs/sources/art/dota1/README.md",
+      "sha256": "ab9095bc03d6ca407e5e3d240619649814913faf574de94956e71ea9f66422ff",
+      "action": "move",
+      "currentSha256": "7ddee486008a8e8ed64315f76b46ff5f08036c559047c265a8e64e20bb8a8f03",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/art/dota1/manifest.json",
+      "path": "game/docs/sources/art/dota1/manifest.json",
+      "sha256": "b086d880f1d964aa3cbca58340d578ee549e7cbad5cf684ae6c519bb3d51c580",
+      "action": "move",
+      "currentSha256": "e82d63936dae32b0c0baa34b864614e496c79e96673c47b41dbc603bee03ba33",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/art/effects/fire/build_textures.py",
+      "path": "game/docs/sources/art/effects/fire/build_textures.py",
+      "sha256": "991f694c02f23e28ae28637d06a8b0e242a743453097fcb2089819c30ffc0f3d",
+      "action": "move",
+      "currentSha256": "eade0cc1191463de51ce24cd56517506c334721f178d94e62b650b58f5cc2fbf",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/art/effects/wind/build_textures.py",
+      "path": "game/docs/sources/art/effects/wind/build_textures.py",
+      "sha256": "4767e8a8b6f897f9ecc6ff335a7522e6ef47dfca6387cee5cb22cde184dd40af",
+      "action": "move",
+      "currentSha256": "b4fef2031469bb32540640d3726a896e5cee1e59beae6aed8ae93102abd5a5b0",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/art/pixel/enemy-expansion-sources.json",
+      "path": "game/docs/sources/art/pixel/enemy-expansion-sources.json",
+      "sha256": "564af92a34fbf64b1d70822f72f4586e611c883f5f451110b31a292ef1cc69ed",
+      "action": "move",
+      "currentSha256": "d00d6b4b5b62871fbc8cc53beb4814e6603c548296d941eddd2012521b19ed27",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/audio/dota1/sources.json",
+      "path": "game/docs/sources/audio/dota1/sources.json",
+      "sha256": "49ee55159737f10d4ce0c30af71895a15b36780e00e388c0d0deae6683009ba9",
+      "action": "move",
+      "currentSha256": "37d667768af1419dffd496f03743daad34d1a06794dbc59ffd031c7f1a332717",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/build_pose_frames.py",
+      "path": "game/docs/sources/characters/build_pose_frames.py",
+      "sha256": "e6fc40787d753146e5f172aa3393fdf30a7f49a915d58742dce54309ba512861",
+      "action": "move",
+      "currentSha256": "0c4aed67ba3a64edc8a3220585e1348d918b13b930f57afc71c67926b14ec4a1",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/build_side_pose_frames.py",
+      "path": "game/docs/sources/characters/build_side_pose_frames.py",
+      "sha256": "e2c525919b8971d9797e0e4d94449a30ef199bd7aa7197624c14dca9e10a09ec",
+      "action": "move",
+      "currentSha256": "ef7011204faa96b141f29a556ba138ff02a84c08c046980aa40a6ed0ad1eb8d8",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-128.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-128.png",
+      "sha256": "ec84acc9f646e34448f2015aadbf59307f9431c679b3f4d586b699f6764dd75f",
+      "action": "move",
+      "currentSha256": "ec84acc9f646e34448f2015aadbf59307f9431c679b3f4d586b699f6764dd75f"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-64.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-64.png",
+      "sha256": "59bbc6a80bcba39015a2a02447a5dd28cd1cd0d24a816f0961d301817bae2e09",
+      "action": "move",
+      "currentSha256": "59bbc6a80bcba39015a2a02447a5dd28cd1cd0d24a816f0961d301817bae2e09"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-clean-128.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-clean-128.png",
+      "sha256": "cac7fcfe2b63d45a491d6dc3af7587644021a6efce1568739fd01db0c0b26717",
+      "action": "move",
+      "currentSha256": "cac7fcfe2b63d45a491d6dc3af7587644021a6efce1568739fd01db0c0b26717"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-clean-64.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-clean-64.png",
+      "sha256": "5e75f6221584eed24c613cce34d77cb12f60a7618f648a08f295a57bd2733e9d",
+      "action": "move",
+      "currentSha256": "5e75f6221584eed24c613cce34d77cb12f60a7618f648a08f295a57bd2733e9d"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-clean.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-clean.png",
+      "sha256": "36e6f62c162cc10f1741ebb69c42c59441ff322af286ac455f69525dc192f944",
+      "action": "move",
+      "currentSha256": "36e6f62c162cc10f1741ebb69c42c59441ff322af286ac455f69525dc192f944"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1-source.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1-source.png",
+      "sha256": "9878795051d9e0d85dc6d0b8ff2399d17188a1cd6e537353ef82d66e2bd90b34",
+      "action": "move",
+      "currentSha256": "9878795051d9e0d85dc6d0b8ff2399d17188a1cd6e537353ef82d66e2bd90b34"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1.lanox-prompt.txt",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1.lanox-prompt.txt",
+      "sha256": "4b5b44ac40404039d28a4096ded55229f9a1773a2d899489a87efebfd0404bd4",
+      "action": "move",
+      "currentSha256": "4b5b44ac40404039d28a4096ded55229f9a1773a2d899489a87efebfd0404bd4"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/concept/bulwark-idle-v1.png",
+      "path": "game/docs/sources/characters/bulwark/art/concept/bulwark-idle-v1.png",
+      "sha256": "6a3ad0a5318eb7c41f12188f107f255cdb80244c258db9e6b59e2210c80184dd",
+      "action": "move",
+      "currentSha256": "6a3ad0a5318eb7c41f12188f107f255cdb80244c258db9e6b59e2210c80184dd"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack-release.svg",
+      "sha256": "084ff5482b37252b69b5f293ec4e3656d769a0c857543ef30e646adb36194772",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "084ff5482b37252b69b5f293ec4e3656d769a0c857543ef30e646adb36194772"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack-windup.svg",
+      "sha256": "38d1c7821317d16c59baf2cc42875775c823ce19079696109c2a58de375bcb60",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "38d1c7821317d16c59baf2cc42875775c823ce19079696109c2a58de375bcb60"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack.svg",
+      "sha256": "b366eb851a320ccb86228352cfdeb1f945ddb2922ec0490b1bf524a147740ab3",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b366eb851a320ccb86228352cfdeb1f945ddb2922ec0490b1bf524a147740ab3"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-dash.svg",
+      "sha256": "c523d8b7d4f245f86adba0f5b68538b2b60d0c16245d25ed71f52d6029e47a0e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c523d8b7d4f245f86adba0f5b68538b2b60d0c16245d25ed71f52d6029e47a0e"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-hero.svg",
+      "path": "game/docs/sources/characters/bulwark/art/source/bulwark-hero.svg",
+      "sha256": "3dcf65654dbb822d1156a3c90d931bea44c7777279b14dd64923d30352dca105",
+      "action": "move-editable-source",
+      "currentSha256": "3dcf65654dbb822d1156a3c90d931bea44c7777279b14dd64923d30352dca105"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-idle-a.svg",
+      "sha256": "1814ca742b0295fc99abf895ce68843672cbeebc7bb0ffa3fdd5bbefe3c4fed4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1814ca742b0295fc99abf895ce68843672cbeebc7bb0ffa3fdd5bbefe3c4fed4"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-idle-alt.svg",
+      "sha256": "04281c7936c497aaa48b7c6064ec5732ae31391d229844a65d1403f274d43c7f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "04281c7936c497aaa48b7c6064ec5732ae31391d229844a65d1403f274d43c7f"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack-release.svg",
+      "sha256": "448b3dc80e058b88c292d26e6f95b889eef646958ae55016c15d4bc4f386c4da",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "448b3dc80e058b88c292d26e6f95b889eef646958ae55016c15d4bc4f386c4da"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack-windup.svg",
+      "sha256": "f75534f96e971be6f6e49155f99ca3a0b1ff15f1223d244d4e66f6b89a82f07e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f75534f96e971be6f6e49155f99ca3a0b1ff15f1223d244d4e66f6b89a82f07e"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack.svg",
+      "sha256": "a8967e44913d5a76d40e829cbab3ef951d242d8ec97d38599cf437567bbf9198",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "a8967e44913d5a76d40e829cbab3ef951d242d8ec97d38599cf437567bbf9198"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-dash.svg",
+      "sha256": "9a638b470e1729b5842775cb1c024152d6cc74a14f92f2909beac35bfd81d754",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9a638b470e1729b5842775cb1c024152d6cc74a14f92f2909beac35bfd81d754"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-idle-a.svg",
+      "sha256": "7b96da24aa86cb16c22b1086bb052596b406e6741f4db87c6099822291f2d7fa",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "7b96da24aa86cb16c22b1086bb052596b406e6741f4db87c6099822291f2d7fa"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-idle-alt.svg",
+      "sha256": "d7cc2e22cf939452ae61907f4421ef15e6c677f29dda66fa4f96a7d845330e1c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d7cc2e22cf939452ae61907f4421ef15e6c677f29dda66fa4f96a7d845330e1c"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-skill.svg",
+      "sha256": "6629c47e69a6874ae750a9152fd11b807b074ce10bb2524d413853d74b6f945e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6629c47e69a6874ae750a9152fd11b807b074ce10bb2524d413853d74b6f945e"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-walk-a.svg",
+      "sha256": "c3a46f9178b9626e70a3cb1a1074b87dd7c23626acc468b2794cc656a953d130",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c3a46f9178b9626e70a3cb1a1074b87dd7c23626acc468b2794cc656a953d130"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-walk-b.svg",
+      "sha256": "a690cc6c78f3959d0749fe8b75d5b0d4fc3f0bca6f91d296d7011adaab6fcb7d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "a690cc6c78f3959d0749fe8b75d5b0d4fc3f0bca6f91d296d7011adaab6fcb7d"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-side.svg",
+      "path": "game/docs/sources/characters/bulwark/art/source/bulwark-side.svg",
+      "sha256": "95bcec0eb23c16c52416297e8fd3fafc3edecf2bcb23b95a2fa2d86f5c7154c6",
+      "action": "move-editable-source",
+      "currentSha256": "95bcec0eb23c16c52416297e8fd3fafc3edecf2bcb23b95a2fa2d86f5c7154c6"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-skill.svg",
+      "sha256": "9ea3b2cbab40b13823002c945e4791bea27ef6c0b6eb5e94b14f1eba43609257",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9ea3b2cbab40b13823002c945e4791bea27ef6c0b6eb5e94b14f1eba43609257"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-walk-a.svg",
+      "sha256": "91d5300fec94b2f7eacfcfb69f1034f1cb9b16f1d08efac40ee429d1fdc8011a",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "91d5300fec94b2f7eacfcfb69f1034f1cb9b16f1d08efac40ee429d1fdc8011a"
+    },
+    {
+      "previousPath": "game/characters/bulwark/art/runtime/bulwark-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/bulwark/bulwark-walk-b.svg",
+      "sha256": "8eb01aa08ffadcdb7332dffa8a971fa77f5adf561c7b4fd7fcbdc61afd0bcf7e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8eb01aa08ffadcdb7332dffa8a971fa77f5adf561c7b4fd7fcbdc61afd0bcf7e"
+    },
+    {
+      "previousPath": "game/characters/bulwark/manifest.json",
+      "path": "game/docs/sources/characters/bulwark/manifest.json",
+      "sha256": "8577daab6454b3605fb68fcc246e28d6ba576afbf0360795162b92b3ae60ec80",
+      "action": "move",
+      "currentSha256": "2ca40fe31d6e14d56f85977a71a7970721d87b0a6637d0a22f35e40b4f25f9b4",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-attack-release.svg",
+      "sha256": "0233a335cc8a71a0be105989dbfc7cd45895cf550a50020ae047097d33865a53",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "0233a335cc8a71a0be105989dbfc7cd45895cf550a50020ae047097d33865a53"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-attack-windup.svg",
+      "sha256": "c71212a11f04e41657169dc7782f1ed2ffa20a6756027bdb322a718d3887b323",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c71212a11f04e41657169dc7782f1ed2ffa20a6756027bdb322a718d3887b323"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-attack.svg",
+      "sha256": "88f640740cab33eced6d7b75fb194cb8399b49784c1f268e6a375e4c9f69f1e1",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "88f640740cab33eced6d7b75fb194cb8399b49784c1f268e6a375e4c9f69f1e1"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-dash.svg",
+      "sha256": "f1a14c3e7f6aa7a0a3265be2ec3d08e1281ba5ef1e0e501c59169b8fa8c19d45",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f1a14c3e7f6aa7a0a3265be2ec3d08e1281ba5ef1e0e501c59169b8fa8c19d45"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-hero.svg",
+      "path": "game/docs/sources/characters/conductor/art/source/conductor-hero.svg",
+      "sha256": "99f12bdcba82dc38e592a4809c71155781b36caf5d62c2807f4a570b2f68570a",
+      "action": "move-editable-source",
+      "currentSha256": "99f12bdcba82dc38e592a4809c71155781b36caf5d62c2807f4a570b2f68570a"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-idle-a.svg",
+      "sha256": "b64fd829f511c728e89a8397d6a30c8e2889bf580e4d1497b4dfb9358599d918",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b64fd829f511c728e89a8397d6a30c8e2889bf580e4d1497b4dfb9358599d918"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-idle-alt.svg",
+      "sha256": "1622389ee8b08521a4cbdb3a960ad007b9d7b8046b18995f71f8827927ce482d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1622389ee8b08521a4cbdb3a960ad007b9d7b8046b18995f71f8827927ce482d"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack-release.svg",
+      "sha256": "8bf48a1a5707a56f245fde77cbc30bd7a5581fc94357f31abdd6dee164960bb4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8bf48a1a5707a56f245fde77cbc30bd7a5581fc94357f31abdd6dee164960bb4"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack-windup.svg",
+      "sha256": "87077f6e8cc2f4c38c0a6d91a0b80dab6eac220aaabb6da6bf2b184fa7e7fce4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "87077f6e8cc2f4c38c0a6d91a0b80dab6eac220aaabb6da6bf2b184fa7e7fce4"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack.svg",
+      "sha256": "fe35a16c0df78c6993012dfb3c0148e946cb88879072eaa4acb50a3d91171396",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "fe35a16c0df78c6993012dfb3c0148e946cb88879072eaa4acb50a3d91171396"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-dash.svg",
+      "sha256": "fdf68fb6a703dd02743fedf5f16641847b4ac29faf8cd68e787d2906de7a649c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "fdf68fb6a703dd02743fedf5f16641847b4ac29faf8cd68e787d2906de7a649c"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-idle-a.svg",
+      "sha256": "e6da4a703ab7079fafb8b043c15c62ec9b578f4fdecd93b8815b156a61c02c9c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e6da4a703ab7079fafb8b043c15c62ec9b578f4fdecd93b8815b156a61c02c9c"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-idle-alt.svg",
+      "sha256": "429e5a965a6ef2f168a1dfad981b78101bfb8883fd180a1d90cbf01b5acf7eb8",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "429e5a965a6ef2f168a1dfad981b78101bfb8883fd180a1d90cbf01b5acf7eb8"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-skill.svg",
+      "sha256": "11cafc803a2e3fc34f0ddb252d4b96a9eb7a5b37fa03b0b8da7ef9caa4167c7f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "11cafc803a2e3fc34f0ddb252d4b96a9eb7a5b37fa03b0b8da7ef9caa4167c7f"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-walk-a.svg",
+      "sha256": "f9e0e8da21e0dd0e004d80afb85b9d9e0386e777457f6e3047925e7fe4ba1cdd",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f9e0e8da21e0dd0e004d80afb85b9d9e0386e777457f6e3047925e7fe4ba1cdd"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-side-walk-b.svg",
+      "sha256": "11936ec15ec56d7d333d0a20065063a684ef9cf69bf56f57d9296ac1882ca497",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "11936ec15ec56d7d333d0a20065063a684ef9cf69bf56f57d9296ac1882ca497"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-side.svg",
+      "path": "game/docs/sources/characters/conductor/art/source/conductor-side.svg",
+      "sha256": "1a846ed8ec3078918497d94f0a704b6df9d869df6c2e699576372a1e5a41fe2f",
+      "action": "move-editable-source",
+      "currentSha256": "1a846ed8ec3078918497d94f0a704b6df9d869df6c2e699576372a1e5a41fe2f"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-skill.svg",
+      "sha256": "9dd3a60de5c84d9a3db3c5772879d09284b12c16d1ea5717f333f720777202b6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9dd3a60de5c84d9a3db3c5772879d09284b12c16d1ea5717f333f720777202b6"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-walk-a.svg",
+      "sha256": "f99a1b20f96e3f26269ba84adaae4c47bcc7efece46d060df771656407ebfc21",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f99a1b20f96e3f26269ba84adaae4c47bcc7efece46d060df771656407ebfc21"
+    },
+    {
+      "previousPath": "game/characters/conductor/art/runtime/conductor-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/conductor/conductor-walk-b.svg",
+      "sha256": "582f5c7f7a24593b8b7ae4feba0d0a4454a8c66dcee454ee419678dcf8fa104c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "582f5c7f7a24593b8b7ae4feba0d0a4454a8c66dcee454ee419678dcf8fa104c"
+    },
+    {
+      "previousPath": "game/characters/conductor/manifest.json",
+      "path": "game/docs/sources/characters/conductor/manifest.json",
+      "sha256": "af02e9cc15fe2febf9fd45e628f15fbcd0c23f331e3f10828d28894207871c6f",
+      "action": "move",
+      "currentSha256": "b3f1dde19c95af090131757eb5419849219113fb2190e634dafa2ba9d06b39e5",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/hero-concepts-v1-review.png",
+      "path": "game/docs/sources/characters/hero-concepts-v1-review.png",
+      "sha256": "bfe2dd765bb6b18d5df15ab551422ed62b06dbadd24069123e0753341e5251a3",
+      "action": "move",
+      "currentSha256": "bfe2dd765bb6b18d5df15ab551422ed62b06dbadd24069123e0753341e5251a3"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-ai-reference-128.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-ai-reference-128.png",
+      "sha256": "c74d02b773f710008ac0cdd33702777aba99d203027ace66f1d7886811757041",
+      "action": "move",
+      "currentSha256": "c74d02b773f710008ac0cdd33702777aba99d203027ace66f1d7886811757041"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-ai-reference-64.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-ai-reference-64.png",
+      "sha256": "080ce89a3914a2cfc4d6924463e02b57020cd1bbd10757e26024e248380c2daf",
+      "action": "move",
+      "currentSha256": "080ce89a3914a2cfc4d6924463e02b57020cd1bbd10757e26024e248380c2daf"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-ai-v1.submitted.txt",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-ai-v1.submitted.txt",
+      "sha256": "a7aadce6338ad0694f465d7abf160c6879b832a8203891f70d70679077cd0ede",
+      "action": "move",
+      "currentSha256": "a7aadce6338ad0694f465d7abf160c6879b832a8203891f70d70679077cd0ede"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-ai-vs-svg-review.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-ai-vs-svg-review.png",
+      "sha256": "f8b12933d41f95ac48bd850fed3d6418747bcc594d40b97a3516ad2b760bf6ea",
+      "action": "move",
+      "currentSha256": "f8b12933d41f95ac48bd850fed3d6418747bcc594d40b97a3516ad2b760bf6ea"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-svg-v1-128.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-svg-v1-128.png",
+      "sha256": "c1b177b39cde23779060be1dfe20568e40e02f683b7a4ab031dbb4397d9bbe39",
+      "action": "move",
+      "currentSha256": "c1b177b39cde23779060be1dfe20568e40e02f683b7a4ab031dbb4397d9bbe39"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-svg-v1-64.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-svg-v1-64.png",
+      "sha256": "302449b93a9931e3ab85886f0829bcbcc7f3b751c5f90ee3fa6d12977469f60a",
+      "action": "move",
+      "currentSha256": "302449b93a9931e3ab85886f0829bcbcc7f3b751c5f90ee3fa6d12977469f60a"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-svg-v1.png",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-svg-v1.png",
+      "sha256": "620ee7f14e3bc6402eca23f4170d9864f46d4424dfba4f089f001d164546eb08",
+      "action": "move",
+      "currentSha256": "620ee7f14e3bc6402eca23f4170d9864f46d4424dfba4f089f001d164546eb08"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/comparison/jugg-svg-v1.svg",
+      "path": "game/docs/sources/characters/jugg/art/comparison/jugg-svg-v1.svg",
+      "sha256": "b85c671e15553c12ea6b5d0d267adefd4aa9c875cd9c4bb341fbb729a6da1d52",
+      "action": "move",
+      "currentSha256": "b85c671e15553c12ea6b5d0d267adefd4aa9c875cd9c4bb341fbb729a6da1d52"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-128.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-128.png",
+      "sha256": "1f35ec53cbea5afdb2ad7ae52e358db9d20ddb8c9ade1119ec686ce82d81a28e",
+      "action": "move",
+      "currentSha256": "1f35ec53cbea5afdb2ad7ae52e358db9d20ddb8c9ade1119ec686ce82d81a28e"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-64.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-64.png",
+      "sha256": "c9164d04f4ae933120f3ec05fe9ab82590c64235a9e7453c788f7df4a90ee7f3",
+      "action": "move",
+      "currentSha256": "c9164d04f4ae933120f3ec05fe9ab82590c64235a9e7453c788f7df4a90ee7f3"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-clean-128.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-clean-128.png",
+      "sha256": "45ed5c732ea398aad69ae47ca8ebf57f4466cdeb2e96a5121800d8a5c1908ffb",
+      "action": "move",
+      "currentSha256": "45ed5c732ea398aad69ae47ca8ebf57f4466cdeb2e96a5121800d8a5c1908ffb"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-clean-64.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-clean-64.png",
+      "sha256": "72b19087400ec716a1907c01bb00fe395ccaf394b3d9b5fb0e2b6361bedbd435",
+      "action": "move",
+      "currentSha256": "72b19087400ec716a1907c01bb00fe395ccaf394b3d9b5fb0e2b6361bedbd435"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-clean.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-clean.png",
+      "sha256": "039eb4c5b585ac34fb619bb2383a9116a629f00606a1b5dd064492f0d3f45306",
+      "action": "move",
+      "currentSha256": "039eb4c5b585ac34fb619bb2383a9116a629f00606a1b5dd064492f0d3f45306"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1-source.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1-source.png",
+      "sha256": "3cc127c2eee7638af3e5dceca56e7b3661ad9175f0acb171c8de13c21ddabba6",
+      "action": "move",
+      "currentSha256": "3cc127c2eee7638af3e5dceca56e7b3661ad9175f0acb171c8de13c21ddabba6"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/concept/jugg-idle-v1.png",
+      "path": "game/docs/sources/characters/jugg/art/concept/jugg-idle-v1.png",
+      "sha256": "8d09e65eb20c5093186bc760a60f42895cec8c1dac87d8f4d2a216386e3fc1a6",
+      "action": "move",
+      "currentSha256": "8d09e65eb20c5093186bc760a60f42895cec8c1dac87d8f4d2a216386e3fc1a6"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-attack-release.svg",
+      "sha256": "d89a0d003ddb215f73c4e8d6a3c55ff66e31fb1e2dace2e9a66ff25faaed77a9",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d89a0d003ddb215f73c4e8d6a3c55ff66e31fb1e2dace2e9a66ff25faaed77a9"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-attack-windup.svg",
+      "sha256": "4821c6896e8eaf371a67cf55c545d2edaf8f5b2108a09e3b9b25ee7cbe656a49",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "4821c6896e8eaf371a67cf55c545d2edaf8f5b2108a09e3b9b25ee7cbe656a49"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-attack.svg",
+      "sha256": "cb9be0d78082593cb86a6f47c06540ec901b6e72adac0af1479f3c8a567edd8c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "cb9be0d78082593cb86a6f47c06540ec901b6e72adac0af1479f3c8a567edd8c"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-dash.svg",
+      "sha256": "673d86d7a0632c2d960371718d9460f5edc54ed8c8fb6a820f2eaa692af8edbf",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "673d86d7a0632c2d960371718d9460f5edc54ed8c8fb6a820f2eaa692af8edbf"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-hero.svg",
+      "path": "game/docs/sources/characters/jugg/art/source/jugg-hero.svg",
+      "sha256": "b583d8a2caffa2b6d432f9cfbc6f4a0fe5708446a4edf4ce6adb4034330053db",
+      "action": "move-editable-source",
+      "currentSha256": "b583d8a2caffa2b6d432f9cfbc6f4a0fe5708446a4edf4ce6adb4034330053db"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-idle-a.svg",
+      "sha256": "38e827065be15de118eaf467be1e685860a54749a7c3227c3d36a376d6e5d584",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "38e827065be15de118eaf467be1e685860a54749a7c3227c3d36a376d6e5d584"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-idle-alt.svg",
+      "sha256": "5bc85ad3d910f55f0ca0b5db2e823fa2151474a1e69da368cc00a00b4329bf75",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5bc85ad3d910f55f0ca0b5db2e823fa2151474a1e69da368cc00a00b4329bf75"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack-release.svg",
+      "sha256": "17b16cfbeb485d70f0339eb57b33bb386898ccbb3c0960e52c8baf06125f5b3d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "17b16cfbeb485d70f0339eb57b33bb386898ccbb3c0960e52c8baf06125f5b3d"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack-windup.svg",
+      "sha256": "656c46e0a6d40c7e9ff81d5c47433b47cbc9f7c168dae999e0ff6083c0e30d27",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "656c46e0a6d40c7e9ff81d5c47433b47cbc9f7c168dae999e0ff6083c0e30d27"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack.svg",
+      "sha256": "46b5c8c023323717812165ed48f08f6336aaa646904ae65614e7c9781d368c07",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "46b5c8c023323717812165ed48f08f6336aaa646904ae65614e7c9781d368c07"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-dash.svg",
+      "sha256": "1ff96d908351554ab300c9a2985ddd911b6cc566479db69085c61505a13560bc",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1ff96d908351554ab300c9a2985ddd911b6cc566479db69085c61505a13560bc"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-idle-a.svg",
+      "sha256": "f94daee823283a2553a9aab963b44222c93e7d72e38f582b18293878639fb54c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f94daee823283a2553a9aab963b44222c93e7d72e38f582b18293878639fb54c"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-idle-alt.svg",
+      "sha256": "0fc54cdd1ca2ca3b7509da427fa3ddff287769e265be3b76e8c20ac47f2ded9f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "0fc54cdd1ca2ca3b7509da427fa3ddff287769e265be3b76e8c20ac47f2ded9f"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-skill.svg",
+      "sha256": "0b387e9bce4f9f2ac176204a4f83e02b34d991a219b97bee425926aa85598502",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "0b387e9bce4f9f2ac176204a4f83e02b34d991a219b97bee425926aa85598502"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-walk-a.svg",
+      "sha256": "8356c9fcadde5289ebc3cebcffead138c8d908f04cae20858629ec5b702649f9",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8356c9fcadde5289ebc3cebcffead138c8d908f04cae20858629ec5b702649f9"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-side-walk-b.svg",
+      "sha256": "907f0c3e1688d2a9ecc65560ba705ffa822bea99559ea16a24e1eb8d9c0ad9c6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "907f0c3e1688d2a9ecc65560ba705ffa822bea99559ea16a24e1eb8d9c0ad9c6"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-side.svg",
+      "path": "game/docs/sources/characters/jugg/art/source/jugg-side.svg",
+      "sha256": "0b078cbf729adf3ae406ac1890885d07e00c5061d71f9750a3fcdbe8e67b37f7",
+      "action": "move-editable-source",
+      "currentSha256": "0b078cbf729adf3ae406ac1890885d07e00c5061d71f9750a3fcdbe8e67b37f7"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-skill.svg",
+      "sha256": "27c7857e28c0ee9e3c6517938452c33c82f22d9605aebe6bdbbb990d89029fc3",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "27c7857e28c0ee9e3c6517938452c33c82f22d9605aebe6bdbbb990d89029fc3"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-walk-a.svg",
+      "sha256": "1eedf5184545232525e6e8de2f265580e73af759ce346055c42fbe4f7db4b689",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1eedf5184545232525e6e8de2f265580e73af759ce346055c42fbe4f7db4b689"
+    },
+    {
+      "previousPath": "game/characters/jugg/art/runtime/jugg-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/jugg/jugg-walk-b.svg",
+      "sha256": "34942383df73886caf5d503b74ba7b2a1380500c4e682902709a94902a9f595b",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "34942383df73886caf5d503b74ba7b2a1380500c4e682902709a94902a9f595b"
+    },
+    {
+      "previousPath": "game/characters/jugg/manifest.json",
+      "path": "game/docs/sources/characters/jugg/manifest.json",
+      "sha256": "01a3a41949e97336b0afa1354ce523a34224ea01d6a33c0d7be0563bf7f0602d",
+      "action": "move",
+      "currentSha256": "f5d767fac3cce2fe587a362c16fb31603fa97e20dffa676ef58c62c0f4d61120",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-attack-release.svg",
+      "sha256": "e718d7c1c79b3b441a4110f31407115c38deefd5d088f6856ad55a5af17bac65",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e718d7c1c79b3b441a4110f31407115c38deefd5d088f6856ad55a5af17bac65"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-attack-windup.svg",
+      "sha256": "da4b147d05652196588b6ab5e39567c42a3f773aa71c43d6423e3736d4a69fe0",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "da4b147d05652196588b6ab5e39567c42a3f773aa71c43d6423e3736d4a69fe0"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-attack.svg",
+      "sha256": "5d2939ae33581b2972bf3a676964de17d9ba648e07dc68e041970b6bf25774e4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5d2939ae33581b2972bf3a676964de17d9ba648e07dc68e041970b6bf25774e4"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-dash.svg",
+      "sha256": "e1433d1693584698443dc9c54b469f3c5442e35fc4a32a2b7bebcbc66b7af6ea",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e1433d1693584698443dc9c54b469f3c5442e35fc4a32a2b7bebcbc66b7af6ea"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-hero.svg",
+      "path": "game/docs/sources/characters/kael/art/source/kael-hero.svg",
+      "sha256": "45fb38bb982d7992b4aeced6c35ae81cdb765a67a6674584294709f54ce0afaf",
+      "action": "move-editable-source",
+      "currentSha256": "45fb38bb982d7992b4aeced6c35ae81cdb765a67a6674584294709f54ce0afaf"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-idle-a.svg",
+      "sha256": "2615c5480ee3878f4ac9a04b915414104f3760210d629818e7f1b4f39adbe828",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "2615c5480ee3878f4ac9a04b915414104f3760210d629818e7f1b4f39adbe828"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-idle-alt.svg",
+      "sha256": "1fbd7d39606624f2326f3867de871050b5f2f729369a4a0e3a0c52a5e2d7e8bc",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1fbd7d39606624f2326f3867de871050b5f2f729369a4a0e3a0c52a5e2d7e8bc"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-portrait.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-portrait.svg",
+      "sha256": "bd69a6010279744d75f6841ef469154871d34a341c6d47e0406486a329b5194c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "bd69a6010279744d75f6841ef469154871d34a341c6d47e0406486a329b5194c"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-attack-release.svg",
+      "sha256": "35a09945e253213de2bd2a75bf3e80d989d56bce58f3e030fb3dea3896b79394",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "35a09945e253213de2bd2a75bf3e80d989d56bce58f3e030fb3dea3896b79394"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-attack-windup.svg",
+      "sha256": "5b3e90f3da2eb63fb3b5e4646cead7c4657063037985467b141e814a37007a4d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5b3e90f3da2eb63fb3b5e4646cead7c4657063037985467b141e814a37007a4d"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-attack.svg",
+      "sha256": "3ab3401e93cbafece9690fd8e57a5b49232066a6e1502639bef2b5da55fd3f8b",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3ab3401e93cbafece9690fd8e57a5b49232066a6e1502639bef2b5da55fd3f8b"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-dash.svg",
+      "sha256": "f4b58a1a4a6f7ca91997bc28ade993f722063bbf907b8aa64603699393f8252e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f4b58a1a4a6f7ca91997bc28ade993f722063bbf907b8aa64603699393f8252e"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-idle-a.svg",
+      "sha256": "ad2135c1169bb93012e2fc7d04f23b4dd62f78ff88418c8c55b9cd09d8d3a5af",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ad2135c1169bb93012e2fc7d04f23b4dd62f78ff88418c8c55b9cd09d8d3a5af"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-idle-alt.svg",
+      "sha256": "c507132a2805334b410d949d9d1972675f761ec223b2d0e2ac332ab9acf37950",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c507132a2805334b410d949d9d1972675f761ec223b2d0e2ac332ab9acf37950"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-skill.svg",
+      "sha256": "67ddac87595790ae2c050a951830e9b2430875fc6869076c02552ac9104f196a",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "67ddac87595790ae2c050a951830e9b2430875fc6869076c02552ac9104f196a"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-walk-a.svg",
+      "sha256": "b28912c75dd27a2567c61bdc15ec2d380231002676a4d5553f357f3e4d372a4f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b28912c75dd27a2567c61bdc15ec2d380231002676a4d5553f357f3e4d372a4f"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-side-walk-b.svg",
+      "sha256": "d28940952e2a49a1a58c14c395f40ee86c5e3f646eda7d867d2714bfd8880a31",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d28940952e2a49a1a58c14c395f40ee86c5e3f646eda7d867d2714bfd8880a31"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-side.svg",
+      "path": "game/docs/sources/characters/kael/art/source/kael-side.svg",
+      "sha256": "18fd56c8a08580f1b0e4019c4bc49df1a505bd91036efd089287d8599f1aca53",
+      "action": "move-editable-source",
+      "currentSha256": "18fd56c8a08580f1b0e4019c4bc49df1a505bd91036efd089287d8599f1aca53"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-skill.svg",
+      "sha256": "ce0760e2dfc77f037f6c08a9352bcf2fab6f5e760de53b791d7650e33b74e9f6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ce0760e2dfc77f037f6c08a9352bcf2fab6f5e760de53b791d7650e33b74e9f6"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-walk-a.svg",
+      "sha256": "9b320e5bc8b7f694ccd24625ce1d8824f142ced5c183bbc553aac98b01e3e126",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9b320e5bc8b7f694ccd24625ce1d8824f142ced5c183bbc553aac98b01e3e126"
+    },
+    {
+      "previousPath": "game/characters/kael/art/runtime/kael-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/kael/kael-walk-b.svg",
+      "sha256": "e5005c071047aaa5964121db5e81ad40679b8488dfa7898dbb3a8a99d0be0b23",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e5005c071047aaa5964121db5e81ad40679b8488dfa7898dbb3a8a99d0be0b23"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-attack-release.svg",
+      "sha256": "965b040726e7fb447992875cced4a7bfa1399c3d748e8441868e9329c073e267",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "965b040726e7fb447992875cced4a7bfa1399c3d748e8441868e9329c073e267"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-attack-windup.svg",
+      "sha256": "65cd48e6277959e51be2a9233af22817d014294cb4150f82c2663adb20ec1f6c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "65cd48e6277959e51be2a9233af22817d014294cb4150f82c2663adb20ec1f6c"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-attack.svg",
+      "sha256": "49ee395eb8d0671c3fd9a17de6758e59e1010a5a41a5d5ae8d499a26541d9e12",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "49ee395eb8d0671c3fd9a17de6758e59e1010a5a41a5d5ae8d499a26541d9e12"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-dash.svg",
+      "sha256": "420feb092c4db777f5a6e8efd8af34fe4fa14ef3974e0111a38007d96347d923",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "420feb092c4db777f5a6e8efd8af34fe4fa14ef3974e0111a38007d96347d923"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-glaive.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-glaive.svg",
+      "sha256": "a346d7c51392f3680ecaf36b343e68898e56940daae2f20a05191f4722f0df25",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "a346d7c51392f3680ecaf36b343e68898e56940daae2f20a05191f4722f0df25"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-hero.svg",
+      "path": "game/docs/sources/characters/luna/art/source/luna-hero.svg",
+      "sha256": "907e249853c2a6d4f6eabf73c630d33a1bd614281eea0ebaec52e4d53e2a493c",
+      "action": "move-editable-source",
+      "currentSha256": "907e249853c2a6d4f6eabf73c630d33a1bd614281eea0ebaec52e4d53e2a493c"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-idle-a.svg",
+      "sha256": "95753369aaea371199190d19391fa21d71f2a69ee1b7ef13338e4e88b3015a76",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "95753369aaea371199190d19391fa21d71f2a69ee1b7ef13338e4e88b3015a76"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-idle-alt.svg",
+      "sha256": "371420df1508f088cd4492d91798a93e9c1899403aa000f90c108340f79d0559",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "371420df1508f088cd4492d91798a93e9c1899403aa000f90c108340f79d0559"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-attack-release.svg",
+      "sha256": "e2c775a551149499505d7388be485059a4e6a84116077631b90fa8e224360e98",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e2c775a551149499505d7388be485059a4e6a84116077631b90fa8e224360e98"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-attack-windup.svg",
+      "sha256": "f38596bcb33d5ac8d2f0505316a417108b8fc14bc94dc01f24ff534fbfcf6b38",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f38596bcb33d5ac8d2f0505316a417108b8fc14bc94dc01f24ff534fbfcf6b38"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-attack.svg",
+      "sha256": "955689ef7634f854c471689d00f73aef19c116989ae201aa3d55c7b43ee9af19",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "955689ef7634f854c471689d00f73aef19c116989ae201aa3d55c7b43ee9af19"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-dash.svg",
+      "sha256": "50f84c07e1c379f4f76d4d184d5f9dd13201adb8051a3a719ac1b094a6c79bb6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "50f84c07e1c379f4f76d4d184d5f9dd13201adb8051a3a719ac1b094a6c79bb6"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-idle-a.svg",
+      "sha256": "1fdf653061b64506e90ba501461316507fd8f74593fe74dee29253c70536e237",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1fdf653061b64506e90ba501461316507fd8f74593fe74dee29253c70536e237"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-idle-alt.svg",
+      "sha256": "dd81181f017515d8d92ed6772bdb0c1c4471754348d7633e5fdd4cb1a00f33d2",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "dd81181f017515d8d92ed6772bdb0c1c4471754348d7633e5fdd4cb1a00f33d2"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-skill.svg",
+      "sha256": "587436917f9f9102e9a916de00dc8ec1d0f9fac0c253b2d9f460f885144e5704",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "587436917f9f9102e9a916de00dc8ec1d0f9fac0c253b2d9f460f885144e5704"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-walk-a.svg",
+      "sha256": "c595af8cf7a8b3216c4d007edc9580eac978ac9b7da5e0164f4cf94638a7ac1c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c595af8cf7a8b3216c4d007edc9580eac978ac9b7da5e0164f4cf94638a7ac1c"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-side-walk-b.svg",
+      "sha256": "e4bfc89dbe52814ca79d5109e51352d2adc95a975331f007f26ffb250c9c2dda",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e4bfc89dbe52814ca79d5109e51352d2adc95a975331f007f26ffb250c9c2dda"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-side.svg",
+      "path": "game/docs/sources/characters/luna/art/source/luna-side.svg",
+      "sha256": "f4862b0e34bbb9d71c3e5f3353a5b58e6d820b9d5265292c8ef3c1d7f8b6b126",
+      "action": "move-editable-source",
+      "currentSha256": "f4862b0e34bbb9d71c3e5f3353a5b58e6d820b9d5265292c8ef3c1d7f8b6b126"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-skill.svg",
+      "sha256": "763293a4ceef8f9da59ad681fae22ad8a0daa61d763aa971efa2f92d416387b1",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "763293a4ceef8f9da59ad681fae22ad8a0daa61d763aa971efa2f92d416387b1"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-walk-a.svg",
+      "sha256": "3ed8ff460dfdfad178b672d676fa6616143665fff1072fee9da0b76c2d055566",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3ed8ff460dfdfad178b672d676fa6616143665fff1072fee9da0b76c2d055566"
+    },
+    {
+      "previousPath": "game/characters/luna/art/runtime/luna-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/luna/luna-walk-b.svg",
+      "sha256": "1a3e7de59c52303f3759f34d1e80af8234e35f3eda38c1f67431928a2665701b",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1a3e7de59c52303f3759f34d1e80af8234e35f3eda38c1f67431928a2665701b"
+    },
+    {
+      "previousPath": "game/characters/luna/manifest.json",
+      "path": "game/docs/sources/characters/luna/manifest.json",
+      "sha256": "e8e66d47d7763bd077a0d5ecbd9c3d9d2b3214e80cc92c0b073c0a472f9577f8",
+      "action": "move",
+      "currentSha256": "e3f8007c703903e930374b1fcb9d111dbe8943cfd7f343a98c9b2d0ca658ea02",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-128.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-128.png",
+      "sha256": "6bbf029d8256bbf0a8df14fff15f1949b0c3b7338cb4efcc3a5edbd3fc98d8e2",
+      "action": "move",
+      "currentSha256": "6bbf029d8256bbf0a8df14fff15f1949b0c3b7338cb4efcc3a5edbd3fc98d8e2"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-64.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-64.png",
+      "sha256": "3e92cbde30b5d9c23832a89fc0726693d278c3f1e6c26ae392a52b00f5c1f390",
+      "action": "move",
+      "currentSha256": "3e92cbde30b5d9c23832a89fc0726693d278c3f1e6c26ae392a52b00f5c1f390"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-clean-128.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-clean-128.png",
+      "sha256": "1ffdfd5e05dd6b88e54586a82a81dac9deea1cef0e067ef7f2071c20b3b0215c",
+      "action": "move",
+      "currentSha256": "1ffdfd5e05dd6b88e54586a82a81dac9deea1cef0e067ef7f2071c20b3b0215c"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-clean-64.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-clean-64.png",
+      "sha256": "dab15971f900b787648640ecc44fa7d3aed45806bfe1577e139673e164bf0662",
+      "action": "move",
+      "currentSha256": "dab15971f900b787648640ecc44fa7d3aed45806bfe1577e139673e164bf0662"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-clean-review-dark.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-clean-review-dark.png",
+      "sha256": "921ce2e4044ac60ba4a4c9255de768147a3b984fb377052bdaf7b4961294dc33",
+      "action": "move",
+      "currentSha256": "921ce2e4044ac60ba4a4c9255de768147a3b984fb377052bdaf7b4961294dc33"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-clean-review-light.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-clean-review-light.png",
+      "sha256": "08d912b4b5233af751a199036ff8e9a58dd9a393191926f8d5fed66b7dd76e7a",
+      "action": "move",
+      "currentSha256": "08d912b4b5233af751a199036ff8e9a58dd9a393191926f8d5fed66b7dd76e7a"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-clean.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-clean.png",
+      "sha256": "ec7e81712ab63de7e8d886e5b8c8780a1b64c9a3a8b5025bdca39abe9bc7b85e",
+      "action": "move",
+      "currentSha256": "ec7e81712ab63de7e8d886e5b8c8780a1b64c9a3a8b5025bdca39abe9bc7b85e"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-review-dark.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-review-dark.png",
+      "sha256": "0493b882b809de20a2e29ccd1dbb60a6f50ea9bba7f8d23518f4e627c12978ee",
+      "action": "move",
+      "currentSha256": "0493b882b809de20a2e29ccd1dbb60a6f50ea9bba7f8d23518f4e627c12978ee"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-review-light.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-review-light.png",
+      "sha256": "4b800f002304b47387e5f28a812e07dd2f041923d745a824202f0a8b192fd12b",
+      "action": "move",
+      "currentSha256": "4b800f002304b47387e5f28a812e07dd2f041923d745a824202f0a8b192fd12b"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1-source.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1-source.png",
+      "sha256": "39dc70934875f120e99e57dce6f7a9fd4e1d9c180cee299fb1ee796b4396613e",
+      "action": "move",
+      "currentSha256": "39dc70934875f120e99e57dce6f7a9fd4e1d9c180cee299fb1ee796b4396613e"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1.png",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1.png",
+      "sha256": "0bb68a01965c654334306f51a7759cb3d851952d02765c8324aa372a4e9b3976",
+      "action": "move",
+      "currentSha256": "0bb68a01965c654334306f51a7759cb3d851952d02765c8324aa372a4e9b3976"
+    },
+    {
+      "previousPath": "game/characters/rover/art/concept/rover-idle-v1.submitted.txt",
+      "path": "game/docs/sources/characters/rover/art/concept/rover-idle-v1.submitted.txt",
+      "sha256": "213ec7aae92d9b274fa8817a61579d46cfff0cb2768fcc2373149b50f0d11e40",
+      "action": "move",
+      "currentSha256": "213ec7aae92d9b274fa8817a61579d46cfff0cb2768fcc2373149b50f0d11e40"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-attack-release.svg",
+      "sha256": "4eed1f58d836aaeb93ce0fdf8bba7836d6c1818bd94fe1934d6cb010837c2649",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "4eed1f58d836aaeb93ce0fdf8bba7836d6c1818bd94fe1934d6cb010837c2649"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-attack-windup.svg",
+      "sha256": "1b2e94942883b1b23d6f7ccca0adaa72a50fdaab739421a087523d573b6ca9ab",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1b2e94942883b1b23d6f7ccca0adaa72a50fdaab739421a087523d573b6ca9ab"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-attack.svg",
+      "sha256": "3bcebcb777063a4ec41e7bf93671ba6e230ba4cb959748520f3699b4718400db",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3bcebcb777063a4ec41e7bf93671ba6e230ba4cb959748520f3699b4718400db"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-dash.svg",
+      "sha256": "6ff548f176f7246d07e1844804590946ada94f4996e11d9197e0d7d23ac69466",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6ff548f176f7246d07e1844804590946ada94f4996e11d9197e0d7d23ac69466"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-hero.svg",
+      "path": "game/docs/sources/characters/rover/art/source/rover-hero.svg",
+      "sha256": "f17a36c720a6bb342ec635344b97c106dfe48179a78e33b97117375a91866346",
+      "action": "move-editable-source",
+      "currentSha256": "f17a36c720a6bb342ec635344b97c106dfe48179a78e33b97117375a91866346"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-idle-a.svg",
+      "sha256": "2534395b8f37a295424a758e1e33578fdaa92681f6b77df0e8ad48a892f52781",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "2534395b8f37a295424a758e1e33578fdaa92681f6b77df0e8ad48a892f52781"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-idle-alt.svg",
+      "sha256": "fc6014ff812777a1676467c8f5966c6f58fd426ca7706670c5403c74a209e1e8",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "fc6014ff812777a1676467c8f5966c6f58fd426ca7706670c5403c74a209e1e8"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-attack-release.svg",
+      "sha256": "b042f95e23b1d5dfb793bdfb83eab0817f609849d9b95f83d6cad0deeb41024c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b042f95e23b1d5dfb793bdfb83eab0817f609849d9b95f83d6cad0deeb41024c"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-attack-windup.svg",
+      "sha256": "9b8467db0b4d1f5bc53c30f926eff43f35bfb6e1369c009f3788cf75913a2722",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9b8467db0b4d1f5bc53c30f926eff43f35bfb6e1369c009f3788cf75913a2722"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-attack.svg",
+      "sha256": "8e05767775ec1e9bb7b3b7721f949711ba6adcbecc8a644df3c148d984d6a45f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8e05767775ec1e9bb7b3b7721f949711ba6adcbecc8a644df3c148d984d6a45f"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-dash.svg",
+      "sha256": "a50780991f8134c3c47f4cc3c9a5adb8829895c876373732a69a204860416823",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "a50780991f8134c3c47f4cc3c9a5adb8829895c876373732a69a204860416823"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-idle-a.svg",
+      "sha256": "772d16acafd40d30b68e9e420d0578a282c643950425ec70e0c5c00b374d4c9a",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "772d16acafd40d30b68e9e420d0578a282c643950425ec70e0c5c00b374d4c9a"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-idle-alt.svg",
+      "sha256": "71df4b2c0a6d6b3c578d8b067e39c8d43c92db59a8926ea021710513c2e33ad5",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "71df4b2c0a6d6b3c578d8b067e39c8d43c92db59a8926ea021710513c2e33ad5"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-skill.svg",
+      "sha256": "5cb2749fcd41488f5b0d62a97369b0d7a8b09b47f94a64a8043b69326d6102ef",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5cb2749fcd41488f5b0d62a97369b0d7a8b09b47f94a64a8043b69326d6102ef"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-walk-a.svg",
+      "sha256": "2e6a5fa18f96c0c541c079d7a152249df2d617fcd6c39660353672fa9397be10",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "2e6a5fa18f96c0c541c079d7a152249df2d617fcd6c39660353672fa9397be10"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-side-walk-b.svg",
+      "sha256": "c6a1560ba01ea8c9eef3aac4f5b1ea1edff4f2c896b541d8c6ecee6ed9b646a6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c6a1560ba01ea8c9eef3aac4f5b1ea1edff4f2c896b541d8c6ecee6ed9b646a6"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-side.svg",
+      "path": "game/docs/sources/characters/rover/art/source/rover-side.svg",
+      "sha256": "4485004c71eb730d41d8a5afcbaa5b1e72c4439727296e8fa70eda5fa4347fbe",
+      "action": "move-editable-source",
+      "currentSha256": "4485004c71eb730d41d8a5afcbaa5b1e72c4439727296e8fa70eda5fa4347fbe"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-skill.svg",
+      "sha256": "5330ad5a00839ee276e32be464dd1e428d594933a8c6e123fea6608477b12ef0",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5330ad5a00839ee276e32be464dd1e428d594933a8c6e123fea6608477b12ef0"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-walk-a.svg",
+      "sha256": "c8810410eb9645f0c04e89c11a05649a5e12bd54baeb72010c83d3a5b8d2a154",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "c8810410eb9645f0c04e89c11a05649a5e12bd54baeb72010c83d3a5b8d2a154"
+    },
+    {
+      "previousPath": "game/characters/rover/art/runtime/rover-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/rover/rover-walk-b.svg",
+      "sha256": "d0037097c2e0919c52f4ddcf831e84ca84222e29302f6864f7790a542399a852",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d0037097c2e0919c52f4ddcf831e84ca84222e29302f6864f7790a542399a852"
+    },
+    {
+      "previousPath": "game/characters/rover/manifest.json",
+      "path": "game/docs/sources/characters/rover/manifest.json",
+      "sha256": "ae292e3186d3e011e44fcd4b198ec86307b85d176a1e414339e32c1c4b9466f0",
+      "action": "move",
+      "currentSha256": "07090a670de04deeba7ae8eac9a622b8fc07810109adc7a2e16b4f67d255e75a",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-128.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-128.png",
+      "sha256": "60e46bf40ca9bac8efa619c3df2703a8c7056093a73a06a85a1011b6e4127d46",
+      "action": "move",
+      "currentSha256": "60e46bf40ca9bac8efa619c3df2703a8c7056093a73a06a85a1011b6e4127d46"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-64.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-64.png",
+      "sha256": "cb30b3ffbebd9d54a556793e19daf78429065919bb2a6522c3d485a035f497b0",
+      "action": "move",
+      "currentSha256": "cb30b3ffbebd9d54a556793e19daf78429065919bb2a6522c3d485a035f497b0"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-clean-128.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-clean-128.png",
+      "sha256": "6b7fcd5bdf96fa4b6b1e51d0645b3e6a773ce20c3c170b446fd79a4e8e015aac",
+      "action": "move",
+      "currentSha256": "6b7fcd5bdf96fa4b6b1e51d0645b3e6a773ce20c3c170b446fd79a4e8e015aac"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-clean-64.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-clean-64.png",
+      "sha256": "d0996f1b174c8072daafb74f685a751b26fec764fa093567f2ed9e3ab4780eff",
+      "action": "move",
+      "currentSha256": "d0996f1b174c8072daafb74f685a751b26fec764fa093567f2ed9e3ab4780eff"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-clean-width128.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-clean-width128.png",
+      "sha256": "17288d9e8ebab91090e50191f617cbf3b40ffa14a66e908a480fab06a3704ac6",
+      "action": "move",
+      "currentSha256": "17288d9e8ebab91090e50191f617cbf3b40ffa14a66e908a480fab06a3704ac6"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-clean-width64.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-clean-width64.png",
+      "sha256": "b91be8499a386b12c33e3f35e3f29683069e2dbff9798608119ad4063c4d8907",
+      "action": "move",
+      "currentSha256": "b91be8499a386b12c33e3f35e3f29683069e2dbff9798608119ad4063c4d8907"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-clean.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-clean.png",
+      "sha256": "fbb05a1eb664d258bf672028841dbd594e36c15ec821edecdcf5a14274a4e266",
+      "action": "move",
+      "currentSha256": "fbb05a1eb664d258bf672028841dbd594e36c15ec821edecdcf5a14274a4e266"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1-source.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1-source.png",
+      "sha256": "dcd7128bb22a6324abdde708fe0779557b87ebcd30f3ad286b993685bcb9d67d",
+      "action": "move",
+      "currentSha256": "dcd7128bb22a6324abdde708fe0779557b87ebcd30f3ad286b993685bcb9d67d"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/concept/scavenger-idle-v1.png",
+      "path": "game/docs/sources/characters/scavenger/art/concept/scavenger-idle-v1.png",
+      "sha256": "b0e845b14fd34a17d70efcee0a81238087b346107374c1feb3f68fd6a921f324",
+      "action": "move",
+      "currentSha256": "b0e845b14fd34a17d70efcee0a81238087b346107374c1feb3f68fd6a921f324"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-release.svg",
+      "sha256": "75ee8f3c18d491d7b73cecb2ee88f2307d04b05847838769b5c8d31781d9ed9b",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "75ee8f3c18d491d7b73cecb2ee88f2307d04b05847838769b5c8d31781d9ed9b"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-windup.svg",
+      "sha256": "23a010ecbeb3fb1c4eeedc705c1b1e651bd4696018b6ed96afa25f1cc0d01f49",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "23a010ecbeb3fb1c4eeedc705c1b1e651bd4696018b6ed96afa25f1cc0d01f49"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack.svg",
+      "sha256": "194d8d7f65642deeb7657f46352c3df74d6873d4fd7491677de6f68a728e7f4f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "194d8d7f65642deeb7657f46352c3df74d6873d4fd7491677de6f68a728e7f4f"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-dash.svg",
+      "sha256": "cbb4137b4caf9cc6fb6a1f35c276799cf12e796756845f05c2c1700e5971c3cd",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "cbb4137b4caf9cc6fb6a1f35c276799cf12e796756845f05c2c1700e5971c3cd"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-hero.svg",
+      "path": "game/docs/sources/characters/scavenger/art/source/scavenger-hero.svg",
+      "sha256": "3d1d41866bc2849ce1ac1dab89f63050ecedc933df89763cd2c163bd051a2014",
+      "action": "move-editable-source",
+      "currentSha256": "3d1d41866bc2849ce1ac1dab89f63050ecedc933df89763cd2c163bd051a2014"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-a.svg",
+      "sha256": "88bdcefdb7a5f02ba868dd2bf4bcf8006f820f845eb5cbcd05e7c79929f9974f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "88bdcefdb7a5f02ba868dd2bf4bcf8006f820f845eb5cbcd05e7c79929f9974f"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-alt.svg",
+      "sha256": "32ef1a500cb1118a4048ef9f45aee2a2c503e36f669d437cc8c92c70140b745e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "32ef1a500cb1118a4048ef9f45aee2a2c503e36f669d437cc8c92c70140b745e"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-release.svg",
+      "sha256": "6df10b656c619af942461447946b946b1504fbed0078f0d1dbd8866e86078271",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6df10b656c619af942461447946b946b1504fbed0078f0d1dbd8866e86078271"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-windup.svg",
+      "sha256": "bdc4ecd0c33c490d7de38afc9677807a916c59cedf62a9cf283dcc41666199c6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "bdc4ecd0c33c490d7de38afc9677807a916c59cedf62a9cf283dcc41666199c6"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack.svg",
+      "sha256": "2d36dd48a4e97bc6b975cb0157aa50c0c4583a5272fe7e56d8edb88b51d9eb4d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "2d36dd48a4e97bc6b975cb0157aa50c0c4583a5272fe7e56d8edb88b51d9eb4d"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-dash.svg",
+      "sha256": "f4d4a3357cae3b236f2f1311958a1b1afa7bffa6a15cf79e7f9400e16a6846f5",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f4d4a3357cae3b236f2f1311958a1b1afa7bffa6a15cf79e7f9400e16a6846f5"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-a.svg",
+      "sha256": "4b7ba52d007ae5b004b18fa848af8c359b667ce442e5d1cd03104efe15c93e2d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "4b7ba52d007ae5b004b18fa848af8c359b667ce442e5d1cd03104efe15c93e2d"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-alt.svg",
+      "sha256": "358d9756500d94714c0269b33fa2ca32eeef852b541f08755ed51fccbc94f7ed",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "358d9756500d94714c0269b33fa2ca32eeef852b541f08755ed51fccbc94f7ed"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-skill.svg",
+      "sha256": "b237660ff082578881f5d6752759748007c944a856ee6a052aeadd8556b21f21",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b237660ff082578881f5d6752759748007c944a856ee6a052aeadd8556b21f21"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-a.svg",
+      "sha256": "9cebbdea5f53786320dbb2df11f30ae377e51733c0d272249f990e777bf9744f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9cebbdea5f53786320dbb2df11f30ae377e51733c0d272249f990e777bf9744f"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-b.svg",
+      "sha256": "78052cab827480485d65b1e2fc4af0ae91c2cb0baabf0e960e42f4936f2ca6ea",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "78052cab827480485d65b1e2fc4af0ae91c2cb0baabf0e960e42f4936f2ca6ea"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-side.svg",
+      "path": "game/docs/sources/characters/scavenger/art/source/scavenger-side.svg",
+      "sha256": "ddf83494e645bd4bba775167392b82d6c477c5d32b39a37ddfeb3f85a0d78b44",
+      "action": "move-editable-source",
+      "currentSha256": "ddf83494e645bd4bba775167392b82d6c477c5d32b39a37ddfeb3f85a0d78b44"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-skill.svg",
+      "sha256": "262d7819e4dcaf05db9f3303fa9efcaeb0fff0b6fa865e3d3c5630cc38c24c78",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "262d7819e4dcaf05db9f3303fa9efcaeb0fff0b6fa865e3d3c5630cc38c24c78"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-a.svg",
+      "sha256": "1c72f758aa92217a31641ec4d0f6cd0739930e0666d24c27010f106a7700a5ea",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1c72f758aa92217a31641ec4d0f6cd0739930e0666d24c27010f106a7700a5ea"
+    },
+    {
+      "previousPath": "game/characters/scavenger/art/runtime/scavenger-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-b.svg",
+      "sha256": "ff8092268246cda97687ad7f58003cacaed5d888995e1cc1bdd0f773221b4cdc",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ff8092268246cda97687ad7f58003cacaed5d888995e1cc1bdd0f773221b4cdc"
+    },
+    {
+      "previousPath": "game/characters/scavenger/manifest.json",
+      "path": "game/docs/sources/characters/scavenger/manifest.json",
+      "sha256": "17f99574165d3150731b6c0c8c7bc8361eeb246d27fcb54d04d32e19822838a8",
+      "action": "move",
+      "currentSha256": "90a133ad42a15badc6d55e0811a24e068b97a399a0838b3960b37ac32ffcc6f7",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/sf/art/concept/sf-idle-v1-128.png",
+      "path": "game/docs/sources/characters/sf/art/concept/sf-idle-v1-128.png",
+      "sha256": "d6ba871b92a8c8c76371779f0e9f4cc44b3a4408d92ad23bffc1941a199794cd",
+      "action": "move",
+      "currentSha256": "d6ba871b92a8c8c76371779f0e9f4cc44b3a4408d92ad23bffc1941a199794cd"
+    },
+    {
+      "previousPath": "game/characters/sf/art/concept/sf-idle-v1-64.png",
+      "path": "game/docs/sources/characters/sf/art/concept/sf-idle-v1-64.png",
+      "sha256": "51dba3bb94b6e103995affd692cb1cbe517a77f99c60f0fd52c07894d1c62fa8",
+      "action": "move",
+      "currentSha256": "51dba3bb94b6e103995affd692cb1cbe517a77f99c60f0fd52c07894d1c62fa8"
+    },
+    {
+      "previousPath": "game/characters/sf/art/concept/sf-idle-v1-source.png",
+      "path": "game/docs/sources/characters/sf/art/concept/sf-idle-v1-source.png",
+      "sha256": "114aee4b24d65254014248f1a5901fe66d79a422fb93fdc9b14fc2ea2ff8a00d",
+      "action": "move",
+      "currentSha256": "114aee4b24d65254014248f1a5901fe66d79a422fb93fdc9b14fc2ea2ff8a00d"
+    },
+    {
+      "previousPath": "game/characters/sf/art/concept/sf-idle-v1.png",
+      "path": "game/docs/sources/characters/sf/art/concept/sf-idle-v1.png",
+      "sha256": "24f1630440870f06e9ce45ea9703e97616eb907a04c5e411ba519e7804249c6b",
+      "action": "move",
+      "currentSha256": "24f1630440870f06e9ce45ea9703e97616eb907a04c5e411ba519e7804249c6b"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-attack-release.svg",
+      "sha256": "9b360d50644659e7b3a0f10080e7854fd4fc6de4e33f4c8130087c8d93c73d68",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9b360d50644659e7b3a0f10080e7854fd4fc6de4e33f4c8130087c8d93c73d68"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-attack-windup.svg",
+      "sha256": "a9ea0e7ae361f013c92a5b53712052c6a76db2544448bdceb62352fafcd283c0",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "a9ea0e7ae361f013c92a5b53712052c6a76db2544448bdceb62352fafcd283c0"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-attack.svg",
+      "sha256": "baaff41f8ca01d9300a64db791380dd490550e60352e19df0130472d1ed6cd13",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "baaff41f8ca01d9300a64db791380dd490550e60352e19df0130472d1ed6cd13"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-dash.svg",
+      "sha256": "f9f09fa7bcb233ed70c671c01b27d52c2879724dcefbb4d19b87347f2c80363f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "f9f09fa7bcb233ed70c671c01b27d52c2879724dcefbb4d19b87347f2c80363f"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-hero.svg",
+      "path": "game/docs/sources/characters/sf/art/source/sf-hero.svg",
+      "sha256": "84710d5def2f986e62ff64ee0d15fac311c9fe39ca52565ef355aa7521f1f62a",
+      "action": "move-editable-source",
+      "currentSha256": "84710d5def2f986e62ff64ee0d15fac311c9fe39ca52565ef355aa7521f1f62a"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-idle-a.svg",
+      "sha256": "8f3f107f47a7399fa3d65e0ac58d9b7d767c3954e284aca361243e96580dbea5",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8f3f107f47a7399fa3d65e0ac58d9b7d767c3954e284aca361243e96580dbea5"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-idle-alt.svg",
+      "sha256": "2f6e17aa04734b1a1ac1b02dd61ae49c325dd937c92b85a079718c91dd56ce5d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "2f6e17aa04734b1a1ac1b02dd61ae49c325dd937c92b85a079718c91dd56ce5d"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-attack-release.svg",
+      "sha256": "209419cdcfc0f789b2e0404108d0f66d94ed57437bc930190481a8b880dcb720",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "209419cdcfc0f789b2e0404108d0f66d94ed57437bc930190481a8b880dcb720"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-attack-windup.svg",
+      "sha256": "1cf769ff8a7b48f5639fa07869b966680190b1ff17f39fb3d456360e0d22b38c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1cf769ff8a7b48f5639fa07869b966680190b1ff17f39fb3d456360e0d22b38c"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-attack.svg",
+      "sha256": "1db77ba5c2e02282053c21db111da010ac17cb6f5b524813d9d934c716f84f81",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1db77ba5c2e02282053c21db111da010ac17cb6f5b524813d9d934c716f84f81"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-dash.svg",
+      "sha256": "4d06ba952425a234592b261b36a2f248d241bfa808d8643de9e14459a8fb87e5",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "4d06ba952425a234592b261b36a2f248d241bfa808d8643de9e14459a8fb87e5"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-idle-a.svg",
+      "sha256": "6ca7496212b0bf459f1d18b4b96592314055dd2f23da8b59eef533abc0cf1cfa",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6ca7496212b0bf459f1d18b4b96592314055dd2f23da8b59eef533abc0cf1cfa"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-idle-alt.svg",
+      "sha256": "3da4a20df57ac1068aa7fae68b00118c8de3929de71a42c2df07c40ab4d19d00",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3da4a20df57ac1068aa7fae68b00118c8de3929de71a42c2df07c40ab4d19d00"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-skill.svg",
+      "sha256": "78a61c5f1ec4a7eff99bc84ab18c48efe13fec879f622dbbd157e8fe50e2a1b3",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "78a61c5f1ec4a7eff99bc84ab18c48efe13fec879f622dbbd157e8fe50e2a1b3"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-walk-a.svg",
+      "sha256": "8a143687875647fb623b3342f77f21d48a5146d7d75aef24b6be6f9c3ccceecd",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8a143687875647fb623b3342f77f21d48a5146d7d75aef24b6be6f9c3ccceecd"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-side-walk-b.svg",
+      "sha256": "ea68d5c6129dfeb99934c8a68a628ecc84b4fc50d37d0795bebe925a39d3d745",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ea68d5c6129dfeb99934c8a68a628ecc84b4fc50d37d0795bebe925a39d3d745"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-side.svg",
+      "path": "game/docs/sources/characters/sf/art/source/sf-side.svg",
+      "sha256": "7708b06f56a41849ffd525cdb2aa3310346a7b4082253701d8eb60e14d8582de",
+      "action": "move-editable-source",
+      "currentSha256": "7708b06f56a41849ffd525cdb2aa3310346a7b4082253701d8eb60e14d8582de"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-skill.svg",
+      "sha256": "b14e16450bcbc011ae00833bafda7b56c969fca5a71472406cf0143908bef67a",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b14e16450bcbc011ae00833bafda7b56c969fca5a71472406cf0143908bef67a"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-walk-a.svg",
+      "sha256": "6c4617aafa1f1a775bd7cc78ec9122e8cc338f78f95f15c4a03bc683d3e08309",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6c4617aafa1f1a775bd7cc78ec9122e8cc338f78f95f15c4a03bc683d3e08309"
+    },
+    {
+      "previousPath": "game/characters/sf/art/runtime/sf-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/sf/sf-walk-b.svg",
+      "sha256": "d2538f554d74d9d35cad993bf7935994a55353a843e1266ba2a0fcbcb214dede",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d2538f554d74d9d35cad993bf7935994a55353a843e1266ba2a0fcbcb214dede"
+    },
+    {
+      "previousPath": "game/characters/sf/manifest.json",
+      "path": "game/docs/sources/characters/sf/manifest.json",
+      "sha256": "d2fd71ff8b26c01f9ea34b02f24013f5c6220a1f3d2473fbd3fc20aed1ea4dbc",
+      "action": "move",
+      "currentSha256": "8669fa8d0a4f3966106fff3fd618d9902387a3f207f278bfbcc5f745f8b59767",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/tb/art/review/tb-form-review.png",
+      "path": "game/docs/sources/characters/tb/art/review/tb-form-review.png",
+      "sha256": "ddc3c75c283ffa5f4154397e57855515dc47382dfe2283d5562ee7236b5a2edb",
+      "action": "move",
+      "currentSha256": "ddc3c75c283ffa5f4154397e57855515dc47382dfe2283d5562ee7236b5a2edb"
+    },
+    {
+      "previousPath": "game/characters/tb/art/review/tb-poses-review.png",
+      "path": "game/docs/sources/characters/tb/art/review/tb-poses-review.png",
+      "sha256": "641a044d1ff20d02bdb58381c58ef6a6b5f0550d3c9c8dfbd6163600a28e68b4",
+      "action": "move",
+      "currentSha256": "641a044d1ff20d02bdb58381c58ef6a6b5f0550d3c9c8dfbd6163600a28e68b4"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-attack-release.svg",
+      "sha256": "48191a620d00cb3d54bb29b6c4346c5d75e179b3671539228aedcda69793fb0b",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "48191a620d00cb3d54bb29b6c4346c5d75e179b3671539228aedcda69793fb0b"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-attack-windup.svg",
+      "sha256": "e15265cc4442789e0d8d47e56756ca046d235ac6f217697dbff57f60fdde32aa",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "e15265cc4442789e0d8d47e56756ca046d235ac6f217697dbff57f60fdde32aa"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-attack.svg",
+      "sha256": "de6e56ac512ac5e1f9fcf8ed9e02220ec8b23c10ac6fe1f02fcb91b434726e53",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "de6e56ac512ac5e1f9fcf8ed9e02220ec8b23c10ac6fe1f02fcb91b434726e53"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-dash.svg",
+      "sha256": "8a454a13cadc6835e60d9b0d9e0bdcbb28a2be02fcbd5a44b9b6224778c0c547",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8a454a13cadc6835e60d9b0d9e0bdcbb28a2be02fcbd5a44b9b6224778c0c547"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-attack-release.svg",
+      "sha256": "ce67d902b037e063b274aaa75776738b1fa43315130f6a5690e9f08b5865a4b9",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ce67d902b037e063b274aaa75776738b1fa43315130f6a5690e9f08b5865a4b9"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-attack-windup.svg",
+      "sha256": "178590928d3a4e42f3b9ad02c0b656670722491090cbeb98effe30bcedb45a82",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "178590928d3a4e42f3b9ad02c0b656670722491090cbeb98effe30bcedb45a82"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-attack.svg",
+      "sha256": "48cae03899d4637f70599f52383bf90ff8eaacd676471f60efe7984ed30e7bd1",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "48cae03899d4637f70599f52383bf90ff8eaacd676471f60efe7984ed30e7bd1"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-dash.svg",
+      "sha256": "6cf686829a0d87c2a653036a8fdd19bdc165b661e65bd0d8f0f760bddf0fccd4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6cf686829a0d87c2a653036a8fdd19bdc165b661e65bd0d8f0f760bddf0fccd4"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-hero.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-hero.svg",
+      "sha256": "9fbe595080dd4b2f6463e89c0aeee1c256239f691fe414e01bf6d08536e54378",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9fbe595080dd4b2f6463e89c0aeee1c256239f691fe414e01bf6d08536e54378"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-idle-a.svg",
+      "sha256": "9fbe595080dd4b2f6463e89c0aeee1c256239f691fe414e01bf6d08536e54378",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9fbe595080dd4b2f6463e89c0aeee1c256239f691fe414e01bf6d08536e54378"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-idle-alt.svg",
+      "sha256": "77515f539047f755e5164affe6525112ef6e41dc3c798db2b01c4047ff4d272d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "77515f539047f755e5164affe6525112ef6e41dc3c798db2b01c4047ff4d272d"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack-release.svg",
+      "sha256": "8e5e10513c879207ca2162e89ad65dfc0ae901d9cd8be99c8efd811bb1730a29",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8e5e10513c879207ca2162e89ad65dfc0ae901d9cd8be99c8efd811bb1730a29"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack-windup.svg",
+      "sha256": "40cb57f2c595edd4ea21c1383755820694fa8bd763ae123406082124d1df95ab",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "40cb57f2c595edd4ea21c1383755820694fa8bd763ae123406082124d1df95ab"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack.svg",
+      "sha256": "b2e38486267469d5dca749dae0e0d9b4a0ff6f0228ccd1676ca368ee73b37194",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b2e38486267469d5dca749dae0e0d9b4a0ff6f0228ccd1676ca368ee73b37194"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-dash.svg",
+      "sha256": "527992cb33dd820239e4f6597cb45e0e8e5e1208080d71bf45f2d71f9eedbd61",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "527992cb33dd820239e4f6597cb45e0e8e5e1208080d71bf45f2d71f9eedbd61"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-idle-a.svg",
+      "sha256": "8d91069a2185719485d7e9a88bc38e1de8aa8362da94a4b206054475780e52e6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8d91069a2185719485d7e9a88bc38e1de8aa8362da94a4b206054475780e52e6"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-idle-alt.svg",
+      "sha256": "ff5b8cf3d904ddc5f44972cc796d9f7dfcd9186943218f95e998688e6b322679",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ff5b8cf3d904ddc5f44972cc796d9f7dfcd9186943218f95e998688e6b322679"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-skill.svg",
+      "sha256": "9d6364004676527e1fe7ded5d3a1a00e2b46071dd0274690adfd3340bef3be2d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9d6364004676527e1fe7ded5d3a1a00e2b46071dd0274690adfd3340bef3be2d"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-walk-a.svg",
+      "sha256": "b1e6c52eb1e39d3f8a2e0660fb4a480764e338f7a2d1c659f2abc587e9387806",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "b1e6c52eb1e39d3f8a2e0660fb4a480764e338f7a2d1c659f2abc587e9387806"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side-walk-b.svg",
+      "sha256": "d855e0b172e70bc71b95b8faba3a438b02663f916a67397889038f7e4d9216d8",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d855e0b172e70bc71b95b8faba3a438b02663f916a67397889038f7e4d9216d8"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-side.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-side.svg",
+      "sha256": "8d91069a2185719485d7e9a88bc38e1de8aa8362da94a4b206054475780e52e6",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8d91069a2185719485d7e9a88bc38e1de8aa8362da94a4b206054475780e52e6"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-skill.svg",
+      "sha256": "3ee77e70e63c5d983f6371aec72c04d965b8ca364fc760ae3965934c68012cc9",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3ee77e70e63c5d983f6371aec72c04d965b8ca364fc760ae3965934c68012cc9"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-walk-a.svg",
+      "sha256": "cf536a726759f6c6919b803002075e29ef6fb26326278cedb25bc7b93317c0c4",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "cf536a726759f6c6919b803002075e29ef6fb26326278cedb25bc7b93317c0c4"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-demon-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-demon-walk-b.svg",
+      "sha256": "8f20c49fbc96ffad9dde84f9929ee1c867c475a0ff0e267da0bfa9d4bc374cc3",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "8f20c49fbc96ffad9dde84f9929ee1c867c475a0ff0e267da0bfa9d4bc374cc3"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-hero.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-hero.svg",
+      "sha256": "3a181886662e77212f7e151d66f2e6a820a467a86009080f2c6a60415a924c85",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3a181886662e77212f7e151d66f2e6a820a467a86009080f2c6a60415a924c85"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-idle-a.svg",
+      "sha256": "3a181886662e77212f7e151d66f2e6a820a467a86009080f2c6a60415a924c85",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3a181886662e77212f7e151d66f2e6a820a467a86009080f2c6a60415a924c85"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-idle-alt.svg",
+      "sha256": "874c455e7596d83c14dab44fa5606c031ed6c83dcb8d4b712738e09acb20c6e2",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "874c455e7596d83c14dab44fa5606c031ed6c83dcb8d4b712738e09acb20c6e2"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-portrait.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-portrait.svg",
+      "sha256": "6c055b4aa5b0aa4dbac39a1d0c3bb0368b7bfa745af314d4979b4780dd39f7e8",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "6c055b4aa5b0aa4dbac39a1d0c3bb0368b7bfa745af314d4979b4780dd39f7e8"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-attack-release.svg",
+      "sha256": "1bab13389656d40cb7d9503b42802f045ef70df95d2f97820af716dca3c80639",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "1bab13389656d40cb7d9503b42802f045ef70df95d2f97820af716dca3c80639"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-attack-windup.svg",
+      "sha256": "26eeb73abb10882b0dbef116d9fd08e8064472da84d0663f3096b21f401ffd88",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "26eeb73abb10882b0dbef116d9fd08e8064472da84d0663f3096b21f401ffd88"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-attack.svg",
+      "sha256": "3e0079117dfb3231396ca5561d52a47b9088a446060c4a3477cb8ef4588cbf9d",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "3e0079117dfb3231396ca5561d52a47b9088a446060c4a3477cb8ef4588cbf9d"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-dash.svg",
+      "sha256": "bd0bb56092f44a1cec531bd80fe48d59027159c5998f4270d13a2990df8c8a79",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "bd0bb56092f44a1cec531bd80fe48d59027159c5998f4270d13a2990df8c8a79"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-idle-a.svg",
+      "sha256": "9b6eb2870f57d668a9e70d04f0d5d0d8ebc5861783c660140b27296f66366e5f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9b6eb2870f57d668a9e70d04f0d5d0d8ebc5861783c660140b27296f66366e5f"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-idle-alt.svg",
+      "sha256": "455d75a4d955a3dfda2e71f007ccb5ac78e2a7d59794fc1d349a627f45c781da",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "455d75a4d955a3dfda2e71f007ccb5ac78e2a7d59794fc1d349a627f45c781da"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-skill.svg",
+      "sha256": "d4f3f3c971eda642e2ca9000fa69a66e038530a93080327d45cdbbd8cdeaca3e",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "d4f3f3c971eda642e2ca9000fa69a66e038530a93080327d45cdbbd8cdeaca3e"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-walk-a.svg",
+      "sha256": "fe97d9929e539dc52d9b54de28ece4234794d3dc5ba1e5be33fbe64bed221af8",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "fe97d9929e539dc52d9b54de28ece4234794d3dc5ba1e5be33fbe64bed221af8"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side-walk-b.svg",
+      "sha256": "49b6a11a7ab379117c9ce538c8f0c4e6411b5b2374f7cde0c06bf530470f5615",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "49b6a11a7ab379117c9ce538c8f0c4e6411b5b2374f7cde0c06bf530470f5615"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-side.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-side.svg",
+      "sha256": "9b6eb2870f57d668a9e70d04f0d5d0d8ebc5861783c660140b27296f66366e5f",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "9b6eb2870f57d668a9e70d04f0d5d0d8ebc5861783c660140b27296f66366e5f"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-skill.svg",
+      "sha256": "5e6d6a787a188cbf822fdea822d31ce7b877361d194835ad7571c54b2866b28c",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "5e6d6a787a188cbf822fdea822d31ce7b877361d194835ad7571c54b2866b28c"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-walk-a.svg",
+      "sha256": "4a46294731a13102e1ee366fdd99d5b198dd5685dd996b9d669518066798caaa",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "4a46294731a13102e1ee366fdd99d5b198dd5685dd996b9d669518066798caaa"
+    },
+    {
+      "previousPath": "game/characters/tb/art/runtime/tb-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/tb/tb-walk-b.svg",
+      "sha256": "ffc64b30518136c346324a50f4b479fbd6b5547860210ae3e56f3a9616b9f1bf",
+      "action": "consolidate-identical-runtime-output",
+      "currentSha256": "ffc64b30518136c346324a50f4b479fbd6b5547860210ae3e56f3a9616b9f1bf"
+    },
+    {
+      "previousPath": "game/characters/tb/build_art.py",
+      "path": "game/docs/sources/characters/tb/build_art.py",
+      "sha256": "e655efc5fcf679fa7b341228672592c070afd943b87566ac95b239b301d10e3a",
+      "action": "move",
+      "currentSha256": "2011734ea35f72b5e4e33d70f8304e87358151f13fb34c89bac9da456d50f540",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    },
+    {
+      "previousPath": "game/characters/tb/manifest.json",
+      "path": "game/docs/sources/characters/tb/manifest.json",
+      "sha256": "8a9fb3f44694a4f82fea50fb6f6ce62d9b9340418538608a186f8a82f686a934",
+      "action": "move",
+      "currentSha256": "6cdfcef0e0a5eec4074d26c8392e4f67accb7676ff2685df32c4f07f8199a265",
+      "contentUpdate": "Source/output location and regeneration contract; asset generation logic and media bytes are preserved."
+    }
+  ],
+  "sourceFilesRetained": 84,
+  "otherSourceFilesMoved": 68
+}

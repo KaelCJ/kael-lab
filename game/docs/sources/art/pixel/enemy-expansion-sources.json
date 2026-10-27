@@ -1,0 +1,69 @@
+{
+  "recordedOn": "2026-10-27",
+  "pathBase": "repository-root",
+  "basePath": "game/static/dotarogue/assets/art/pixel/",
+  "identityReference": {
+    "publisher": "Blizzard Entertainment",
+    "url": "https://classic.battle.net/war3/neutral/creeps.shtml",
+    "scope": "Warcraft III Frost Revenant and Thunder Lizard identity only; gameplay, shapes and palette adapted for DotaRogue."
+  },
+  "art": "New repository-drawn full-body SVGs, not official portraits, models or extracted game frames.",
+  "assets": [
+    {
+      "file": "frostWraith.svg",
+      "sha256": "1424010451db3bc1cc11904a0edf6a7fcafd92a360d935925dfba5c5c6a15f07",
+      "pose": "base",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "frostWraith-step.svg",
+      "sha256": "a9c7cb89268a302e53cb8d53e7410d12ce4e34ac309c4cbbf21dd2d46c1fb2f7",
+      "pose": "step",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "frostWraith-windup.svg",
+      "sha256": "a6d1fd8152a86722b8f7e20d0c7b11ced89b62ae364d62f3ac3ffef99c31fb2d",
+      "pose": "windup",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "frostWraith-attack.svg",
+      "sha256": "d9fa11cf58e53a007aa9fd934e0c36f5fd5913b8bf6422b06bde75d59b40c9d1",
+      "pose": "attack",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "thunderLizard.svg",
+      "sha256": "db15a4d1a5051b424159d1b4ce8c76cc23702ce5ad088ee3046e12e79340a1e5",
+      "pose": "base",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "thunderLizard-step.svg",
+      "sha256": "0298e19343db4c4bf9b7603a677c1564ac1cb0945afc4bac087ecef152a6cd7e",
+      "pose": "step",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "thunderLizard-windup.svg",
+      "sha256": "fc83bc84e5a93575682f78a8a99167031a6be2ef2c2db6fec290708851e25032",
+      "pose": "windup",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    },
+    {
+      "file": "thunderLizard-attack.svg",
+      "sha256": "12adbc4b4a0b94b961443846d7d2aa7c40c3657c793a19c4eff424b945ef0578",
+      "pose": "attack",
+      "creator": "Kael Lab repository drawing",
+      "format": "48x48 editable SVG pixel blocks"
+    }
+  ]
+}

@@ -1,0 +1,63 @@
+{
+  "id": "conductor",
+  "displayName": "众神之王",
+  "reference": {
+    "heroName": "Zeus",
+    "englishTitle": "Lord of Olympia",
+    "race": "人族（矮人）",
+    "class": "山丘之王／战士",
+    "alias": "Zeus",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-conductor-1",
+      "name": "静电场",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-conductor",
+      "name": "全场雷击",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "runtime": {
+      "source": "art/source/conductor-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/conductor/conductor-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/conductor/conductor-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/conductor/conductor-walk-a.svg", "../../../../static/dotarogue/assets/characters/conductor/conductor-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/conductor/conductor-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/conductor/conductor-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/conductor/conductor-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/conductor/conductor-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/conductor/conductor-skill.svg",
+      "sideSource": "art/source/conductor-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/conductor/conductor-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/conductor/conductor-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/conductor/conductor-side-skill.svg",
+      "format": "svg-poses"
+    },
+    "character": [
+      "conductor.svg",
+      "conductor-step.svg",
+      "conductor-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-conductor.svg",
+      "skill-conductor-1.svg"
+    ],
+    "activeEffect": "effect-conductor.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

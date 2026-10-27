@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 48 48" shape-rendering="crispEdges">
+<title>星环装置</title>
+<path d="M8 2H40L46 8V40L40 46H8L2 40V8Z" fill="#111d28"/><path d="M8 4H40L44 8V40L40 44H8L4 40V8Z" fill="#22333d" stroke="#56626a" stroke-width="2"/><path d="M8 8H40V40H8Z" fill="#172731"/>
+<ellipse cx="24" cy="25" rx="13" ry="7" fill="none" stroke="#6cd8ef" stroke-width="2"/>
+<path d="M24 12L27 17L24 21L21 17Z" fill="#d9fbff" stroke="#0c1720" stroke-width="2"/>
+<path d="M11 25L16 22L20 25L16 28Z" fill="#83e8f1" stroke="#0c1720" stroke-width="2"/>
+<path d="M28 25L32 22L37 25L32 28Z" fill="#83e8f1" stroke="#0c1720" stroke-width="2"/>
+<path d="M24 29L27 33L24 38L21 33Z" fill="#b9f6ff" stroke="#0c1720" stroke-width="2"/>
+<path d="M24 21V29M20 25H28" fill="none" stroke="#efffff" stroke-width="2"/>
+</svg>

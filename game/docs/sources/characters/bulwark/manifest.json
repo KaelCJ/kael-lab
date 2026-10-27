@@ -1,0 +1,63 @@
+{
+  "id": "bulwark",
+  "displayName": "刚背兽",
+  "reference": {
+    "heroName": "Rigwarl",
+    "englishTitle": "Bristleback",
+    "race": "中立（野猪人）",
+    "class": "野猪人战士（设计候选）",
+    "alias": "BB",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-bulwark-1",
+      "name": "刚背",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-bulwark",
+      "name": "刚毛齐射",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "runtime": {
+      "source": "art/source/bulwark-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/bulwark/bulwark-walk-a.svg", "../../../../static/dotarogue/assets/characters/bulwark/bulwark-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-skill.svg",
+      "sideSource": "art/source/bulwark-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/bulwark/bulwark-side-skill.svg",
+      "format": "svg-poses"
+    },
+    "character": [
+      "bulwark.svg",
+      "bulwark-step.svg",
+      "bulwark-attack.svg"
+    ],
+    "skillIcons": [
+      "skill-bulwark.svg",
+      "skill-bulwark-1.svg"
+    ],
+    "activeEffect": "effect-bulwark.svg"
+  },
+  "audio": {
+    "voiceDir": "audio/voice/",
+    "skillDir": "audio/skills/",
+    "synthesis": "Web Audio first"
+  },
+  "status": "concept"
+}

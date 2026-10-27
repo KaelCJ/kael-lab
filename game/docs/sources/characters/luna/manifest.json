@@ -1,0 +1,61 @@
+{
+  "id": "luna",
+  "displayName": "月之骑士",
+  "reference": {
+    "heroName": "Luna Moonfang",
+    "englishTitle": "Moon Rider",
+    "race": "暗夜精灵",
+    "class": "黑豹骑手／远程月刃战士",
+    "mount": "固定坐骑：四足黑色豹子；与 Luna 作为一个战斗单位渲染和移动",
+    "alias": "Luna",
+    "source": "../../../dota/英雄.md"
+  },
+  "skills": [
+    {
+      "id": "skill-luna-1",
+      "name": "月刃弹射",
+      "kind": "passive"
+    },
+    {
+      "id": "skill-luna",
+      "name": "月蚀",
+      "kind": "active"
+    }
+  ],
+  "assets": {
+    "status": "runtime-integrated",
+    "runtime": {
+      "source": "art/source/luna-hero.svg",
+      "idle": "../../../../static/dotarogue/assets/characters/luna/luna-idle-a.svg",
+      "idleAlternate": "../../../../static/dotarogue/assets/characters/luna/luna-idle-alt.svg",
+      "walk": ["../../../../static/dotarogue/assets/characters/luna/luna-walk-a.svg", "../../../../static/dotarogue/assets/characters/luna/luna-walk-b.svg"],
+      "dash": "../../../../static/dotarogue/assets/characters/luna/luna-dash.svg",
+      "attackWindup": "../../../../static/dotarogue/assets/characters/luna/luna-attack-windup.svg",
+      "attack": "../../../../static/dotarogue/assets/characters/luna/luna-attack.svg",
+      "attackRelease": "../../../../static/dotarogue/assets/characters/luna/luna-attack-release.svg",
+      "skill": "../../../../static/dotarogue/assets/characters/luna/luna-skill.svg",
+      "sideSource": "art/source/luna-side.svg",
+      "sideIdle": "../../../../static/dotarogue/assets/characters/luna/luna-side-idle-a.svg",
+      "sideIdleAlternate": "../../../../static/dotarogue/assets/characters/luna/luna-side-idle-alt.svg",
+      "sideWalk": ["../../../../static/dotarogue/assets/characters/luna/luna-side-walk-a.svg", "../../../../static/dotarogue/assets/characters/luna/luna-side-walk-b.svg"],
+      "sideDash": "../../../../static/dotarogue/assets/characters/luna/luna-side-dash.svg",
+      "sideAttackWindup": "../../../../static/dotarogue/assets/characters/luna/luna-side-attack-windup.svg",
+      "sideAttack": "../../../../static/dotarogue/assets/characters/luna/luna-side-attack.svg",
+      "sideAttackRelease": "../../../../static/dotarogue/assets/characters/luna/luna-side-attack-release.svg",
+      "sideSkill": "../../../../static/dotarogue/assets/characters/luna/luna-side-skill.svg",
+      "glaive": "../../../../static/dotarogue/assets/characters/luna/luna-glaive.svg",
+      "format": "svg-poses"
+    },
+    "effects": {
+      "renderer": "canvas",
+      "implemented": ["月刃弹射", "月蚀范围与落点预警", "月柱与碎月冲击"]
+    },
+    "notes": "两张骑乘黑豹分层源图、18 张静态帧和一张 96×96 三弯刃月刃 SVG，共 21 张；静态帧及月刃已接入 game.js。手持与飞行月刃共用几何，飞弹按游戏时间旋转，暂停冻结，减少动态效果时停止自转；缺图使用 Canvas 三弯刃回退。骑手与黑豹作为一个战斗单位渲染，月蚀和飞弹尾迹由 Canvas 程序化绘制。"
+  },
+  "audio": {
+    "synthesis": "Web Audio",
+    "events": ["skill-luna", "luna-bounce"],
+    "voiceStatus": "planned"
+  },
+  "status": "current"
+}

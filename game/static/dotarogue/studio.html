@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#101a19">
+  <meta name="description" content="DotaRogue 游戏设计预览：观察英雄、武器、Buff、特效与地图的当前表现。">
+  <title>设计预览 · DotaRogue</title>
+  <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/studio.css">
+  <noscript><style>.studio { display: none; }</style></noscript>
+  <script type="module" src="js/studio.js?v=20261027-dota1"></script>
+</head>
+<body>
+  <a class="skip-link" href="#studio-preview">跳到观察区</a>
+  <header class="site-bar">
+    <a class="brand" href="index.html"><img src="../../../shared/static/assets/favicon.svg" alt="" width="26" height="26"><span>DotaRogue</span></a>
+    <nav aria-label="游戏入口"><a href="effects.html">元素样张</a><a href="equipment.html">装备图鉴</a><a href="index.html">返回游戏</a></nav>
+  </header>
+  <main>
+    <div class="page-heading"><div><p class="eyebrow">游戏设计工作台</p><h1>设计预览</h1><p class="lead">选一个对象，观察它的形态、动作与反馈。</p></div><span class="preview-badge">可控演示</span></div>
+    <section class="studio" aria-label="游戏设计预览工作台">
+      <fieldset class="category-bar" id="studio-categories" disabled><legend class="sr-only">预览分类</legend><div id="category-options" class="category-options"></div></fieldset>
+      <aside class="library" aria-label="选择预览对象">
+        <div class="library-heading"><h2 id="category-name">预览对象</h2><span id="item-count">等待加载</span></div>
+        <label class="sr-only" for="object-search">搜索当前分类</label><input type="search" id="object-search" placeholder="搜索当前分类" autocomplete="off" disabled>
+        <div id="object-list" class="object-list" aria-label="对象列表"></div>
+        <p id="list-empty" class="empty-note">正在读取当前游戏的对象…</p>
+      </aside>
+      <section class="preview-column" id="studio-preview" aria-label="当前对象观察区">
+        <div class="stage-heading"><h2 id="preview-name">正在准备预览</h2><span id="preview-time">0.00 秒</span></div>
+        <div class="stage" id="studio-stage"><iframe id="studio-frame" title="DotaRogue 设计观察场景" data-src="index.html?studio=1" tabindex="0"></iframe><div class="stage-message" id="stage-message"><p id="stage-message-text">正在连接游戏预览…</p><button id="frame-retry" type="button" hidden>重新加载预览</button></div></div>
+        <div class="playback"><button id="studio-play" class="primary-button" type="button" disabled>播放</button><button id="studio-replay" type="button" disabled>重播</button><button id="studio-step" type="button" disabled>前进一步</button><span id="playback-status" role="status">正在准备场景</span></div>
+        <p id="runtime-summary" class="runtime-summary">等待游戏提供当前表现。</p>
+      </section>
+      <aside class="inspector" aria-label="当前对象详情与观察设置">
+        <p class="eyebrow" id="detail-category">观察设置</p><h2 id="detail-name">尚未选择</h2><p id="object-description" class="description">从分类和对象列表选择要观察的内容。</p>
+        <fieldset id="studio-controls" disabled><legend class="sr-only">调整观察条件</legend>
+          <div class="control-block" id="variant-control"><label for="studio-variant">观察内容</label><select id="studio-variant"></select><p class="control-note" id="variant-description"></p></div>
+          <div class="control-block" id="level-control" hidden><label for="studio-level">强化等级</label><select id="studio-level"><option value="1">Lv.1</option><option value="2">Lv.2</option><option value="3">Lv.3</option></select></div>
+          <div class="control-block" id="stacks-control" hidden><label for="studio-stacks">观察层数</label><input id="studio-stacks" type="number" min="1" max="99" step="1" value="1" inputmode="numeric"></div>
+          <fieldset class="control-block"><legend>朝向</legend><div class="choices"><label><input type="radio" name="studio-direction" value="0" checked><span>向右</span></label><label><input type="radio" name="studio-direction" value="left"><span>向左</span></label></div></fieldset>
+          <div class="control-row"><div class="control-block"><label for="studio-skin">画面</label><select id="studio-skin"><option value="pixel">像素风</option><option value="draft">初版</option></select></div><div class="control-block"><label for="studio-zoom">观察倍率</label><select id="studio-zoom"><option value="0.75">75%</option><option value="1" selected>100%</option><option value="1.5">150%</option></select></div></div>
+        </fieldset>
+        <p class="runtime-detail" id="runtime-detail"></p>
+        <button id="copy-view" class="copy-button" type="button" disabled>复制当前观察链接</button><p id="copy-status" class="control-note" role="status"></p><label id="copy-fallback-label" class="control-note" for="copy-fallback" hidden>自动复制未成功，可选择下方链接复制。</label><input id="copy-fallback" type="text" readonly hidden aria-label="当前观察链接">
+        <details class="production-info"><summary>制作信息</summary><p>目录与表现来自当前游戏，页面不保存另一份数值定义。</p><p id="source-info">当前对象尚未加载。</p></details>
+      </aside>
+    </section>
+    <noscript><p class="noscript-note">设计预览需要 JavaScript 才能读取对象和播放动作。这里提供英雄、武器、Buff、特效与地图的可控演示；你仍可使用顶部链接返回游戏、查看元素样张或装备图鉴。</p></noscript>
+    <p class="scope-note">这里是可控的设计演示，不代表已经完成自然获取或真实战斗验收。等级、层数和观察设置仅用于当前预览，不修改对局或存档。</p>
+  </main>
+  <footer><span>Kael Lab · DotaRogue</span><a href="../index.html">游戏列表</a></footer>
+</body>
+</html>

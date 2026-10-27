@@ -1,0 +1,399 @@
+{
+  "schemaVersion": 1,
+  "recordedOn": "2026-10-27",
+  "pathBase": "repository-root",
+  "basePath": "game/static/dotarogue/assets/audio/dota1/",
+  "purpose": "Small Warcraft III / DotA1-reference hero voice excerpts and game sound effects for DotaRogue.",
+  "rights": {
+    "originalRightsHolder": "Blizzard Entertainment",
+    "audioLicense": "Proprietary game audio; no open-source or Creative Commons media license is asserted.",
+    "sourceScope": "Publicly reachable fan soundboard files; public access does not itself establish a redistribution license.",
+    "selection": "16 very short voice excerpts, 24 whitespace-delimited words total; no whole game or complete sound pack imported.",
+    "applicationSourceLicense": "ZephyrVentum/Warcraft3-Soundboard application has MPL-2.0; that is not treated as a grant covering Blizzard audio."
+  },
+  "sources": {
+    "soundboardz": {
+      "catalog": "https://soundboardz.net/catalog.json",
+      "mediaTemplate": "https://media.soundboardz.net/audio/{hash}.m4a",
+      "publisherStatement": "Fan-made soundboard, not affiliated with Blizzard Entertainment or Electronic Arts."
+    },
+    "zephyr": {
+      "repository": "https://github.com/ZephyrVentum/Warcraft3-Soundboard",
+      "license": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/master/LICENSE"
+    }
+  },
+  "heroes": {
+    "rover": {
+      "select": "rifleman-aye.m4a",
+      "active": "rifleman-fire.m4a"
+    },
+    "conductor": {
+      "select": "mountain-king-aye.m4a",
+      "active": "mountain-king-to-arms.m4a"
+    },
+    "scavenger": {
+      "select": "alchemist-ready-to-brew.m4a",
+      "active": "alchemist-you-got-it.m4a"
+    },
+    "jugg": {
+      "select": "blademaster-yes-lord.m4a",
+      "active": "blademaster-hwah.m4a"
+    },
+    "sf": {
+      "select": "firelord-im-lit.m4a",
+      "active": "firelord-consume.m4a"
+    },
+    "kael": {
+      "select": "blood-mage-ish-shera-do.m4a",
+      "active": "blood-mage-for-quelthalas.m4a"
+    },
+    "luna": {
+      "select": "huntress-seek.m4a",
+      "active": "huntress-catch.m4a"
+    },
+    "tb": {
+      "select": "demon-hunter-quickly.m4a",
+      "active": "demon-hunter-revenge.m4a"
+    }
+  },
+  "fallbacks": {
+    "bulwark": {
+      "reason": "No confirmed Razormane / Bristleback spoken prototype sample selected. Preserve generated audio rather than assign another unit voice."
+    }
+  },
+  "effects": {
+    "rifleman-shot": "rifleman-shot.mp3",
+    "bristleback-impact": "bristleback-impact.mp3",
+    "avatar-cast": "avatar-cast.mp3",
+    "druid-bear-morph": "druid-bear-morph.mp3",
+    "orbit-burst": "avatar-cast.mp3",
+    "guard-shot": "rifleman-shot.mp3",
+    "elite-frost": "avatar-cast.mp3",
+    "elite-lightning": "avatar-cast.mp3"
+  },
+  "assets": {
+    "rifleman-aye": {
+      "id": "rifleman-aye",
+      "unit": "wc3/human/rifleman",
+      "sourceText": "Aye.",
+      "catalogId": "d259d816f9",
+      "sourceHash": "06aff16e5bd1",
+      "sourceUrl": "https://media.soundboardz.net/audio/06aff16e5bd1.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/rifleman",
+      "file": "rifleman-aye.m4a",
+      "sourceDuration": 0.5,
+      "bytes": 3731,
+      "sha256": "49d5b0fdd90a9f9fd278ebb17bfea153ce1bc0c6afcf59482e588ac0f5b738e3",
+      "durationSeconds": 0.453469,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "rifleman-fire": {
+      "id": "rifleman-fire",
+      "unit": "wc3/human/rifleman",
+      "sourceText": "Fire!",
+      "catalogId": "c3e4b6f77b",
+      "sourceHash": "0fd5a9fbfba8",
+      "sourceUrl": "https://media.soundboardz.net/audio/0fd5a9fbfba8.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/rifleman",
+      "file": "rifleman-fire.m4a",
+      "sourceDuration": 0.7,
+      "bytes": 5403,
+      "sha256": "36c10d708e98a20824bfede41d0745a8dbdb7008016c51de67c420edb26f7504",
+      "durationSeconds": 0.680975,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "mountain-king-aye": {
+      "id": "mountain-king-aye",
+      "unit": "wc3/human/mountain-king",
+      "sourceText": "Aye?",
+      "catalogId": "500e0788c2",
+      "sourceHash": "06e5147319ca",
+      "sourceUrl": "https://media.soundboardz.net/audio/06e5147319ca.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/mountain-king",
+      "file": "mountain-king-aye.m4a",
+      "sourceDuration": 0.5,
+      "bytes": 4198,
+      "sha256": "c93dc184ff5ec0c6e0ecaae4ad5b25322838b290f0f88dc6acda0be21f618b86",
+      "durationSeconds": 0.500726,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "mountain-king-to-arms": {
+      "id": "mountain-king-to-arms",
+      "unit": "wc3/human/mountain-king",
+      "sourceText": "To arms!",
+      "catalogId": "725090785b",
+      "sourceHash": "8d5c8ccb0f88",
+      "sourceUrl": "https://media.soundboardz.net/audio/8d5c8ccb0f88.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/mountain-king",
+      "file": "mountain-king-to-arms.m4a",
+      "sourceDuration": 1,
+      "bytes": 7151,
+      "sha256": "1158c40d666e2ae9b1ba8a9d043184e33f94f7c10221a605baa485c9da15388f",
+      "durationSeconds": 0.961814,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "alchemist-ready-to-brew": {
+      "id": "alchemist-ready-to-brew",
+      "unit": "wc3/neutral/goblin-alchemist",
+      "sourceText": "Ready to brew!",
+      "catalogId": "302ef4c113",
+      "sourceHash": "2a384d9fbcf8",
+      "sourceUrl": "https://media.soundboardz.net/audio/2a384d9fbcf8.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/neutral/goblin-alchemist",
+      "file": "alchemist-ready-to-brew.m4a",
+      "sourceDuration": 1.2,
+      "bytes": 8518,
+      "sha256": "470cb7a361a97c711fc1647e12e00b5e16d56dcd8937763513e72834f44c2f9e",
+      "durationSeconds": 1.202426,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "alchemist-you-got-it": {
+      "id": "alchemist-you-got-it",
+      "unit": "wc3/neutral/goblin-alchemist",
+      "sourceText": "You got it.",
+      "catalogId": "36ad4a99f8",
+      "sourceHash": "916ee5c93bb9",
+      "sourceUrl": "https://media.soundboardz.net/audio/916ee5c93bb9.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/neutral/goblin-alchemist",
+      "file": "alchemist-you-got-it.m4a",
+      "sourceDuration": 0.7,
+      "bytes": 5592,
+      "sha256": "8957e948342e60de745e55dc7e0a0def93aab06816813bdb28156dfcf1808a3e",
+      "durationSeconds": 0.738141,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "blademaster-yes-lord": {
+      "id": "blademaster-yes-lord",
+      "unit": "wc3/orc/blademaster",
+      "sourceText": "Yes, lord.",
+      "catalogId": "77f19e8ae0",
+      "sourceHash": "76ee1e672a6b",
+      "sourceUrl": "https://media.soundboardz.net/audio/76ee1e672a6b.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/orc/blademaster",
+      "file": "blademaster-yes-lord.m4a",
+      "sourceDuration": 0.7,
+      "bytes": 5567,
+      "sha256": "71654b812109dccc79ebe428f3a92d5fd7b1d201a44f9c3be52e84bab42682d1",
+      "durationSeconds": 0.711859,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "blademaster-hwah": {
+      "id": "blademaster-hwah",
+      "unit": "wc3/orc/blademaster",
+      "sourceText": "Hwah!",
+      "catalogId": "9601bb5aea",
+      "sourceHash": "3c0dd2ceda81",
+      "sourceUrl": "https://media.soundboardz.net/audio/3c0dd2ceda81.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/orc/blademaster",
+      "file": "blademaster-hwah.m4a",
+      "sourceDuration": 0.5,
+      "bytes": 3935,
+      "sha256": "9aea78c656fc2e1ceb946169392c40b3e975cd7ef8c00042de20bb7bdb0dcce7",
+      "durationSeconds": 0.463084,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "firelord-im-lit": {
+      "id": "firelord-im-lit",
+      "unit": "wc3/neutral/firelord",
+      "sourceText": "I'm lit!",
+      "catalogId": "fefa37369b",
+      "sourceHash": "6ea9ac236788",
+      "sourceUrl": "https://media.soundboardz.net/audio/6ea9ac236788.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/neutral/firelord",
+      "file": "firelord-im-lit.m4a",
+      "sourceDuration": 1.8,
+      "bytes": 11927,
+      "sha256": "855633c57736cffa5ef25796bc993005b12d80387aba6c9b5af5e6ae2611c4dd",
+      "durationSeconds": 1.751837,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "firelord-consume": {
+      "id": "firelord-consume",
+      "unit": "wc3/neutral/firelord",
+      "sourceText": "Consuuuume.",
+      "catalogId": "c260267b5f",
+      "sourceHash": "05ab7047cde3",
+      "sourceUrl": "https://media.soundboardz.net/audio/05ab7047cde3.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/neutral/firelord",
+      "file": "firelord-consume.m4a",
+      "sourceDuration": 3,
+      "bytes": 19344,
+      "sha256": "d01b794d58a2ff55a71734ee57e46e477e5383a1da323ab7d0d0406117f797b2",
+      "durationSeconds": 2.951678,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "blood-mage-ish-shera-do": {
+      "id": "blood-mage-ish-shera-do",
+      "unit": "wc3/human/blood-mage",
+      "sourceText": "Ish-shera-do.",
+      "catalogId": "02ebb4ab7c",
+      "sourceHash": "2abad279c410",
+      "sourceUrl": "https://media.soundboardz.net/audio/2abad279c410.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/blood-mage",
+      "file": "blood-mage-ish-shera-do.m4a",
+      "sourceDuration": 1.1,
+      "bytes": 7948,
+      "sha256": "b5d9e4b4fe9c88c3e415e9d361720ac19c8ab73d41dd285f624a9af838b641aa",
+      "durationSeconds": 1.115828,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "blood-mage-for-quelthalas": {
+      "id": "blood-mage-for-quelthalas",
+      "unit": "wc3/human/blood-mage",
+      "sourceText": "For Quel'Thalas!",
+      "catalogId": "f8ae14930e",
+      "sourceHash": "4c7efa6fbdac",
+      "sourceUrl": "https://media.soundboardz.net/audio/4c7efa6fbdac.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/human/blood-mage",
+      "file": "blood-mage-for-quelthalas.m4a",
+      "sourceDuration": 1.5,
+      "bytes": 10418,
+      "sha256": "380443910cab0689a4464b9933a80dff7f5ae5735096a835f31ba221fbdcb2d8",
+      "durationSeconds": 1.499161,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "huntress-seek": {
+      "id": "huntress-seek",
+      "unit": "wc3/nightelf/huntress",
+      "sourceText": "Seek!",
+      "catalogId": "7042244efc",
+      "sourceHash": "adc57687c973",
+      "sourceUrl": "https://media.soundboardz.net/audio/adc57687c973.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/nightelf/huntress",
+      "file": "huntress-seek.m4a",
+      "sourceDuration": 2.2,
+      "bytes": 14987,
+      "sha256": "33d5126b5df60c60d166e8dc07c7d4c5cf51583f130034b6b33b0279c88715e1",
+      "durationSeconds": 2.234422,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "huntress-catch": {
+      "id": "huntress-catch",
+      "unit": "wc3/nightelf/huntress",
+      "sourceText": "Catch!",
+      "catalogId": "4c8fb1f258",
+      "sourceHash": "a7baaf1fbd8a",
+      "sourceUrl": "https://media.soundboardz.net/audio/a7baaf1fbd8a.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/nightelf/huntress",
+      "file": "huntress-catch.m4a",
+      "sourceDuration": 1.3,
+      "bytes": 9021,
+      "sha256": "fd7f291a857b22a2ecc220d31d32fe500518bbcb71ba858f2535b2b0b2034243",
+      "durationSeconds": 1.269433,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "demon-hunter-quickly": {
+      "id": "demon-hunter-quickly",
+      "unit": "wc3/nightelf/demon-hunter",
+      "sourceText": "Quickly!",
+      "catalogId": "2ffca7d08c",
+      "sourceHash": "a7c31d0eb930",
+      "sourceUrl": "https://media.soundboardz.net/audio/a7c31d0eb930.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/nightelf/demon-hunter",
+      "file": "demon-hunter-quickly.m4a",
+      "sourceDuration": 0.4,
+      "bytes": 3613,
+      "sha256": "c5fc64250fbacb8ff6032feedfcce92a92f1b8fcea39f4d05d265d2be4efda13",
+      "durationSeconds": 0.421156,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "demon-hunter-revenge": {
+      "id": "demon-hunter-revenge",
+      "unit": "wc3/nightelf/demon-hunter",
+      "sourceText": "Revenge.",
+      "catalogId": "ce35d4e45d",
+      "sourceHash": "e6a7109f17d6",
+      "sourceUrl": "https://media.soundboardz.net/audio/e6a7109f17d6.m4a",
+      "sourcePage": "https://soundboardz.net/wc3/nightelf/demon-hunter",
+      "file": "demon-hunter-revenge.m4a",
+      "sourceDuration": 1.2,
+      "bytes": 8672,
+      "sha256": "71e85fb5207fb259ca0d3ff659818907ea62e87acfc2b15d458724f136d36b50",
+      "durationSeconds": 1.233152,
+      "kind": "voice",
+      "verification": "Catalog transcript and unit identity checked; local audio container, codec and duration checked with afinfo; decoded to non-silent PCM with afconvert; listening not yet performed."
+    },
+    "rifleman-shot": {
+      "id": "rifleman-shot",
+      "file": "rifleman-shot.mp3",
+      "kind": "effect",
+      "label": "Rifleman weapon attack",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/riflemanattack1.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/riflemanattack1.mp3",
+      "sourceFile": "app/src/main/res/raw/riflemanattack1.mp3",
+      "sourceBlob": "7cc4a9d73a32d383007eb7aba43f4577e4780790",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "557e4d3b5118c3eecc5caf386fe6fd5b105a43257d1b7255c697fcf22c603c6a",
+      "bytes": 7755,
+      "durationSeconds": 0.7835,
+      "verification": "Source filename and local codec/duration checked with afinfo; decoded to non-silent PCM with afconvert; no listening test yet."
+    },
+    "bristleback-impact": {
+      "id": "bristleback-impact",
+      "file": "bristleback-impact.mp3",
+      "kind": "effect",
+      "label": "Bristleback missile impact",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackmissilehit.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackmissilehit.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackmissilehit.mp3",
+      "sourceBlob": "e0e603c8b7531a52742922051237c3ca51db86ec",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "499cb0a20ffc1fc7e23c282734c0f594b4c92cfff1fc212e2132df0b76761a48",
+      "bytes": 7546,
+      "durationSeconds": 0.757375,
+      "verification": "Source filename and local codec/duration checked with afinfo; decoded to non-silent PCM with afconvert; no listening test yet."
+    },
+    "avatar-cast": {
+      "id": "avatar-cast",
+      "file": "avatar-cast.mp3",
+      "kind": "effect",
+      "label": "Mountain King Avatar cast",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/avatar.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/avatar.mp3",
+      "sourceFile": "app/src/main/res/raw/avatar.mp3",
+      "sourceBlob": "a25a19c8377a610e7a5ad4e1960b23dee0d3e43c",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "b77ea798e9e551bbeb3e50d15136c497985d6c367b54b14ce6710f3843420522",
+      "bytes": 18153,
+      "durationSeconds": 2.089625,
+      "verification": "Source filename and local codec/duration checked with afinfo; decoded to non-silent PCM with afconvert; no listening test yet."
+    },
+    "druid-bear-morph": {
+      "id": "druid-bear-morph",
+      "file": "druid-bear-morph.mp3",
+      "kind": "effect",
+      "label": "Druid of the Claw bear transformation",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/druidoftheclawmorph1.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/druidoftheclawmorph1.mp3",
+      "sourceFile": "app/src/main/res/raw/druidoftheclawmorph1.mp3",
+      "sourceBlob": "6ed2e14a3892a9bc812960afb356dd74555cd3cd",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "c77465b4e22b29406cd9ba452fd049d272040fe219f1342a6cecd3fe8a7c37c3",
+      "bytes": 28023,
+      "durationSeconds": 3.317375,
+      "verification": "Source filename and local codec/duration checked with afinfo; decoded to non-silent PCM with afconvert; no listening test yet."
+    }
+  },
+  "effectsNotes": {
+    "avatar-cast": "A Mountain King Avatar cast sound, usable as a transformation reference; not claimed to be Demon Hunter Metamorphosis.",
+    "druid-bear-morph": "An actual Druid of the Claw morph sound; not claimed to be Demon Hunter Metamorphosis.",
+    "lightning": "No verified original lightning clip acquired; use generated fallback.",
+    "bladestorm": "No verified original Bladestorm clip acquired; use generated fallback."
+  },
+  "sourceVersion": "Warcraft III unit recordings from public fan collections; source hosts do not identify a game build. Not claimed to be extracted from a particular DotA Allstars map or version."
+}
