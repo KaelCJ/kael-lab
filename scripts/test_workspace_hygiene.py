@@ -29,9 +29,9 @@ class WorkspaceHygieneTests(unittest.TestCase):
         return path
 
     def test_real_assets_and_local_outputs_are_allowed(self):
-        for name in ("favicon.svg", "game/art/hero.png", ".tmp/screenshots/test.png", ".playwright-mcp/run/report.json"):
+        for name in ("shared/static/assets/favicon.svg", "game/art/hero.png", ".tmp/screenshots/test.png", ".playwright-mcp/run/report.json"):
             self.write(name)
-        self.git("add", "favicon.svg", "game/art/hero.png")
+        self.git("add", "shared/static/assets/favicon.svg", "game/art/hero.png")
         self.assertEqual(hygiene.inspect_workspace(self.root), ([], []))
 
     def test_old_root_resource_directories_are_rejected(self):
@@ -40,21 +40,25 @@ class WorkspaceHygieneTests(unittest.TestCase):
         self.write("static/css/styles.css")
         self.write("static/js/app.js")
         errors, _ = hygiene.inspect_workspace(self.root)
-        self.assertEqual(len(errors), 2)
-        self.assertTrue(all("legacy resource location" in error for error in errors))
+        self.assertEqual(len(errors), 3)
+        self.assertTrue(any("retired shared static directory" in error for error in errors))
+        self.assertTrue(sum("legacy resource location" in error for error in errors) == 2)
 
     def test_retired_root_work_entries_are_rejected(self):
         for name in ("kael", "meepo", "nest", "lanox", "help"):
             self.write(name + "/index.html")
-            self.write("work/" + name + "/index.html")
+        self.write("work/" + name + "/index.html")
         self.write("workspace-assistant.html")
         self.write("work/workspace-assistant.html")
         self.write("index.html")
         self.write("games.html")
         self.write("404.html")
         errors, _ = hygiene.inspect_workspace(self.root)
-        self.assertEqual(len(errors), 6)
-        self.assertTrue(all("retired root work entry" in error for error in errors))
+        self.assertEqual(len(errors), 8)
+        self.assertTrue(any("retired root work entry; use work/static/" in error for error in errors))
+        self.assertTrue(any("retired root page; use game/static/index.html" in error for error in errors))
+        self.assertTrue(any("retired root page; use shared/static/404.html" in error for error in errors))
+        self.assertTrue(all("retired root" in error for error in errors))
 
     def test_ignored_root_screenshot_is_still_reported(self):
         self.write("tmp-shot.png")

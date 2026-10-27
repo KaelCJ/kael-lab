@@ -9,7 +9,7 @@ from urllib.parse import unquote, urlsplit
 
 
 ROOT = Path(__file__).resolve().parents[1]
-PAGE_DIRECTORIES = ("work", "game")
+DELIVERY_DIRECTORIES = ("work/static", "game/static", "life/static", "shared/static")
 CSS_REFERENCE = re.compile(r"url\(\s*['\"]?([^\s)'\"]+)|@import\s+['\"]([^'\"]+)")
 MODULE_REFERENCE = re.compile(
     r"(?:\bimport\s+(?:[^;\"']*?\s+from\s+)?|\bexport\s+[^;\"']*?\s+from\s+|\bimport\s*\(\s*)['\"]([^'\"]+)['\"]"
@@ -41,8 +41,8 @@ def local_target(root, source, reference):
 
 
 def page_files(root):
-    pages = list(root.glob("*.html"))
-    for name in PAGE_DIRECTORIES:
+    pages = [root / "index.html"] if (root / "index.html").is_file() else []
+    for name in DELIVERY_DIRECTORIES:
         directory = root / name
         if directory.is_dir():
             pages.extend(directory.rglob("*.html"))
@@ -54,8 +54,11 @@ def inspect_paths(root):
     checked = 0
     pages = page_files(root)
     sources = [(page, "html") for page in pages]
-    sources.extend((path, "css") for path in (root / "static/css").rglob("*.css"))
-    sources.extend((path, "js") for path in (root / "static/js").rglob("*.js"))
+    for directory_name in DELIVERY_DIRECTORIES:
+        directory = root / directory_name
+        if directory.is_dir():
+            sources.extend((path, "css") for path in directory.rglob("*.css"))
+            sources.extend((path, "js") for path in directory.rglob("*.js"))
     for source, kind in sources:
         text = source.read_text(encoding="utf-8-sig")
         if kind == "html":

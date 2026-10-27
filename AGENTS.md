@@ -8,17 +8,17 @@ Kael Lab 是公开静态站点。处理本仓库时遵守以下边界：
 - `Current`、`Concept`、`Roadmap` 的语义必须保持清楚；无法证明的内容不得标记为 `Current`。
 - 修改页面后至少检查桌面与移动布局、键盘操作、控制台错误、静态资源路径和无 JavaScript 的基础可读性。
 - 发布、域名、第三方统计、评论、外部 API、提交、推送和删除仍服从当前任务的明确授权。
-- `AGENTS.md` 与 `CLAUDE.md` 内容必须保持一致。
+- `AGENTS.md` 是入口规则的唯一正文；同目录 `CLAUDE.md` 仅写 `@AGENTS.md`，通过导入保持规则一致，不复制第二套正文。
 - 浏览器工具证据写入 `.playwright-mcp/`，其他临时截图、脚本、变体和抓取原文统一写入 `.tmp/<任务或用途>/`；两目录都不提交。输出路径以脚本位置或显式参数确定，不依赖当前工作目录；不向根目录新增散落图片、`tmp-*`、`temp-*` 或 `artifacts/`。
 - 正式素材与需要长期公开保留的参考归入所属游戏或模块目录，登记用途、来源与引用；不可全局忽略图片类型。任务结束时清点产物并记录保留／待清理项，不覆盖既有证据，也不未经授权删除。
-- 正式 CSS／JavaScript 统一放在 `static/css/`、`static/js/`，保留所有者子目录，不回建根部 `css/`、`js/`。正式页面使用 `work/`、`game/` 下的物理地址；资源移动后运行 `python -B -X utf8 scripts/check_static_paths.py`，并实际检查动态图片、特效和 iframe，不能只凭静态路径检查宣称页面可用。
+- 正式页面、CSS、JavaScript 与运行素材按所有者放在 `work/static/`、`game/static/`、`shared/static/`；说明、设计与公开参考放在对应 `docs/`。根目录只保留 `index.html` 作为全站 HTML 入口，不回建根部 `static/`、`css/`、`js/` 或其他业务 HTML，也不保留旧链接、跳转页或兼容目录。生活方向目前只保留 `life/docs/`，有真实内容后再建立 `life/static/`。资源移动后运行 `python -B -X utf8 scripts/check_static_paths.py`，并实际检查动态图片、特效和 iframe，不能只凭静态路径检查宣称页面可用。
 - 暂存或提交前运行 `python -B -X utf8 scripts/check_workspace_hygiene.py`；先解决根目录污染和已跟踪本机产物，其他已跟踪忽略文件按报告单独确认所有权，不自动清除工作项或协作基座。详细边界见根 README。
 
 ## 方向与回源
 
 - 全站首页方向统一为“AI 时代下，把日常过得更好”：根 `index.html` 是全站规范首页，长期提供“工作、休闲、生活”三个并列方向的入口。当前实现已完成根首页重构；后续变更仍须以真实页面和验证证据更新当前事实。
 - 当前首页的视觉与叙事方向已得到用户确认；后续站点建设默认围绕这一个首页主线展开，新增内容先判断属于工作、休闲还是生活，并从真实内容和入口开始增长。
-- 人机协作方向统一归属 `work/`：工作首页、四生态、`work/help/` 与 `work/workspace-assistant.html`。先读根目录 `README.md` 与 `work/README.md`，再回到当前实现。`work/index.html` 只承接工作分区；`games.html` 作为休闲方向的游戏选择入口。生活方向仍处于规划阶段，未来可承载日常饮食价格、生活常识、育儿和装修等公开内容；没有真实内容和入口前，不创建空的 `life/` 页面，也不把计划标记为 `Current`。
-- 根目录业务入口只保留 `index.html` 与 `games.html`。不要恢复外层生态、帮助或助手的旧兼容目录／页面；根首页完成重构后，仍须保持物理 HTML 地址、项目子路径和无 JavaScript 可达性，并同步更新根 README、入口导航与验证方法。
-- 网页游戏方向以 `games.html` 为选择入口。涉及《DotaRogue》的设计、UI、代码或文档时，先读 `game/README.md` 与 `game/AGENTS.md`，再按其指引读取 `game/core/协作上下文.md` 和任务相关专题；`game/dota/` 是游戏参考资料，不是独立业务域或当前能力证明；新增游戏时使用独立目录，并把入口登记到选择页。
+- 人机协作方向统一归属 `work/`：先读根目录 `README.md` 与 `work/docs/README.md`，再回到 `work/static/` 的工作首页、四生态、帮助与 Workspace Assistant 实现。`work/static/index.html` 只承接工作分区；`game/static/index.html` 是休闲方向的游戏选择入口。生活方向仍处于规划阶段，先回源 `life/docs/README.md`；没有真实内容和入口前，不创建空的生活页面，也不把计划标记为 `Current`。
+- 根目录业务入口只保留 `index.html`。不要恢复外层生态、帮助、助手、游戏选择页或其他旧兼容目录／页面；根首页完成重构后，仍须保持物理 HTML 地址、项目子路径和无 JavaScript 可达性，并同步更新根 README、入口导航与验证方法。
+- 网页游戏方向以 `game/static/index.html` 为选择入口，《DotaRogue》运行于 `game/static/dotarogue/`。涉及游戏设计、UI、代码或文档时，先读 `game/README.md` 与 `game/AGENTS.md`，再按其指引读取 `game/docs/core/协作上下文.md` 和任务相关专题；`game/docs/dota/` 参考资料不是当前运行资源或能力清单；来源记录、Concept／对照图、可编辑源与离线生成器归 `game/docs/sources/`，浏览器仅消费 `game/static/` 内的运行资源。新增游戏在 `game/static/` 使用独立目录，并把入口登记到选择页。
 - 实现或入口变化后更新相应 README 的当前事实与验证方法。聊天记忆和过期文档不能代替当前实现；未验证的设想明确标为计划。

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-Hans">
+<head>
+  <script src="../../../shared/static/js/analytics.js"></script>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Lanox 协作帮助中心：从产品需求、架构方案、研发实施到测试证据和领导看板。">
+  <title>Lanox Guide · AI 协作帮助中心</title>
+  <link rel="stylesheet" href="../css/help/styles.css">
+</head>
+<body data-page="hub">
+  <a class="skip-link" href="#content">跳到主要内容</a>
+  <header class="shell-header">
+    <div class="header-inner">
+      <a class="brand" href="index.html"><span class="brand-mark">L</span><span><strong>Lanox Guide</strong><small>Human × Agent System</small></span></a>
+      <nav class="global-nav" aria-label="角色帮助导航">
+        <a href="requirements.html" data-nav-page="requirements">产品需求</a><a href="architecture.html" data-nav-page="architecture">架构方案</a><a href="development.html" data-nav-page="development">研发实施</a><a href="testing.html" data-nav-page="testing">测试证据</a><a href="workflow.html" data-nav-page="workflow">完整流程</a><a href="board.html" data-nav-page="board">领导看板</a>
+      </nav>
+      <div class="header-actions"><span class="demo-badge">GUIDE · SAFE DEMOS</span><a class="home-link" href="../index.html">返回站点 ↗</a></div>
+    </div>
+  </header>
+
+  <main id="content">
+    <section class="page-hero">
+      <div>
+        <p class="eyebrow">ONE WORK ITEM · MANY AI ROLES · HUMAN DECISIONS</p>
+        <h1>把一次协作，变成<em>可继续、可检查、可看懂</em>的工作。</h1>
+        <p class="lead">产品提出问题，架构把问题变成方案与步骤，研发按确认后的步骤实施，测试把证据分层记录，领导从工作项看目标、进度和参与关系。AI 可以自动执行，但人的决定和真实证据不会被一键跳过。</p>
+        <div class="path-ribbon" aria-label="快速入口"><a href="workflow.html">第一次使用 → 完整流程</a><a href="requirements.html">我有一个新需求</a><a href="board.html">我要看团队进度</a><a href="#work-item-help">继续已有工作项</a></div>
+      </div>
+      <aside class="hero-aside" aria-label="帮助边界">
+        <article><span class="status current">CURRENT METHOD</span><strong>工作项是唯一协作入口</strong><p>原话、需求、方案、执行、测试和产出在同一目标下恢复。</p></article>
+        <article><span class="status demo">INTERACTIVE DEMO</span><strong>页面状态都不是真实业务</strong><p>按钮只改变本页内存，不写文件、不调用 Agent 或后端。</p></article>
+        <article><span class="status human">HUMAN GATE</span><strong>确认不会被 AI 代签</strong><p>需求、方案、高影响动作、验收和发布仍由人决定。</p></article>
+      </aside>
+    </section>
+
+    <section class="section" aria-labelledby="journey-title">
+      <div class="section-heading"><span>ROLE-BASED GUIDE</span><div><h2 id="journey-title">六个页面，对应六种真实问题</h2><p>你不需要先理解全部方法。按你此刻扮演的角色进入；每页都有演示数据、顺利路径和停止路径。</p></div></div>
+      <div class="workflow-map">
+        <a class="workflow-card" href="requirements.html"><b>01 / PRODUCT</b><h2>产品怎么出需求</h2><p>从模糊想法到目标、范围、验收标准和工作项草案。</p><span class="role">输入：真实问题</span></a>
+        <a class="workflow-card" href="architecture.html"><b>02 / ARCHITECT</b><h2>架构怎么出方案</h2><p>比较选择、代价、反例、回退，并拆成可执行步骤。</p><span class="role">门禁：人选方案</span></a>
+        <a class="workflow-card" href="development.html"><b>03 / ENGINEERING</b><h2>研发怎么按步骤做</h2><p>回读现场、领取步骤、实施、阻塞、检查和证据回流。</p><span class="role">输入：确认后的步骤</span></a>
+        <a class="workflow-card" href="testing.html"><b>04 / QUALITY</b><h2>AI 怎么做测试</h2><p>自动检查、真实端到端、使用者验收三类证据不混淆。</p><span class="role">失败不会被覆盖</span></a>
+        <a class="workflow-card" href="workflow.html"><b>05 / EVERYONE</b><h2>整套流程怎么用</h2><p>创建、继续、授权、交接、确认与 Session 收口。</p><span class="role">第一次使用从这里</span></a>
+        <a class="workflow-card" href="board.html"><b>06 / LEADERSHIP</b><h2>领导怎么看工作</h2><p>看有哪些目标、进度、阻塞、谁参与、做了什么和证据多新。</p><span class="role">数据全部为 DEMO</span></a>
+      </div>
+    </section>
+
+    <section class="section" id="work-item-help" aria-labelledby="work-item-title">
+      <div class="section-heading"><span>WORK ITEM BASICS</span><div><h2 id="work-item-title">任何正式协作，先创建或绑定唯一工作项</h2><p>聊天是本轮交互，工作项才是可恢复的目标上下文。它让下一个 Session 知道为什么做、确认了什么、已经做了什么、什么还没证明。</p></div></div>
+      <div class="grid-2">
+        <article class="panel panel-pad">
+          <div class="panel-title"><h3>第一次：查重后创建</h3><span class="status current">ENTRY 01</span></div>
+          <p class="quiet">说清目标，并要求先查现有工作项。同一目标已经存在时继续原编号，不新建竞争项。</p>
+          <div class="prompt"><code id="prompt-create">为“优化知识问答来源体验”创建工作项。先查重；整理原始需求、当前需求与验收标准，暂不修改代码。</code><button class="copy-button" type="button" data-copy="prompt-create" aria-label="复制创建工作项示例">⧉</button></div>
+        </article>
+        <article class="panel panel-pad">
+          <div class="panel-title"><h3>回来继续：三种入口</h3><span class="status info">ENTRY 02</span></div>
+          <div class="details-grid" style="margin-top:14px">
+            <details open><summary>从进行中工作项选择</summary><div>“查看当前代办，我要继续知识问答体验那个工作项。”</div></details>
+            <details><summary>先看代码现场再匹配</summary><div>“先查看当前代码和工作树，判断这个问题属于哪个已有工作项；只分析，不修改。”</div></details>
+            <details><summary>知道编号时直接指定</summary><div>“继续 W-&lt;编号&gt;。先回读需求、方案、执行和当前代码事实，再告诉我下一步。”</div></details>
+          </div>
+        </article>
+      </div>
+
+      <div class="grid-4" style="margin-top:16px">
+        <article class="tool-card"><span>README</span><h3>入口与导航</h3><p>当前简介和产物去向。它告诉后来者从哪里继续，不复制全部正文。</p></article>
+        <article class="tool-card"><span>SOURCE → REQ</span><h3>原话与当前需求</h3><p>来源保留纠正历史；需求是当前范围、REQ 与验收标准。</p></article>
+        <article class="tool-card"><span>PLAN → EXECUTION</span><h3>方案与实际动作</h3><p>方案记录取舍和回退；执行分开计划、真实动作、失败与恢复点。</p></article>
+        <article class="tool-card"><span>TEST → OUTPUT</span><h3>证据与交付物</h3><p>测试只证明对应对象；产出供人使用。存在、完成、发布是不同事实。</p></article>
+      </div>
+
+      <div class="callout" style="margin-top:16px"><span class="status demo">CURRENT · MANUAL</span><div><strong>一个 Session 承载太多内容时，手动调用 <code>$nest-archive-check</code></strong><p>先把稳定事实写回唯一工作项，再检查编号、目录、引用和未完成目标。它不是清空上下文按钮；自动触发仍是未来方向。</p></div></div>
+    </section>
+
+    <section class="section" id="nest-help" aria-labelledby="nest-title">
+      <div class="section-heading"><span>PRODUCT GUIDE · KNOWLEDGE</span><div><h2 id="nest-title">Nest 知识库：答案之后，一定要看来源</h2><p>从目录缩小范围，在多文档间保留上下文，提出具体问题，再检查标题、片段、版本和适用边界。没有可靠来源时，正确结果是暴露缺口。</p></div></div>
+      <div class="demo-shell" data-quick-group>
+        <div class="demo-controls"><h3>知识路径演练</h3><p>选择一步查看应该关注什么。</p><div class="control-list">
+          <button class="control-button is-active" type="button" data-quick-button="browse"><strong>01 · 浏览目录</strong><small>先确定问题所属主题</small></button>
+          <button class="control-button" type="button" data-quick-button="ask"><strong>02 · 具体提问</strong><small>场景 + 现象 + 期望</small></button>
+          <button class="control-button" type="button" data-quick-button="source"><strong>03 · 核对来源</strong><small>事实、建议与推断分开</small></button>
+          <button class="control-button" type="button" data-quick-button="stop"><strong>04 · 证据不足</strong><small>停止猜测并给下一步</small></button>
+        </div></div>
+        <div class="demo-stage">
+          <div data-quick-panel="browse"><div class="stage-top"><div><h3>从主题和目录进入</h3><p>先看文档层级、标题和最近上下文，不要一上来问“大而全”的问题。</p></div><span class="status demo">DEMO</span></div><ul class="list"><li>主题：上下文与链路传播</li><li>文档：异步边界中的传播机制</li><li>文档：诊断顺序与常见误区</li></ul></div>
+          <div data-quick-panel="ask" hidden><div class="stage-top"><div><h3>把问题写到真实现场</h3><p>“消息消费切到线程池后 Trace 断了；入口正常、子线程无上下文；应该先检查传播还是存储？”</p></div><span class="status info">CONTEXT</span></div><div class="output-grid"><article class="metric"><small>场景</small><strong>异步消费</strong><p>自定义线程池</p></article><article class="metric"><small>现象</small><strong>Trace 中断</strong><p>主线程有，子线程无</p></article><article class="metric"><small>期望</small><strong>核对顺序</strong><p>不是直接猜实现</p></article></div></div>
+          <div data-quick-panel="source" hidden><div class="stage-top"><div><h3>来源先于信心</h3><p>关键判断必须能回到支持它的片段；相似词命中不等于可靠引用。</p></div><span class="status current">SOURCE</span></div><ul class="list"><li>来源 1 支持“异步边界需要显式传播”</li><li>来源 2 支持“先核对执行边界”</li><li>当前项目实际包装仍需查看代码——这是缺口</li></ul></div>
+          <div data-quick-panel="stop" hidden><div class="stage-top"><div><h3>不知道，也要说清为什么</h3><p>版本冲突、来源不足或必须查看真实运行现场时停止生成确定结论。</p></div><span class="status blocked">INSUFFICIENT</span></div><ul class="list fail"><li>缺少当前项目执行器包装代码</li><li>两份文档覆盖不同版本</li><li>下一步：查看代码、配置与一次真实 Trace</li></ul></div>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="workbench-help" aria-labelledby="workbench-title">
+      <div class="section-heading"><span>PRODUCT GUIDE · EXECUTION</span><div><h2 id="workbench-title">Codex Workbench：让一次 Agent 执行可观察</h2><p>工作目录决定事实边界，Session 是运行连接，Thread 保存多轮任务上下文，Turn 是一次具体输入。停止 Turn 与关闭 Session 不是同一动作。</p></div></div>
+      <div class="grid-4">
+        <article class="tool-card"><span>01 · WORKDIR</span><h3>选择工作目录</h3><p>确认它就是本轮项目。帮助页不会读取本机路径。</p></article>
+        <article class="tool-card"><span>02 · SESSION</span><h3>建立运行连接</h3><p>连接成功不代表 Thread 已创建或任务已完成。</p></article>
+        <article class="tool-card"><span>03 · THREAD / TURN</span><h3>继续上下文</h3><p>新目标创建 Thread；一次 Turn 说清目标、范围和不做项。</p></article>
+        <article class="tool-card"><span>04 · EVENTS</span><h3>观察与停止</h3><p>看状态、文本与工具动作；需要越权或证据不足时停止。</p></article>
+      </div>
+      <div class="prompt"><code id="prompt-workbench">先读取项目入口并查看当前工作树，只报告与当前目标相关的事实；不要修改文件、提交或发布。</code><button class="copy-button" type="button" data-copy="prompt-workbench" aria-label="复制 Workbench 示例">⧉</button></div>
+    </section>
+
+    <section class="section">
+      <div class="panel panel-pad">
+        <div class="section-heading" style="margin:0"><span>START HERE</span><div><h2>第一次走全流程？</h2><p>用一个完整演示看清每个角色输入什么、AI 自动做什么、人在哪些节点必须确认、结果怎样回到同一工作项。</p><a class="button primary" href="workflow.html" style="margin-top:18px">打开完整流程演练 →</a></div></div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer"><span>LANOX GUIDE · STATIC HELP PACKAGE</span><span>所有人物、工作项、进度与运行记录均为演示数据</span></footer>
+  <div class="toast" data-toast role="status" aria-live="polite"></div>
+  <script src="../js/help/app.js"></script>
+</body>
+</html>

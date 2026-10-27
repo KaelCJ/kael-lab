@@ -18,13 +18,19 @@ def root_problem(name, is_directory=False):
         return None
     if name == "artifacts":
         return "legacy output location; use .tmp/artifacts/"
+    if name == "static":
+        return "retired shared static directory; use work/static, game/static, life/static, or shared/static"
     if name in {"css", "js"}:
-        return f"legacy resource location; use static/{name}/"
+        return "legacy resource location; use the owning domain's static directory"
     if name in {"kael", "meepo", "nest", "lanox", "help", "workspace-assistant.html"}:
-        return f"retired root work entry; use work/{name}"
+        return f"retired root work entry; use work/static/{name}"
+    if name == "games.html":
+        return "retired root page; use game/static/index.html"
+    if name == "404.html":
+        return "retired root page; use shared/static/404.html"
     if SCRATCH_NAME.match(name):
         return "scratch output outside .tmp/"
-    if not is_directory and name != "favicon.svg" and Path(name).suffix.lower() in IMAGE_SUFFIXES:
+    if not is_directory and Path(name).suffix.lower() in IMAGE_SUFFIXES:
         return "loose root image; place assets in their owning module"
     return None
 
