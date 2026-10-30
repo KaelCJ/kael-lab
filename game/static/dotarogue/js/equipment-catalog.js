@@ -1,6 +1,6 @@
-import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261030-equipment17';
-import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment17';
-import { attributeSummary } from './hero-attributes.js?v=20261029-attributes1';
+import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261030-equipment18';
+import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment18';
+import { attributeSummary, attributeDerivedSummary } from './hero-attributes.js?v=20261030-attribute-contract1';
 
 // Legacy key retained so the DotaRogue rename keeps existing browser records.
 const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
@@ -19,7 +19,7 @@ const UI = {
     grade: '装备 {grade} 级', direct: '直接配方：{items}', noRecipe: '基础组件没有合成配方。', noUses: '当前没有后续合成配方。', pageTitle: '装备图鉴 · DotaRogue',
     upgradeTitle: '成品装备升阶', upgradeRange: '强化 Lv.1–3', upgradeLevel: '强化 Lv.{level}',
     upgradeRules: '全部成品均可免费三合一：3 件同名同级变成 1 件高一级，最高 Lv.3。默认自动升阶，也保留手动入口和关闭开关；生效与储备共同取料。不同等级不能混用，组件与中间件不参与。',
-    damageRules: '普攻、技能、装备和 Buff 使用统一伤害与攻击力，按各自系数获得加值。近战、远程、弹射、穿透、控制和召唤描述攻击机制。普通吸血适用于所有英雄普攻；血精石的技能吸血只由英雄技能触发。',
+    damageRules: '普通攻击只读取攻击力；英雄技能、法术型装备和装备召唤读取技能伤害，分别按自身系数获得加值。近战、远程、弹射、穿透、控制和召唤描述攻击机制。普通吸血适用于所有英雄普攻；血精石的技能吸血只由英雄技能触发。力量、敏捷、智力都会提供攻击力，只有智力额外提供技能伤害。',
     upgradeStats: '各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。',
     upgradeBase: '固定配方合成或商店直购获得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本装备不参与三合一升阶。', upgradeResale: '卖出：{price} 材料',
@@ -46,7 +46,7 @@ const UI = {
     grade: '裝備 {grade} 級', direct: '直接配方：{items}', noRecipe: '基礎組件沒有合成配方。', noUses: '目前沒有後續合成配方。', pageTitle: '裝備圖鑑 · DotaRogue',
     upgradeTitle: '成品裝備升階', upgradeRange: '強化 Lv.1–3', upgradeLevel: '強化 Lv.{level}',
     upgradeRules: '全部成品均可免費三合一：3 件同名同級變成 1 件高一級，最高 Lv.3。預設自動升階，也保留手動入口和關閉開關；生效與儲備共同取料。不同等級不能混用，組件與中間件不參與。',
-    damageRules: '普攻、技能、裝備和 Buff 使用統一傷害與攻擊力，按各自係數獲得加值。近戰、遠程、彈射、穿透、控制和召喚描述攻擊機制。普通吸血適用於所有英雄普攻；血精石的技能吸血只由英雄技能觸發。',
+    damageRules: '普通攻擊只讀取攻擊力；英雄技能、法術型裝備和裝備召喚讀取技能傷害，分別按自身係數獲得加值。近戰、遠程、彈射、穿透、控制和召喚描述攻擊機制。普通吸血適用於所有英雄普攻；血精石的技能吸血只由英雄技能觸發。力量、敏捷、智力都會提供攻擊力，只有智力額外提供技能傷害。',
     upgradeStats: '各級屬性為單件貢獻，按 1／3／9 倍保留投入；升階保留三件材料的屬性總和與總賣價。同類被動只取最強的一份。強化 Lv. 與裝備基礎等級、三個合成階段分別計算。',
     upgradeBase: '固定配方合成或商店直購獲得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本裝備不參與三合一升階。', upgradeResale: '賣出：{price} 材料',
@@ -73,7 +73,7 @@ const UI = {
     grade: 'Grade {grade}', direct: 'Direct recipe: {items}', noRecipe: 'Components have no crafting recipe.', noUses: 'No further recipe currently uses this item.', pageTitle: 'Equipment Archive · DotaRogue',
     upgradeTitle: 'Finished gear upgrades', upgradeRange: 'Upgrade Lv.1–3', upgradeLevel: 'Upgrade Lv.{level}',
     upgradeRules: 'All finished gear can merge for free: 3 matching copies at the same level become 1 at the next, up to Lv.3. Automatic merging is on by default; manual controls and an off switch remain. Active and reserve items can supply the inputs. Mixed levels, components and intermediate items cannot merge this way.',
-    damageRules: 'Basic attacks, skills, gear and buffs share one damage model and attack power stat, with their own scaling ratios. Melee, ranged, bounce, piercing, control and summons describe attack mechanics. Basic lifesteal works for every hero; Bloodstone skill lifesteal only triggers from hero skills.',
+    damageRules: 'Basic attacks read attack power only. Hero skills, spell gear and equipment summons read spell power with their own ratios. Melee, ranged, bounce, piercing, control and summons describe attack mechanics. Basic lifesteal works for every hero; Bloodstone skill lifesteal only triggers from hero skills. Strength, Agility and Intelligence all add attack power; only Intelligence also adds spell power.',
     upgradeStats: 'Stats are per item, scaled by 1 / 3 / 9 to preserve your investment. Merging keeps the three inputs’ total stats and resale value. Only the strongest passive of each type applies. Upgrade levels are separate from item grades and the three crafting stages.',
     upgradeBase: 'Crafting recipes and direct shop purchases provide Lv.1.', upgradeFrom: '3 matching Lv.{level} copies → 1 Lv.{next}',
     upgradeUnavailable: 'This item cannot merge for an upgrade.', upgradeResale: 'Sell: {price} materials',
@@ -115,7 +115,8 @@ const description = id => {
   const item = resolveEquipment(id);
   const text = EQUIPMENT[id][locale === 'en' ? 'descEn' : locale === 'zh-TW' ? 'descTw' : 'desc'];
   const attributes = attributeSummary(item?.attributes, locale);
-  return [text, attributes, EQUIPMENT[id].growth ? copy('growthRules') : ''].filter(Boolean).join(' · ');
+  const derived = attributeDerivedSummary(item?.attributes, locale);
+  return [text, attributes, derived, EQUIPMENT[id].growth ? copy('growthRules') : ''].filter(Boolean).join(' · ');
 };
 const grade = id => `${copy('qualityGrades')[EQUIPMENT[id].grade]} · ${copy('grade').replace('{grade}', EQUIPMENT[id].grade)}`;
 
@@ -250,7 +251,7 @@ function renderDetail() {
       source.className = 'upgrade-source';
       source.textContent = level === 1 ? copy('upgradeBase') : copy('upgradeFrom').replace('{level}', level - 1).replace('{next}', level);
       const stats = document.createElement('p');
-      const levelAttributes = attributeSummary(upgraded.attributes, locale);
+      const levelAttributes = [attributeSummary(upgraded.attributes, locale), attributeDerivedSummary(upgraded.attributes, locale)].filter(Boolean).join(' · ');
       const upgradeDescription = equipmentUpgradeDescription({ id: selectedId, level }, locale);
       stats.textContent = levelAttributes ? `${upgradeDescription} · ${levelAttributes}` : upgradeDescription;
       const resale = document.createElement('p');

@@ -66,17 +66,17 @@ export const BUFFS = {
   orbitingArray: {
     rarity: 'rare', price: 34, icon: './assets/art/dota1/buffs/orbitingArray.png',
     name: '星环装置', nameTw: '星環裝置', nameEn: 'Orbiting Array',
-    desc: '每层在身边增加一个能量球。战斗中每 4 秒，能量球向附近敌人发散一轮；每个能量球造成 8 + 攻击力 × 0.2 伤害，不暴击，不触发普攻命中被动。',
-    descTw: '每層在身邊增加一個能量球。戰鬥中每 4 秒，能量球向附近敵人發散一輪；每個能量球造成 8 + 攻擊力 × 0.2 傷害，不暴擊，不觸發普攻命中被動。',
-    descEn: 'Each stack adds one energy orb around you. Every 4 sec in combat, the orbs fan out toward nearby enemies; each deals 8 + attack power × 0.2 damage, cannot crit, and triggers no basic-attack hit passives.',
+    desc: '每层在身边增加一个能量球。战斗中每 4 秒，能量球向附近敌人发散一轮；每个能量球造成 8 + 技能伤害 × 0.2，不暴击，不触发普攻命中被动。',
+    descTw: '每層在身邊增加一個能量球。戰鬥中每 4 秒，能量球向附近敵人發散一輪；每個能量球造成 8 + 技能傷害 × 0.2，不暴擊，不觸發普攻命中被動。',
+    descEn: 'Each stack adds one energy orb around you. Every 4 sec in combat, the orbs fan out toward nearby enemies; each deals 8 + spell power × 0.2 damage, cannot crit, and triggers no basic-attack hit passives.',
     stats: {}
   },
   clockworkGuards: {
     rarity: 'rare', price: 34, icon: './assets/art/dota1/buffs/clockworkGuards.png',
     name: '机械护卫', nameTw: '機械護衛', nameEn: 'Clockwork Guards',
-    desc: '每层增加一台跟随英雄的机械护卫。每台每 1.5 秒向附近敌人发射一枚飞行弹丸，造成 6 + 攻击力 × 0.15 伤害；不暴击，不触发普攻命中被动。',
-    descTw: '每層增加一台跟隨英雄的機械護衛。每台每 1.5 秒向附近敵人發射一枚飛行彈丸，造成 6 + 攻擊力 × 0.15 傷害；不暴擊，不觸發普攻命中被動。',
-    descEn: 'Each stack adds a mechanical guard that follows you. Every 1.5 sec, each guard fires a flying projectile at a nearby enemy for 6 + attack power × 0.15 damage; cannot crit or trigger basic-attack hit passives.',
+    desc: '每层增加一台跟随英雄的机械护卫。每台每 1.5 秒向附近敌人发射一枚飞行弹丸，造成 6 + 技能伤害 × 0.15；不暴击，不触发普攻命中被动。',
+    descTw: '每層增加一台跟隨英雄的機械護衛。每台每 1.5 秒向附近敵人發射一枚飛行彈丸，造成 6 + 技能傷害 × 0.15；不暴擊，不觸發普攻命中被動。',
+    descEn: 'Each stack adds a mechanical guard that follows you. Every 1.5 sec, each guard fires a flying projectile at a nearby enemy for 6 + spell power × 0.15 damage; cannot crit or trigger basic-attack hit passives.',
     stats: {}
   },
   vladmir: {

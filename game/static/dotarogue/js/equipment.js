@@ -213,10 +213,10 @@ export const EQUIPMENT = {
     name: "魔力法杖",
     nameTw: "魔力法杖",
     nameEn: "Staff of Wizardry",
-    desc: "攻击力 +5。",
-    descTw: "攻擊力 +5。",
-    descEn: "Attack power +5.",
-    stats: { attackPower: 5 }
+    desc: "技能伤害 +5。",
+    descTw: "技能傷害 +5。",
+    descEn: "Spell power +5.",
+    stats: { skillPower: 5 }
   },
   robeMagi: {
     kind: "component",
@@ -225,10 +225,10 @@ export const EQUIPMENT = {
     name: "法师长袍",
     nameTw: "法師長袍",
     nameEn: "Robe of the Magi",
-    desc: "攻击力 +3。",
-    descTw: "攻擊力 +3。",
-    descEn: "Attack power +3.",
-    stats: { attackPower: 3 }
+    desc: "技能伤害 +3。",
+    descTw: "技能傷害 +3。",
+    descEn: "Spell power +3.",
+    stats: { skillPower: 3 }
   },
   sobiMask: {
     kind: "component",
@@ -326,10 +326,10 @@ export const EQUIPMENT = {
     name: "空明杖",
     nameTw: "空明杖",
     nameEn: "Oblivion Staff",
-    desc: "攻击力 +9，每秒回蓝 +1.5，攻速 +8%。",
-    descTw: "攻擊力 +9，每秒回魔 +1.5，攻速 +8%。",
-    descEn: "Attack power +9; Mana per sec +1.5; Attack speed +8%.",
-    stats: { attackPower: 9, "manaRegen": 1.5, "attackSpeed": 8 },
+    desc: "技能伤害 +9，每秒回蓝 +1.5，攻速 +8%。",
+    descTw: "技能傷害 +9，每秒回魔 +1.5，攻速 +8%。",
+    descEn: "Spell power +9; Mana per sec +1.5; Attack speed +8%.",
+    stats: { skillPower: 9, "manaRegen": 1.5, "attackSpeed": 8 },
     recipe: ["staffWizardry", "robeMagi", "sobiMask"]
   },
   mjollnir: {
@@ -421,10 +421,10 @@ export const EQUIPMENT = {
     name: "蓝杖",
     nameTw: "藍杖",
     nameEn: "Aghanim's Scepter",
-    desc: "攻击力 +12，最大生命 +10，最大法力 +50，每秒回蓝 +2，主动技能冷却缩减 +15%；主动技能伤害或增益效果强化 25%。",
-    descTw: "攻擊力 +12，最大生命 +10，最大法力 +50，每秒回魔 +2，主動技能冷卻縮減 +15%；主動技能傷害或增益效果強化 25%。",
-    descEn: "Attack power +12, max HP +10, max mana +50, mana regeneration +2/sec, active cooldown reduction +15%; active skill damage or buffs +25%.",
-    stats: { attackPower: 12, "maxHp": 10, "maxMana": 50, "manaRegen": 2, "abilityHaste": 15 },
+    desc: "技能伤害 +12，最大生命 +10，最大法力 +50，每秒回蓝 +2，主动技能冷却缩减 +15%；主动技能伤害或增益效果强化 25%。",
+    descTw: "技能傷害 +12，最大生命 +10，最大法力 +50，每秒回魔 +2，主動技能冷卻縮減 +15%；主動技能傷害或增益效果強化 25%。",
+    descEn: "Spell power +12, max HP +10, max mana +50, mana regeneration +2/sec, active cooldown reduction +15%; active skill damage or buffs +25%.",
+    stats: { skillPower: 12, "maxHp": 10, "maxMana": 50, "manaRegen": 2, "abilityHaste": 15 },
     recipe: ["pointBooster", "oblivionStaff"],
     passive: {"id": "activeAmplify", "multiplier": 1.25}
   },
@@ -486,30 +486,30 @@ export const EQUIPMENT = {
   dagon: {
     kind: "finished", grade: 4, price: 64,
     name: "红杖（大根）", nameTw: "紅杖（達貢之神力）", nameEn: "Dagon",
-    desc: "Lv.1 单束冲击：每 6 秒自动向 500 范围内无遮挡敌人释放能量冲击；升阶缩短冷却、扩大射程，并变为双束分光、三束棱光，共享该次总伤害。",
-    descTw: "Lv.1 單束衝擊：每 6 秒自動向 500 範圍內無遮擋敵人釋放能量衝擊；升階縮短冷卻、擴大射程，並變為雙束分光、三束稜光，共享該次總傷害。",
-    descEn: "Lv.1 Focused Beam: automatically blast an unobstructed enemy within 500 every 6 sec. Upgrades shorten cooldown, extend range, then evolve into Twin Split and Prismatic Trio while sharing each cast's total damage.",
-    stats: { attackPower: 11, manaRegen: 1 },
+    desc: "技能伤害 +11。Lv.1 单束冲击：每 6 秒自动向 500 范围内无遮挡敌人释放能量冲击；升阶缩短冷却、扩大射程，并变为双束分光、三束棱光，共享该次总伤害。",
+    descTw: "技能傷害 +11。Lv.1 單束衝擊：每 6 秒自動向 500 範圍內無遮擋敵人釋放能量衝擊；升階縮短冷卻、擴大射程，並變為雙束分光、三束稜光，共享該次總傷害。",
+    descEn: "Spell power +11. Lv.1 Focused Beam: automatically blast an unobstructed enemy within 500 every 6 sec. Upgrades shorten cooldown, extend range, then evolve into Twin Split and Prismatic Trio while sharing each cast's total damage.",
+    stats: { skillPower: 11, manaRegen: 1 },
     recipe: ["staffWizardry", "bladesAttack", "sobiMask"],
     passive: { id: "arcaneBurst", cooldown: 6, range: 500, damage: 38, attackRatio: .7, targets: 1, spreadDegrees: 0, beamWidth: 6, impactRadius: 22 }
   },
   bloodstone: {
     kind: "finished", grade: 5, price: 94,
     name: "血精石", nameTw: "血精石", nameEn: "Bloodstone",
-    desc: "英雄技能按实际伤害回血，范围与持续伤害回复效率降低。",
-    descTw: "英雄技能按實際傷害回血，範圍與持續傷害回復效率降低。",
-    descEn: "Hero skills heal from actual damage; area and periodic damage heal less.",
-    stats: { maxHp: 12, maxMana: 45, regen: 3, manaRegen: 2, lifesteal: 5 },
+    desc: "技能伤害 +8；英雄技能按实际伤害回血，范围与持续伤害回复效率降低。",
+    descTw: "技能傷害 +8；英雄技能按實際傷害回血，範圍與持續傷害回復效率降低。",
+    descEn: "Spell power +8. Hero skills heal from actual damage; area and periodic damage heal less.",
+    stats: { skillPower: 8, maxHp: 12, maxMana: 45, regen: 3, manaRegen: 2, lifesteal: 5 },
     recipe: ["perseverance", "pointBooster", "maskDeath"],
     passive: { id: "skillLeech", ratio: .08, areaRatio: .25, capPerSecond: .04 }
   },
   orchid: {
     kind: "finished", grade: 5, price: 82,
     name: "紫苑", nameTw: "紫苑", nameEn: "Orchid Malevolence",
-    desc: "普攻标记敌人 5 秒，成功施放主动技能时引爆 600 范围内一个标记。",
-    descTw: "普攻標記敵人 5 秒，成功施放主動技能時引爆 600 範圍內一個標記。",
-    descEn: "Basic attacks mark enemies for 5 sec; a successful active skill detonates one mark within 600 range.",
-    stats: { attackPower: 20, attackSpeed: 12, manaRegen: 2 },
+    desc: "攻击力 +20，技能伤害 +8，攻速 +12%，每秒回蓝 +2。普攻标记敌人 5 秒，成功施放主动技能时引爆 600 范围内一个标记。",
+    descTw: "攻擊力 +20，技能傷害 +8，攻速 +12%，每秒回魔 +2。普攻標記敵人 5 秒，成功施放主動技能時引爆 600 範圍內一個標記。",
+    descEn: "Attack power +20; spell power +8; attack speed +12%; mana regen +2/sec. Basic attacks mark enemies for 5 sec; a successful active skill detonates one mark within 600 range.",
+    stats: { attackPower: 20, skillPower: 8, attackSpeed: 12, manaRegen: 2 },
     recipe: ["oblivionStaff", "claymore"],
     passive: { id: "soulMark", duration: 5, range: 600, damage: 16, attackRatio: .5 }
   },
@@ -546,20 +546,20 @@ export const EQUIPMENT = {
   cyclone: {
     kind: "finished", grade: 4, price: 70,
     name: "风杖", nameTw: "風杖", nameEn: "Eul's Scepter",
-    desc: "每 9 秒自动吹起 160 范围内最近敌人；升阶扩大范围、缩短冷却并延长控制，精英和首领控制时长降低。",
-    descTw: "每 9 秒自動吹起 160 範圍內最近敵人；升階擴大範圍、縮短冷卻並延長控制，精英和首領控制時長降低。",
-    descEn: "Every 9 sec, automatically lifts the nearest enemy within 160 range; upgrades extend range and duration while shortening cooldown. Elites and bosses recover sooner.",
-    stats: { attackPower: 10, manaRegen: 2, speed: 6 },
+    desc: "技能伤害 +10。每 9 秒自动吹起 160 范围内最近敌人；升阶扩大范围、缩短冷却并延长控制，精英和首领控制时长降低。",
+    descTw: "技能傷害 +10。每 9 秒自動吹起 160 範圍內最近敵人；升階擴大範圍、縮短冷卻並延長控制，精英和首領控制時長降低。",
+    descEn: "Spell power +10. Every 9 sec, automatically lifts the nearest enemy within 160 range; upgrades extend range and duration while shortening cooldown. Elites and bosses recover sooner.",
+    stats: { skillPower: 10, manaRegen: 2, speed: 6 },
     recipe: ["staffWizardry", "robeMagi", "voidStone"],
     passive: { id: "cyclone", cooldown: 9, range: 160, duration: 1, gustRadius: 28 }
   },
   necronomicon: {
     kind: "finished", grade: 5, price: 88,
     name: "死灵书", nameTw: "死靈書", nameEn: "Necronomicon",
-    desc: "每 12 秒召唤短时存在的战士与射手，最多两名；升阶缩短冷却、延长存在并提高召唤伤害，召唤击杀不产生奖励。",
-    descTw: "每 12 秒召喚短時存在的戰士與射手，最多兩名；升階縮短冷卻、延長存在並提高召喚傷害，召喚擊殺不產生獎勵。",
-    descEn: "Every 12 sec summons a temporary warrior and archer, up to two; upgrades shorten cooldown, extend duration and increase summon damage. Their kills grant no rewards.",
-    stats: { attackPower: 13, armor: 3, lifesteal: 9, regen: 1, manaRegen: 1 },
+    desc: "技能伤害 +13。每 12 秒召唤短时存在的战士与射手，最多两名；升阶缩短冷却、延长存在并提高召唤伤害，召唤击杀不产生奖励。",
+    descTw: "技能傷害 +13。每 12 秒召喚短時存在的戰士與射手，最多兩名；升階縮短冷卻、延長存在並提高召喚傷害，召喚擊殺不產生獎勵。",
+    descEn: "Spell power +13. Every 12 sec summons a temporary warrior and archer, up to two; upgrades shorten cooldown, extend duration and increase summon damage. Their kills grant no rewards.",
+    stats: { skillPower: 13, armor: 3, lifesteal: 9, regen: 1, manaRegen: 1 },
     recipe: ["helmDominator", "staffWizardry", "sobiMask"],
     passive: { id: "necromancy", cooldown: 12, duration: 6, damage: 10, attackRatio: .25, attackInterval: .9 }
   },
@@ -576,10 +576,10 @@ export const EQUIPMENT = {
   meteorHammer: {
     kind: "finished", grade: 5, price: 84,
     name: "陨星锤", nameTw: "隕星錘", nameEn: "Meteor Hammer",
-    desc: "攻击力 +14，每5秒回血 +2。站定0.8秒后轰击450内合法敌人，冷却7秒；升阶缩短蓄力和冷却，并增加射程、范围与伤害。",
-    descTw: "攻擊力 +14，每5秒回血 +2。站定0.8秒後轟擊450內合法敵人，冷卻7秒；升階縮短蓄力與冷卻，並增加射程、範圍與傷害。",
-    descEn: "Attack power +14; HP per 5 sec +2. Stand still for 0.8 sec to strike a legal enemy within 450 with a 7 sec cooldown. Upgrades shorten charge and cooldown while increasing range, area and damage.",
-    stats: { attackPower: 14, regen: 2 },
+    desc: "技能伤害 +14，每5秒回血 +2。站定0.8秒后轰击450内合法敌人，冷却7秒；升阶缩短蓄力和冷却，并增加射程、范围与伤害。",
+    descTw: "技能傷害 +14，每5秒回血 +2。站定0.8秒後轟擊450內合法敵人，冷卻7秒；升階縮短蓄力與冷卻，並增加射程、範圍與傷害。",
+    descEn: "Spell power +14; HP per 5 sec +2. Stand still for 0.8 sec to strike a legal enemy within 450 with a 7 sec cooldown. Upgrades shorten charge and cooldown while increasing range, area and damage.",
+    stats: { skillPower: 14, regen: 2 },
     recipe: ["mithrilHammer", "staffWizardry", "ringHealth"],
     passive: { id: "meteorStrike", cooldown: 7, range: 450, radius: 64, damage: 30, attackRatio: .6, hold: .8, afterglow: .6 }
   },
@@ -629,10 +629,10 @@ export const EQUIPMENT = {
     name: "灾星之戒",
     nameTw: "災星之戒",
     nameEn: "Calamity Ring",
-    desc: "攻击力 +8，最大法力 +25，每秒回蓝 +1。成功施放 Q 后触发灾星追击；击杀成长提高追击预算。",
-    descTw: "攻擊力 +8，最大法力 +25，每秒回魔 +1。成功施放 Q 後觸發災星追擊；擊殺成長提高追擊預算。",
-    descEn: "Attack power +8; max mana +25; mana regeneration +1/sec. A successful Q triggers Calamity Chase; kills increase its damage budget.",
-    stats: { attackPower: 8, maxMana: 25, manaRegen: 1 },
+    desc: "技能伤害 +8，最大法力 +25，每秒回蓝 +1。成功施放 Q 后触发灾星追击；击杀成长提高追击预算。",
+    descTw: "技能傷害 +8，最大法力 +25，每秒回魔 +1。成功施放 Q 後觸發災星追擊；擊殺成長提高追擊預算。",
+    descEn: "Spell power +8; max mana +25; mana regeneration +1/sec. A successful Q triggers Calamity Chase; kills increase its damage budget.",
+    stats: { skillPower: 8, maxMana: 25, manaRegen: 1 },
     recipe: ["pointBooster", "robeMagi", "sobiMask"],
     growth: { max: 360, thresholds: [60, 180, 360], rewards: { normal: 1, elite: 3, boss: 6 } },
     passive: { id: "calamityChase", cooldown: 8, range: 500, baseDamage: 24, attackRatio: 0.4, targets: 1, growthStages: [0.25, 0.5, 0.75, 1] }
@@ -644,10 +644,10 @@ export const EQUIPMENT = {
     name: "圣洁斗篷",
     nameTw: "聖潔斗篷",
     nameEn: "Holy Cape",
-    desc: "最大法力 +45，护甲 +3。成功施放 Q 累积圣洁能量，达到阈值后向周围敌人释放纯粹冲击。",
-    descTw: "最大法力 +45，護甲 +3。成功施放 Q 累積聖潔能量，達到閾值後向周圍敵人釋放純粹衝擊。",
-    descEn: "Max mana +45; armor +3. Successful Q casts build holy energy; reaching the threshold releases a pure-damage pulse around you.",
-    stats: { maxMana: 45, armor: 3 },
+    desc: "技能伤害 +8，最大法力 +45，护甲 +3。成功施放 Q 累积圣洁能量，达到阈值后向周围敌人释放纯粹冲击。",
+    descTw: "技能傷害 +8，最大法力 +45，護甲 +3。成功施放 Q 累積聖潔能量，達到閾值後向周圍敵人釋放純粹衝擊。",
+    descEn: "Spell power +8; max mana +45; armor +3. Successful Q casts build holy energy; reaching the threshold releases a pure-damage pulse around you.",
+    stats: { skillPower: 8, maxMana: 45, armor: 3 },
     recipe: ["pointBooster", "voidStone", "robeMagi"],
     passive: { id: "holyPulse", threshold: 3, radius: 150, damage: 28, attackRatio: .25 }
   },
@@ -658,10 +658,10 @@ export const EQUIPMENT = {
     name: "冰龙之喉",
     nameTw: "冰龍之喉",
     nameEn: "Ice Dragon Maw",
-    desc: "攻击力 +10，最大法力 +35。成功 Q 会向最近目标释放冰龙寒息，造成额外伤害并短暂减速。",
-    descTw: "攻擊力 +10，最大法力 +35。成功 Q 會向最近目標釋放冰龍寒息，造成額外傷害並短暫減速。",
-    descEn: "Attack power +10; max mana +35. A successful Q releases frost breath at the nearest target for bonus damage and a brief slow.",
-    stats: { attackPower: 10, maxMana: 35 },
+    desc: "技能伤害 +10，最大法力 +35。成功 Q 会向最近目标释放冰龙寒息，造成额外伤害并短暂减速。",
+    descTw: "技能傷害 +10，最大法力 +35。成功 Q 會向最近目標釋放冰龍寒息，造成額外傷害並短暫減速。",
+    descEn: "Spell power +10; max mana +35. A successful Q releases frost breath at the nearest target for bonus damage and a brief slow.",
+    stats: { skillPower: 10, maxMana: 35 },
     recipe: ["pointBooster", "staffWizardry", "voidStone"],
     passive: { id: "iceDragon", damage: 24, attackRatio: .35, slow: .35, duration: 1.4, range: 520 }
   },
@@ -686,10 +686,10 @@ export const EQUIPMENT = {
     name: "陨星魔典",
     nameTw: "隕星魔典",
     nameEn: "Meteor Grimoire",
-    desc: "攻击力 +18，每秒回蓝 +2，技能冷却缩减 +10%。站定后周期性召唤陨星；成功施放 Q 会释放控制脉冲。",
-    descTw: "攻擊力 +18，每秒回魔 +2，技能冷卻縮減 +10%。站定後週期性召喚隕星；成功施放 Q 會釋放控制脈衝。",
-    descEn: "Attack power +18; mana regen +2/sec; active cooldown reduction +10%. Standing still calls down meteors periodically; a successful Q releases a control pulse.",
-    stats: { attackPower: 18, manaRegen: 2, abilityHaste: 10 },
+    desc: "技能伤害 +20，每秒回蓝 +2，技能冷却缩减 +10%。站定后周期性召唤陨星；成功施放 Q 会释放控制脉冲。",
+    descTw: "技能傷害 +20，每秒回魔 +2，技能冷卻縮減 +10%。站定後週期性召喚隕星；成功施放 Q 會釋放控制脈衝。",
+    descEn: "Spell power +20; mana regen +2/sec; active cooldown reduction +10%. Standing still calls down meteors periodically; a successful Q releases a control pulse.",
+    stats: { skillPower: 20, manaRegen: 2, abilityHaste: 10 },
     recipe: ["meteorHammer", "cyclone", "orchid"],
     passive: { id: "meteorGrimoire", cooldown: 8, range: 520, radius: 78, damage: 38, attackRatio: .7, hold: .6, pulseRadius: 150, pulseDuration: .8 }
   }
@@ -771,10 +771,10 @@ export const EQUIPMENT = {
     name: "戮尽斗篷",
     nameTw: "戮盡斗篷",
     nameEn: "Cloak of Carnage",
-    desc: "攻击力 +14，最大法力 +60，主动技能冷却缩减 +12%。成功施放 Q 累积屠戮能量，满层后远距离释放范围冲击并移除敌人部分当前生命。",
-    descTw: "攻擊力 +14，最大法力 +60，主動技能冷卻縮減 +12%。成功施放 Q 累積屠戮能量，滿層後遠距離釋放範圍衝擊並移除敵人部分當前生命。",
-    descEn: "Attack power +14; max mana +60; active cooldown reduction +12%. Successful Q casts build Carnage energy; at full charge, release a long-range area blast that removes a portion of current enemy HP.",
-    stats: { attackPower: 14, maxMana: 60, abilityHaste: 12 },
+    desc: "技能伤害 +14，最大法力 +60，主动技能冷却缩减 +12%。成功施放 Q 累积屠戮能量，满层后远距离释放范围冲击并移除敌人部分当前生命。",
+    descTw: "技能傷害 +14，最大法力 +60，主動技能冷卻縮減 +12%。成功施放 Q 累積屠戮能量，滿層後遠距離釋放範圍衝擊並移除敵人部分當前生命。",
+    descEn: "Spell power +14; max mana +60; active cooldown reduction +12%. Successful Q casts build Carnage energy; at full charge, release a long-range area blast that removes a portion of current HP.",
+    stats: { skillPower: 14, maxMana: 60, abilityHaste: 12 },
     recipe: ["aghanim", "orchid", "bloodstone"],
     passive: { id: "cloakOfCarnage", threshold: 5, range: 560, radius: 190, damage: 34, attackRatio: .65, currentHpRatio: .06 }
   },
@@ -785,20 +785,20 @@ export const EQUIPMENT = {
     name: "暗影灾劫",
     nameTw: "暗影災劫",
     nameEn: "Disaster in Shadow",
-    desc: "攻击力 +24，攻速 +20%。有效普攻有概率释放灾劫连锁闪电；升阶提高触发率、伤害和跳跃数量。",
-    descTw: "攻擊力 +24，攻速 +20%。有效普攻有機率釋放災劫連鎖閃電；升階提高觸發率、傷害和跳躍數量。",
-    descEn: "Attack power +24; attack speed +20%. Successful basics can release Disaster Chain Lightning; upgrades increase proc chance, damage and jumps.",
-    stats: { attackPower: 24, attackSpeed: 20 },
+    desc: "攻击力 +24，技能伤害 +8，攻速 +20%。有效普攻有概率释放灾劫连锁闪电；升阶提高触发率、伤害和跳跃数量。",
+    descTw: "攻擊力 +24，技能傷害 +8，攻速 +20%。有效普攻有機率釋放災劫連鎖閃電；升階提高觸發率、傷害和跳躍數量。",
+    descEn: "Attack power +24; spell power +8; attack speed +20%. Successful basics can release Disaster Chain Lightning; upgrades increase proc chance, damage and jumps.",
+    stats: { attackPower: 24, skillPower: 8, attackSpeed: 20 },
     recipe: ["mjollnir", "butterfly", "demonEdge"],
     passive: { id: "shadowDisaster", chance: .2, damage: 18, jumps: 3, radius: 190 }
   },
   havocHammer: {
     kind: "finished", grade: 5, price: 136,
     name: "浩劫之锤", nameTw: "浩劫之錘", nameEn: "Havoc Hammer",
-    desc: "攻击力 +24，攻速 +16%，护甲 +4。有效普攻有概率释放灾劫连锁；成功施放 Q 会强化下一次范围冲击。",
-    descTw: "攻擊力 +24，攻速 +16%，護甲 +4。有效普攻有機率釋放災劫連鎖；成功施放 Q 會強化下一次範圍衝擊。",
-    descEn: "Attack power +24; attack speed +16%; armor +4. Successful basics can release a havoc chain, and a successful Q empowers a follow-up area impact.",
-    stats: { attackPower: 24, attackSpeed: 16, armor: 4 },
+    desc: "攻击力 +24，技能伤害 +10，攻速 +16%，护甲 +4。有效普攻有概率释放灾劫连锁；成功施放 Q 会强化下一次范围冲击。",
+    descTw: "攻擊力 +24，技能傷害 +10，攻速 +16%，護甲 +4。有效普攻有機率釋放災劫連鎖；成功施放 Q 會強化下一次範圍衝擊。",
+    descEn: "Attack power +24; spell power +10; attack speed +16%; armor +4. Successful basics can release a havoc chain, and a successful Q empowers a follow-up area impact.",
+    stats: { attackPower: 24, skillPower: 10, attackSpeed: 16, armor: 4 },
     recipe: ["battlefury", "meteorHammer", "vanguard"],
     passive: { id: "havocHammer", chance: .22, damage: 26, jumps: 2, radius: 180, threshold: 3, impactRadius: 120, impactDamage: 38, attackRatio: .45 }
   },
@@ -825,10 +825,10 @@ export const EQUIPMENT = {
   obliteratingOrb: {
     kind: "finished", grade: 5, price: 122,
     name: "抹灭法球", nameTw: "抹滅法球", nameEn: "Obliterating Orb",
-    desc: "最大生命 +20，最大法力 +65，攻击力 +12。主动技能伤害提高 20%，并使技能命中短暂削弱目标。",
-    descTw: "最大生命 +20，最大法力 +65，攻擊力 +12。主動技能傷害提高 20%，並使技能命中短暫削弱目標。",
-    descEn: "Max HP +20; max mana +65; attack power +12. Active skills deal 20% more damage and briefly weaken targets they hit.",
-    stats: { attackPower: 12, maxHp: 20, maxMana: 65 },
+    desc: "技能伤害 +12，最大生命 +20，最大法力 +65。主动技能伤害提高 20%，并使技能命中短暂削弱目标。",
+    descTw: "技能傷害 +12，最大生命 +20，最大法力 +65。主動技能傷害提高 20%，並使技能命中短暫削弱目標。",
+    descEn: "Spell power +12; max HP +20; max mana +65. Active skills deal 20% more damage and briefly weaken targets they hit.",
+    stats: { skillPower: 12, maxHp: 20, maxMana: 65 },
     recipe: ["bloodstone", "aghanim", "pointBooster"],
     passive: { id: "activeAmplify", multiplier: 1.2 }
   },
@@ -845,20 +845,20 @@ export const EQUIPMENT = {
   nullifier: {
     kind: "finished", grade: 5, price: 132,
     name: "否决挂饰", nameTw: "否決掛飾", nameEn: "Nullifier",
-    desc: "攻击力 +20，攻速 +18%，每秒回蓝 +2。成功施放 Q 会否决最近敌人，造成伤害并短暂禁锢。",
-    descTw: "攻擊力 +20，攻速 +18%，每秒回魔 +2。成功施放 Q 會否決最近敵人，造成傷害並短暫禁錮。",
-    descEn: "Attack power +20; attack speed +18%; mana regen +2/sec. A successful Q nullifies the nearest enemy, dealing damage and briefly rooting it.",
-    stats: { attackPower: 20, attackSpeed: 18, manaRegen: 2 },
+    desc: "技能伤害 +20，攻速 +18%，每秒回蓝 +2。成功施放 Q 会否决最近敌人，造成伤害并短暂禁锢。",
+    descTw: "技能傷害 +20，攻速 +18%，每秒回魔 +2。成功施放 Q 會否決最近敵人，造成傷害並短暫禁錮。",
+    descEn: "Spell power +20; attack speed +18%; mana regen +2/sec. A successful Q nullifies the nearest enemy, dealing damage and briefly rooting it.",
+    stats: { skillPower: 20, attackSpeed: 18, manaRegen: 2 },
     recipe: ["desolator", "orchid", "demonEdge"],
     passive: { id: "nullifier", damage: 34, attackRatio: .55, range: 620, duration: 1.1 }
   },
   paladinSword: {
     kind: "finished", grade: 5, price: 138,
     name: "巫祭短剑", nameTw: "巫祭短劍", nameEn: "Paladin Sword",
-    desc: "攻击力 +18，最大生命 +18，最大法力 +35，攻速 +14%。普攻附带寒毒，成功施放 Q 时引爆最近目标。",
-    descTw: "攻擊力 +18，最大生命 +18，最大法力 +35，攻速 +14%。普攻附帶寒毒，成功施放 Q 時引爆最近目標。",
-    descEn: "Attack power +18; max HP +18; max mana +35; attack speed +14%. Basics apply frost venom, and a successful Q detonates the nearest target.",
-    stats: { attackPower: 18, maxHp: 18, maxMana: 35, attackSpeed: 14 },
+    desc: "攻击力 +18，技能伤害 +8，最大生命 +18，最大法力 +35，攻速 +14%。普攻附带寒毒，成功施放 Q 时引爆最近目标。",
+    descTw: "攻擊力 +18，技能傷害 +8，最大生命 +18，最大法力 +35，攻速 +14%。普攻附帶寒毒，成功施放 Q 時引爆最近目標。",
+    descEn: "Attack power +18; spell power +8; max HP +18; max mana +35; attack speed +14%. Basics apply frost venom, and a successful Q detonates the nearest target.",
+    stats: { attackPower: 18, skillPower: 8, maxHp: 18, maxMana: 35, attackSpeed: 14 },
     recipe: ["skadi", "orchid", "satanic"],
     passive: { id: "paladinSword", damage: 28, attackRatio: .45, range: 520, duration: 2.4 }
   },
@@ -905,17 +905,18 @@ export const EQUIPMENT = {
   netherInfiltratorShortSword: {
     kind: "finished", grade: 5, price: 154,
     name: "幽冥渗透者短剑", nameTw: "幽冥滲透者短劍", nameEn: "Nether Infiltrator Short Sword",
-    desc: "攻击力 +24，攻速 +20%，最大法力 +45，每秒回蓝 +2。成功施放 Q 会释放幽冥冲击，并短暂削弱目标。",
-    descTw: "攻擊力 +24，攻速 +20%，最大法力 +45，每秒回魔 +2。成功施放 Q 會釋放幽冥衝擊，並短暫削弱目標。",
-    descEn: "Attack power +24; attack speed +20%; max mana +45; mana regen +2/sec. A successful Q releases a Nether strike and briefly weakens its target.",
-    stats: { attackPower: 24, attackSpeed: 20, maxMana: 45, manaRegen: 2 },
+    desc: "技能伤害 +24，攻速 +20%，最大法力 +45，每秒回蓝 +2。成功施放 Q 会释放幽冥冲击，并短暂削弱目标。",
+    descTw: "技能傷害 +24，攻速 +20%，最大法力 +45，每秒回魔 +2。成功施放 Q 會釋放幽冥衝擊，並短暫削弱目標。",
+    descEn: "Spell power +24; attack speed +20%; max mana +45; mana regen +2/sec. A successful Q releases a Nether strike and briefly weakens its target.",
+    stats: { skillPower: 24, attackSpeed: 20, maxMana: 45, manaRegen: 2 },
     recipe: ["aghanim", "orchid", "dagon"],
     passive: { id: "netherInfiltrator", damage: 42, attackRatio: .6, range: 560, duration: 1.4 }
   }
 };
 
 // Dota-style item attributes. These are separate from the existing combat
-// stats so old recipes, prices and unified attackPower values remain intact.
+// stats so old recipes and prices remain intact while attackPower and skillPower
+// stay as separate readable growth axes.
 // They scale with finished-item level in resolveEquipment, just like stats.
 export const EQUIPMENT_ATTRIBUTES = {
   mithrilHammer: { strength: 1 }, glovesHaste: { agility: 1 }, eaglehorn: { agility: 2 },
@@ -1071,7 +1072,7 @@ function equipmentEvolutionDescription(def, locale, compact) {
       if (!compact) text += ' All-damage bonuses apply once; ranged basics do not trigger cleave.';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? ` Secondary targets must lie in a ${p.spreadDegrees}° fan aimed at the primary target.` : '';
-      text = `Attack power +${s.attackPower}; mana/sec +${s.manaRegen}. Every ${p.cooldown} sec, fire up to ${p.targets} beam${p.targets > 1 ? 's' : ''} at unobstructed enemies within ${p.range}; the primary target prioritizes elites/bosses.${fan} Total base damage per cast: ${p.damage} + attack power × ${p.attackRatio}. One target takes all; with multiple targets, divide by actual target count using primary weight 2 and weight 1 for each secondary. Stays ready without a target.`;
+      text = `Spell power +${s.skillPower}; mana/sec +${s.manaRegen}. Every ${p.cooldown} sec, fire up to ${p.targets} beam${p.targets > 1 ? 's' : ''} at unobstructed enemies within ${p.range}; the primary target prioritizes elites/bosses.${fan} Total base damage per cast: ${p.damage} + spell power × ${p.attackRatio}. One target takes all; with multiple targets, divide by actual target count using primary weight 2 and weight 1 for each secondary. Stays ready without a target.`;
       if (!compact) text += ' Only the highest-level passive applies. All-damage bonuses apply once; beams cannot crit, trigger basic lifesteal or trigger basic-hit passives or counters.';
     } else {
       text = `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%; move speed +${s.speed}%; dodge +${s.dodge}% (total cap 55%). Every ${p.hits} successful basics fire ${p.projectiles} mirror projectiles in a fan, dividing a total of ${percent(2 * p.ratio)}% pre-crit attack damage evenly. Mirrors cannot crit, trigger basic lifesteal or trigger basic-hit passives or counters.`;
@@ -1088,7 +1089,7 @@ function equipmentEvolutionDescription(def, locale, compact) {
       if (!compact) text += '所有傷害加成只計算一次；遠程普攻不觸發。';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? `副目標限朝向主目標的 ${p.spreadDegrees}° 扇面內。` : '';
-      text = `攻擊力 +${s.attackPower}，每秒回魔 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 範圍內無遮擋敵人發射最多 ${p.targets} 束衝擊，主目標優先精英／首領。${fan}單次總基礎傷害 ${p.damage} + 攻擊力 × ${p.attackRatio}；僅一個目標時全額，多個時依實際目標數分攤，主目標權重 2、每個副目標權重 1。無目標保留就緒。`;
+      text = `技能傷害 +${s.skillPower}，每秒回魔 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 範圍內無遮擋敵人發射最多 ${p.targets} 束衝擊，主目標優先精英／首領。${fan}單次總基礎傷害 ${p.damage} + 技能傷害 × ${p.attackRatio}；僅一個目標時全額，多個時依實際目標數分攤，主目標權重 2、每個副目標權重 1。無目標保留就緒。`;
       if (!compact) text += '同類只取最高階；所有傷害加成只計算一次，衝擊不暴擊、不觸發普攻吸血、不觸發普攻命中被動或計數。';
     } else {
       text = `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，閃避 +${s.dodge}%（總上限 55%）。每 ${p.hits} 次有效普攻扇形發射 ${p.projectiles} 道幻影，將觸發普攻暴擊前傷害的總倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴擊、不觸發普攻吸血、不觸發普攻命中被動或計數。`;
@@ -1103,7 +1104,7 @@ function equipmentEvolutionDescription(def, locale, compact) {
       if (!compact) text += '所有伤害加成只计算一次；远程普攻不触发。';
     } else if (def.id === 'dagon') {
       const fan = p.targets > 1 ? `副目标限朝向主目标的 ${p.spreadDegrees}° 扇面内。` : '';
-      text = `攻击力 +${s.attackPower}，每秒回蓝 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 范围内无遮挡敌人发射最多 ${p.targets} 束冲击，主目标优先精英／首领。${fan}单次总基础伤害 ${p.damage} + 攻击力 × ${p.attackRatio}；仅一个目标时全额，多个时依实际目标数分摊，主目标权重 2、每个副目标权重 1。无目标保留就绪。`;
+      text = `技能伤害 +${s.skillPower}，每秒回蓝 +${s.manaRegen}。每 ${p.cooldown} 秒向 ${p.range} 范围内无遮挡敌人发射最多 ${p.targets} 束冲击，主目标优先精英／首领。${fan}单次总基础伤害 ${p.damage} + 技能伤害 × ${p.attackRatio}；仅一个目标时全额，多个时依实际目标数分摊，主目标权重 2、每个副目标权重 1。无目标保留就绪。`;
       if (!compact) text += '同类只取最高阶；所有伤害加成只计算一次，冲击不暴击、不触发普攻吸血、不触发普攻命中被动或计数。';
     } else {
       text = `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%，移速 +${s.speed}%，闪避 +${s.dodge}%（总上限 55%）。每 ${p.hits} 次有效普攻扇形发射 ${p.projectiles} 道幻影，将触发普攻暴击前伤害的总倍率 ${percent(2 * p.ratio)}% 均分；幻影不暴击、不触发普攻吸血、不触发普攻命中被动或计数。`;
@@ -1117,84 +1118,84 @@ function equipmentExtensionDescription(def, locale) {
   const s = def.stats, p = def.passive, pct = value => Number((value * 100).toFixed(2));
   const language = ['zh-CN', 'zh-TW', 'en'].includes(locale) ? locale : 'zh-CN';
   const labels = {
-    'zh-CN': { attackPower: '攻击力', maxHp: '最大生命', maxMana: '最大法力', armor: '护甲', regen: '每 5 秒回血', manaRegen: '每秒回蓝', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻击距离', dodge: '闪避', crit: '暴击率', critDamage: '暴击伤害', abilityHaste: '主动冷却缩减', damage: '所有伤害' },
-    'zh-TW': { attackPower: '攻擊力', maxHp: '最大生命', maxMana: '最大法力', armor: '護甲', regen: '每 5 秒回血', manaRegen: '每秒回魔', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻擊距離', dodge: '閃避', crit: '暴擊率', critDamage: '暴擊傷害', abilityHaste: '主動冷卻縮減', damage: '所有傷害' },
-    en: { attackPower: 'Attack power', maxHp: 'Max HP', maxMana: 'Max mana', armor: 'Armor', regen: 'HP per 5 sec', manaRegen: 'Mana/sec', lifesteal: 'Basic lifesteal', attackSpeed: 'Attack speed', speed: 'Move speed', attackRange: 'Attack range', dodge: 'Dodge', crit: 'Crit chance', critDamage: 'Critical damage', abilityHaste: 'Active cooldown reduction', damage: 'All damage' }
+    'zh-CN': { attackPower: '攻击力', skillPower: '技能伤害', maxHp: '最大生命', maxMana: '最大法力', armor: '护甲', regen: '每 5 秒回血', manaRegen: '每秒回蓝', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻击距离', dodge: '闪避', crit: '暴击率', critDamage: '暴击伤害', abilityHaste: '主动冷却缩减', damage: '所有伤害' },
+    'zh-TW': { attackPower: '攻擊力', skillPower: '技能傷害', maxHp: '最大生命', maxMana: '最大法力', armor: '護甲', regen: '每 5 秒回血', manaRegen: '每秒回魔', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻擊距離', dodge: '閃避', crit: '暴擊率', critDamage: '暴擊傷害', abilityHaste: '主動冷卻縮減', damage: '所有傷害' },
+    en: { attackPower: 'Attack power', skillPower: 'Spell power', maxHp: 'Max HP', maxMana: 'Max mana', armor: 'Armor', regen: 'HP per 5 sec', manaRegen: 'Mana/sec', lifesteal: 'Basic lifesteal', attackSpeed: 'Attack speed', speed: 'Move speed', attackRange: 'Attack range', dodge: 'Dodge', crit: 'Crit chance', critDamage: 'Critical damage', abilityHaste: 'Active cooldown reduction', damage: 'All damage' }
   };
   const descriptions = {
     'zh-CN': {
       monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向释放贯穿冲击，长 ${p.range}、半宽 ${p.width}，最多命中 ${p.targets} 个敌人，各造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}%。同次攻击命中多敌仅计一次；多件共用计数。`,
-      meteorHammer: () => `站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，伤害 ${p.damage} + 攻击力 × ${p.attackRatio}；释放后冷却 ${p.cooldown} 秒，余焰 ${p.afterglow} 秒。移动、冲刺或跳跃中断蓄力，没有合法目标不消耗就绪。`,
+      meteorHammer: () => `站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，伤害 ${p.damage} + 技能伤害 × ${p.attackRatio}；释放后冷却 ${p.cooldown} 秒，余焰 ${p.afterglow} 秒。移动、冲刺或跳跃中断蓄力，没有合法目标不消耗就绪。`,
       divineRapier: () => `通关第10波后解锁本局商店与铸造。每 ${p.hits} 次有效普攻沿命中方向释放剑气，长 ${p.range}、半宽 ${p.width}，最多 ${p.targets} 个目标，各造成 ${p.damage} + 触发普攻暴击前伤害 × ${p.attackRatio}。持有时承伤增加 ${pct(p.incomingAmp)}%，同类风险只取最高。`,
       bloodstone: () => `英雄技能按实际伤害回复 ${pct(p.ratio)}%；范围／持续伤害效率为 ${pct(p.areaRatio)}%，滚动 1 秒最多回复最大生命的 ${pct(p.capPerSecond)}%。装备追加、幻影和装备召唤伤害不触发此技能回血。`,
-      orchid: () => `普攻标记存活敌人 ${p.duration} 秒；成功施放主动技能时引爆 ${p.range} 范围内最近的一个标记，造成 ${p.damage} + 攻击力 × ${p.attackRatio} 基础伤害。不沉默，不自动施放 Q。`,
+      orchid: () => `普攻标记存活敌人 ${p.duration} 秒；成功施放主动技能时引爆 ${p.range} 范围内最近的一个标记，造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 基础伤害。不沉默，不自动施放 Q。`,
       bladeMail: () => `实际承伤后向存活攻击者反射 ${pct(p.ratio)}% 伤害，每击最多 ${p.cap} 点，共用 ${p.interval} 秒间隔。无来源、闪避或被护盾完全吸收时不触发。反伤不再放大全伤害。`,
       heart: () => `连续 ${p.delay} 秒未实际承伤后，每秒恢复最大生命的 ${pct(p.ratio)}%；再次承伤中断。被闪避或完全吸收的伤害不中断。`,
       phaseBoots: () => `冲刺结束后移速额外 +${p.speed}%，持续 ${p.duration} 秒；${p.attackWindow} 秒内下一次有效普攻追加 ${p.damage} + 攻击力 × ${p.attackRatio} 基础伤害。同次攻击仅一次。`,
       cyclone: () => `每 ${p.cooldown} 秒吹起 ${p.range} 范围内最近敌人 ${p.duration} 秒，风眼半径 ${p.gustRadius}；暂停其移动与攻击，精英时长减半，首领仅 ${pct(.2)}%。目标仍可受伤，无目标保留就绪。`,
-      necronomicon: () => `每 ${p.cooldown} 秒召唤一名战士和一名射手，持续 ${p.duration} 秒、最多两名。战士／射手攻击间隔 ${p.attackInterval}／${(p.attackInterval + .2).toFixed(2)} 秒，各造成 ${p.damage} + 攻击力 × ${p.attackRatio} 基础伤害。击杀不给材料、宝箱、经验或魂；不触发普攻吸血、英雄和装备被动。`,
+      necronomicon: () => `每 ${p.cooldown} 秒召唤一名战士和一名射手，持续 ${p.duration} 秒、最多两名。战士／射手攻击间隔 ${p.attackInterval}／${(p.attackInterval + .2).toFixed(2)} 秒，各造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 基础伤害。击杀不给材料、宝箱、经验或魂；不触发普攻吸血、英雄和装备被动。`,
       godsealBlade: () => `首个有效直接命中追加原始普攻伤害的 ${pct(p.ratio)}% × 成长系数；每次攻击只触发一次，追加伤害不暴击、不触发普攻吸血、命中被动或再次封神印。同名装备共享成长，生效装备只取最高强化等级。`,
-      calamityRing: () => `成功施放 Q 后，在 ${p.range} 范围内选择最多 ${p.targets} 个无遮挡目标，分配 ${p.baseDamage} + 攻击力 × ${p.attackRatio} 的单次总基础预算，再乘成长系数；独立间隔 ${p.cooldown} 秒。追击不重复施放 Q、不触发技能吸血或其他命中被动；无目标时不消耗就绪。`,
-      holyCape: () => `最大法力 +${s.maxMana}，护甲 +${s.armor}。成功施放 Q 累积 1 点圣洁能量，达到 ${p.threshold} 次后对 ${p.radius} 范围内敌人造成 ${p.damage} + 攻击力 × ${p.attackRatio} 纯粹伤害；每次能量达到阈值只释放一次。`,
-      iceDragonMaw: () => `攻击力 +${s.attackPower}，最大法力 +${s.maxMana}。成功施放 Q 后，对 ${p.range} 范围内最近无遮挡目标造成 ${p.damage} + 攻击力 × ${p.attackRatio} 额外魔法伤害，并减速 ${pct(p.slow)}% 持续 ${p.duration} 秒；每次 Q 只触发一次。`,
+      calamityRing: () => `成功施放 Q 后，在 ${p.range} 范围内选择最多 ${p.targets} 个无遮挡目标，分配 ${p.baseDamage} + 技能伤害 × ${p.attackRatio} 的单次总基础预算，再乘成长系数；独立间隔 ${p.cooldown} 秒。追击不重复施放 Q、不触发技能吸血或其他命中被动；无目标时不消耗就绪。`,
+      holyCape: () => `最大法力 +${s.maxMana}，护甲 +${s.armor}。成功施放 Q 累积 1 点圣洁能量，达到 ${p.threshold} 次后对 ${p.radius} 范围内敌人造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 纯粹伤害；每次能量达到阈值只释放一次。`,
+      iceDragonMaw: () => `技能伤害 +${s.skillPower}，最大法力 +${s.maxMana}。成功施放 Q 后，对 ${p.range} 范围内最近无遮挡目标造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 额外魔法伤害，并减速 ${pct(p.slow)}% 持续 ${p.duration} 秒；每次 Q 只触发一次。`,
       radianceHeart: () => `攻击力 +${s.attackPower}，最大生命 +${s.maxHp}，每 5 秒回血 +${s.regen}。每次合格击杀永久增加 ${p.killHp} 点最大生命；每 ${p.interval} 秒对 ${p.radius} 范围内敌人造成 ${p.damage} + 当前生命 × ${pct(p.healthRatio)}% 灼烧伤害。`,
-      meteorGrimoire: () => `攻击力 +${s.attackPower}，每秒回蓝 +${s.manaRegen}，主动技能冷却缩减 +${s.abilityHaste}%。站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，造成 ${p.damage} + 攻击力 × ${p.attackRatio}；释放后冷却 ${p.cooldown} 秒。成功施放 Q 后，对 ${p.pulseRadius} 范围内敌人施加 ${p.pulseDuration} 秒控制；移动或冲刺会中断蓄力。`,
+      meteorGrimoire: () => `技能伤害 +${s.skillPower}，每秒回蓝 +${s.manaRegen}，主动技能冷却缩减 +${s.abilityHaste}%。站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，造成 ${p.damage} + 技能伤害 × ${p.attackRatio}；释放后冷却 ${p.cooldown} 秒。成功施放 Q 后，对 ${p.pulseRadius} 范围内敌人施加 ${p.pulseDuration} 秒控制；移动或冲刺会中断蓄力。`,
       shineMadmoon: () => `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%，闪避 +${s.dodge}%。远程普攻每 ${p.hits} 次向附近最多 ${p.targets} 个额外目标发射月光，造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}%。`,
       bladeOfVigil: () => `攻击力 +${s.attackPower}，所有伤害 +${s.damage}%，每秒回蓝 +${s.manaRegen}。作为远征光环，稳定提升清场伤害；同名装备只取最高阶。`,
       ringAghanim: () => `最大法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动技能冷却缩减 +${s.abilityHaste}%。每次成功施放 Q 额外回复 ${p.mana} 点法力。`,
       jasperDaggers: () => `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%，最大法力 +${s.maxMana}。每 ${p.hits} 次有效普攻释放翡翠之影，长 ${p.range}、半宽 ${p.width}，最多命中 ${p.targets} 个目标，各造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}%额外伤害。`,
       demagickingMaul: () => `攻击力 +${s.attackPower}，最大生命 +${s.maxHp}，每秒回蓝 +${s.manaRegen}。近战有效普攻对首目标周围 ${p.radius} 范围内其他敌人造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}% 顺劈；同类只取最高阶。`,
-      cloakOfCarnage: () => `攻击力 +${s.attackPower}，最大法力 +${s.maxMana}，主动技能冷却缩减 +${s.abilityHaste}%。成功 Q 累积 1 点屠戮能量，达到 ${p.threshold} 点后轰击 ${p.range} 内 ${p.radius} 范围，造成 ${p.damage} + 攻击力 × ${p.attackRatio} 伤害，并移除目标当前生命的 ${pct(p.currentHpRatio)}%。`,
+      cloakOfCarnage: () => `技能伤害 +${s.skillPower}，最大法力 +${s.maxMana}，主动技能冷却缩减 +${s.abilityHaste}%。成功 Q 累积 1 点屠戮能量，达到 ${p.threshold} 点后轰击 ${p.range} 内 ${p.radius} 范围，造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 伤害，并移除目标当前生命的 ${pct(p.currentHpRatio)}%。`,
       shadowDisaster: () => `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%。有效普攻有 ${pct(p.chance)}% 概率释放连锁闪电，最多跳跃 ${p.jumps} 次，每次造成 ${p.damage} + 攻击力 × 0.35 伤害；同类只取最高阶。`
     },
     'zh-TW': {
       monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向釋放貫穿衝擊，長 ${p.range}、半寬 ${p.width}，最多命中 ${p.targets} 個敵人，各造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}%。同次攻擊命中多敵僅計一次；多件共用計數。`,
-      meteorHammer: () => `站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，傷害 ${p.damage} + 攻擊力 × ${p.attackRatio}；釋放後冷卻 ${p.cooldown} 秒，餘焰 ${p.afterglow} 秒。移動、衝刺或跳躍中斷蓄力，沒有合法目標不消耗就緒。`,
+      meteorHammer: () => `站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，傷害 ${p.damage} + 技能傷害 × ${p.attackRatio}；釋放後冷卻 ${p.cooldown} 秒，餘焰 ${p.afterglow} 秒。移動、衝刺或跳躍中斷蓄力，沒有合法目標不消耗就緒。`,
       divineRapier: () => `通關第10波後解鎖本局商店與鑄造。每 ${p.hits} 次有效普攻沿命中方向釋放劍氣，長 ${p.range}、半寬 ${p.width}，最多 ${p.targets} 個目標，各造成 ${p.damage} + 觸發普攻暴擊前傷害 × ${p.attackRatio}。持有時承傷增加 ${pct(p.incomingAmp)}%，同類風險只取最高。`,
       bloodstone: () => `英雄技能按實際傷害回復 ${pct(p.ratio)}%；範圍／持續傷害效率為 ${pct(p.areaRatio)}%，滾動 1 秒最多回復最大生命的 ${pct(p.capPerSecond)}%。裝備追加、幻影和裝備召喚傷害不觸發此技能回血。`,
-      orchid: () => `普攻標記存活敵人 ${p.duration} 秒；成功施放主動技能時引爆 ${p.range} 範圍內最近的一個標記，造成 ${p.damage} + 攻擊力 × ${p.attackRatio} 基礎傷害。不沉默，不自動施放 Q。`,
+      orchid: () => `普攻標記存活敵人 ${p.duration} 秒；成功施放主動技能時引爆 ${p.range} 範圍內最近的一個標記，造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 基礎傷害。不沉默，不自動施放 Q。`,
       bladeMail: () => `實際承傷後向存活攻擊者反射 ${pct(p.ratio)}% 傷害，每擊最多 ${p.cap} 點，共用 ${p.interval} 秒間隔。無來源、閃避或被護盾完全吸收時不觸發。反傷不再放大全傷害。`,
       heart: () => `連續 ${p.delay} 秒未實際承傷後，每秒恢復最大生命的 ${pct(p.ratio)}%；再次承傷中斷。被閃避或完全吸收的傷害不中斷。`,
       phaseBoots: () => `衝刺結束後移速額外 +${p.speed}%，持續 ${p.duration} 秒；${p.attackWindow} 秒內下一次有效普攻追加 ${p.damage} + 攻擊力 × ${p.attackRatio} 基礎傷害。同次攻擊僅一次。`,
       cyclone: () => `每 ${p.cooldown} 秒吹起 ${p.range} 範圍內最近敵人 ${p.duration} 秒，風眼半徑 ${p.gustRadius}；暫停其移動與攻擊，精英時長減半，首領僅 ${pct(.2)}%。目標仍可受傷，無目標保留就緒。`,
-      necronomicon: () => `每 ${p.cooldown} 秒召喚一名戰士和一名射手，持續 ${p.duration} 秒、最多兩名。戰士／射手攻擊間隔 ${p.attackInterval}／${(p.attackInterval + .2).toFixed(2)} 秒，各造成 ${p.damage} + 攻擊力 × ${p.attackRatio} 基礎傷害。擊殺不給材料、寶箱、經驗或魂；不觸發普攻吸血、英雄和裝備被動。`,
+      necronomicon: () => `每 ${p.cooldown} 秒召喚一名戰士和一名射手，持續 ${p.duration} 秒、最多兩名。戰士／射手攻擊間隔 ${p.attackInterval}／${(p.attackInterval + .2).toFixed(2)} 秒，各造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 基礎傷害。擊殺不給材料、寶箱、經驗或魂；不觸發普攻吸血、英雄和裝備被動。`,
       godsealBlade: () => `首個有效直接命中追加原始普攻傷害的 ${pct(p.ratio)}% × 成長係數；每次攻擊只觸發一次，追加傷害不暴擊、不觸發普攻吸血、命中被動或再次封神印。同名裝備共享成長，生效裝備只取最高強化等級。`,
-      calamityRing: () => `成功施放 Q 後，在 ${p.range} 範圍內選擇最多 ${p.targets} 個無遮擋目標，分配 ${p.baseDamage} + 攻擊力 × ${p.attackRatio} 的單次總基礎預算，再乘成長係數；獨立間隔 ${p.cooldown} 秒。追擊不重複施放 Q、不觸發技能吸血或其他命中被動；無目標時不消耗就緒。`,
-      holyCape: () => `最大法力 +${s.maxMana}，護甲 +${s.armor}。成功施放 Q 累積 1 點聖潔能量，達到 ${p.threshold} 次後對 ${p.radius} 範圍內敵人造成 ${p.damage} + 攻擊力 × ${p.attackRatio} 純粹傷害；每次能量達到閾值只釋放一次。`,
-      iceDragonMaw: () => `攻擊力 +${s.attackPower}，最大法力 +${s.maxMana}。成功施放 Q 後，對 ${p.range} 範圍內最近無遮擋目標造成 ${p.damage} + 攻擊力 × ${p.attackRatio} 額外魔法傷害，並減速 ${pct(p.slow)}% 持續 ${p.duration} 秒；每次 Q 只觸發一次。`,
+      calamityRing: () => `成功施放 Q 後，在 ${p.range} 範圍內選擇最多 ${p.targets} 個無遮擋目標，分配 ${p.baseDamage} + 技能傷害 × ${p.attackRatio} 的單次總基礎預算，再乘成長係數；獨立間隔 ${p.cooldown} 秒。追擊不重複施放 Q、不觸發技能吸血或其他命中被動；無目標時不消耗就緒。`,
+      holyCape: () => `最大法力 +${s.maxMana}，護甲 +${s.armor}。成功施放 Q 累積 1 點聖潔能量，達到 ${p.threshold} 次後對 ${p.radius} 範圍內敵人造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 純粹傷害；每次能量達到閾值只釋放一次。`,
+      iceDragonMaw: () => `技能傷害 +${s.skillPower}，最大法力 +${s.maxMana}。成功施放 Q 後，對 ${p.range} 範圍內最近無遮擋目標造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 額外魔法傷害，並減速 ${pct(p.slow)}% 持續 ${p.duration} 秒；每次 Q 只觸發一次。`,
       radianceHeart: () => `攻擊力 +${s.attackPower}，最大生命 +${s.maxHp}，每 5 秒回血 +${s.regen}。每次合格擊殺永久增加 ${p.killHp} 點最大生命；每 ${p.interval} 秒對 ${p.radius} 範圍內敵人造成 ${p.damage} + 當前生命 × ${pct(p.healthRatio)}% 灼燒傷害。`,
-      meteorGrimoire: () => `攻擊力 +${s.attackPower}，每秒回魔 +${s.manaRegen}，主動技能冷卻縮減 +${s.abilityHaste}%。站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，造成 ${p.damage} + 攻擊力 × ${p.attackRatio}；釋放後冷卻 ${p.cooldown} 秒。成功施放 Q 後，對 ${p.pulseRadius} 範圍內敵人施加 ${p.pulseDuration} 秒控制；移動或衝刺會中斷蓄力。`,
+      meteorGrimoire: () => `技能傷害 +${s.skillPower}，每秒回魔 +${s.manaRegen}，主動技能冷卻縮減 +${s.abilityHaste}%。站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，造成 ${p.damage} + 技能傷害 × ${p.attackRatio}；釋放後冷卻 ${p.cooldown} 秒。成功施放 Q 後，對 ${p.pulseRadius} 範圍內敵人施加 ${p.pulseDuration} 秒控制；移動或衝刺會中斷蓄力。`,
       shineMadmoon: () => `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%，閃避 +${s.dodge}%。遠程普攻每 ${p.hits} 次向附近最多 ${p.targets} 個額外目標發射月光，造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}%。`,
       bladeOfVigil: () => `攻擊力 +${s.attackPower}，所有傷害 +${s.damage}%，每秒回魔 +${s.manaRegen}。作為遠征光環，穩定提升清場傷害；同名裝備只取最高階。`,
       ringAghanim: () => `最大法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動技能冷卻縮減 +${s.abilityHaste}%。每次成功施放 Q 額外回復 ${p.mana} 點法力。`,
       jasperDaggers: () => `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%，最大法力 +${s.maxMana}。每 ${p.hits} 次有效普攻釋放翡翠之影，長 ${p.range}、半寬 ${p.width}，最多命中 ${p.targets} 個目標，各造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}%額外傷害。`,
       demagickingMaul: () => `攻擊力 +${s.attackPower}，最大生命 +${s.maxHp}，每秒回魔 +${s.manaRegen}。近戰有效普攻對首目標周圍 ${p.radius} 範圍內其他敵人造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}% 順劈；同類只取最高階。`,
-      cloakOfCarnage: () => `攻擊力 +${s.attackPower}，最大法力 +${s.maxMana}，主動技能冷卻縮減 +${s.abilityHaste}%。成功 Q 累積 1 點屠戮能量，達到 ${p.threshold} 點後轟擊 ${p.range} 內 ${p.radius} 範圍，造成 ${p.damage} + 攻擊力 × ${p.attackRatio} 傷害，並移除目標當前生命的 ${pct(p.currentHpRatio)}%。`,
+      cloakOfCarnage: () => `技能傷害 +${s.skillPower}，最大法力 +${s.maxMana}，主動技能冷卻縮減 +${s.abilityHaste}%。成功 Q 累積 1 點屠戮能量，達到 ${p.threshold} 點後轟擊 ${p.range} 內 ${p.radius} 範圍，造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 傷害，並移除目標當前生命的 ${pct(p.currentHpRatio)}%。`,
       shadowDisaster: () => `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%。有效普攻有 ${pct(p.chance)}% 機率釋放連鎖閃電，最多跳躍 ${p.jumps} 次，每次造成 ${p.damage} + 攻擊力 × 0.35 傷害；同類只取最高階。`
     },
     en: {
       monkeyKingBar: () => `Every ${p.hits} successful basics release a piercing strike along the hit direction, ${p.range} long with half-width ${p.width}. Hit up to ${p.targets} enemies for ${pct(p.damageRatio)}% of pre-crit attack damage each. Multi-target basics count once; all copies share the counter.`,
-      meteorHammer: () => `After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + attack power × ${p.attackRatio} damage. Cooldown after release: ${p.cooldown} sec; afterglow lasts ${p.afterglow} sec. Moving, dashing or jumping interrupts charge; stays ready without a legal target.`,
+      meteorHammer: () => `After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + spell power × ${p.attackRatio} damage. Cooldown after release: ${p.cooldown} sec; afterglow lasts ${p.afterglow} sec. Moving, dashing or jumping interrupts charge; stays ready without a legal target.`,
       divineRapier: () => `Clear wave 10 to unlock this run's shop and forging access. Every ${p.hits} successful basics release a divine edge along the hit direction, ${p.range} long with half-width ${p.width}, hitting up to ${p.targets} targets for ${p.damage} + pre-crit attack damage × ${p.attackRatio} each. Take ${pct(p.incomingAmp)}% more damage while equipped; only the highest risk applies.`,
       bloodstone: () => `Hero skills heal for ${pct(p.ratio)}% of actual damage. Area/periodic damage heals at ${pct(p.areaRatio)}% efficiency; rolling 1 sec cap: ${pct(p.capPerSecond)}% max HP. Equipment bonus, illusion and equipment-summon damage cannot trigger this skill healing.`,
-      orchid: () => `Basic attacks mark surviving enemies for ${p.duration} sec. A successful active skill detonates the nearest mark within ${p.range} for ${p.damage} + attack power × ${p.attackRatio} base damage. No silence or automatic Q.`,
+      orchid: () => `Basic attacks mark surviving enemies for ${p.duration} sec. A successful active skill detonates the nearest mark within ${p.range} for ${p.damage} + spell power × ${p.attackRatio} base damage. No silence or automatic Q.`,
       bladeMail: () => `Reflect ${pct(p.ratio)}% of actual HP lost to a living attacker, capped at ${p.cap} per hit with a shared ${p.interval} sec interval. No source, dodges and fully absorbed hits do not trigger it. All-damage bonuses do not amplify reflection.`,
       heart: () => `After ${p.delay} sec without losing HP to damage, restore ${pct(p.ratio)}% max HP per second. HP damage interrupts this; dodged or fully absorbed hits do not.`,
       phaseBoots: () => `After a dash ends, gain +${p.speed}% move speed for ${p.duration} sec. The next successful basic attack within ${p.attackWindow} sec deals ${p.damage} + attack power × ${p.attackRatio} extra base damage, once per attack.`,
       cyclone: () => `Every ${p.cooldown} sec, lift the nearest enemy within ${p.range} for ${p.duration} sec; the wind eye is ${p.gustRadius} wide. Movement and attacks stop; elites receive half duration and bosses ${pct(.2)}%. Targets remain damageable. Stays ready without a target.`,
-      necronomicon: () => `Every ${p.cooldown} sec, summon a warrior and archer for ${p.duration} sec, up to two. They attack every ${p.attackInterval}/${(p.attackInterval + .2).toFixed(2)} sec for ${p.damage} + attack power × ${p.attackRatio} base damage each. Kills give no materials, chests, XP or souls; no basic lifesteal or hero/equipment procs.`,
+      necronomicon: () => `Every ${p.cooldown} sec, summon a warrior and archer for ${p.duration} sec, up to two. They attack every ${p.attackInterval}/${(p.attackInterval + .2).toFixed(2)} sec for ${p.damage} + spell power × ${p.attackRatio} base damage each. Kills give no materials, chests, XP or souls; no basic lifesteal or hero/equipment procs.`,
       godsealBlade: () => `The first successful direct hit of each basic attack adds ${pct(p.ratio)}% of the original pre-crit attack damage × the current growth coefficient. Once per attack; bonus damage cannot crit, trigger basic lifesteal, hit passives or another Godseal Mark. Copies share growth and only the highest active upgrade level applies.`,
-      calamityRing: () => `After a successful Q, choose up to ${p.targets} unobstructed targets within ${p.range} and distribute one total base budget of ${p.baseDamage} + attack power × ${p.attackRatio}, then multiply by the growth coefficient. Independent ${p.cooldown} sec interval. The chase does not recast Q or trigger skill leech or other hit passives; no target leaves it ready.`,
-      holyCape: () => `Max mana +${s.maxMana}; armor +${s.armor}. Each successful Q adds 1 holy charge. At ${p.threshold} charges, release a pure-damage pulse within ${p.radius} for ${p.damage} + attack power × ${p.attackRatio}; one pulse per threshold.`,
-      iceDragonMaw: () => `Attack power +${s.attackPower}; max mana +${s.maxMana}. A successful Q hits the nearest unobstructed target within ${p.range} for ${p.damage} + attack power × ${p.attackRatio} bonus magic damage and slows it by ${pct(p.slow)}% for ${p.duration} sec; once per Q.`,
+      calamityRing: () => `After a successful Q, choose up to ${p.targets} unobstructed targets within ${p.range} and distribute one total base budget of ${p.baseDamage} + spell power × ${p.attackRatio}, then multiply by the growth coefficient. Independent ${p.cooldown} sec interval. The chase does not recast Q or trigger skill leech or other hit passives; no target leaves it ready.`,
+      holyCape: () => `Max mana +${s.maxMana}; armor +${s.armor}. Each successful Q adds 1 holy charge. At ${p.threshold} charges, release a pure-damage pulse within ${p.radius} for ${p.damage} + spell power × ${p.attackRatio}; one pulse per threshold.`,
+      iceDragonMaw: () => `Spell power +${s.skillPower}; max mana +${s.maxMana}. A successful Q hits the nearest unobstructed target within ${p.range} for ${p.damage} + spell power × ${p.attackRatio} bonus magic damage and slows it by ${pct(p.slow)}% for ${p.duration} sec; once per Q.`,
       radianceHeart: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; HP per 5 sec +${s.regen}. Each eligible kill permanently adds ${p.killHp} max HP. Every ${p.interval} sec, burn enemies within ${p.radius} for ${p.damage} + current HP × ${pct(p.healthRatio)}%.`,
-      meteorGrimoire: () => `Attack power +${s.attackPower}; mana regen +${s.manaRegen}/sec; active cooldown reduction +${s.abilityHaste}%. After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + attack power × ${p.attackRatio}; cooldown ${p.cooldown} sec. A successful Q controls enemies within ${p.pulseRadius} for ${p.pulseDuration} sec. Moving or dashing interrupts the charge.`,
+      meteorGrimoire: () => `Spell power +${s.skillPower}; mana regen +${s.manaRegen}/sec; active cooldown reduction +${s.abilityHaste}%. After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + spell power × ${p.attackRatio}; cooldown ${p.cooldown} sec. A successful Q controls enemies within ${p.pulseRadius} for ${p.pulseDuration} sec. Moving or dashing interrupts the charge.`,
       shineMadmoon: () => `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%; dodge +${s.dodge}%. Every ${p.hits} ranged basics fire moonlight at up to ${p.targets} extra nearby targets for ${pct(p.damageRatio)}% of pre-crit attack damage.`,
       bladeOfVigil: () => `Attack power +${s.attackPower}; all damage +${s.damage}%; mana regen +${s.manaRegen}/sec. A steady expedition aura for clearing; highest-level copy applies.`,
       ringAghanim: () => `Max mana +${s.maxMana}; mana regen +${s.manaRegen}/sec; active cooldown reduction +${s.abilityHaste}%. Each successful Q restores ${p.mana} mana.`,
       jasperDaggers: () => `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%; max mana +${s.maxMana}. Every ${p.hits} successful basics release a Jasper Shadow ${p.range} long and ${p.width} half-width at up to ${p.targets} targets for ${pct(p.damageRatio)}% extra pre-crit attack damage.`,
       demagickingMaul: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; mana regen +${s.manaRegen}/sec. Successful melee basics cleave other enemies within ${p.radius} of the first target for ${pct(p.damageRatio)}% of pre-crit attack damage; highest-level copy only.`,
-      cloakOfCarnage: () => `Attack power +${s.attackPower}; max mana +${s.maxMana}; active cooldown reduction +${s.abilityHaste}%. Each successful Q adds 1 Carnage charge. At ${p.threshold} charges, blast enemies within ${p.radius} at range ${p.range} for ${p.damage} + attack power × ${p.attackRatio}, removing ${pct(p.currentHpRatio)}% of current HP.`,
+      cloakOfCarnage: () => `Spell power +${s.skillPower}; max mana +${s.maxMana}; active cooldown reduction +${s.abilityHaste}%. Each successful Q adds 1 Carnage charge. At ${p.threshold} charges, blast enemies within ${p.radius} at range ${p.range} for ${p.damage} + spell power × ${p.attackRatio}, removing ${pct(p.currentHpRatio)}% of current HP.`,
       shadowDisaster: () => `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%. Successful basics have a ${pct(p.chance)}% chance to release chain lightning for ${p.damage} + attack power × 0.35 damage, jumping ${p.jumps} times; highest-level copy only.`
     }
   };
@@ -1221,7 +1222,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
         butterfly: () => `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%，闪避 +${s.dodge}%（总上限 55%）。攻击间隔最短 0.09 秒。`,
         vanguard: () => `最大生命 +${s.maxHp}，护甲 +${s.armor}，每 5 秒回血 +${s.regen}。有来源的伤害有 ${percent(p.chance)}% 概率格挡 ${p.amount} 点；同类只取一份。`,
         satanic: () => `攻击力 +${s.attackPower}，最大生命 +${s.maxHp}，护甲 +${s.armor}，普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低于 ${percent(p.threshold)}% 时额外吸血 +${p.lifesteal}%，持续 ${p.duration} 秒，冷却 ${p.cooldown} 秒；总吸血上限 65%，狂热只取一份。`,
-        aghanim: () => `攻击力 +${s.attackPower}，生命 +${s.maxHp}，法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动冷缩 +${s.abilityHaste}%（总上限 60%）。已支持的主动伤害／增益 ×${p.multiplier.toFixed(2)}，同类取最高。`,
+        aghanim: () => `技能伤害 +${s.skillPower}，生命 +${s.maxHp}，法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动冷缩 +${s.abilityHaste}%（总上限 60%）。已支持的主动伤害／增益 ×${p.multiplier.toFixed(2)}，同类取最高。`,
         powerTreads: () => `最大生命 +${s.maxHp}，移速 +${s.speed}%，攻速 +${s.attackSpeed}%。攻击间隔最短 0.09 秒。`,
         radiance: () => `攻击力 +${s.attackPower}，所有伤害 +${s.damage}%。每 ${p.interval} 秒对 ${p.radius} 范围内敌人造成 ${p.damage} 基础灼烧伤害，受所有伤害加成；光环只取最高阶。`,
         desolator: () => `攻击力 +${s.attackPower}。普攻标记目标 ${p.duration} 秒，后续伤害 +${percent(p.multiplier)}%；同类只取最高阶。`,
@@ -1233,7 +1234,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
         butterfly: () => `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%，閃避 +${s.dodge}%（總上限 55%）。攻擊間隔最短 0.09 秒。`,
         vanguard: () => `最大生命 +${s.maxHp}，護甲 +${s.armor}，每 5 秒回血 +${s.regen}。有來源的傷害有 ${percent(p.chance)}% 機率格擋 ${p.amount} 點；同類只取一份。`,
         satanic: () => `攻擊力 +${s.attackPower}，最大生命 +${s.maxHp}，護甲 +${s.armor}，普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低於 ${percent(p.threshold)}% 時額外吸血 +${p.lifesteal}%，持續 ${p.duration} 秒，冷卻 ${p.cooldown} 秒；總吸血上限 65%，狂熱只取一份。`,
-        aghanim: () => `攻擊力 +${s.attackPower}，生命 +${s.maxHp}，法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動冷縮 +${s.abilityHaste}%（總上限 60%）。已支援的主動傷害／增益 ×${p.multiplier.toFixed(2)}，同類取最高。`,
+        aghanim: () => `技能傷害 +${s.skillPower}，生命 +${s.maxHp}，法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動冷縮 +${s.abilityHaste}%（總上限 60%）。已支援的主動傷害／增益 ×${p.multiplier.toFixed(2)}，同類取最高。`,
         powerTreads: () => `最大生命 +${s.maxHp}，移速 +${s.speed}%，攻速 +${s.attackSpeed}%。攻擊間隔最短 0.09 秒。`,
         radiance: () => `攻擊力 +${s.attackPower}，所有傷害 +${s.damage}%。每 ${p.interval} 秒對 ${p.radius} 範圍內敵人造成 ${p.damage} 基礎灼燒傷害，受所有傷害加成；光環只取最高階。`,
         desolator: () => `攻擊力 +${s.attackPower}。普攻標記目標 ${p.duration} 秒，後續傷害 +${percent(p.multiplier)}%；同類只取最高階。`,
@@ -1245,7 +1246,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
         butterfly: () => `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%; dodge +${s.dodge}% (total cap 55%). Min attack interval 0.09 sec.`,
         vanguard: () => `Max HP +${s.maxHp}; armor +${s.armor}; HP per 5 sec +${s.regen}. Hits with a source have a ${percent(p.chance)}% chance to block ${p.amount} damage; only one block passive applies.`,
         satanic: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; armor +${s.armor}; basic attack lifesteal +${s.lifesteal}%; HP per 5 sec +${s.regen}. Below ${percent(p.threshold)}% HP: extra lifesteal +${p.lifesteal}% for ${p.duration} sec, ${p.cooldown} sec cooldown; total lifesteal caps at 65%. Only one rage applies.`,
-        aghanim: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; max mana +${s.maxMana}; mana/sec +${s.manaRegen}; active cooldown reduction +${s.abilityHaste}% (total cap 60%). Supported active damage/buffs ×${p.multiplier.toFixed(2)}; highest only.`,
+        aghanim: () => `Spell power +${s.skillPower}; max HP +${s.maxHp}; max mana +${s.maxMana}; mana/sec +${s.manaRegen}; active cooldown reduction +${s.abilityHaste}% (total cap 60%). Supported active damage/buffs ×${p.multiplier.toFixed(2)}; highest only.`,
         powerTreads: () => `Max HP +${s.maxHp}; move speed +${s.speed}%; attack speed +${s.attackSpeed}%. Min attack interval 0.09 sec.`,
         radiance: () => `Attack power +${s.attackPower}; all damage +${s.damage}%. Aura: ${p.damage} base damage every ${p.interval} sec within ${p.radius} range, affected by all-damage bonuses. Highest-level aura only.`,
         desolator: () => `Attack power +${s.attackPower}. Basic attacks mark for ${p.duration} sec: subsequent damage +${percent(p.multiplier)}%. Highest-level mark only.`,
@@ -1262,7 +1263,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
       butterfly: () => `攻击力 +${s.attackPower}，攻速 +${s.attackSpeed}%，闪避 +${s.dodge}%。保持原有普攻与闪避规则，不追加攻击或无敌时间。`,
       vanguard: () => `最大生命 +${s.maxHp}，护甲 +${s.armor}，每 5 秒回血 +${s.regen}。有来源的伤害有 ${percent(p.chance)}% 概率格挡 ${p.amount} 点，无来源的伤害不触发。多件只使用最高强化等级的一份格挡，不叠加概率或减免；各级格挡参数不变。`,
       satanic: () => `攻击力 +${s.attackPower}，最大生命 +${s.maxHp}，护甲 +${s.armor}，普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低于 ${percent(p.threshold)}% 时自动狂热，持续 ${p.duration} 秒、冷却 ${p.cooldown} 秒，期间直接命中的普攻额外获得 ${p.lifesteal}% 吸血，总吸血上限 65%。多件共用狂热与冷却，不叠加额外吸血；各级狂热参数不变。`,
-      aghanim: () => `攻击力 +${s.attackPower}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动冷却缩减 +${s.abilityHaste}%。已支持强化的主动伤害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，蓝耗不变，不额外增加持续时间、范围或数量。`,
+      aghanim: () => `技能伤害 +${s.skillPower}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回蓝 +${s.manaRegen}，主动冷却缩减 +${s.abilityHaste}%。已支持强化的主动伤害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，蓝耗不变，不额外增加持续时间、范围或数量。`,
       powerTreads: () => `最大生命 +${s.maxHp}，移动速度 +${s.speed}%，攻速 +${s.attackSpeed}%。属性随强化等级成长，沿用角色原有移动与基础攻击规则。`,
       radiance: () => `攻击力 +${s.attackPower}，所有伤害 +${s.damage}%。灼热光环每 ${p.interval} 秒对半径 ${p.radius} 内敌人造成 ${p.damage} 基础伤害，再应用一次所有伤害加成。多件只取最高阶光环，不叠加伤害或频率；灼烧不暴击、不触发普攻吸血、不触发装备被动或普攻计数。`,
       desolator: () => `攻击力 +${s.attackPower}。普攻命中存活目标后施加 ${p.duration} 秒易伤标记，使后续伤害提高 ${percent(p.multiplier)}%。首次施加标记的命中不受该标记加成；重复命中刷新持续时间，多件只取最高阶、不叠加倍率。标记不独立造成伤害；技能、灼烧、召唤和幻影均可受益，已结算的弹射与反伤不重复放大。`,
@@ -1274,7 +1275,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
       butterfly: () => `攻擊力 +${s.attackPower}，攻速 +${s.attackSpeed}%，閃避 +${s.dodge}%。保持原有普攻與閃避規則，不追加攻擊或無敵時間。`,
       vanguard: () => `最大生命 +${s.maxHp}，護甲 +${s.armor}，每 5 秒回血 +${s.regen}。有來源的傷害有 ${percent(p.chance)}% 機率格擋 ${p.amount} 點，無來源的傷害不觸發。多件只使用最高強化等級的一份格擋，不疊加機率或減免；各級格擋參數不變。`,
       satanic: () => `攻擊力 +${s.attackPower}，最大生命 +${s.maxHp}，護甲 +${s.armor}，普攻吸血 +${s.lifesteal}%，每 5 秒回血 +${s.regen}。生命低於 ${percent(p.threshold)}% 時自動狂熱，持續 ${p.duration} 秒、冷卻 ${p.cooldown} 秒，期間直接命中的普攻額外獲得 ${p.lifesteal}% 吸血，總吸血上限 65%。多件共用狂熱與冷卻，不疊加額外吸血；各級狂熱參數不變。`,
-      aghanim: () => `攻擊力 +${s.attackPower}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動冷卻縮減 +${s.abilityHaste}%。已支援強化的主動傷害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，耗魔不變，不額外增加持續時間、範圍或數量。`,
+      aghanim: () => `技能傷害 +${s.skillPower}，最大生命 +${s.maxHp}，最大法力 +${s.maxMana}，每秒回魔 +${s.manaRegen}，主動冷卻縮減 +${s.abilityHaste}%。已支援強化的主動傷害或增益 ×${p.multiplier.toFixed(2)}；多把只取最高倍率，耗魔不變，不額外增加持續時間、範圍或數量。`,
       powerTreads: () => `最大生命 +${s.maxHp}，移動速度 +${s.speed}%，攻速 +${s.attackSpeed}%。屬性隨強化等級成長，沿用角色原有移動與基礎攻擊規則。`,
       radiance: () => `攻擊力 +${s.attackPower}，所有傷害 +${s.damage}%。灼熱光環每 ${p.interval} 秒對半徑 ${p.radius} 內敵人造成 ${p.damage} 基礎傷害，再套用一次所有傷害加成。多件只取最高階光環，不疊加傷害或頻率；灼燒不暴擊、不觸發普攻吸血、不觸發裝備被動或普攻計數。`,
       desolator: () => `攻擊力 +${s.attackPower}。普攻命中存活目標後施加 ${p.duration} 秒易傷標記，使後續傷害提高 ${percent(p.multiplier)}%。首次施加標記的命中不受該標記加成；重複命中刷新持續時間，多件只取最高階、不疊加倍率。標記不獨立造成傷害；技能、灼燒、召喚和幻影均可受益，已結算的彈射與反傷不重複放大。`,
@@ -1286,7 +1287,7 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
       butterfly: () => `Attack power +${s.attackPower}; attack speed +${s.attackSpeed}%; dodge +${s.dodge}%. Existing basic attacks and dodge rules remain; no extra attacks or invulnerability.`,
       vanguard: () => `Max HP +${s.maxHp}; armor +${s.armor}; HP per 5 sec +${s.regen}. Hits with a source have a ${percent(p.chance)}% chance to block ${p.amount} damage; damage without a source cannot trigger it. Only the highest-level block passive applies; chances and reductions do not stack. Block parameters stay the same at every level.`,
       satanic: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; armor +${s.armor}; basic attack lifesteal +${s.lifesteal}%; HP per 5 sec +${s.regen}. Below ${percent(p.threshold)}% HP, rage activates for ${p.duration} sec with a ${p.cooldown} sec cooldown. During rage, direct basic attack hits gain an extra ${p.lifesteal}% lifesteal, capped at 65% total. All copies share rage and its cooldown; extra lifesteal does not stack. Rage parameters stay the same at every level.`,
-      aghanim: () => `Attack power +${s.attackPower}; max HP +${s.maxHp}; max mana +${s.maxMana}; mana per sec +${s.manaRegen}; active cooldown reduction +${s.abilityHaste}%. Supported active damage or buffs ×${p.multiplier.toFixed(2)}; only the highest multiplier applies. Mana cost, duration, range and counts do not change.`,
+      aghanim: () => `Spell power +${s.skillPower}; max HP +${s.maxHp}; max mana +${s.maxMana}; mana per sec +${s.manaRegen}; active cooldown reduction +${s.abilityHaste}%. Supported active damage or buffs ×${p.multiplier.toFixed(2)}; only the highest multiplier applies. Mana cost, duration, range and counts do not change.`,
       powerTreads: () => `Max HP +${s.maxHp}; move speed +${s.speed}%; attack speed +${s.attackSpeed}%. Stats grow with upgrade level, following the hero's existing movement and basic attack rules.`,
       radiance: () => `Attack power +${s.attackPower}; all damage +${s.damage}%. The aura deals ${p.damage} base damage every ${p.interval} sec to enemies within ${p.radius} range, applying all-damage bonuses once. Only the highest-level aura applies; damage and frequency do not stack. Burns cannot crit, trigger basic lifesteal, trigger equipment passives or count as basic attacks.`,
       desolator: () => `Attack power +${s.attackPower}. Basic attacks mark surviving targets for ${p.duration} sec, increasing subsequent damage by ${percent(p.multiplier)}%. The first hit that applies the mark does not benefit from it. Further hits refresh the duration; only the highest-level mark applies and multipliers do not stack. The mark deals no damage; skills, burns, summons and mirrors benefit. Resolved bounces and reflections are not amplified again.`,
@@ -1304,9 +1305,9 @@ export function equipmentUpgradeDescription(item, locale = 'zh-CN', compact = fa
     const name = language === 'en' ? (def.nameEn || def.name) : language === 'zh-TW' ? (def.nameTw || def.name) : def.name;
     const base = language === 'en' ? (def.descEn || def.desc) : language === 'zh-TW' ? (def.descTw || def.desc) : def.desc;
     const fallbackLabels = {
-      'zh-CN': { attackPower: '攻击力', maxHp: '最大生命', maxMana: '最大法力', armor: '护甲', regen: '每 5 秒回血', manaRegen: '每秒回蓝', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻击距离', dodge: '闪避', crit: '暴击率', critDamage: '暴击伤害', abilityHaste: '主动冷却缩减', damage: '所有伤害' },
-      'zh-TW': { attackPower: '攻擊力', maxHp: '最大生命', maxMana: '最大法力', armor: '護甲', regen: '每 5 秒回血', manaRegen: '每秒回魔', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻擊距離', dodge: '閃避', crit: '暴擊率', critDamage: '暴擊傷害', abilityHaste: '主動冷卻縮減', damage: '所有傷害' },
-      en: { attackPower: 'Attack power', maxHp: 'Max HP', maxMana: 'Max mana', armor: 'Armor', regen: 'HP per 5 sec', manaRegen: 'Mana/sec', lifesteal: 'Basic lifesteal', attackSpeed: 'Attack speed', speed: 'Move speed', attackRange: 'Attack range', dodge: 'Dodge', crit: 'Crit chance', critDamage: 'Critical damage', abilityHaste: 'Active cooldown reduction', damage: 'All damage' }
+      'zh-CN': { attackPower: '攻击力', skillPower: '技能伤害', maxHp: '最大生命', maxMana: '最大法力', armor: '护甲', regen: '每 5 秒回血', manaRegen: '每秒回蓝', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻击距离', dodge: '闪避', crit: '暴击率', critDamage: '暴击伤害', abilityHaste: '主动冷却缩减', damage: '所有伤害' },
+      'zh-TW': { attackPower: '攻擊力', skillPower: '技能傷害', maxHp: '最大生命', maxMana: '最大法力', armor: '護甲', regen: '每 5 秒回血', manaRegen: '每秒回魔', lifesteal: '普攻吸血', attackSpeed: '攻速', speed: '移速', attackRange: '攻擊距離', dodge: '閃避', crit: '暴擊率', critDamage: '暴擊傷害', abilityHaste: '主動冷卻縮減', damage: '所有傷害' },
+      en: { attackPower: 'Attack power', skillPower: 'Spell power', maxHp: 'Max HP', maxMana: 'Max mana', armor: 'Armor', regen: 'HP per 5 sec', manaRegen: 'Mana/sec', lifesteal: 'Basic lifesteal', attackSpeed: 'Attack speed', speed: 'Move speed', attackRange: 'Attack range', dodge: 'Dodge', crit: 'Crit chance', critDamage: 'Critical damage', abilityHaste: 'Active cooldown reduction', damage: 'All damage' }
     };
     const stats = Object.entries(s).map(([key, value]) => `${fallbackLabels[language][key] || key} +${value}${['speed', 'attackSpeed', 'lifesteal', 'dodge', 'crit', 'critDamage', 'abilityHaste', 'damage'].includes(key) ? '%' : ''}`).join(language === 'en' ? '; ' : '，');
     const level = language === 'en' ? `Lv.${def.level}` : `Lv.${def.level}`;

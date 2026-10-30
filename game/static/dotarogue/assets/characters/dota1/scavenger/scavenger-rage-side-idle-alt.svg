@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none" stroke-linejoin="round" stroke-linecap="round">
+  <title>Alchemist · dota1 · scavenger-rage-side-idle-alt</title>
+  <desc>Project-drawn chemical rage: the goblin rider stays green; the ogre changes purple, braces its shoulders and carries a lit blade. Static SVG pose with the ordinary canvas and foot coordinates.</desc>
+  <defs>
+    <linearGradient id="d1-skin" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#cba1d5" />
+      <stop offset="0.500" stop-color="#954baf" />
+      <stop offset="1.000" stop-color="#4d2b66" />
+    </linearGradient>
+    <linearGradient id="d1-cloth" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#c75634" />
+      <stop offset="0.500" stop-color="#862e24" />
+      <stop offset="1.000" stop-color="#3e2020" />
+    </linearGradient>
+    <linearGradient id="d1-metal" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#eee2b8" />
+      <stop offset="0.500" stop-color="#afad92" />
+      <stop offset="1.000" stop-color="#526977" />
+    </linearGradient>
+    <linearGradient id="d1-beard" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#d2e37d" />
+      <stop offset="0.500" stop-color="#94b74b" />
+      <stop offset="1.000" stop-color="#497334" />
+    </linearGradient>
+    <linearGradient id="d1-leather" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#b09460" />
+      <stop offset="0.500" stop-color="#765937" />
+      <stop offset="1.000" stop-color="#392e26" />
+    </linearGradient>
+  </defs>
+  <g id="rage-frame" transform="translate(128 0) scale(0.93 1) translate(-128 0)">
+    <g id="side-motion" transform="translate(-20 15) scale(.96)">
+      <g id="side-back" transform="">
+        <g transform="translate(-9 1)">
+          <path d="M38 123L63 107L84 119L89 194L65 207L38 192Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+          <path d="M41 133L85 133L86 145L40 145ZM40 173L87 173L88 186L39 186Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+          <path d="M54 119L54 197M72 120L76 197" fill="none" stroke="#d7b677" stroke-width="2" />
+          <path d="M47 107L47 98L66 94L72 108Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+          <path d="M64 100Q103 85 99 136" fill="none" stroke="#7d8466" stroke-width="7" />
+        </g>
+      </g>
+      <g id="side-far-leg" transform="">
+        <path d="M109 264L131 277L107 319L90 340L58 338L64 315L80 283Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M61 326L90 329L99 346L85 356L45 350L43 340Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+      </g>
+      <g id="side-far-arm" transform="rotate(-12 103 168)">
+        <path d="M104 154L75 161L64 197L69 231L92 244L112 222L101 194L119 172Z" fill="#7e4398" stroke="#171d25" stroke-width="3" />
+      </g>
+      <g id="side-body" transform="translate(0 -2) translate(-2 3)">
+        <path d="M109 134Q159 116 187 156L210 216L194 266L151 289L101 282L66 247L67 193L82 157Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M139 168Q179 157 192 199L185 244L153 270L118 257L104 223L111 188Z" fill="#b879ce" stroke="#171d25" stroke-width="3" />
+        <path d="M133 201Q154 188 176 200M139 250L158 252" fill="none" stroke="#e6c2ed" stroke-width="3" />
+        <path d="M78 253L112 273L158 275L197 251L195 275L157 296L109 293L79 274Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+        <path d="M137 278L161 277L162 294L139 298Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+        <path d="M121 175Q149 161 171 178L180 196Q151 182 125 201L114 218L107 204Z" fill="#dda8e4" stroke="none" stroke-width="3" />
+        <path d="M175 221L187 211L183 242L161 263L144 269L151 252Z" fill="#a161b8" stroke="none" stroke-width="3" />
+        <path d="M119 225Q121 242 137 248" fill="none" stroke="#eac6ef" stroke-width="3" />
+        <g id="rage-muscles" opacity="1">
+          <path d="M115 179Q137 156 163 173L178 197Q151 180 127 201L115 218L104 203Z" fill="#c68ad4" stroke="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+          <path d="M121 208Q122 235 140 245M143 176Q160 178 168 189" fill="none" stroke="#edc7ef" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+        </g>
+      </g>
+      <g id="side-near-leg" transform="">
+        <path d="M143 270L176 268L192 306L180 333L147 338L130 310Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M151 324L180 320L209 340L208 352L164 360L141 349Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M172 343L175 358M188 339L194 353" fill="none" stroke="#edcced" stroke-width="3" />
+      </g>
+      <g id="side-head" transform="translate(0 -1) translate(4 2)">
+        <path d="M144 114Q173 104 190 123L198 145L218 152L214 165L198 169L184 187L158 180L140 159L133 137Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M172 153L199 155L206 168L187 182L170 174Z" fill="#b777cd" stroke="#171d25" stroke-width="3" />
+        <path d="M175 164L178 153L186 166M198 165L205 157L205 172" fill="#f2e6c6" stroke="#171d25" stroke-width="2" />
+        <path d="M174 139L190 140" fill="none" stroke="#2c4659" stroke-width="3" />
+        <g transform="translate(-6 -11)">
+          <path d="M102 109L116 80L143 78L160 97L151 121L129 137L105 127Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+          <path d="M109 74L89 59L105 61L114 48L131 48L139 59L158 49L149 70L139 81L119 87Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+          <path d="M107 54L106 41L136 37L146 49L137 57Z" fill="#b8944b" stroke="#171d25" stroke-width="3" />
+          <ellipse cx="120" cy="60" rx="10" ry="8" fill="#334954" stroke="#8eaa9b" stroke-width="2" />
+          <ellipse cx="138" cy="58" rx="9" ry="7" fill="#334954" stroke="#8eaa9b" stroke-width="2" />
+          <path d="M112 58L122 56M132 56L140 54" fill="none" stroke="#f0dda2" stroke-width="2" />
+          <path d="M138 65L162 71L142 78L127 77Z" fill="#91b04f" stroke="#171d25" stroke-width="3" />
+          <path d="M106 94L90 100L89 131L104 141L112 125L109 111L129 116L140 106Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+          <path d="M134 112L151 118L161 146L147 153L138 134L120 128Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+          <path d="M86 132L105 135L107 147L85 147Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+          <path d="M146 144L164 141L172 151L153 158Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+        </g>
+      </g>
+      <g id="side-rig" transform="rotate(-3 170 164) translate(-5 -4) rotate(5 174 165)">
+        <path d="M173 157Q205 148 221 181L221 205L192 222L165 192Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+        <path d="M172 157L197 149L217 169L200 184Z" fill="url(#d1-cloth)" stroke="#171d25" stroke-width="3" />
+        <g id="side-forearm" transform="rotate(3 204 207) rotate(8 204 207)">
+          <path d="M204 198L230 210L241 232L221 253L200 239L185 216Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+          <path d="M204 208Q219 211 225 224" fill="none" stroke="#dfb4e9" stroke-width="4" />
+          <g id="side-weapon" transform="">
+            <path d="M216 228L236 224L247 242L241 260L221 259L207 246Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M226 244L230 259M237 241L241 251" fill="none" stroke="#e6c0ed" stroke-width="3" />
+            <path d="M227 247L240 281" fill="none" stroke="#b28b5b" stroke-width="8" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+            <path d="M232 275Q248 259 265 270L261 293Q247 305 231 290Z" fill="#cbd9b0" stroke="#3c4955" stroke-width="4" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+            <g id="rage-blade" opacity="1">
+              <path d="M245 270Q258 267 263 273L259 291Q251 299 240 294" fill="none" stroke="#7de8a0" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" opacity="0.5" />
+              <path d="M245 270Q258 267 263 273L259 291Q251 299 240 294" fill="none" stroke="#edffc1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+            </g>
+          </g>
+        </g>
+      </g>
+    </g>
+  </g>
+</svg>

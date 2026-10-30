@@ -17,12 +17,6 @@ function crescent(ctx, x, y, radius, color) {
   ctx.fillStyle = color; ctx.fill(); ctx.stroke();
 }
 
-function ghost(ctx, size, color) {
-  shape(ctx, [[size, 0], [size * .15, -size * .54], [-size, -size * .34], [-size * .5, 0], [-size, size * .34], [size * .15, size * .54]], color);
-  ctx.fillStyle = '#281b30'; ctx.fillRect(size * .1, -size * .22, size * .23, size * .15);
-  ctx.fillRect(size * .1, size * .07, size * .23, size * .15);
-}
-
 // Returns true only when the existing effect has been drawn in full.
 export function drawHeroGrowthEffect(ctx, fx, progress, {
   hero, level = 1, pixel = false, reducedMotion = false
@@ -87,8 +81,8 @@ export function drawHeroGrowthEffect(ctx, fx, progress, {
     if (tier === 3) { ctx.strokeStyle = '#fff7d5'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(26, 0); ctx.lineTo(22 + fx.r - 3, 0); ctx.stroke(); }
   } else if (fx.kind === 'kael-emp-bolt') {
     const dx = fx.x2 - fx.x1, dy = fx.y2 - fx.y1, length = Math.hypot(dx, dy) || 1;
-    const end = reducedMotion ? 1 : clamp(p / .72, 0, 1);
-    for (const [color, width] of [['#234c76', 9], ['#69cfff', 6], ['#f4ffff', 2]]) {
+    const end = reducedMotion ? 1 : clamp(p / .3, 0, 1);
+    for (const [color, width] of [['#234c76', 16], ['#69cfff', 10], ['#f4ffff', 3.6]]) {
       ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.moveTo(fx.x1, fx.y1);
       const segments = 10;
       for (let i = 1; i <= segments; i++) {
@@ -103,9 +97,10 @@ export function drawHeroGrowthEffect(ctx, fx, progress, {
       shape(ctx, [[0, -12], [7, 0], [0, 12], [-7, 0]], '#d9f9ff', '#3b94bf');
     }
   } else {
-    const start = fx.delay / fx.maxLife;
-    if (p >= start) {
-      const blast = clamp((p - start) / (1 - start), 0, 1), radius = fx.r * (.28 + (reducedMotion ? .75 : blast) * .72);
+    const age = fx.maxLife - fx.life - fx.delay;
+    if (age >= 0) {
+      const blast = clamp(age / .24, 0, 1), radius = fx.r * (.3 + (reducedMotion ? 1 : blast) * .7);
+      ctx.globalAlpha *= 1 - clamp(age / .9, 0, 1) * .6;
       ctx.translate(fx.x, fx.y); ctx.lineWidth = 2;
       ctx.strokeStyle = '#78cfff'; ctx.beginPath(); ctx.arc(0, 0, radius, 0, TAU); ctx.stroke();
       ctx.strokeStyle = '#efffff'; ctx.lineWidth = 4; ctx.beginPath(); ctx.arc(0, 0, radius * .65, 0, TAU); ctx.stroke();
@@ -113,6 +108,12 @@ export function drawHeroGrowthEffect(ctx, fx, progress, {
         ctx.save(); ctx.rotate(i * TAU / (tier === 3 ? 8 : 6));
         shape(ctx, [[radius, 0], [radius * .63, -5], [radius * .42, 0], [radius * .63, 5]], '#c9f5ff', '#3a7e9f'); ctx.restore();
       }
+      ctx.strokeStyle = '#c4f4ff'; ctx.lineWidth = 2.5; ctx.beginPath();
+      for (let i = 0; i <= 16; i++) {
+        const angle = i * TAU / 16 + fx.seed, r = radius * (i % 2 ? .67 : .83);
+        if (i) ctx.lineTo(Math.cos(angle) * r, Math.sin(angle) * r); else ctx.moveTo(Math.cos(angle) * r, Math.sin(angle) * r);
+      }
+      ctx.stroke();
     }
   }
   ctx.restore();
@@ -201,24 +202,6 @@ export function drawHeroGrowthAreas(ctx, {
       ctx.restore();
     }
     ctx.restore();
-  } else if (hero === 'sf' && s.requiem) {
-    const cast = s.requiem;
-    if (cast.delay > 0) {
-      for (const side of [-1, 1]) {
-        ctx.save(); ctx.translate(p.x + side * 30, p.y - 27); ctx.rotate(-side * Math.PI / 2);
-        ghost(ctx, tier === 3 ? 14 : 10, '#f7a077'); ctx.restore();
-      }
-    } else {
-      const radius = Math.min(280, cast.age / .55 * 280);
-      if (radius > 5 && cast.age <= .72) {
-        ctx.globalAlpha *= clamp((.72 - cast.age) / .2, 0, 1);
-        const count = tier === 3 ? 16 : 10;
-        for (let i = 0; i < count; i++) {
-          ctx.save(); ctx.translate(cast.x, cast.y); ctx.rotate(i * TAU / count);
-          ctx.translate(Math.max(0, radius - 12), 0); ghost(ctx, Math.min(12, radius * .12), '#f5a476'); ctx.restore();
-        }
-      }
-    }
   } else if (hero === 'luna' && s.eclipse) {
     for (const beam of s.eclipse.beams.slice(0, 10)) {
       ctx.save(); ctx.translate(beam.x, beam.y);
@@ -274,22 +257,24 @@ export function drawHeroGrowthAreas(ctx, {
       ctx.restore();
     }
     for (const spirit of (s.kaelSpirits || []).slice(0, 2)) {
-      ctx.save(); ctx.translate(spirit.x, spirit.y - 23);
+      const bob = reducedMotion ? 0 : Math.sin(time * 7 + spirit.side) * 1.5;
+      ctx.save(); ctx.translate(spirit.x, spirit.y + bob); ctx.rotate(spirit.facing); ctx.scale(spirit.scale, spirit.scale);
+      ctx.globalAlpha *= clamp(spirit.life / .35, 0, 1); ctx.translate(0, -13);
       shape(ctx, [[-9, -3], [-6, -14], [0, -7], [6, -14], [9, -3]], '#ffd3a1', '#9e5836');
       if (tier === 3) { ctx.strokeStyle = '#ffedbc'; ctx.beginPath(); ctx.moveTo(-10, 4); ctx.lineTo(0, 0); ctx.lineTo(10, 4); ctx.stroke(); }
       ctx.restore();
     }
-    if (s.kaelBlast) {
-      const blast = s.kaelBlast;
+    for (const blast of s.kaelBlasts || []) {
       ctx.save(); ctx.translate(blast.x, blast.y); ctx.rotate(blast.angle);
-      ctx.beginPath(); ctx.moveTo(0, -34); ctx.lineTo(170, -144); ctx.lineTo(170, 144); ctx.lineTo(0, 34); ctx.closePath(); ctx.clip();
-      for (let i = 0; i < 3; i++) {
-        const age = blast.age - i * .07;
-        if (age < 0 || age > .62) continue;
-        const progress = reducedMotion ? .6 : age / .62;
-        ctx.save(); ctx.translate(20 + progress * 130, 0); ctx.globalAlpha *= 1 - age / .62;
-        for (const side of [-1, 1]) shape(ctx, [[14, side * 12], [2, side * (20 + i * 9)], [-10, side * (14 + i * 9)]], '#dbfaff', '#488faa');
-        if (tier === 3) shape(ctx, [[18, 0], [4, -7], [-7, 0], [4, 7]], '#f1ffff', '#61adc4');
+      for (const wave of blast.waves) {
+        if (wave.alpha <= 0 || wave.radius < 12) continue;
+        ctx.save(); ctx.globalAlpha *= wave.alpha;
+        for (const angle of [-blast.halfAngle, 0, blast.halfAngle]) {
+          ctx.save(); ctx.rotate(angle); ctx.translate(wave.radius, 0);
+          shape(ctx, [[6, 0], [0, -6], [-6, 0], [0, 6]], '#dbfaff', '#488faa');
+          if (tier === 3) { ctx.strokeStyle = '#f1ffff'; ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(8, 0); ctx.stroke(); }
+          ctx.restore();
+        }
         ctx.restore();
       }
       ctx.restore();

@@ -1,0 +1,110 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="256" height="384" viewBox="0 0 256 384" fill="none" stroke-linejoin="round" stroke-linecap="round">
+  <title>Alchemist · dota1 · scavenger-morph-in-2</title>
+  <desc>Project-drawn chemical rage: the goblin rider stays green; the ogre changes purple, braces its shoulders and carries a lit blade. Static SVG pose with the ordinary canvas and foot coordinates.</desc>
+  <defs>
+    <linearGradient id="d1-skin" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#cba1d5" />
+      <stop offset="0.500" stop-color="#954baf" />
+      <stop offset="1.000" stop-color="#4d2b66" />
+    </linearGradient>
+    <linearGradient id="d1-cloth" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#c75634" />
+      <stop offset="0.500" stop-color="#862e24" />
+      <stop offset="1.000" stop-color="#3e2020" />
+    </linearGradient>
+    <linearGradient id="d1-metal" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#eee2b8" />
+      <stop offset="0.500" stop-color="#afad92" />
+      <stop offset="1.000" stop-color="#526977" />
+    </linearGradient>
+    <linearGradient id="d1-beard" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#d2e37d" />
+      <stop offset="0.500" stop-color="#94b74b" />
+      <stop offset="1.000" stop-color="#497334" />
+    </linearGradient>
+    <linearGradient id="d1-leather" x1="0" y1="0" x2=".8" y2="1">
+      <stop offset="0.000" stop-color="#b09460" />
+      <stop offset="0.500" stop-color="#765937" />
+      <stop offset="1.000" stop-color="#392e26" />
+    </linearGradient>
+  </defs>
+  <g id="rage-frame" transform="translate(128 0) scale(0.93 1) translate(-128 0)">
+    <g transform="matrix(.92 0 0 1 6 0)">
+      <g id="hero-motion" transform="">
+        <g id="hero-body" transform="">
+          <g id="chemical-tank" transform="">
+            <path d="M38 123L63 107L84 119L89 194L65 207L38 192Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+            <path d="M41 133L85 133L86 145L40 145ZM40 173L87 173L88 186L39 186Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+            <path d="M54 119L54 197M72 120L76 197" fill="none" stroke="#d7b677" stroke-width="2" />
+            <path d="M47 107L47 98L66 94L72 108Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+            <path d="M64 100Q103 85 99 136" fill="none" stroke="#7d8466" stroke-width="7" />
+          </g>
+          <g id="pose-left-leg" transform="">
+            <path d="M69 271L109 270L102 326L75 349L45 345L51 329Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M47 334L78 332L87 348L69 360L35 355L33 345Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M42 348L44 356M55 348L57 357M68 345L71 353" fill="none" stroke="#e0e0c2" stroke-width="3" />
+          </g>
+          <g id="pose-right-leg" transform="">
+            <path d="M148 273L189 267L205 324L203 347L172 351L152 326Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M172 334L201 330L221 348L217 359L179 361L167 350Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M184 348L186 359M197 346L200 357M210 347L213 354" fill="none" stroke="#e0e0c2" stroke-width="3" />
+          </g>
+          <path d="M79 142Q109 128 153 140Q201 145 213 199L209 251L179 283L100 287L59 262L45 211L51 175Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+          <path d="M89 184Q128 160 166 180Q195 206 183 249L164 270L111 270L83 244L75 210Z" fill="#b271c8" stroke="#171d25" stroke-width="3" />
+          <path d="M97 200Q129 185 159 198M112 247Q136 258 163 243" fill="none" stroke="#e2c0ec" stroke-width="3" />
+          <path d="M120 245L126 247L125 254L119 251Z" fill="#70418c" stroke="#171d25" stroke-width="1" />
+          <path d="M71 260L113 277L176 270L207 248L204 271L174 290L111 298L75 280Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+          <path d="M118 276L150 274L153 294L121 299Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+          <path d="M67 157Q42 150 27 174L21 209L32 239L59 239L76 210L70 189L84 172Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+          <path d="M25 215L53 212L64 234L53 256L27 249L16 232Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+          <path d="M31 237L32 251M43 235L45 252" fill="none" stroke="#dfb9e7" stroke-width="3" />
+          <g id="rage-muscles" opacity="1">
+            <path d="M79 181Q102 162 126 184L132 205Q103 188 85 209L76 225L69 207Z" fill="#c58ad4" stroke="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+            <path d="M136 185Q159 172 179 193L184 213Q164 198 140 211Z" fill="#ae70c6" stroke="none" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+            <path d="M83 215Q87 234 104 241M99 187Q111 184 120 190" fill="none" stroke="#ecc5ed" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+          </g>
+          <g id="pose-swing-arm" transform="translate(-5 -7) rotate(8 184 154)">
+            <path d="M182 157Q208 149 225 178L234 211L221 238L194 232L190 213L196 192L176 177Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <path d="M203 211L229 210L242 228L235 250L208 253L192 232Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+            <g id="pose-melee-weapon" transform="">
+              <path d="M231 225L243 214L252 234L246 255L231 258Z" fill="url(#d1-metal)" stroke="#171d25" stroke-width="3" />
+              <g id="rage-blade" opacity="1">
+                <path d="M243 218Q253 229 248 250L237 257" fill="none" stroke="#7de8a0" stroke-width="7" stroke-linejoin="round" stroke-linecap="round" opacity="0.5" />
+                <path d="M243 218Q253 229 248 250L237 257" fill="none" stroke="#edffc1" stroke-width="3" stroke-linejoin="round" stroke-linecap="round" opacity="1" />
+              </g>
+            </g>
+            <path d="M212 235L215 251M224 233L229 248" fill="none" stroke="#dfb9e7" stroke-width="3" />
+          </g>
+          <path d="M111 121Q130 103 155 112L175 131L174 162L158 183L123 178L103 158L101 140Z" fill="url(#d1-skin)" stroke="#171d25" stroke-width="3" />
+          <path d="M108 143L127 142L136 150L154 143L169 148L164 169L149 180L127 173Z" fill="#ab69bd" stroke="#171d25" stroke-width="3" />
+          <path d="M118 154L124 144L129 154M152 155L159 145L162 156" fill="#f1e7c7" stroke="#171d25" stroke-width="2" />
+          <path d="M117 134L129 132M146 131L159 134" fill="none" stroke="#2c4659" stroke-width="3" />
+          <path d="M132 133L127 147L139 151L148 146L143 135Z" fill="#d5a0df" stroke="#171d25" stroke-width="2" />
+          <path d="M132 162L152 164" fill="none" stroke="#38596b" stroke-width="3" />
+          <path d="M74 165L87 148L112 168L94 183Z" fill="url(#d1-cloth)" stroke="#171d25" stroke-width="3" />
+          <path d="M165 177L184 157L203 174L186 191Z" fill="url(#d1-cloth)" stroke="#171d25" stroke-width="3" />
+          <path d="M88 188Q111 173 142 182Q163 186 168 202Q129 193 102 209L90 225Z" fill="#d8a3e1" stroke="none" stroke-width="3" />
+          <path d="M173 215Q190 220 185 244L164 263L147 266L163 246Z" fill="#9351ac" stroke="none" stroke-width="3" />
+          <path d="M83 222Q84 241 101 251M103 214Q125 204 143 210" fill="none" stroke="#edc7f1" stroke-width="3" />
+          <path d="M159 267L174 261" fill="none" stroke="#73438d" stroke-width="3" />
+          <g transform="translate(0 -3)">
+            <path d="M81 102L87 76L115 66L147 79L155 106L137 126L99 126Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+            <path d="M90 66L67 45L93 49L100 37L124 35L139 48L163 41L147 67L133 81L108 83Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+            <path d="M89 42L91 29L127 25L141 38L131 48L104 49Z" fill="#bb984b" stroke="#171d25" stroke-width="3" />
+            <ellipse cx="105" cy="54" rx="12" ry="9" fill="#344b50" stroke="#d0b16e" stroke-width="2" />
+            <ellipse cx="130" cy="52" rx="11" ry="9" fill="#344b50" stroke="#d0b16e" stroke-width="2" />
+            <path d="M99 52L107 49M124 51L132 47" fill="none" stroke="#f4df9d" stroke-width="2" />
+            <path d="M115 63L109 73L122 79L135 69Z" fill="#b9cf65" stroke="#171d25" stroke-width="2" />
+            <path d="M109 85L130 84" fill="none" stroke="#3d4a31" stroke-width="2" />
+            <path d="M89 86L76 99L75 124L96 138L105 123L91 111L104 102Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+            <path d="M139 85L159 99L158 123L138 138L125 123L145 111L129 100Z" fill="url(#d1-beard)" stroke="#171d25" stroke-width="3" />
+            <path d="M73 124L93 128L101 145L79 147L67 138Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+            <path d="M140 129L159 123L172 139L160 149L138 147Z" fill="url(#d1-leather)" stroke="#171d25" stroke-width="3" />
+          </g>
+          <g id="hero-weapon" transform="" />
+        </g>
+        <g id="hero-accessory" transform="" />
+      </g>
+    </g>
+  </g>
+</svg>

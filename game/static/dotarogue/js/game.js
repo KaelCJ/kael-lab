@@ -2,22 +2,23 @@ import { createStudioRuntime } from './studio-runtime.js?v=20261014-tb1';
 import { createFireRenderer } from './effects/fire.js';
 import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261027-map2';
 import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261027-map2';
-import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261030-kael-skills1';
+import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261030-alchemist-rage1';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261027-unified1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261030-equipment17';
-import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261030-equipment17';
-import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261030-equipment17';
-import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment17';
-import { createEquipmentCombat } from './equipment-combat.js?v=20261030-equipment17';
-import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261030-kael-skills1';
-import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment17';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261030-equipment18';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261030-equipment18';
+import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261030-equipment18';
+import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment18';
+import { createEquipmentCombat } from './equipment-combat.js?v=20261030-equipment18-skillpower1';
+import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261030-sf-requiem1';
+import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
 import { createWindRenderer } from './effects/wind.js?v=20261027-dota1';
 import { createMeteorRenderer } from './effects/meteor.js';
+import { createRequiemRenderer } from './effects/requiem.js?v=20261030-sf-requiem2';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261029-attributes-spell3';
 import { createAudioSystem } from './audio.js?v=20261027-dota1';
-import { attackPower, resolveDamage } from './combat-damage.js?v=20261029-attributes-spell3';
-import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261029-attributes1';
+import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261030-skill-power1';
+import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDerivedSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261030-attribute-contract1';
 
 (() => {
   'use strict';
@@ -38,9 +39,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   // Legacy key retained so the DotaRogue rename keeps existing browser records.
   const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
   const TAU = Math.PI * 2;
+  const RAGE_MORPH_DURATION = 1 / 3;
   const KAEL_TORNADO = { speed: 240, life: 3.2, radius: 34, scale: .72 };
   const KAEL_METEOR = { speed: 160, life: 4.5, radius: 88, scale: 1.85 };
   const KAEL_ICE_WALL = { life: 10, halfLength: 240, halfWidth: 36 };
+  const KAEL_EMP_RADIUS = 280;
+  const KAEL_SPIRIT = { life: 12, scale: 1.3, attackFlash: .28 };
+  const KAEL_BLAST = { range: 300, halfAngle: .95, travelTime: .72, waveGap: .14, width: 12 };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
   const pick = list => list[Math.floor(Math.random() * list.length)];
@@ -140,13 +145,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       ? equipmentUpgradeDescription(def, selectedLocale, true)
       : selectedLocale === 'en' ? (def.descEn || def.desc) : selectedLocale === 'zh-TW' ? (def.descTw || def.desc) : def.desc;
     const attributes = attributeSummary(def.attributes, selectedLocale);
+    const derived = attributeDerivedSummary(def.attributes, selectedLocale);
     const cooldown = equipmentCooldownText(def);
     const growth = def.growth && run ? killGrowthText(def.id, false) : '';
     const reserve = item && run?.equipmentReserve?.some(held => held.uid === item.uid)
       ? selectedLocale === 'en' ? 'Reserve: inactive; no stats, passives or growth'
         : selectedLocale === 'zh-TW' ? '儲備：未生效；不提供屬性、被動或成長'
           : '储备：不生效；不提供属性、被动或成长' : '';
-    return [description, attributes, cooldown, growth, reserve].filter(Boolean).join(' · ');
+    return [description, attributes, derived, cooldown, growth, reserve].filter(Boolean).join(' · ');
   }
   function buffName(def) { return selectedLocale === 'en' ? (def.nameEn || def.name) : selectedLocale === 'zh-TW' ? (def.nameTw || def.name) : def.name; }
   function buffDesc(def) { return selectedLocale === 'en' ? (def.descEn || def.desc) : selectedLocale === 'zh-TW' ? (def.descTw || def.desc) : def.desc; }
@@ -270,7 +276,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
 
     pauseEquipment: '当前装备', equipmentStripAria: '已持有装备', recipesTitle: '固定合成', equipmentCatalog: '查看装备图鉴', equipmentCatalogNewTab: '新标签查看装备图鉴',
     equipmentGrade: '{grade}级装备', fullEquipment: '装备格已满', equipmentSold: '装备已卖出',
-    emptyEquipment: '暂无装备', equipmentDetails: '查看全部介绍', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力',
+    emptyEquipment: '暂无装备', equipmentDetails: '查看全部介绍', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力', statSkillPower: '技能伤害',
     });
   Object.assign(EXTRA_UI['zh-TW'], {
 
@@ -279,7 +285,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
 
     pauseEquipment: '目前裝備', equipmentStripAria: '已持有裝備', recipesTitle: '固定合成', equipmentCatalog: '查看裝備圖鑑', equipmentCatalogNewTab: '在新分頁查看裝備圖鑑',
     equipmentGrade: '{grade}級裝備', fullEquipment: '裝備格已滿', equipmentSold: '裝備已賣出',
-    emptyEquipment: '暫無裝備', equipmentDetails: '查看全部介紹', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力',
+    emptyEquipment: '暫無裝備', equipmentDetails: '查看全部介紹', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力', statSkillPower: '技能傷害',
     });
   Object.assign(EXTRA_UI.en, {
 
@@ -288,7 +294,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
 
     pauseEquipment: 'Current equipment', equipmentStripAria: 'Held equipment', recipesTitle: 'Fixed recipes', equipmentCatalog: 'View equipment archive', equipmentCatalogNewTab: 'Open equipment archive in new tab',
     equipmentGrade: 'Grade {grade}', fullEquipment: 'Equipment slots full', equipmentSold: 'Equipment sold',
-    emptyEquipment: 'No equipment', equipmentDetails: 'View full details', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power',
+    emptyEquipment: 'No equipment', equipmentDetails: 'View full details', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power', statSkillPower: 'Spell power',
     });
 
   const BUFF_UI = {
@@ -501,6 +507,16 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
     for (const side of ['', 'side-']) HERO_POSE_ART[`tb-demon-${side}${pose}`] = `./assets/characters/tb/tb-demon-${side}${pose}.svg?v=20261014-tb1`;
   }
+  for (const [poses, root] of [[HERO_POSE_ART, './assets/characters/scavenger'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger']]) {
+    for (const side of ['', 'side-']) {
+      for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
+        poses[`scavenger-rage-${side}${pose}`] = `${root}/scavenger-rage-${side}${pose}.svg?v=20261030-rage1`;
+      }
+      for (const direction of ['in', 'out']) for (let frame = 0; frame < 3; frame++) {
+        poses[`scavenger-${side}morph-${direction}-${frame}`] = `${root}/scavenger-${side}morph-${direction}-${frame}.svg?v=20261030-rage1`;
+      }
+    }
+  }
   const LUNA_GLAIVE_BLADE = new Path2D('M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z');
   const EQUIPMENT_ART = Object.fromEntries(EQUIPMENT_IDS.map(id => [`equipment-${id}`, equipmentIconPath(id)]));
   const SKIN_ART = {
@@ -513,6 +529,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   const imagesByPath = {};
   let windRenderer = null, meteorRenderer = null;
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
+  const requiemRenderer = createRequiemRenderer();
   createWindRenderer().then(renderer => { windRenderer = renderer; })
     .catch(error => console.warn('Wind sprites unavailable; using the projectile fallback.', error));
   createMeteorRenderer().then(renderer => { meteorRenderer = renderer; })
@@ -784,7 +801,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     const details = $('hero-details');
     if (details.dataset.hero !== selectedHero.id || details.dataset.locale !== selectedLocale) {
       const heroAttributes = attributeSummary(selectedHero.attributes, selectedLocale);
-      details.innerHTML = `<div class="hero-details-art">${artIcon(selectedHero.id, '')}</div><div class="hero-details-copy"><h3>${selectedHero.name}</h3><p class="hero-profession">${selectedHero.profession}</p><p>${selectedHero.desc}</p>${heroAttributes ? `<p class="hero-attributes"><span>${selectedLocale === 'en' ? 'Attributes' : selectedLocale === 'zh-TW' ? '屬性' : '属性'}</span> ${heroAttributes} · ${t('statPrimaryAttribute')} ${attributeLabel(selectedHero.attributes.primary, selectedLocale)}</p>` : ''}<p class="hero-skill"><span>${t('passive')}</span> ${SKILLS[selectedHero.id][1].name}</p><p class="hero-skill"><span>${t('active')}</span> ${SKILLS[selectedHero.id][0].name}</p></div>`;
+      const heroDerived = attributeDerivedSummary(selectedHero.attributes, selectedLocale, selectedHero.attributes.primary);
+      details.innerHTML = `<div class="hero-details-art">${artIcon(selectedHero.id, '')}</div><div class="hero-details-copy"><h3>${selectedHero.name}</h3><p class="hero-profession">${selectedHero.profession}</p><p>${selectedHero.desc}</p>${heroAttributes ? `<p class="hero-attributes"><span>${selectedLocale === 'en' ? 'Attributes' : selectedLocale === 'zh-TW' ? '屬性' : '属性'}</span> ${heroAttributes} · ${t('statPrimaryAttribute')} ${attributeLabel(selectedHero.attributes.primary, selectedLocale)}${heroDerived ? ` · ${heroDerived}` : ''}</p>` : ''}<p class="hero-skill"><span>${t('passive')}</span> ${SKILLS[selectedHero.id][1].name}</p><p class="hero-skill"><span>${t('active')}</span> ${SKILLS[selectedHero.id][0].name}</p></div>`;
       details.dataset.hero = selectedHero.id;
       details.dataset.locale = selectedLocale;
     }
@@ -826,7 +844,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     NAV_COLS = Math.floor(WORLD.w / NAV_STEP); NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
     const spawn = biome.id === 'dota' ? DOTA_SPAWN : { x: WORLD.w / 2, y: WORLD.h / 2 };
     $('minimap-panel').classList.toggle('hidden', biome.id !== 'dota');
-    const stats = { armor: 0, speed: 0, attackPower: 0, primaryAttributePower: 0, attackRange: 0, critDamage: 80, abilityHaste: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, manaRegen: 3, ...character.stats };
+    const stats = { armor: 0, speed: 0, attackPower: 0, skillPower: 0, primaryAttributePower: 0, attackRange: 0, critDamage: 80, abilityHaste: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, manaRegen: 3, ...character.stats };
     run = {
       character, biome, difficulty, mode: selectedMode, stats, attributes: { strength: 0, agility: 0, intelligence: 0 }, primaryAttribute, player: { x: spawn.x, y: spawn.y, radius: 17, hp: character.hp, maxHp: character.hp, mana: 100, maxMana: 100, facing: 0, attackFacing: 0, visualSide: false, visualMirror: 1, attackPose: 0, attackClock: 0, pendingAttack: null, skillPose: 0, skillClock: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0, voiceLow: false,
@@ -837,10 +855,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       pendingChests: 0, chestReward: null, attackSeq: 0, chainProcAttackId: 0, chainReadyAt: 0,
 
       skills: { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0, manualPickups: 0, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, madmoonAttackCount: 0, madmoonProcAttackId: 0,
-        souls: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageAmp: 1,
+        souls: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageAmp: 1, rageMorph: null,
         thunder: null, requiem: null, bloodTime: 0, bloodCooldown: 0,
         kaelPassiveTimer: 5, lastPassiveSpell: null, kaelSpellRank: 1,
-        kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [],
+        kaelMeteors: [], kaelIceWalls: [], kaelBlasts: [], kaelSpirits: [],
         eclipse: null, tb: createTerrorbladeState(), dagonReadyAt: 6, cycloneReadyAt: 9, necroReadyAt: 12,
         necroUnits: [], skillHeals: [], lastHurtAt: 0, phaseSpeedUntil: 0, phaseAttackUntil: 0, returnReadyAt: 0 },
       terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
@@ -880,10 +898,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
 
     const souls = run.skills.souls, manualPickups = run.skills.manualPickups;
     Object.assign(run.skills, { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0,
-      manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, madmoonAttackCount: 0, madmoonProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
+      manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, madmoonAttackCount: 0, madmoonProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageMorph: null,
       thunder: null, requiem: null, bloodTime: 0, souls,
       kaelPassiveTimer: 5,
-      kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState(),
+      kaelMeteors: [], kaelIceWalls: [], kaelBlasts: [], kaelSpirits: [], eclipse: null, tb: createTerrorbladeState(),
       necroUnits: [], phaseSpeedUntil: 0, phaseAttackUntil: 0 });
     run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
     run.player.invuln = 1;
@@ -943,8 +961,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         } else if (derivedKey === 'maxMana') {
           run.player.maxMana = Math.max(1, run.player.maxMana + value);
           run.player.mana = Math.max(0, Math.min(run.player.maxMana, run.player.mana + value));
-        } else if (derivedKey === 'attackPower') {
-          run.stats.primaryAttributePower = (run.stats.primaryAttributePower || 0) + value;
         } else {
           run.stats[derivedKey] = (run.stats[derivedKey] || 0) + value;
         }
@@ -1014,7 +1030,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       if (target.dead) continue;
       const point = orbitingArrayPoint(i, stacks);
       const origin = { x: p.x + point.x, y: p.y + point.y };
-      damageEnemy(target, 8 + attackPower(run) * .2, { source: 'buff' });
+      damageEnemy(target, 8 + skillPower(run) * .2, { source: 'buff' });
       run.effects.push({ kind: 'orbit-bolt', x1: origin.x, y1: origin.y, x2: target.x, y2: target.y,
         color: '#a8efff', seed: index + i, life: .24, maxLife: .24 });
       run.effects.push({ kind: 'pulse', x: target.x, y: target.y, r: target.r + 6,
@@ -1061,7 +1077,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       const muzzle = Math.min(12, Math.max(0, nearest - target.r - 4));
       run.bullets.push({ x: point.x + Math.cos(angle) * muzzle, y: point.y + Math.sin(angle) * muzzle,
         vx: Math.cos(angle) * 300, vy: Math.sin(angle) * 300, life: 1.2,
-        damage: 6 + attackPower(run) * .15, r: 3, color: '#ffc579', type: 'clockwork',
+        damage: 6 + skillPower(run) * .15, r: 3, color: '#ffc579', type: 'clockwork',
         buff: 'clockworkGuards', pierce: 1, hit: new Set() });
       guard.aim = angle; guard.firedAt = run.totalTime; guard.cooldown = 1.5;
       playSfx('guard-shot');
@@ -1522,7 +1538,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   function statSummary() {
     const s = run.stats;
     const signed = value => `${value >= 0 ? '+' : ''}${value}`;
-    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackPower')} ${signed(Number(attackPower(run).toFixed(2)))} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${Number(s.armor.toFixed(2))}`;
+    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackPower')} ${signed(Number(attackPower(run).toFixed(2)))} · ${t('statSkillPower')} ${signed(Number(skillPower(run).toFixed(2)))} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${Number(s.armor.toFixed(2))}`;
   }
   function renderEquipmentStrip() {
     $('equipment-strip').innerHTML = run.equipment.map(item => {
@@ -1756,7 +1772,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     );
   }
 
-  function soulAttackBonus() { return attackPower(run) - run.stats.attackPower - (run.stats.primaryAttributePower || 0); }
+  function soulAttackBonus() { return attackPower(run) - run.stats.attackPower; }
   function baseAttackDefinition(id = run.baseAttack.id) { return id === 'tb' && run.skills.tb.time > 0 ? TB_DEMON_ATTACK : BASE_ATTACKS[id]; }
   function basicRange() { return Math.max(48, baseAttackDefinition().range + run.stats.attackRange + (run.character.id === 'rover' ? 140 : 0)); }
   function equipmentPassive(id) {
@@ -1819,7 +1835,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       .sort((a, b) => distance(a, run.player) - distance(b, run.player))[0];
     if (!target) return;
     target.orchidUntil = 0;
-    damageEnemy(target, passive.damage + attackPower(run) * passive.attackRatio, { source: 'equipment' });
+    damageEnemy(target, passive.damage + skillPower(run) * passive.attackRatio, { source: 'equipment' });
     addEquipmentUpgradeEffect('orchid', passive.level, { x: target.x, y: target.y, r: target.r + 12 });
   }
   function pulse(x, y, r, color, life = .35, kind = 'pulse') { run.effects.push({ kind, x, y, r, color, life, maxLife: life, heroGrowthTier: heroGrowthTier(run.level) }); }
@@ -1864,7 +1880,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
           && inAttackFan(p, e, angle, dagon.spreadDegrees)
           && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
           .sort((a, b) => distance(a, target) - distance(b, target)).slice(0, dagon.targets - 1);
-        const targets = [target, ...others], budget = dagon.damage + attackPower(run) * dagon.attackRatio;
+        const targets = [target, ...others], budget = dagon.damage + skillPower(run) * dagon.attackRatio;
         for (let i = 0; i < targets.length; i++) {
           const share = targets.length === 1 ? 1 : (i === 0 ? 2 : 1) / (targets.length + 1);
           damageEnemy(targets[i], budget * share, { source: 'equipment' });
@@ -1915,7 +1931,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       if (d > (target ? range * .85 : 40)) moveThroughTerrain(unit, Math.cos(unit.facing) * 155 * dt, Math.sin(unit.facing) * 155 * dt);
       if (target && d <= range + target.r && unit.attack <= 0) {
         unit.attack = ranged ? necro.attackInterval + .2 : necro.attackInterval; unit.attackFlash = .18;
-        damageEnemy(target, unit.damage + attackPower(run) * unit.attackRatio, { source: 'summon', rewards: false });
+        damageEnemy(target, unit.damage + skillPower(run) * unit.attackRatio, { source: 'summon', rewards: false });
         if (ranged) run.effects.push({ kind: 'line', x1: unit.x, y1: unit.y - 8, x2: target.x, y2: target.y, color: '#9de8bd', life: .16, maxLife: .16, width: 2 });
       }
       return true;
@@ -1941,14 +1957,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     const p = run.player;
     for (const e of run.enemies) if (!e.dead && distance(e, p) <= 220 + e.r) {
       if (run.totalTime >= (e.quillUntil || 0)) e.quillStacks = 0;
-      dealSkillDamage(e, 16 + attackPower(run) * .8 + (e.quillStacks || 0) * 4, active);
+      dealSkillDamage(e, 16 + skillPower(run) * .8 + (e.quillStacks || 0) * 4, active);
       e.quillStacks = Math.min(5, (e.quillStacks || 0) + 1); e.quillUntil = run.totalTime + 10;
     }
     pulse(p.x, p.y, 220, '#dac69b', .42, 'quills');
     playSfx(active ? 'skill-bulwark' : 'passive-bulwark');
   }
   function triggerStaticField(center) {
-    const power = attackPower(run);
+    const power = skillPower(run);
     let affected = false;
     for (const e of run.enemies) if (!e.dead && distance(e, center) <= 120 + e.r && run.totalTime >= (e.staticReadyAt || 0)) {
       e.staticReadyAt = run.totalTime + 1;
@@ -2015,8 +2031,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   }
   function castKaelSpell(id, source = 'active') {
     const s = run.skills, p = run.player, fromActive = source === 'active';
-    const range = { tornado: KAEL_TORNADO.speed * KAEL_TORNADO.life, emp: 190,
-      'chaos-meteor': KAEL_METEOR.speed * KAEL_METEOR.life, 'ice-wall': 240, 'forge-spirit': 340, 'deafening-blast': 170 }[id];
+    const range = { tornado: KAEL_TORNADO.speed * KAEL_TORNADO.life, emp: KAEL_EMP_RADIUS,
+      'chaos-meteor': KAEL_METEOR.speed * KAEL_METEOR.life, 'ice-wall': 240, 'forge-spirit': 340, 'deafening-blast': KAEL_BLAST.range }[id];
     if (!range) return false;
     const target = kaelNearbyTarget(range, e => !['chaos-meteor', 'forge-spirit'].includes(id)
       || !terrainLineBlocked(p.x, p.y, e.x, e.y, 10));
@@ -2027,7 +2043,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       case 'tornado': {
         for (let i = 0; i < s.kaelSpellRank; i++) {
           const direction = angle + [0, -.24, .24][i];
-          const tornado = addShot(p.x, p.y, direction, { id: 'kael' }, 18 + attackPower(run) * .75,
+          const tornado = addShot(p.x, p.y, direction, { id: 'kael' }, 18 + skillPower(run) * .75,
             { skill: true, pierce: 8, kaelSpell: id });
           Object.assign(tornado, { vx: Math.cos(direction) * KAEL_TORNADO.speed, vy: Math.sin(direction) * KAEL_TORNADO.speed,
             life: KAEL_TORNADO.life, r: KAEL_TORNADO.radius, scale: KAEL_TORNADO.scale, active: fromActive, startedAt: run.totalTime });
@@ -2035,15 +2051,16 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         break;
       }
       case 'emp': {
-        const affected = run.enemies.filter(e => !e.dead && distance(e, p) <= 190 + e.r);
+        const affected = run.enemies.filter(e => !e.dead && distance(e, p) <= KAEL_EMP_RADIUS + e.r);
         for (const [index, e] of affected.entries()) {
           const angle = Math.atan2(e.y - p.y, e.x - p.x), originX = p.x + Math.cos(angle) * 18, originY = p.y + Math.sin(angle) * 18;
-          damage(e, 22 + attackPower(run) * .65);
+          damage(e, 22 + skillPower(run) * .65);
           const midX = (originX + e.x) * .5, midY = (originY + e.y) * .5;
           run.effects.push({ kind: 'kael-emp-bolt', x: midX, y: midY, x1: originX, y1: originY, x2: e.x, y2: e.y,
-            r: Math.hypot(e.x - originX, e.y - originY) * .5 + 24, seed: index * 17.3 + e.x * .01 + e.y * .017, color: '#73d8ff', life: .22, maxLife: .22 });
-          run.effects.push({ kind: 'kael-emp-explosion', x: e.x, y: e.y, r: Math.max(28, e.r + 28), seed: index * 11.7 + e.x * .013,
-            delay: .16 + index * .018, color: '#b9edff', life: .65, maxLife: .65 });
+            r: Math.hypot(e.x - originX, e.y - originY) * .5 + 24, seed: index * 17.3 + e.x * .01 + e.y * .017, color: '#73d8ff', life: .3, maxLife: .3 });
+          const delay = .12 + Math.min(index, 6) * .012;
+          run.effects.push({ kind: 'kael-emp-explosion', x: e.x, y: e.y, r: Math.max(42, e.r + 40), seed: index * 11.7 + e.x * .013,
+            delay, color: '#b9edff', life: delay + .9, maxLife: delay + .9 });
         }
         p.mana = Math.min(p.maxMana, p.mana + 12); break;
       }
@@ -2066,19 +2083,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
           halfLength: KAEL_ICE_WALL.halfLength, halfWidth: KAEL_ICE_WALL.halfWidth, age: 0, tick: .4, active: fromActive });
         pulse(target.x, target.y, 85, '#a7ecff', .55); break;
       case 'forge-spirit':
-        s.kaelSpirits = [-1, 1].map(side => ({ x: p.x + side * 38, y: p.y + 4, r: 9, life: 7, attack: 0,
+        s.kaelSpirits = [-1, 1].map(side => ({ x: p.x + side * 38, y: p.y + 4, r: 9 * KAEL_SPIRIT.scale,
+          life: KAEL_SPIRIT.life, scale: KAEL_SPIRIT.scale, attack: 0,
           attackFlash: 0, attackAngle: angle, facing: angle, side, active: fromActive }));
         pulse(p.x, p.y, 58, '#ffbd7d', .5); break;
       case 'deafening-blast': {
-        const blastTargets = run.enemies.filter(e => {
-          if (e.dead) return false;
-          const dx = e.x - p.x, dy = e.y - p.y, along = dx * Math.cos(angle) + dy * Math.sin(angle);
-          const across = -dx * Math.sin(angle) + dy * Math.cos(angle);
-          return along >= -e.r && along <= 170 + e.r && Math.abs(across) <= Math.max(34, along * .85) + e.r;
-        });
-        if (!blastTargets.length) return false;
-        for (const e of blastTargets) { damage(e, 28 + attackPower(run) * .8); kaelPushEnemy(e, 70, angle); }
-        s.kaelBlast = { x: p.x, y: p.y, angle, age: 0, life: .78, maxLife: .78 }; break;
+        s.kaelBlasts.push({ x: p.x, y: p.y, angle, age: 0, ...KAEL_BLAST,
+          life: KAEL_BLAST.travelTime + KAEL_BLAST.waveGap * 2, damage: 28 + skillPower(run) * .8,
+          active: fromActive, hit: new Set(), waves: [0, 1, 2].map(i => ({ delay: i * KAEL_BLAST.waveGap, radius: 0, alpha: 0 })) });
+        break;
       }
       default: return false;
     }
@@ -2127,7 +2140,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       if (count >= 2) continue;
       eclipse.hits.set(e, count + 1);
       const multiplier = e.id === 'boss' ? .65 : isElite(e) ? .8 : 1;
-      dealSkillDamage(e, (24 + attackPower(run) * .9) * multiplier, true);
+      dealSkillDamage(e, (24 + skillPower(run) * .9) * multiplier, true);
     }
     run.effects.push({ kind: 'lunar-impact', heroGrowthTier: heroGrowthTier(run.level), x: beam.x, y: beam.y, r: 52, color: '#e8ddff', life: .46, maxLife: .46 });
     playSfx('skill-luna');
@@ -2194,7 +2207,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       if (!targets.length) { showToast(t('noTarget')); return; }
       s.thunder = { time: .55, targets };
       for (const e of targets) pulse(e.x, e.y, e.r + 12, '#d5f4ff', .55, 'thunder-mark');
-    } else if (id === 'scavenger') { s.rageTime = 6; s.rageAmp = activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 65, '#a4ec6b', .6); }
+    } else if (id === 'scavenger') {
+      s.rageTime = 6; s.rageAmp = activeAmplify() * skillGrowthMultiplier();
+      s.rageMorph = { direction: 'in', time: RAGE_MORPH_DURATION };
+      pulse(p.x, p.y, 65, '#a4ec6b', .6);
+    }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
     else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y, souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
@@ -2225,7 +2242,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       if (dx || dy) meteor.trailAngle = Math.atan2(dy, dx);
       while (meteor.tick >= .3 - 1e-9) {
         meteor.tick -= .3;
-        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= KAEL_METEOR.radius + e.r) dealSkillDamage(e, 12 + attackPower(run) * .45, meteor.active);
+        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= KAEL_METEOR.radius + e.r) dealSkillDamage(e, 12 + skillPower(run) * .45, meteor.active);
         pulse(meteor.x, meteor.y, KAEL_METEOR.radius, '#ff9c65', .2, 'meteor');
       }
     }
@@ -2237,25 +2254,56 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         const ax = wall.x - Math.sin(wall.angle) * wall.halfLength, ay = wall.y + Math.cos(wall.angle) * wall.halfLength;
         const bx = wall.x + Math.sin(wall.angle) * wall.halfLength, by = wall.y - Math.cos(wall.angle) * wall.halfLength;
         for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + wall.halfWidth) {
-          dealSkillDamage(e, 7 + attackPower(run) * .25, wall.active); e.kaelSlowUntil = run.totalTime + .55;
+          dealSkillDamage(e, 7 + skillPower(run) * .25, wall.active); e.kaelSlowUntil = run.totalTime + .55;
         }
       }
     }
     s.kaelIceWalls = s.kaelIceWalls.filter(wall => wall.life > 0);
-    if (s.kaelBlast) {
-      s.kaelBlast.age += dt; s.kaelBlast.life -= dt;
-      if (s.kaelBlast.life <= 0) s.kaelBlast = null;
+    for (const blast of s.kaelBlasts) {
+      const previousAge = blast.age;
+      blast.age += Math.min(dt, blast.life); blast.life -= dt;
+      for (const wave of blast.waves) {
+        const progress = clamp((blast.age - wave.delay) / blast.travelTime, 0, 1);
+        const previousRadius = clamp((previousAge - wave.delay) / blast.travelTime, 0, 1) * blast.range;
+        wave.radius = progress * blast.range;
+        wave.alpha = blast.age < wave.delay ? 0 : .9 * Math.min(1, (1 - progress) / .18);
+        if (blast.age < wave.delay || previousAge >= wave.delay + blast.travelTime) continue;
+        for (const e of run.enemies) {
+          if (e.dead || blast.hit.has(e)) continue;
+          const dx = e.x - blast.x, dy = e.y - blast.y;
+          const along = dx * Math.cos(blast.angle) + dy * Math.sin(blast.angle);
+          const across = -dx * Math.sin(blast.angle) + dy * Math.cos(blast.angle);
+          const angle = clamp(Math.atan2(across, along), -blast.halfAngle, blast.halfAngle);
+          // Closest point on the swept arc, including its two angular ends.
+          const radius = clamp(along * Math.cos(angle) + across * Math.sin(angle), previousRadius, wave.radius);
+          if (Math.hypot(along - Math.cos(angle) * radius, across - Math.sin(angle) * radius) > e.r + blast.width / 2) continue;
+          blast.hit.add(e);
+          dealSkillDamage(e, blast.damage, blast.active); kaelPushEnemy(e, 70, blast.angle);
+          pulse(e.x, e.y, 24, '#c9f5ff', .24);
+        }
+      }
     }
+    s.kaelBlasts = s.kaelBlasts.filter(blast => blast.life > 0);
     s.kaelSpirits = s.kaelSpirits.filter(spirit => {
       spirit.life -= dt; spirit.attack -= dt; spirit.attackFlash = Math.max(0, (spirit.attackFlash || 0) - dt);
-      const target = run.enemies.filter(e => !e.dead && distance(e, spirit) <= 380).sort((a, b) => distance(a, spirit) - distance(b, spirit))[0];
+      if (spirit.life <= 0) return false;
+      spirit.returning = distance(spirit, p) > 440 || (spirit.returning && distance(spirit, p) > 100);
+      const target = !spirit.returning && run.enemies.filter(e => !e.dead && distance(e, spirit) <= 380 && distance(e, p) <= 440)
+        .sort((a, b) => distance(a, spirit) - distance(b, spirit))[0];
       if (target) {
         const d = distance(target, spirit);
         spirit.facing = Math.atan2(target.y - spirit.y, target.x - spirit.x);
         if (d > 110) moveThroughTerrain(spirit, Math.cos(spirit.facing) * 120 * dt, Math.sin(spirit.facing) * 120 * dt);
-        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = .18; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + attackPower(run) * .3, spirit.active, false); pulse(target.x, target.y, 16, '#ffb979', .18); }
-      } else moveThroughTerrain(spirit, Math.cos(run.totalTime * 2 + spirit.side) * 20 * dt, Math.sin(run.totalTime * 2 + spirit.side) * 20 * dt);
-      return spirit.life > 0;
+        if (spirit.attack <= 0 && d < 150) { spirit.attack = .7; spirit.attackFlash = KAEL_SPIRIT.attackFlash; spirit.attackAngle = spirit.facing; dealSkillDamage(target, 10 + skillPower(run) * .3, spirit.active, false); pulse(target.x, target.y, 25, '#ffb979', .28); }
+      } else {
+        const dx = p.x + spirit.side * 42 - spirit.x, dy = p.y + 24 - spirit.y, d = Math.hypot(dx, dy);
+        if (d > 18) {
+          spirit.facing = Math.atan2(dy, dx);
+          const step = Math.min(d - 18, Math.max(260, 260 * (1 + run.stats.speed / 100)) * dt);
+          moveThroughTerrain(spirit, Math.cos(spirit.facing) * step, Math.sin(spirit.facing) * step);
+        }
+      }
+      return true;
     });
   }
   function updateSkills(dt) {
@@ -2277,7 +2325,16 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, run.stats.abilityHaste);
       pulse(p.x, p.y, 40, '#dd4c41', .55); showToast(t('bloodRage'));
     }
-    if (s.rageTime > 0) { heal(2.5 * s.rageAmp * Math.min(dt, s.rageTime)); s.rageTime = Math.max(0, s.rageTime - dt); }
+    if (s.rageMorph) {
+      s.rageMorph.time = Math.max(0, s.rageMorph.time - dt);
+      if (s.rageMorph.time === 0) s.rageMorph = null;
+    }
+    if (s.rageTime > 0) {
+      const activeTime = Math.min(dt, s.rageTime);
+      heal(2.5 * s.rageAmp * activeTime);
+      s.rageTime = Math.max(0, s.rageTime - dt);
+      if (s.rageTime === 0) s.rageMorph = { direction: 'out', time: Math.max(0, RAGE_MORPH_DURATION - (dt - activeTime)) };
+    }
     if (run.character.id === 'jugg' && s.attackHits >= 5 && s.leapCooldown <= 0 && !s.spin && !s.jump) beginLeap();
     if (s.jump) {
       const jump = s.jump, step = Math.min(dt, jump.time) / jump.maxTime;
@@ -2290,7 +2347,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         const freshTargets = landingTargets.filter(e => !jump.hitTargets.has(e));
         const targets = freshTargets.length ? freshTargets : landingTargets;
         for (const e of targets) {
-          dealSkillDamage(e, 26 + attackPower(run));
+          dealSkillDamage(e, 26 + skillPower(run));
           jump.hitTargets.add(e);
         }
         run.effects.push({ kind: 'landing', x: p.x, y: p.y, angle: jump.angle, r: 76, color: '#f4ddae', tier: jump.tier, life: .45, maxLife: .45 });
@@ -2314,7 +2371,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       while (s.spin.tick >= .2 - 1e-9) {
         s.spin.tick -= .2;
         for (const e of run.enemies) if (!e.dead && distance(e, p) <= 138 + e.r && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
-          dealSkillDamage(e, 6 + attackPower(run) * .35, true);
+          dealSkillDamage(e, 6 + skillPower(run) * .35, true);
       }
       if (s.spin.time <= 0) s.spin = null;
     }
@@ -2322,7 +2379,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       s.thunder.time -= dt;
       if (s.thunder.time <= 0) {
         for (const e of s.thunder.targets) if (!e.dead) {
-          dealSkillDamage(e, (34 + attackPower(run) * 1.25) * (e.id === 'boss' ? .65 : isElite(e) ? .8 : 1), true);
+          dealSkillDamage(e, (34 + skillPower(run) * 1.25) * (e.id === 'boss' ? .65 : isElite(e) ? .8 : 1), true);
           triggerStaticField(e); pulse(e.x, e.y, e.r + 10, '#e6f8ff', .35, 'thunder');
         }
         s.thunder = null; playSfx('arc');
@@ -2337,7 +2394,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         cast.age += dt;
         const radius = Math.min(280, cast.age / .55 * 280);
         for (const e of run.enemies) if (!e.dead && !cast.hit.has(e) && distance(e, cast) <= radius + e.r) {
-          cast.hit.add(e); dealSkillDamage(e, 34 + attackPower(run) * .9 + cast.souls * 1.25, true);
+          cast.hit.add(e); dealSkillDamage(e, 34 + skillPower(run) * .9 + cast.souls * 1.25, true);
         }
         if (cast.age >= 1) s.requiem = null;
       }
@@ -3057,7 +3114,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       [t('statStrength'), Number(run.attributes.strength.toFixed(2))], [t('statAgility'), Number(run.attributes.agility.toFixed(2))],
       [t('statIntelligence'), Number(run.attributes.intelligence.toFixed(2))],
       [t('statLife'), `${Math.ceil(p.hp)} / ${p.maxHp}`], [t('statArmor'), Number(s.armor.toFixed(2))], [t('statMove'), `${s.speed}%`], [t('statAttackSpeed'), `${attackSpeed().toFixed(0)}%`],
-      [t('statAttackPower'), Number(attackPower(run).toFixed(2))], [t('statAllDamage'), `${s.damage}%`],
+      [t('statAttackPower'), Number(attackPower(run).toFixed(2))], [t('statSkillPower'), Number(skillPower(run).toFixed(2))], [t('statAllDamage'), `${s.damage}%`],
       [t('statCrit'), `${Math.min(90, s.crit)}%`], [t('statCritDamage'), `${100 + s.critDamage}%`], [t('statDodge'), `${Math.min(55, s.dodge)}%`], [t('statLifesteal'), `${Math.min(65, s.lifesteal)}%`],
       [t('statRegen5'), Number(s.regen.toFixed(2))], [t('statPickup'), 75 + s.pickup], [t('statLuck'), s.luck],
       [t('statBaseAttackRange'), basicRange()], [t('mana'), `${Math.floor(p.mana)} / ${p.maxMana}`],
@@ -3686,7 +3743,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   }
   function drawPlayer() {
     const p = run.player, s = run.skills, id = run.character.id;
-    const demon = id === 'tb' && s.tb.time > 0, artId = demon ? 'tb-demon' : id;
+    const demon = id === 'tb' && s.tb.time > 0;
+    const rageMorph = id === 'scavenger' && !motionPreference.matches ? s.rageMorph : null;
+    const artId = demon ? 'tb-demon' : id === 'scavenger' && s.rageTime > 0 && !rageMorph ? 'scavenger-rage' : id;
     ctx.save(); ctx.translate(p.x, p.y);
     ctx.fillStyle = '#0007'; ctx.beginPath(); ctx.ellipse(0, 14, id === 'luna' ? 30 : 19, 7, 0, 0, TAU); ctx.fill();
     if (s.weaponSystem?.shieldReady && s.weaponSystem.shieldTier) {
@@ -3718,8 +3777,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     } else {
       frame = pose === 'idle' ? (Math.floor(run.totalTime * 2.5) % 2 ? 'idle-alt' : 'idle-a') : pose;
     }
+    if (rageMorph) frame = `morph-${rageMorph.direction}-${Math.min(2, Math.floor((1 - rageMorph.time / RAGE_MORPH_DURATION) * 3))}`;
     const image = (p.visualSide && artImage(`${artId}-side-${frame}`)) || artImage(`${artId}-${frame}`) || artImage(`${artId}-idle-a`) || artImage(id);
-    const footImage = moving && (p.attackPose > 0 || (id === 'luna' && pose === 'skill')) && !p.dashTime && walkFrame
+    const footImage = !rageMorph && artId !== 'scavenger-rage' && moving && (p.attackPose > 0 || (id === 'luna' && pose === 'skill')) && !p.dashTime && walkFrame
       ? ((p.visualSide && artImage(`${artId}-side-${walkFrame}`)) || artImage(`${artId}-${walkFrame}`))
       : null;
     const walkPhase = p.animTime * 13;
@@ -3752,7 +3812,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       lean += attackSnap * (id === 'jugg' ? .04 : id === 'scavenger' ? .028 : .012);
     }
     if (s.spin) { const turn = (3 - s.spin.time) * 18; scaleX = .76 + .24 * Math.abs(Math.cos(turn)); mirror = Math.cos(turn) < 0 ? -1 : 1; }
-    if (s.rageTime > 0) { scaleX *= 1.04; scaleY *= 1.025; }
+    if (rageMorph) { scaleX = 1; scaleY = 1; lift = 0; lean = 0; }
     if (s.requiem?.delay > 0 || s.thunder) { scaleX *= 1.04; lift += 3; }
     ctx.translate(0, -lift); ctx.rotate(lean); ctx.scale(mirror * scaleX, scaleY);
     const evolutionLevels = Object.fromEntries(Object.keys(EQUIPMENT_UPGRADES).map(id => [id, equippedUpgradeLevel(id)]));
@@ -3912,6 +3972,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   }
 
   function drawMeleeSwing(fx) {
+    if (fx.character === 'scavenger' && (run.skills.rageTime > 0 || run.skills.rageMorph)) return;
     const progress = 1 - fx.life / fx.maxLife, direction = fx.direction || 1;
     const angle = fx.angle + direction * (-.65 + progress * 1.45);
     ctx.save(); ctx.translate(fx.x, fx.y); ctx.rotate(angle);
@@ -4270,9 +4331,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         ctx.beginPath(); ctx.ellipse(fx.x, fx.y, fx.r * (1 + progress), fx.r * .55, 0, 0, TAU); ctx.stroke();
       } else if (fx.kind === 'kael-emp-bolt') {
         const dx = fx.x2 - fx.x1, dy = fx.y2 - fx.y1, length = Math.hypot(dx, dy) || 1;
-        const end = clamp(progress / .72, 0, 1), segments = 8;
+        const end = clamp(progress / .3, 0, 1), segments = 8;
         ctx.save(); ctx.lineCap = 'round';
-        for (const [color, width, alpha] of [['#60cfff', 8, .72], ['#f5ffff', 2.4, 1]]) {
+        for (const [color, width, alpha] of [['#60cfff', 12, .72], ['#f5ffff', 3.6, 1]]) {
           ctx.globalAlpha *= alpha; ctx.strokeStyle = color; ctx.lineWidth = width; ctx.beginPath(); ctx.moveTo(fx.x1, fx.y1);
           const visibleSegments = Math.max(1, Math.ceil(segments * end));
           for (let i = 1; i <= visibleSegments; i++) {
@@ -4284,10 +4345,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         }
         ctx.restore();
       } else if (fx.kind === 'kael-emp-explosion') {
-        const start = fx.delay / fx.maxLife, blastProgress = clamp((progress - start) / (1 - start), 0, 1);
-        if (progress >= start) {
-          ctx.save(); ctx.globalAlpha *= 1 - blastProgress * .72;
-          const radius = fx.r * (.28 + blastProgress * .72);
+        const age = fx.maxLife - fx.life - fx.delay, blastProgress = clamp(age / .24, 0, 1);
+        if (age >= 0) {
+          ctx.save(); ctx.globalAlpha *= 1 - clamp(age / .9, 0, 1) * .6;
+          const radius = fx.r * (.3 + blastProgress * .7);
           ctx.fillStyle = '#e7fbff'; ctx.globalAlpha *= .16; ctx.beginPath(); ctx.arc(fx.x, fx.y, radius * .42, 0, TAU); ctx.fill();
           ctx.globalAlpha *= 5.2; ctx.strokeStyle = '#e7fbff'; ctx.lineWidth = 6; ctx.beginPath(); ctx.arc(fx.x, fx.y, radius, 0, TAU); ctx.stroke();
           ctx.strokeStyle = '#63cfff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.arc(fx.x, fx.y, radius * .62, 0, TAU); ctx.stroke();
@@ -4297,6 +4358,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
             ctx.beginPath(); ctx.moveTo(fx.x + Math.cos(angle) * inner, fx.y + Math.sin(angle) * inner);
             ctx.lineTo(fx.x + Math.cos(angle + .08) * outer, fx.y + Math.sin(angle + .08) * outer); ctx.stroke();
           }
+          ctx.strokeStyle = '#bdefff'; ctx.lineWidth = 2.5; ctx.beginPath();
+          for (let i = 0; i <= 16; i++) {
+            const angle = i * TAU / 16 + fx.seed, r = radius * (i % 2 ? .67 : .83);
+            const x = fx.x + Math.cos(angle) * r, y = fx.y + Math.sin(angle) * r;
+            if (i) ctx.lineTo(x, y); else ctx.moveTo(x, y);
+          }
+          ctx.stroke();
           ctx.restore();
         }
       } else if (fx.kind === 'lunar-field') {
@@ -4357,10 +4425,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   }
 
   function drawKaelSpirit(spirit) {
-    const fade = clamp(spirit.life / .35, 0, 1), bob = Math.sin(run.totalTime * 7 + spirit.side) * 1.5;
+    const fade = clamp(spirit.life / .35, 0, 1), bob = motionPreference.matches ? 0 : Math.sin(run.totalTime * 7 + spirit.side) * 1.5;
     const facing = Number.isFinite(spirit.facing) ? spirit.facing : 0;
     const attackFacing = Number.isFinite(spirit.attackAngle) ? spirit.attackAngle : facing;
-    ctx.save(); ctx.translate(spirit.x, spirit.y + bob); ctx.rotate(facing); ctx.globalAlpha = .95 * fade;
+    ctx.save(); ctx.translate(spirit.x, spirit.y + bob); ctx.rotate(facing); ctx.scale(spirit.scale, spirit.scale); ctx.globalAlpha = .95 * fade;
     ctx.fillStyle = '#4b2b2a'; ctx.beginPath(); ctx.ellipse(-1, 11, 8, 3, 0, 0, TAU); ctx.fill();
     ctx.fillStyle = '#ff8b4b'; ctx.beginPath(); ctx.moveTo(-12, 3); ctx.quadraticCurveTo(-18, -2, -11, -8); ctx.quadraticCurveTo(-8, -3, -5, -1); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#d95737'; ctx.strokeStyle = '#6d2c2a'; ctx.lineWidth = 1.5;
@@ -4370,10 +4438,12 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     ctx.strokeStyle = '#ffb979'; ctx.lineWidth = 2.5; ctx.lineCap = 'round';
     ctx.beginPath(); ctx.moveTo(-5, 2); ctx.lineTo(-12, 7); ctx.moveTo(5, 2); ctx.lineTo(11, 6); ctx.moveTo(-3, 8); ctx.lineTo(-6, 13); ctx.moveTo(4, 8); ctx.lineTo(7, 13); ctx.stroke();
     if (spirit.attackFlash > 0) {
-      const attack = clamp(spirit.attackFlash / .18, 0, 1);
+      const attack = clamp(spirit.attackFlash / KAEL_SPIRIT.attackFlash, 0, 1);
       ctx.save(); ctx.rotate(attackFacing - facing);
-      ctx.globalAlpha = .8 * attack * fade; ctx.strokeStyle = '#ffe4a2'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.moveTo(9, 1); ctx.quadraticCurveTo(18 + (1 - attack) * 12, -8, 28 + (1 - attack) * 18, 0); ctx.stroke();
+      ctx.globalAlpha = .9 * attack * fade; ctx.strokeStyle = '#ffe4a2'; ctx.lineWidth = 3.5;
+      for (const side of [-1, 0, 1]) {
+        ctx.beginPath(); ctx.moveTo(9, side * 5); ctx.quadraticCurveTo(18 + (1 - attack) * 12, -8 + side * 6, 28 + (1 - attack) * 18, side * 7); ctx.stroke();
+      }
       ctx.fillStyle = '#ffbd6b'; ctx.beginPath(); ctx.arc(27 + (1 - attack) * 18, 0, 3 + attack * 2, 0, TAU); ctx.fill(); ctx.restore();
     }
     ctx.restore();
@@ -4404,8 +4474,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     ctx.restore(); ctx.restore();
   }
 
+  function drawRequiem(layer) {
+    const cast = run.skills.requiem;
+    if (cast) requiemRenderer.draw(ctx, { cast, player: run.player, level: run.level,
+      reducedMotion: motionPreference.matches, layer });
+  }
   function drawSkillGround() {
     const p = run.player;
+    drawRequiem('back');
     if (run.character.id === 'kael') {
       const s = run.skills;
       ctx.save();
@@ -4586,21 +4662,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
   }
   function drawSkillAreas() {
     const p = run.player, s = run.skills;
-    if (s.kaelBlast) {
-      const blast = s.kaelBlast;
+    for (const blast of s.kaelBlasts) {
       ctx.save(); ctx.translate(blast.x, blast.y); ctx.rotate(blast.angle);
-      for (let wave = 0; wave < 3; wave++) {
-        const age = blast.age - wave * .07;
-        if (age < 0 || age > .62) continue;
-        const progress = clamp(age / .62, 0, 1), distance = 24 + progress * 180, radius = 21 + wave * 13 + progress * 9;
-        ctx.globalAlpha = (1 - progress) * .8; ctx.strokeStyle = '#6ec9e8'; ctx.lineWidth = 7;
-        ctx.beginPath(); ctx.arc(distance, 0, radius, -.88, .88); ctx.stroke();
-        ctx.globalAlpha = (1 - progress) * .95; ctx.strokeStyle = '#effcff'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.arc(distance, 0, radius, -.88, .88); ctx.stroke();
-        for (const side of [-1, 1]) {
-          const a = side * .88, x = distance + Math.cos(a) * radius, y = Math.sin(a) * radius;
-          ctx.strokeStyle = '#c8f5ff'; ctx.lineWidth = 2; ctx.beginPath(); ctx.moveTo(x, y); ctx.lineTo(x + Math.cos(a + side * .24) * 9, y + Math.sin(a + side * .24) * 9); ctx.stroke();
-        }
+      for (const wave of blast.waves) {
+        if (wave.alpha <= 0 || wave.radius <= 0) continue;
+        ctx.globalAlpha = wave.alpha * .55; ctx.strokeStyle = '#244c69'; ctx.lineWidth = blast.width + 4;
+        ctx.beginPath(); ctx.arc(0, 0, wave.radius, -blast.halfAngle, blast.halfAngle); ctx.stroke();
+        ctx.globalAlpha = wave.alpha; ctx.strokeStyle = '#6ec9e8'; ctx.lineWidth = blast.width;
+        ctx.stroke();
+        ctx.strokeStyle = '#effcff'; ctx.lineWidth = 3; ctx.stroke();
       }
       ctx.restore();
     }
@@ -4641,21 +4711,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       ctx.fillStyle = '#ef7753';
       for (let i = 0; i < count; i++) { const a = run.totalTime * .8 + i * TAU / Math.max(1, count); ctx.beginPath(); ctx.arc(p.x + Math.cos(a) * 30, p.y - 25 + Math.sin(a) * 13, 2.5, 0, TAU); ctx.fill(); }
     }
-    if (s.requiem) {
-      const cast = s.requiem;
-      if (cast.delay > 0) {
-        ctx.strokeStyle = '#e46a58'; ctx.lineWidth = 3;
-        ctx.beginPath(); ctx.ellipse(p.x, p.y + 12, 34, 13, 0, 0, TAU); ctx.stroke();
-        for (const side of [-1, 1]) { ctx.fillStyle = '#fc9872'; ctx.beginPath(); ctx.arc(p.x + side * 22, p.y - 31, 5 + (1 - cast.delay / .55) * 5, 0, TAU); ctx.fill(); }
-      } else for (let wave = 0; wave < 3; wave++) {
-        const progress = clamp((cast.age - wave * .15) / .55, 0, 1);
-        if (progress <= 0 || progress >= 1) continue;
-        const r = progress * 280; ctx.globalAlpha = 1 - progress * .6;
-        ctx.strokeStyle = wave ? '#a82f3d' : '#f18560'; ctx.lineWidth = wave ? 4 : 6;
-        ctx.beginPath(); ctx.arc(cast.x, cast.y, r, 0, TAU); ctx.stroke();
-        for (let i = 0; i < 12; i++) { const a = i * TAU / 12; ctx.save(); ctx.translate(cast.x + Math.cos(a) * r, cast.y + Math.sin(a) * r); ctx.rotate(a); ctx.fillStyle = '#f09b71'; ctx.beginPath(); ctx.moveTo(9, 0); ctx.lineTo(-9, -4); ctx.lineTo(-4, 0); ctx.lineTo(-9, 4); ctx.closePath(); ctx.fill(); ctx.restore(); }
-      }
-    }
     ctx.globalAlpha = 1;
     drawHeroGrowthAreas(ctx, { hero: run.character.id, level: run.level, player: p, skills: s,
       time: run.totalTime, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
@@ -4687,7 +4742,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
         .map(o => ({ y: o.y, scenery: o }));
       if (run.biome.id === 'dota') for (const o of DOTA_SCENERY) if (visible(o, cam, 210)) layers.push({ y: o.y, dotaScenery: o });
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
-      for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 24)) layers.push({ y: spirit.y + 10, spirit });
+      for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 72)) layers.push({ y: spirit.y + 13, spirit });
       for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) layers.push({ y: unit.y + 12, necro: unit });
       for (const meteor of run.skills.kaelMeteors) layers.push({ y: meteor.y, meteor });
       for (let i = 0; i < guards; i++) {
@@ -4719,6 +4774,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       drawPlayer();
       for (let i = 0; i < guards; i++) if (clockworkGuardPoint(i, guards).groundY > run.player.y + 16) drawClockworkGuard(i, guards);
     }
+    drawRequiem('front');
     drawHazards(cam);
     if (usesPixelPresentation()) drawTerrainIndicators(cam);
     for (const e of run.enemies) if (visible(e, cam, 650)) drawEliteTelegraph(e);
@@ -4952,7 +5008,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
     return [
       { id: 'heroes', label: '英雄', items: CHARACTERS.map(hero => {
         const text = HERO_TEXT['zh-CN'][hero.id];
-        return { id: hero.id, name: text[0], description: text[2], levels: 3, icon: HERO_ART[hero.id], source: 'js/heroes.js?v=20261030-kael-skills1', duration: ['tb', 'kael'].includes(hero.id) ? 12 : 8, variants: [
+        return { id: hero.id, name: text[0], description: text[2], levels: 3, icon: HERO_ART[hero.id], source: 'js/heroes.js?v=20261030-kael-skills2', duration: hero.id === 'kael' ? 14 : hero.id === 'tb' ? 12 : 8, variants: [
           { id: 'idle', name: '待机', description: '观察待机形态与呼吸。' },
           { id: 'walk', name: '移动', description: '沿当前方向往返，使用真实移动与动作帧。' },
           { id: 'basic', name: '普通攻击', description: '持续攻击静止演示目标。' },
@@ -4969,7 +5025,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
           { id: 'evade', name: '技能 · 横移躲避', description: '预警出现后由演示玩家横移，观察固定范围与方向，使用同一真实判定。' }]
       })) },
       { id: 'equipment', label: '武器 / 装备', items: Object.entries(EQUIPMENT).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261030-equipment17', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
+        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261030-equipment18', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
         duration: id === 'necronomicon' ? 22 : ['dagon', 'cyclone', 'heart'].includes(id) ? 12 : 8,
         variants: def.growth ? [0, ...def.growth.thresholds].map((points, index) => ({
           id: String(points),
@@ -5084,7 +5140,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel
       return { summary: `${def.name} · ${enemy?.windup > 0 ? '蓄力预警' : enemy?.attackPose > 0 ? '出手' : '追击 / 冷却'}`,
         detail: `真实敌人 AI 与技能判定 · 演示玩家生命 ${Math.ceil(p.hp)}/${p.maxHp} · ${selection.variant === 'evade' ? '预警后横移躲避' : '原地观察命中'} · 每 4.5 秒重播；没有普通敌潮，不能替代自然第 15／18 波遇敌验证。` };
     }
-    let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 攻击力 ${Number(attackPower(run).toFixed(2))} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
+    let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 攻击力 ${Number(attackPower(run).toFixed(2))} · 技能伤害 ${Number(skillPower(run).toFixed(2))} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
     if (selection.category === 'heroes') detail += ` · 英雄Lv.${run.level} · ${skillGrowthText()}`;
     if (selection.category === 'equipment') {
       const def = equipmentDef(run.equipment[0]);

@@ -1,0 +1,493 @@
+{
+  "schemaVersion": 1,
+  "kind": "project-drawn Alchemist chemical rage SVG poses",
+  "runtimeCount": 60,
+  "reference": "Warcraft III / DotA1 Goblin Alchemist normal and Chemical Rage anatomy; visual reference only, no official files included.",
+  "rights": "Derived only from existing project-drawn SVG art; no model, texture or model-derived PNG is loaded or embedded.",
+  "canvas": {
+    "width": 256,
+    "height": 384,
+    "viewBox": "0 0 256 384",
+    "footCoordinates": "unchanged; runtime bottom remains 16"
+  },
+  "generatorInputs": [
+    {
+      "path": "game/docs/sources/characters/scavenger/build_rage.py",
+      "sha256": "f0bd3d7b042fdfea248c0c29f4036f9cd874aa75c457f4a7095c0f725f17fc2e"
+    },
+    {
+      "path": "game/docs/sources/characters/build_pose_frames.py",
+      "sha256": "0c4aed67ba3a64edc8a3220585e1348d918b13b930f57afc71c67926b14ec4a1"
+    }
+  ],
+  "inputs": [
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-a.svg",
+      "sha256": "88bdcefdb7a5f02ba868dd2bf4bcf8006f820f845eb5cbcd05e7c79929f9974f"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-alt.svg",
+      "sha256": "32ef1a500cb1118a4048ef9f45aee2a2c503e36f669d437cc8c92c70140b745e"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-a.svg",
+      "sha256": "1c72f758aa92217a31641ec4d0f6cd0739930e0666d24c27010f106a7700a5ea"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-b.svg",
+      "sha256": "ff8092268246cda97687ad7f58003cacaed5d888995e1cc1bdd0f773221b4cdc"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-dash.svg",
+      "sha256": "cbb4137b4caf9cc6fb6a1f35c276799cf12e796756845f05c2c1700e5971c3cd"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-windup.svg",
+      "sha256": "23a010ecbeb3fb1c4eeedc705c1b1e651bd4696018b6ed96afa25f1cc0d01f49"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack.svg",
+      "sha256": "194d8d7f65642deeb7657f46352c3df74d6873d4fd7491677de6f68a728e7f4f"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-release.svg",
+      "sha256": "75ee8f3c18d491d7b73cecb2ee88f2307d04b05847838769b5c8d31781d9ed9b"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-skill.svg",
+      "sha256": "262d7819e4dcaf05db9f3303fa9efcaeb0fff0b6fa865e3d3c5630cc38c24c78"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-a.svg",
+      "sha256": "4b7ba52d007ae5b004b18fa848af8c359b667ce442e5d1cd03104efe15c93e2d"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-alt.svg",
+      "sha256": "358d9756500d94714c0269b33fa2ca32eeef852b541f08755ed51fccbc94f7ed"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-a.svg",
+      "sha256": "9cebbdea5f53786320dbb2df11f30ae377e51733c0d272249f990e777bf9744f"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-b.svg",
+      "sha256": "78052cab827480485d65b1e2fc4af0ae91c2cb0baabf0e960e42f4936f2ca6ea"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-dash.svg",
+      "sha256": "f4d4a3357cae3b236f2f1311958a1b1afa7bffa6a15cf79e7f9400e16a6846f5"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-windup.svg",
+      "sha256": "bdc4ecd0c33c490d7de38afc9677807a916c59cedf62a9cf283dcc41666199c6"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack.svg",
+      "sha256": "2d36dd48a4e97bc6b975cb0157aa50c0c4583a5272fe7e56d8edb88b51d9eb4d"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-release.svg",
+      "sha256": "6df10b656c619af942461447946b946b1504fbed0078f0d1dbd8866e86078271"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-skill.svg",
+      "sha256": "b237660ff082578881f5d6752759748007c944a856ee6a052aeadd8556b21f21"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-idle-a.svg",
+      "sha256": "ca649d4c5df593c7c974a8b4d4c9ef8af0f1090c2e007e07c7159b0049f57244"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-idle-alt.svg",
+      "sha256": "d043d283ca20facde1aadf0f36ff45ebfc5b20ddf2af86eea492ac3073804342"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-walk-a.svg",
+      "sha256": "e657be8ec887a80491e8d3f2bf49b77bd6e5454519c14eedc07f68355efdd948"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-walk-b.svg",
+      "sha256": "bc0daed3206045df1e54adcff058d01733406cc9d63776724dce42aaaf2ad084"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-dash.svg",
+      "sha256": "f911d4b5308a8aa9a12b1e1b89e39b83e129fc100c0e7a0336ef2b488a5b09ef"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack-windup.svg",
+      "sha256": "f95b41ac2f409360e84843836aa0d29074616bd2df8a1f62ee7a48b677cade40"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack.svg",
+      "sha256": "3dfb8eed944f53c5ea4bb7eb0bda9279cd312709c2380083cb11e53628c73e05"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack-release.svg",
+      "sha256": "11029190a2a7c9e655f6afb9a0c5a81409818f96cb8f5e029f8b91529d0db502"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-skill.svg",
+      "sha256": "507eed77c1bcfbf975dbc1744252b02fb0f6b691590cbaab1a4214f67a94743e"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-idle-a.svg",
+      "sha256": "28aa49c3e49ba9cc7732d5412e450c2d3fee3948e8ee2d528b8a48318c68507a"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-idle-alt.svg",
+      "sha256": "13f54f5c57638ec88981beb72508455cbc5925f4daa90b7c8190b9318869c9de"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-walk-a.svg",
+      "sha256": "d38d739d425935250623e6a80f78a6e7c6e5a1578b5bff607f0c222f4a09872b"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-walk-b.svg",
+      "sha256": "2f093ab938b881b61708f382bec087fdd2d824e26c50bf778169568c7a62b0bc"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-dash.svg",
+      "sha256": "97108e9a18b724b7cd086a8f6c325099d85f896dd7c83cf45a0a6d5c914e1808"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack-windup.svg",
+      "sha256": "73b8fbbc1bcc6758ba6f38cb7596f3b1b3560619f1d08e36d9fe026a63fb80a9"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack.svg",
+      "sha256": "528bd16a6e2ad7488fe9d3614effae57500273fe4e0e46404b5aa74641ceb247"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack-release.svg",
+      "sha256": "725f30ff42523f286329999c34c6f03cb8591a44f554ab8f6e743743a22b9074"
+    },
+    {
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-skill.svg",
+      "sha256": "2906a8d1aecfdeda06557d5b12817a65f4de374374dd905590e1d275e8e342ee"
+    }
+  ],
+  "editableSources": [
+    {
+      "skin": "pixel",
+      "path": "game/docs/sources/characters/scavenger/art/source/pixel-scavenger-rage-idle-a-source.svg",
+      "sha256": "099324d545f9214f9fd70b5a99a741d697438ec52477e9fc7159d0c00b878a74"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/docs/sources/characters/scavenger/art/source/pixel-scavenger-rage-side-idle-a-source.svg",
+      "sha256": "62714976933011bf50b0f99bfbd0f02d926d63a9ac695bd4cfbd68192a7eeafd"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/docs/sources/characters/scavenger/art/source/dota1-scavenger-rage-idle-a-source.svg",
+      "sha256": "e5a467641034e5d2084bb467ad8fcb4bd208f8e23d6711c8972a175923d4cd1a"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/docs/sources/characters/scavenger/art/source/dota1-scavenger-rage-side-idle-a-source.svg",
+      "sha256": "34d9356732ba80cc569a9e6a47cd4077db8cd310a091f0505865e2cd4f7f2747"
+    }
+  ],
+  "files": [
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-idle-a.svg",
+      "sha256": "5431f9a35e8e2a344a99acbb28f85e319bbacbd00afd405dce6ab6a97becb2d4"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-in-0.svg",
+      "sha256": "815a20b2bcd77a66bcd1c7de7ce9fba98965b12d2abb77ac7695ad8b377b47e1"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-in-1.svg",
+      "sha256": "4ea6b944da9f47d03fb4fdc79ef778787b99978d8432d737c685222e969353ef"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-in-2.svg",
+      "sha256": "c0db7e8501c3152de32ad750934e018dd83ad68c67f3707ce20cceb362624ace"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-out-0.svg",
+      "sha256": "29023ba2e5833645867451520bc33b83062cbe4a7352f09fbb472142d63a0b48"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-out-1.svg",
+      "sha256": "5e30221895148f7f600bf4ddee1403e0d36dfe9307d3f4682796b1e1c02b6424"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-morph-out-2.svg",
+      "sha256": "2124e6a0c7ca2466bae7a5688a931384cc6a4dc7e4ef107bc7bd6276e382f9ac"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-idle-alt.svg",
+      "sha256": "4c71905ddf7873a36b97298d5ea8ef14482cfbee134e537abbe3e9f051aa855e"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-walk-a.svg",
+      "sha256": "c11b8e345e58375145cd385bcc53244afddf81e72ecf7b4cf171c4163a93b7e5"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-walk-b.svg",
+      "sha256": "57857b0fc0335a56971937d8729721a664a466ded3eaab1f7a1e43ce9e98485c"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-dash.svg",
+      "sha256": "e95b9755e0769eaa237587ff914bd734d867d909da7c1d15271067f3b3facdd0"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-attack-windup.svg",
+      "sha256": "6f099443ae1a16bf478ec60a41a7537a215bb47ab7cd50ac593937f55aaaf57f"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-attack.svg",
+      "sha256": "985f9efe23e58de96eb01799d216ccb0f4bb57ea107e58fb851e551892467f41"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-attack-release.svg",
+      "sha256": "1957324bcb0c2a1b79809f08ecf1cb2dd82e203cb086d2d40493c531ab28f9a2"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-skill.svg",
+      "sha256": "1e78774387ceda6f62a3deaf45139a69a6835e2ef5073365a2bc82b255891826"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-idle-a.svg",
+      "sha256": "09b59b29261bf43a909ae9343a5607e86dce69e0ba8202805f8bdfcd78032e3a"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-in-0.svg",
+      "sha256": "79dc6e79fa636d0255aeadd74451e952297a57e533f27eb8e32298ef2c27551e"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-in-1.svg",
+      "sha256": "e7f20c984ac6e60431c66377e81be997d9af97bf80840e992f8664e402ad4767"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-in-2.svg",
+      "sha256": "f100d47a955a58b906e7477153fb23c1235bb2ef3491f00082ace29e4882d937"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-out-0.svg",
+      "sha256": "5b95afd884f1da1bceabec755c48177ba034b46045f54f716aa8fde01dcccb13"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-out-1.svg",
+      "sha256": "a9d74bb691572ffbfbff4cb30dcbb342b81ea735cf823e3bdccfca88ea6132fe"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-morph-out-2.svg",
+      "sha256": "042afc1848ea18a6e980ce6f9687a63b5219670f7c8df212b9365fb3c6bbe1db"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-idle-alt.svg",
+      "sha256": "65b8d33f5c2e2cf062969f48d5a37f9048a75aa9fd0cb304888ea8523d2b3e40"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-walk-a.svg",
+      "sha256": "1f4d0e985a4a7306b24721d2056b131da32fd64180c9faa4fe800f71a976f0c3"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-walk-b.svg",
+      "sha256": "9adb528bd57b1cc03e43d3d4cce470083af80ad10329f3e3364823e7a948ee18"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-dash.svg",
+      "sha256": "93ca13b6e1d2a9e6486de80cd981e02346c7c0da3b1c6de9699c3fb86d3cec18"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-attack-windup.svg",
+      "sha256": "7ead938d522a53435c85ca1f21baa3c19f6b54305a1188172c890525efb0771b"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-attack.svg",
+      "sha256": "861f4c5002376571460519fe4685e906073e2080e284bcd1a8f9cdafc2b26080"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-attack-release.svg",
+      "sha256": "b39829d193dd0c75debd05df455972c843aad316b03e6216bf2e8dd735fb9f55"
+    },
+    {
+      "skin": "pixel",
+      "path": "game/static/dotarogue/assets/characters/scavenger/scavenger-rage-side-skill.svg",
+      "sha256": "3fcaf7e68f9f93a48a84e367d45f7cc12486f284c3f69f78c6631bacd4300d90"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-idle-a.svg",
+      "sha256": "3749007971690596125a465580814f7be8cd780fe261a4528c5f4ddf7d664f9d"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-in-0.svg",
+      "sha256": "c010443bd869fb592576116ad437c277128062754847e61471af0c38af60895c"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-in-1.svg",
+      "sha256": "d80e0657dd1c37c6a9fe52c1655c8a2f0ca74f61b1416ba6de4fd5682109abf4"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-in-2.svg",
+      "sha256": "5716bfc26674c528507e25efa20b43af23ac131a29462a00ecd0860181cf3d2c"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-out-0.svg",
+      "sha256": "7f82eddacbe703a0be1ec1fafd0f4f698340da412ab03a28d29c169432adeb3d"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-out-1.svg",
+      "sha256": "6016d5269d7e209d28e043738701c938c167ca23ddb9592cc07d04de0dee30a6"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-morph-out-2.svg",
+      "sha256": "cddacf1e9690869af7223d4d4ab90d16b039db4a8b1ffefcda87cbb5cb11e746"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-idle-alt.svg",
+      "sha256": "5d93fd0476299f14deb78877b0fb723d5329f25e2ff5910079a848186c2ef401"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-walk-a.svg",
+      "sha256": "3fed07256fd611fe31a83b3c792358a241286cb4be01446df2dc744ecc69b624"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-walk-b.svg",
+      "sha256": "ffd85a9c635badf05fc7474e20e83dbb4106bfb2b79e843160381c834390a71a"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-dash.svg",
+      "sha256": "ec2262d47644778d2e06f1348a47abca9bca23cc080f27e3d5156168de99230d"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-attack-windup.svg",
+      "sha256": "8dec6a2e50bc9eb54c74873271f4335720ce1961c74fe23902df2761c0446f04"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-attack.svg",
+      "sha256": "a67ad04ffdbdd6e1865ce27ebff641f43803ba25910464ee216df13012ab91bd"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-attack-release.svg",
+      "sha256": "5f3aab32510b4e9eb902702f2a62e4d4e1ddcf7d69b05123a5f778ddaf28d7bf"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-skill.svg",
+      "sha256": "6782cd2b8c2ccd799472438e609052035274cd08a1e877381838616713c607c5"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-idle-a.svg",
+      "sha256": "7678a2d1b5c83dc8cdc48ad1c2043e20e5d1b220a191cf5118823e8b3805ba95"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-in-0.svg",
+      "sha256": "a1e6ef7f7e0277b3643ded0ccef1915a2a2e0a49cd0692194e817c7e778e556a"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-in-1.svg",
+      "sha256": "74aa8987f4e115a7f7b274cbb0e2b9c7af60bcddc84e60d75954da311cb80989"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-in-2.svg",
+      "sha256": "f6ed3d8bdc65dab592e65f9df889d3636f95ce129dd3a4940e22bbe282437b90"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-out-0.svg",
+      "sha256": "a21ccec668ed75eb4708e0d4b2b9ad697122f0131e7ea00bacba7a62b043e8ab"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-out-1.svg",
+      "sha256": "2963a8fd64a321db2012b8442e711222588beb8e193d69d49ef41df0da2a6d07"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-morph-out-2.svg",
+      "sha256": "6e8637d95d972abb3355eb0bfa791c6f6d49bcb2cdd4787ec94c4df62cca22ca"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-idle-alt.svg",
+      "sha256": "2f7e6cb738f243ca3e3914504757254b5cefc1b1bbd5d057921bac9cc01d0822"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-walk-a.svg",
+      "sha256": "109bb1102cf6382802d6133a048b34f60405e13de1ced79463e0df429076d770"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-walk-b.svg",
+      "sha256": "54d11837f3bd4b3544ef5d64991cff0c4a4bde0fa538401f5c949de8b6e2f991"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-dash.svg",
+      "sha256": "889891062ad137ad167bccbfc3ba91422fd36af67dfb944e53b97c64108a218a"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-attack-windup.svg",
+      "sha256": "89f3ab3cd139e00813283845bd720aad6aacfbaa977a11a01fb663ccd47d0949"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-attack.svg",
+      "sha256": "af1e722ffab25cd8f35377c6462dbefee2f1144ce184919d2dba86cba20652e1"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-attack-release.svg",
+      "sha256": "6f31cbf4e1737ce37900216df4d247f553352e2cca2a6970374fa9b63efc4d65"
+    },
+    {
+      "skin": "dota1",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-rage-side-skill.svg",
+      "sha256": "5107a10394290eac0f4b47a5dd6cdf10d02481e4fd3ade81cffda53264535c08"
+    }
+  ]
+}

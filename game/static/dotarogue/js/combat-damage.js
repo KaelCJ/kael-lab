@@ -2,8 +2,14 @@ import { buffDamageAmp } from './buffs.js?v=20261027-unified1';
 
 export function attackPower(run) {
   const souls = run.character.id === 'sf' ? run.skills.souls : 0;
-  return (Number(run.stats.attackPower) || 0) + (Number(run.stats.primaryAttributePower) || 0)
+  return (Number(run.stats.attackPower) || 0)
     + Math.min(36, souls) * .55 + Math.max(0, souls - 36) * .05;
+}
+
+// Spell power is intentionally separate from attackPower. Basic attacks read
+// attackPower; hero skills and spell-shaped equipment read this value instead.
+export function skillPower(run) {
+  return Number(run.stats.skillPower) || 0;
 }
 
 export function resolveDamage(run, enemy, amount, { source = 'equipment', resolved = false, criticalRoll = Math.random } = {}) {

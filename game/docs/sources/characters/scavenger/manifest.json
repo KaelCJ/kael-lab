@@ -17,7 +17,7 @@
     },
     {
       "id": "skill-scavenger",
-      "name": "化学投掷",
+      "name": "化学狂暴",
       "kind": "active"
     }
   ],
@@ -41,7 +41,8 @@
       "sideAttack": "../../../../static/dotarogue/assets/characters/scavenger/scavenger-side-attack.svg",
       "sideAttackRelease": "../../../../static/dotarogue/assets/characters/scavenger/scavenger-side-attack-release.svg",
       "sideSkill": "../../../../static/dotarogue/assets/characters/scavenger/scavenger-side-skill.svg",
-      "format": "svg-poses"
+      "format": "svg-poses",
+      "rageManifest": "rage-manifest.json"
     },
     "character": [
       "scavenger.svg",

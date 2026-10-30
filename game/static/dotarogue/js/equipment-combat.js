@@ -1,5 +1,5 @@
-import { resolveBuilds } from './equipment-builds.js?v=20261030-equipment17';
-import { attackPower } from './combat-damage.js?v=20261029-attributes-spell3';
+import { resolveBuilds } from './equipment-builds.js?v=20261030-equipment18';
+import { attackPower, skillPower } from './combat-damage.js?v=20261030-skill-power1';
 
 export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, pulse, isElite, heal, label, basicRange, cooldown = value => value }) {
   function state(run) {
@@ -317,7 +317,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     if (!chase || !growth) return null;
     return {
       level: chase.level, q: [.25, .5, .75, 1][growthStage(growth.points)],
-      attackPower: attackPower(run), baseDamage: chase.baseDamage, attackRatio: chase.attackRatio,
+      skillPower: skillPower(run), baseDamage: chase.baseDamage, attackRatio: chase.attackRatio,
       targets: chase.targets, range: chase.range, cooldown: chase.cooldown
     };
   }
@@ -348,7 +348,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       if (s.holyCharges >= holy.threshold) {
         s.holyCharges = 0;
         const targets = nearby(run, run.player, holy.radius, Infinity);
-        const damage = holy.damage + attackPower(run) * holy.attackRatio;
+        const damage = holy.damage + skillPower(run) * holy.attackRatio;
         for (const target of targets) damageEnemy(target, damage, { source: 'equipment', resolved: true });
         pulse(run.player.x, run.player.y, holy.radius, '#fff0b3', .42);
         feedback(run, 'holyPulse', '#fff0b3');
@@ -363,7 +363,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
         if (primary) {
           const targets = nearby(run, primary, carnage.radius, Infinity);
           for (const target of targets) {
-            damageEnemy(target, carnage.damage + attackPower(run) * carnage.attackRatio, { source: 'equipment' });
+            damageEnemy(target, carnage.damage + skillPower(run) * carnage.attackRatio, { source: 'equipment' });
             if (!target.dead) damageEnemy(target, target.hp * carnage.currentHpRatio, { source: 'equipment' });
           }
           pulse(primary.x, primary.y, carnage.radius, '#ef8ca8', .5);
@@ -377,7 +377,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       if (s.havocCharges >= havoc.threshold) {
         s.havocCharges = 0;
         const targets = nearby(run, run.player, havoc.impactRadius, Infinity);
-        for (const target of targets) damageEnemy(target, havoc.impactDamage + attackPower(run) * havoc.attackRatio, { source: 'equipment' });
+        for (const target of targets) damageEnemy(target, havoc.impactDamage + skillPower(run) * havoc.attackRatio, { source: 'equipment' });
         if (targets.length) {
           pulse(run.player.x, run.player.y, havoc.impactRadius, '#ff9e68', .42);
           feedback(run, 'havocHammer', '#ff9e68');
@@ -389,7 +389,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       if (!config) continue;
       const target = nearby(run, run.player, config.range, 1)[0];
       if (!target) continue;
-      damageEnemy(target, config.damage + attackPower(run) * config.attackRatio, { source: 'equipment' });
+      damageEnemy(target, config.damage + skillPower(run) * config.attackRatio, { source: 'equipment' });
       target.nullifiedUntil = run.totalTime + config.duration;
       target.nullifiedRatio = id === 'nullifier' ? .12 : .08;
       pulse(target.x, target.y, target.r + 14, color, .3);
@@ -399,7 +399,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     if (ice) {
       const target = nearby(run, run.player, ice.range, 1)[0];
       if (target) {
-        damageEnemy(target, ice.damage + attackPower(run) * ice.attackRatio, { source: 'equipment' });
+        damageEnemy(target, ice.damage + skillPower(run) * ice.attackRatio, { source: 'equipment' });
         target.skadiSlowUntil = Math.max(target.skadiSlowUntil || 0, run.totalTime + ice.duration);
         target.skadiSlowRatio = Math.min(target.skadiSlowRatio || 1, 1 - ice.slow);
         run.effects.push({ kind: 'pulse', x: target.x, y: target.y, r: target.r + 16, color: '#bcecff', life: .35, maxLife: .35 });
@@ -432,7 +432,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       .sort((a, b) => Math.hypot(a.x - run.player.x, a.y - run.player.y) - Math.hypot(b.x - run.player.x, b.y - run.player.y))]
       .slice(0, chase.targets);
     if (!targets.length) return;
-    const budget = (chase.baseDamage + chase.attackPower * chase.attackRatio) * chase.q;
+    const budget = (chase.baseDamage + chase.skillPower * chase.attackRatio) * chase.q;
     growth.readyAt = time + chase.cooldown;
     for (let i = 0; i < targets.length; i++) {
       const share = targets.length === 1 ? 1 : (i === 0 ? 2 : 1) / (targets.length + 1);
@@ -578,7 +578,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       if (!targets.length) return;
       run.skills[readyKey] = run.totalTime + cooldown(config.cooldown, run);
       s[holdKey] = 0;
-      for (const enemy of targets) damageEnemy(enemy, config.damage + attackPower(run) * config.attackRatio, { source: 'equipment' });
+      for (const enemy of targets) damageEnemy(enemy, config.damage + skillPower(run) * config.attackRatio, { source: 'equipment' });
       const impactDuration = .42, glow = Math.max(0, Number(config.afterglow ?? afterglow) || 0), effectLife = impactDuration + glow;
       run.effects.push({ kind: 'line', weapon, level: config.level, r: config.radius,
         x1: center.x, y1: center.y - 150, x2: center.x, y2: center.y,

@@ -6,12 +6,19 @@ export const ATTRIBUTE_LABELS = {
   en: { strength: 'Strength', agility: 'Agility', intelligence: 'Intelligence' }
 };
 
-// These are deliberately small derived contributions. Existing flat stats and
-// the unified attackPower contract remain the primary balance knobs.
+const DERIVED_LABELS = {
+  'zh-CN': { attackPower: '攻击力', skillPower: '技能伤害' },
+  'zh-TW': { attackPower: '攻擊力', skillPower: '技能傷害' },
+  en: { attackPower: 'Attack power', skillPower: 'Spell power' }
+};
+
+// Primary attributes deliberately expose two readable growth axes: every
+// attribute adds basic attack power, while Intelligence also adds spell power.
+// Spell power is a scaling source, not a second damage type.
 export const ATTRIBUTE_RULES = {
-  strength: { maxHp: 3, regen: .2 },
-  agility: { attackSpeed: 1.5, armor: .15 },
-  intelligence: { maxMana: 4, manaRegen: .12, abilityHaste: .75 }
+  strength: { maxHp: 3, regen: .2, attackPower: .4 },
+  agility: { attackSpeed: 1.5, armor: .15, attackPower: .4 },
+  intelligence: { attackPower: .4, skillPower: 1, manaRegen: .12, abilityHaste: .75 }
 };
 
 export const PRIMARY_ATTACK_POWER = .4;
@@ -31,11 +38,31 @@ export function attributeText(attributes, locale = 'zh-CN') {
 // place so equipment cards and the pause screen show the same attribute text.
 export const attributeSummary = attributeText;
 
+export function attributeDerivedText(attributes, locale = 'zh-CN', primaryAttribute = '') {
+  const totals = {};
+  for (const key of ATTRIBUTE_KEYS) {
+    const amount = Number(attributes?.[key]) || 0;
+    if (!amount) continue;
+    for (const [derivedKey, value] of Object.entries(attributeContribution(key, amount, primaryAttribute))) {
+      if (!['attackPower', 'skillPower'].includes(derivedKey)) continue;
+      totals[derivedKey] = (totals[derivedKey] || 0) + value;
+    }
+  }
+  return ['attackPower', 'skillPower'].filter(key => totals[key]).map(key => {
+    const value = Number(totals[key].toFixed(2));
+    return `${DERIVED_LABELS[locale]?.[key] || DERIVED_LABELS['zh-CN'][key]} +${value}`;
+  }).join(' · ');
+}
+
+export const attributeDerivedSummary = attributeDerivedText;
+
 export function attributeContribution(key, amount, primaryAttribute = '') {
   const rule = ATTRIBUTE_RULES[key] || {};
   const result = {};
   for (const [derivedKey, ratio] of Object.entries(rule)) result[derivedKey] = amount * ratio;
-  if (key === primaryAttribute) result.attackPower = amount * PRIMARY_ATTACK_POWER;
+  // Keep the argument for compatibility with older callers. Attack power now
+  // comes from every attribute; primary attributes are still exposed on the
+  // hero card for identity, not as a gate for the universal stat.
   return result;
 }
 
