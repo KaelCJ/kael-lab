@@ -1,6 +1,6 @@
 # Kael Lab
 
-Kael Lab 是一个关于“在 AI 时代，把日常过得更好”的公开静态站点。当前根首页的视觉与叙事已获确认，后续内容围绕它持续发展。工作、休闲、生活是三个并列方向：工作记录人机协作与工程方法，休闲从网页游戏开始，生活从衣、食、住、行四份日常起步清单开始，饮食价格、育儿和装修专题继续整理。
+Kael Lab 是一个关于“在 AI 时代，把日常过得更好”的公开静态站点。当前根首页的视觉与叙事已获确认，后续内容围绕它持续发展。工作、休闲、生活是三个并列方向：工作记录人机协作与工程方法，休闲从网页游戏开始，生活从总入口与食材采购参考开始，具体资料按层级进入。
 
 ## 方向与入口
 
@@ -9,13 +9,13 @@ Kael Lab 是一个关于“在 AI 时代，把日常过得更好”的公开静�
 | 全站首页 | `index.html`：AI 时代下的日常入口，提供工作、休闲、生活三个方向 | 本 README、根目录 `AGENTS.md` 与工作项 `RKymfAuJSzwmwawJmTKU` |
 | 人机协作 / 工作 | `work/static/index.html`，再进入 `work/static/` 下的 Kael、Meepo、Jugg/Nest、Lanox、帮助中心与 Workspace Assistant | `work/docs/README.md` 与根目录 `AGENTS.md` |
 | 网页游戏 | `game/static/index.html` 游戏选择页；首款《DotaRogue》在 `game/static/dotarogue/index.html` | `game/README.md` 与 `game/AGENTS.md` |
-| 生活 | `life/static/index.html`：衣、食、住、行生活手帖与起步清单 | `life/docs/README.md` |
+| 生活 | `life/static/index.html`：生活方向总入口；从生活进入食 / 采购参考，再进入具体资料 | `life/docs/README.md` |
 
 README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Agent 的稳定工作边界。它们是回源导航，不代替当前代码、页面或运行验证。
 
 站点采用可由 GitHub Pages 直接发布的纯静态实现；页面功能不依赖运行时构建，统计脚本独立加载：
 
-- `index.html`、`shared/static/css/home.css`、`shared/static/js/home.js`：全站首页，围绕“人的需要先于工具”组织工作、休闲、生活三个方向；三个方向均链接到各自当前页面，生活卡片和 `#life` 段进入生活手帖。首页不加载统计脚本，不连接服务端或外部 API；正文和三个方向在禁用 JavaScript 时仍可阅读。
+- `index.html`、`shared/static/css/home.css`、`shared/static/js/home.js`：全站首页，围绕“人的需要先于工具”组织工作、休闲、生活三个方向；三个方向均链接到各自当前页面，生活卡片和 `#life` 段进入生活总入口。首页不加载统计脚本，不连接服务端或外部 API；正文和三个方向在禁用 JavaScript 时仍可阅读。
 - `work/static/index.html`、`work/static/css/styles.css`：工作方向首页，使用根首页已确认的深绿叙事作为入口，保留三条协作原则，并以轻量入口连接 Kael、Meepo、Jugg/Nest、Lanox、帮助中心与方法预览；页面不依赖工作台脚本。
 - `work/static/start.html`、`work/static/css/start.css`：工作分区内的独立方法预览，以“人 A＋Agent X → 同一工作项与适用方法 → 人 B＋Agent Y”说明可替换参与者如何接手、读取当前依据并回写结果，并说明工作项如何成为个人／项目／组织／企业看板与知识沉淀的事实基础；不加载 JavaScript、统计或外部资源。页面为公开方法与固定 Concept 演示，真实看板聚合、权限和知识库边界见 `work/docs/README.md`。
 - `shared/static/css/ecosystem.css`、`shared/static/js/ecosystem.js`：四个产品空间共享的 Lanox 视觉语言、架构/演讲双视图、三主题、Inspector 与键盘翻页；共享资源的消费者和边界见 `shared/docs/shared-resources.md`。
@@ -28,8 +28,8 @@ README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Ag
 - `work/static/workspace-assistant.html`：Workspace Assistant 多角色、多场景产品 Concept Mock。
 - `work/static/css/workspace-assistant.css`、`work/static/js/workspace-assistant.js`：Mock 的独立样式和浏览器内状态机。
 - `game/static/index.html`、`game/static/css/games.css`：游戏选择页；给以后新增的游戏保留独立入口。
-- `life/static/index.html`、`life/static/css/life.css`、`life/static/js/life.js`：生活方向独立首页，延续米白网格、深绿和珊瑚橙的视觉，以衣、食、住、行四主题进入四份原创日常起步清单。原生 `details` 和复选框承载阅读与勾选，JavaScript 增强完成计数、当前浏览器的本机记忆与重置；不加载统计、外部 API 或第三方依赖。家庭陪伴、价格记录、育儿与装修专题属于后续整理，不代表已提供相关服务。
-- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/static/dotarogue/equipment.html` 提供49件装备／28配方的图鉴，含23件三级成品、六类羁绊与成员；游戏有待用储备和双目标自动合成，装备与英雄成长的表现已接入，实际验证范围见游戏README。狂战斧、红杖与分身斧保留三级攻击形态和角色装备外观。页面、脚本、样式和运行素材位于 `game/static/dotarogue/`，设计与公开参考归入 `game/docs/`。实现、玩法和验证入口见 `game/README.md`。
+- `life/static/index.html`、`life/static/food/index.html`、`life/static/food/yogurt.html`：生活三级入口。生活首页只负责主题导航；食页承接采购参考；酸奶页提供到手总价、每份克数与份数的换算，显示元/g与元/100g，并保留三条奶类选购精要及公开来源。不预填商品或虚构价格，不保存输入，不加载统计、外部 API 或第三方依赖。
+- `game/`：首款受 Dota 启发的网页生存肉鸽《DotaRogue》，支持桌面和手机横竖屏游玩；`game/static/dotarogue/equipment.html` 提供51件装备／30配方的图鉴，含25件三级成品、六类羁绊与成员；封神之刃与灾星之戒共用局内击杀成长规则，并直接使用对应游廊原图；游戏有待用储备和双目标自动合成，装备与英雄成长的表现已接入，实际验证范围见游戏README。狂战斧、红杖与分身斧保留三级攻击形态和角色装备外观。页面、脚本、样式和运行素材位于 `game/static/dotarogue/`，设计与公开参考归入 `game/docs/`。实现、玩法和验证入口见 `game/README.md`。
 - `shared/static/assets/favicon.svg`：站点与游戏共享的公开矢量图标，页面通过相对路径显式引用。
 - `shared/static/404.html`：可直接访问的静态失败说明页；位于子目录，不宣称 GitHub Pages 自动把它作为根级自定义 404。
 
@@ -39,7 +39,7 @@ README 记录可从当前文件核对的实现与入口；AGENTS 记录后续 Ag
 | --- | --- | --- |
 | 工作 | `work/static/`：工作首页、四生态、帮助和助手等 14 个页面及专属 CSS／JavaScript | `work/docs/` |
 | 游戏 | `game/static/index.html` 选择页、`game/static/dotarogue/` 游戏页面、CSS／JavaScript 和运行素材 | `game/docs/`；游戏总入口说明与局部规则保留在 `game/README.md`、`game/AGENTS.md` |
-| 生活 | `life/static/index.html`、专属 CSS／JavaScript：生活手帖与四主题清单 | `life/docs/` |
+| 生活 | `life/static/index.html`、专属 CSS／JavaScript：生活层级入口、食材采购参考与酸奶资料 | `life/docs/` |
 | 共享 | `shared/static/`：首页资源、图标、统计、四生态共享机制及失败说明页 | `shared/docs/` |
 
 - 根目录的 HTML 只保留全站入口 `index.html`；不保留旧页面、旧链接、跳转页或兼容目录。所有入口使用物理 HTML 地址与相对资源路径，兼容站点根部署及 GitHub Pages 项目子路径。
@@ -91,7 +91,7 @@ python -B -X utf8 -m unittest discover -s scripts -p "test_*.py"
 python -m http.server 4173
 ```
 
-然后访问 `http://localhost:4173/index.html` 查看全站首页，或访问 `http://localhost:4173/work/static/index.html` 查看工作空间、`http://localhost:4173/game/static/index.html` 选择游戏、`http://localhost:4173/life/static/index.html` 查看生活手帖。根首页的三个方向与导航在禁用 JavaScript 时仍可阅读；生活页的四份清单可通过原生展开控件阅读并勾选，计数、保存与重置由 JavaScript 增强。生活页的完整验证方法见 [life/docs/README.md](life/docs/README.md)。
+然后访问 `http://localhost:4173/index.html` 查看全站首页，或访问 `http://localhost:4173/work/static/index.html` 查看工作空间、`http://localhost:4173/game/static/index.html` 选择游戏、`http://localhost:4173/life/static/index.html` 查看生活入口。根首页的三个方向与导航在禁用 JavaScript 时仍可阅读；生活首页和食页的导航、酸奶页的公式、选购精要和来源在禁用 JavaScript 时仍可阅读；单价输入与计算由 JavaScript 提供。生活页的完整验证方法见 [life/docs/README.md](life/docs/README.md)。
 
 桌面工具的浏览器预览可使用 `.claude/launch.json` 中的 `kael-lab-static`：同样只运行 Python 静态服务器，使用线程服务器与 128 的连接队列承接游戏素材的并行请求。默认端口 4187；端口占用时接受工具分配的 `PORT`，不停止其他已有服务。此配置不参与 GitHub Pages 发布。
 

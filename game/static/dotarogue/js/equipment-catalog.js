@@ -1,5 +1,6 @@
-import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261027-unified1';
-import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261027-unified1';
+import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261030-equipment17';
+import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment17';
+import { attributeSummary } from './hero-attributes.js?v=20261029-attributes1';
 
 // Legacy key retained so the DotaRogue rename keeps existing browser records.
 const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
@@ -10,7 +11,7 @@ const UI = {
     back: '返回游戏', gameList: '选择游戏', title: '装备图鉴', lead: '从基础组件到中间件，再到成品。三个数字代表合成阶段；每件装备的 1～5 级另行标明。',
     itemCount: '件当前装备', recipeCount: '条固定配方', stageCount: '个合成阶段',
     component: '基础组件', intermediate: '中间件', finished: '成品',
-    componentCount: '21 件 · 装备 1～2 级', intermediateCount: '5 件 · 装备 3 级', finishedCount: '23 件 · 装备 3～5 级',
+    componentCount: '21 件 · 装备 1～2 级', intermediateCount: '5 件 · 装备 3 级', finishedCount: '48 件 · 装备 3～5 级',
     componentHelp: '合成路线的起点，持有时也提供自身属性。', intermediateHelp: '由组件合成，也能作为成品材料。', finishedHelp: '有的经过中间件，有的可由组件直接合成。',
     detailKicker: '装备档案 / 当前版本', priceLabel: '基础价格', routeTitle: '合成路线', usedForTitle: '可用于合成',
     detailNote: '图鉴只供查阅。波间商店可手动合成，也可追踪目标自动合成；基础价格不等于当波商店售价。',
@@ -22,19 +23,22 @@ const UI = {
     upgradeStats: '各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。',
     upgradeBase: '固定配方合成或商店直购获得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本装备不参与三合一升阶。', upgradeResale: '卖出：{price} 材料',
-    description: 'DotaRogue装备图鉴：49 件装备、28 条固定配方、23 件成品三级成长，以及风怒、顺劈、激励、元素、吸血、圣盾六类装备羁绊。',
+    description: 'DotaRogue装备图鉴：74 件装备、53 条固定配方、48 件成品三级成长，以及风怒、顺劈、激励、元素、吸血、圣盾六类装备羁绊。',
     qualityGrades: ['', '普通', '精良', '稀有', '史诗', '传说'], buildsTitle: '装备羁绊', buildsJump: '查看六类羁绊与搭配装备',
-    buildsRules: '六类羁绊按各卡片的件数门槛激活两档效果。生效格内不同成品各计 1 件，同名重复、强化等级与储备不增加计数。22 件成品各有一至两个羁绊，三合一不减少同名贡献；相位鞋是无羁绊的独立机动成品。点击成员可查看详情与配方。',
+    buildsRules: '六类羁绊按各卡片的件数门槛激活两档效果。生效格内不同成品各计 1 件，同名重复、强化等级与储备不增加计数。羁绊成员以当前定义为准，三合一不减少同名贡献；相位鞋是无羁绊的独立机动成品。点击成员可查看详情与配方。',
     buildThresholds: '{counts} 件激活', buildMembers: '搭配成员（点击查看详情）',
-    noBuild: '组件与中间件不参与羁绊。', independentBuild: '独立机动成品，无装备羁绊。冲刺后提高移速，并强化下一次有效普攻。', sourceTitle: '素材与改编',
-    sourceBody: "装备名称与图标采用 DotA1／Warcraft III 经典来源，49 张装备图标保存在 assets/art/dota1/equipment/，逐文件来源与映射见 assets/art/dota1/manifest.json。陨星锤使用 Warcraft III 的 Inferno 图标作语义复用。本作配方、羁绊、效果和数值为改编；角色身边的装备实体由 Canvas 绘制，第三方原图不标为本仓库原创。",
-    keywordSource: '关键词词义参考：炉石新手关键词表'
+    noBuild: '组件与中间件不参与羁绊。', independentBuild: '独立成品，无装备羁绊。相位鞋强化冲刺后的移速与下一次普攻；狂月之光、守夜大剑和阿哈利姆法戒分别强化远程连射、全伤害续航与 Q 回蓝。', noSynergy: '独立成品，无装备羁绊。',
+    growthTitle: '击杀成长阶段', growthStages: ['初铸', '聚魂', '铭刻', '觉醒'], growthPoints: '{points} 点',
+    growthBlade: '首个有效普攻命中的追加比例，按原始普攻计算：',
+    growthRing: '每次追击的总基础预算（AP 为施放 Q 前的攻击力）：',
+    growthRingTargets: '强化 Lv.1／2／3 最多追击 1／2／3 个目标。主目标优先首领、再精英；多目标按 2:1:1 权重分配，缺目标时按实际数量重分配。独立间隔固定 8 秒，不受主动冷缩或激励影响。',
+    growthRules: '击杀成长：普通／精英／首领各 +1／+3／+6 点；0／60／180／360 点对应初铸／聚魂／铭刻／觉醒。生效格中的同名装备共享进度，储备不增长；封神印用于普攻首击，灾星追击用于成功 Q。'
   },
   'zh-TW': {
     back: '返回遊戲', gameList: '選擇遊戲', title: '裝備圖鑑', lead: '從基礎組件到中間件，再到成品。三個數字代表合成階段；每件裝備的 1～5 級另行標明。',
     itemCount: '件目前裝備', recipeCount: '條固定配方', stageCount: '個合成階段',
     component: '基礎組件', intermediate: '中間件', finished: '成品',
-    componentCount: '21 件 · 裝備 1～2 級', intermediateCount: '5 件 · 裝備 3 級', finishedCount: '23 件 · 裝備 3～5 級',
+    componentCount: '21 件 · 裝備 1～2 級', intermediateCount: '5 件 · 裝備 3 級', finishedCount: '48 件 · 裝備 3～5 級',
     componentHelp: '合成路線的起點，持有時也提供自身屬性。', intermediateHelp: '由組件合成，也能作為成品材料。', finishedHelp: '有的經過中間件，有的可由組件直接合成。',
     detailKicker: '裝備檔案 / 目前版本', priceLabel: '基礎價格', routeTitle: '合成路線', usedForTitle: '可用於合成',
     detailNote: '圖鑑僅供查閱。波間商店可手動合成，也可追蹤目標自動合成；基礎價格不等於當波商店售價。',
@@ -46,19 +50,22 @@ const UI = {
     upgradeStats: '各級屬性為單件貢獻，按 1／3／9 倍保留投入；升階保留三件材料的屬性總和與總賣價。同類被動只取最強的一份。強化 Lv. 與裝備基礎等級、三個合成階段分別計算。',
     upgradeBase: '固定配方合成或商店直購獲得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
     upgradeUnavailable: '本裝備不參與三合一升階。', upgradeResale: '賣出：{price} 材料',
-    description: 'DotaRogue裝備圖鑑：49 件裝備、28 條固定配方、23 件成品三級成長，以及風怒、順劈、激勵、元素、吸血、聖盾六類裝備羈絆。',
+    description: 'DotaRogue裝備圖鑑：74 件裝備、53 條固定配方、48 件成品三級成長，以及風怒、順劈、激勵、元素、吸血、聖盾六類裝備羈絆。',
     qualityGrades: ['', '普通', '精良', '稀有', '史詩', '傳說'], buildsTitle: '裝備羈絆', buildsJump: '查看六類羈絆與搭配裝備',
-    buildsRules: '六類羈絆按各卡片的件數門檻啟用兩檔效果。生效格內不同成品各計 1 件，同名重複、強化等級與儲備不增加計數。22 件成品各有一至兩個羈絆，三合一不減少同名貢獻；相位鞋是無羈絆的獨立機動成品。點擊成員可查看詳情與配方。',
+    buildsRules: '六類羈絆按各卡片的件數門檻啟用兩檔效果。生效格內不同成品各計 1 件，同名重複、強化等級與儲備不增加計數。羈絆成員以目前定義為準，三合一不減少同名貢獻；相位鞋是無羈絆的獨立機動成品。點擊成員可查看詳情與配方。',
     buildThresholds: '{counts} 件啟用', buildMembers: '搭配成員（點擊查看詳情）',
-    noBuild: '組件與中間件不參與羈絆。', independentBuild: '獨立機動成品，無裝備羈絆。衝刺後提高移速，並強化下一次有效普攻。', sourceTitle: '素材與改編',
-    sourceBody: "裝備名稱與圖示採用 DotA1／Warcraft III 經典來源，49 張裝備圖示保存在 assets/art/dota1/equipment/，逐檔來源與對應見 assets/art/dota1/manifest.json。隕星錘使用 Warcraft III 的 Inferno 圖示作語義復用。本作配方、羈絆、效果和數值為改編；角色身邊的裝備實體由 Canvas 繪製，第三方原圖不標為本倉庫原創。",
-    keywordSource: '關鍵字詞義參考：爐石新手關鍵字表'
+    noBuild: '組件與中間件不參與羈絆。', independentBuild: '獨立成品，無裝備羈絆。相位鞋強化衝刺後的移速與下一次普攻；狂月之光、守夜大劍與阿哈利姆法戒分別強化遠程連射、全傷害續航與 Q 回魔。', noSynergy: '獨立成品，無裝備羈絆。',
+    growthTitle: '擊殺成長階段', growthStages: ['初鑄', '聚魂', '銘刻', '覺醒'], growthPoints: '{points} 點',
+    growthBlade: '首個有效普攻命中的追加比例，依原始普攻計算：',
+    growthRing: '每次追擊的總基礎預算（AP 為施放 Q 前的攻擊力）：',
+    growthRingTargets: '強化 Lv.1／2／3 最多追擊 1／2／3 個目標。主目標優先首領、再精英；多目標依 2:1:1 權重分配，缺目標時依實際數量重分配。獨立間隔固定 8 秒，不受主動冷縮或激勵影響。',
+    growthRules: '擊殺成長：普通／精英／首領各 +1／+3／+6 點；0／60／180／360 點對應初鑄／聚魂／銘刻／覺醒。生效格內同名裝備共享進度，儲備不成長；封神印用於普攻首擊，災星追擊用於成功 Q。'
   },
   en: {
     back: 'Back to game', gameList: 'Choose a game', title: 'Equipment Archive', lead: 'Follow components into intermediate items and finished gear. The three numbers mark crafting stages; each item keeps its actual grade from 1 to 5.',
     itemCount: 'current items', recipeCount: 'fixed recipes', stageCount: 'crafting stages',
     component: 'Components', intermediate: 'Intermediate', finished: 'Finished gear',
-    componentCount: '21 items · grades 1–2', intermediateCount: '5 items · grade 3', finishedCount: '23 items · grades 3–5',
+    componentCount: '21 items · grades 1–2', intermediateCount: '5 items · grade 3', finishedCount: '48 items · grades 3–5',
     componentHelp: 'The start of a crafting route, with useful stats of their own.', intermediateHelp: 'Crafted from components and used in finished gear.', finishedHelp: 'Some use intermediate items; others use components directly.',
     detailKicker: 'ITEM RECORD / CURRENT BUILD', priceLabel: 'Base price', routeTitle: 'Crafting route', usedForTitle: 'Used to craft',
     detailNote: 'For reference only. Craft manually in the between-wave shop or track a target for automatic crafting. Base price is not the current shop price.',
@@ -70,13 +77,16 @@ const UI = {
     upgradeStats: 'Stats are per item, scaled by 1 / 3 / 9 to preserve your investment. Merging keeps the three inputs’ total stats and resale value. Only the strongest passive of each type applies. Upgrade levels are separate from item grades and the three crafting stages.',
     upgradeBase: 'Crafting recipes and direct shop purchases provide Lv.1.', upgradeFrom: '3 matching Lv.{level} copies → 1 Lv.{next}',
     upgradeUnavailable: 'This item cannot merge for an upgrade.', upgradeResale: 'Sell: {price} materials',
-    description: 'DotaRogue equipment archive: 49 items, 28 fixed recipes, 23 finished items with three upgrade levels, and six synergies: Windfury, Cleave, Inspire, Elemental, Lifesteal and Divine Shield.',
+    description: 'DotaRogue equipment archive: 74 items, 53 fixed recipes, 48 finished items with three upgrade levels, and six synergies: Windfury, Cleave, Inspire, Elemental, Lifesteal and Divine Shield.',
     qualityGrades: ['', 'Common', 'Uncommon', 'Rare', 'Epic', 'Legendary'], buildsTitle: 'Equipment synergies', buildsJump: 'Explore six synergies and their equipment',
-    buildsRules: 'Each synergy has two tiers at the item counts shown on its card. Each distinct active finished item counts once; duplicate copies, upgrade levels and reserve items add no count. 22 finished items have one or two synergies, and merging copies keeps their single contribution. Phase Boots are independent mobility gear with no synergy. Select a member to see its details and recipe.',
+    buildsRules: 'Each synergy has two tiers at the item counts shown on its card. Each distinct active finished item counts once; duplicate copies, upgrade levels and reserve items add no count. Synergy membership follows the current definitions, and merging copies keeps their single contribution. Phase Boots, Shine of the Madmoon, Blade of the Vigil and Ring of Aghanim are independent gear with no synergy. Select a member to see its details and recipe.',
     buildThresholds: '{counts} items to activate', buildMembers: 'Equipment members (select for details)',
-    noBuild: 'Components and intermediate items do not count toward synergies.', independentBuild: 'Independent mobility gear with no equipment synergy. Its post-dash speed and next-basic enhancement stand on their own.', sourceTitle: 'Artwork and adaptation',
-    sourceBody: "Item names and icons use classic DotA1 / Warcraft III sources. The 49 equipment images are stored in assets/art/dota1/equipment/, with per-file sources and mappings in assets/art/dota1/manifest.json. Meteor Hammer reuses the Warcraft III Inferno icon by meaning. Recipes, synergies, effects and values are adapted for this game. Equipped objects use Canvas drawings; third-party icons are credited to their original sources.",
-    keywordSource: 'Keyword meanings: Hearthstone beginner keyword reference'
+    noBuild: 'Components and intermediate items do not count toward synergies.', independentBuild: 'Independent mobility gear with no equipment synergy. Its post-dash speed and next-basic enhancement stand on their own.', noSynergy: 'Independent finished gear with no equipment synergy.',
+    growthTitle: 'Kill-growth stages', growthStages: ['Forged', 'Soulbound', 'Engraved', 'Awakened'], growthPoints: '{points} points',
+    growthBlade: 'Bonus ratio on the first successful basic hit, using the original raw basic damage:',
+    growthRing: 'Total base budget for each chase (AP is attack power before Q):',
+    growthRingTargets: 'Upgrade Lv.1 / 2 / 3 can chase up to 1 / 2 / 3 targets. The primary target prioritizes bosses, then elites. Multiple targets share the budget with weights 2:1:1, redistributed over the actual targets. The independent interval stays at 8 sec, unaffected by active cooldown reduction or Inspire.',
+    growthRules: 'Kill growth: normal / elite / boss deaths grant +1 / +3 / +6 points; 0 / 60 / 180 / 360 points are Forged / Soulbound / Engraved / Awakened. Active copies share progress and reserve copies do not grow. Godseal Mark follows the first basic hit; Calamity Chase follows a successful Q.'
   }
 };
 
@@ -101,7 +111,12 @@ let selectedId = 'mjollnir';
 const $ = id => document.getElementById(id);
 const copy = key => UI[locale][key];
 const name = id => EQUIPMENT[id][locale === 'en' ? 'nameEn' : locale === 'zh-TW' ? 'nameTw' : 'name'];
-const description = id => EQUIPMENT[id][locale === 'en' ? 'descEn' : locale === 'zh-TW' ? 'descTw' : 'desc'];
+const description = id => {
+  const item = resolveEquipment(id);
+  const text = EQUIPMENT[id][locale === 'en' ? 'descEn' : locale === 'zh-TW' ? 'descTw' : 'desc'];
+  const attributes = attributeSummary(item?.attributes, locale);
+  return [text, attributes, EQUIPMENT[id].growth ? copy('growthRules') : ''].filter(Boolean).join(' · ');
+};
 const grade = id => `${copy('qualityGrades')[EQUIPMENT[id].grade]} · ${copy('grade').replace('{grade}', EQUIPMENT[id].grade)}`;
 
 function itemButton(id, className) {
@@ -235,7 +250,9 @@ function renderDetail() {
       source.className = 'upgrade-source';
       source.textContent = level === 1 ? copy('upgradeBase') : copy('upgradeFrom').replace('{level}', level - 1).replace('{next}', level);
       const stats = document.createElement('p');
-      stats.textContent = equipmentUpgradeDescription({ id: selectedId, level }, locale);
+      const levelAttributes = attributeSummary(upgraded.attributes, locale);
+      const upgradeDescription = equipmentUpgradeDescription({ id: selectedId, level }, locale);
+      stats.textContent = levelAttributes ? `${upgradeDescription} · ${levelAttributes}` : upgradeDescription;
       const resale = document.createElement('p');
       resale.className = 'upgrade-resale';
       resale.textContent = copy('upgradeResale').replace('{price}', equipmentResale({ id: selectedId, level }));
@@ -243,6 +260,34 @@ function renderDetail() {
       levels.append(row);
     }
     upgrades.append(levels);
+    if (item.growth) {
+      const heading = document.createElement('h4');
+      heading.className = 'growth-stages-title';
+      heading.textContent = copy('growthTitle');
+      const explanation = document.createElement('p');
+      explanation.textContent = copy(selectedId === 'godsealBlade' ? 'growthBlade' : 'growthRing');
+      const stages = document.createElement('ul');
+      stages.className = 'growth-stages';
+      const thresholds = [0, ...item.growth.thresholds];
+      const number = value => Number(value.toFixed(4));
+      item.passive.growthStages.forEach((coefficient, index) => {
+        const row = document.createElement('li');
+        const values = [1, 2, 3].map(level => {
+          const passive = resolveEquipment({ id: selectedId, level }).passive;
+          return selectedId === 'godsealBlade'
+            ? `Lv.${level} ${number(passive.ratio * coefficient * 100)}%`
+            : `Lv.${level} ${number(passive.baseDamage * coefficient)} + AP × ${number(passive.attackRatio * coefficient)}`;
+        });
+        row.textContent = `${copy('growthStages')[index]} · ${copy('growthPoints').replace('{points}', thresholds[index])}${locale === 'en' ? ': ' : '：'}${values.join(locale === 'en' ? '; ' : '；')}`;
+        stages.append(row);
+      });
+      upgrades.append(heading, explanation, stages);
+      if (selectedId === 'calamityRing') {
+        const rules = document.createElement('p');
+        rules.textContent = copy('growthRingTargets');
+        upgrades.append(rules);
+      }
+    }
   } else {
     const unavailable = document.createElement('p');
     unavailable.className = 'route-empty';
@@ -255,7 +300,7 @@ function renderDetail() {
   const classes = equipmentBuilds(selectedId);
   if (!classes.length) {
     const empty = document.createElement('p');
-    empty.textContent = copy(item.kind === 'finished' ? 'independentBuild' : 'noBuild');
+    empty.textContent = copy(item.kind !== 'finished' ? 'noBuild' : selectedId === 'phaseBoots' ? 'independentBuild' : 'noSynergy');
     builds.append(empty);
   }
   for (const id of classes) {

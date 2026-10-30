@@ -1,8 +1,38 @@
-// Original equipment silhouettes. Callers own transforms, time and combat results.
+// Classic item cutouts with Canvas fallbacks. Callers own transforms, time and combat results.
 const TAU = Math.PI * 2;
 const OUTLINE = '#14202b';
+const EQUIPMENT_CUTOUT_SIZE = 46;
+const BOOT_CUTOUT_SIZE = 23;
+const MANTA_ORBIT_SIZE = 26;
+const MANTA_PROJECTILE_SIZE = 25;
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const rank = value => clamp(Math.floor(Number(value) || 0), 0, 3);
+const equipmentImages = new Map();
+
+function equipmentCutout(ctx, id, level, size = EQUIPMENT_CUTOUT_SIZE) {
+  // The Inferno icon has no hammer to extract; retain that item's drawn model.
+  if (id === 'meteorHammer') return false;
+  let image = equipmentImages.get(id);
+  if (!image) {
+    image = new Image(); image.decoding = 'async';
+    image.src = new URL(`../../assets/art/dota1/equipment-cutouts/${id}.png?v=20261029-cutout2`, import.meta.url).href;
+    equipmentImages.set(id, image);
+  }
+  if (!image.complete || !image.naturalWidth) return false;
+  const scale = size / Math.max(image.naturalWidth, image.naturalHeight);
+  const width = image.naturalWidth * scale, height = image.naturalHeight * scale;
+  ctx.save(); ctx.imageSmoothingEnabled = true;
+  // Higher levels keep the same item and add restrained, smaller silhouettes.
+  for (let i = 1; i < level; i++) {
+    ctx.save(); ctx.translate((i === 1 ? -1 : 1) * size * .12, size * .035);
+    ctx.rotate((i === 1 ? -1 : 1) * .12); ctx.scale(.84, .84);
+    ctx.globalAlpha *= .82;
+    ctx.drawImage(image, -width / 2, -height / 2, width, height); ctx.restore();
+  }
+  ctx.drawImage(image, -width / 2, -height / 2, width, height);
+  ctx.restore();
+  return true;
+}
 
 function polygon(ctx, points, fill, stroke = OUTLINE) {
   ctx.beginPath();
@@ -14,6 +44,7 @@ function polygon(ctx, points, fill, stroke = OUTLINE) {
 
 function battlefury(ctx, level, attack) {
   ctx.save(); ctx.translate(-28, -30); ctx.rotate(-.24 - attack * .13);
+  if (equipmentCutout(ctx, 'battlefury', level)) { ctx.restore(); return; }
   polygon(ctx, [[-3, -19], [3, -19], [3, 24], [-3, 26]], '#936d43');
   polygon(ctx, [[-5, 16], [4, 15], [5, 21], [-5, 23]], '#c9b68b');
   const blade = [[-2, -18], [-14, -24], [-23, -19], [-26, -7], [-19, 3], [-9, 0], [-2, -7]];
@@ -40,6 +71,7 @@ function battlefury(ctx, level, attack) {
 
 function dagon(ctx, level, attack) {
   ctx.save(); ctx.translate(46, -42); ctx.rotate(.22 + attack * .08);
+  if (equipmentCutout(ctx, 'dagon', level)) { ctx.restore(); return; }
   polygon(ctx, [[-3, -2], [3, -2], [3, 29], [-3, 31]], '#70527a');
   polygon(ctx, [[-5, 17], [4, 15], [5, 21], [-4, 23]], '#ccb27e');
   if (level !== 2) {
@@ -68,6 +100,7 @@ function mirrorBlades(ctx, level, time, attack, reducedMotion, offset) {
       ctx.save();
       ctx.translate(side * (offset + i * 7 + attack * 2), -44 + i * 14 + sway);
       ctx.scale(side, 1); ctx.rotate(.28 + i * .14);
+      if (equipmentCutout(ctx, 'manta', 1, MANTA_ORBIT_SIZE)) { ctx.restore(); continue; }
       polygon(ctx, [[0, -14], [7, -6], [6, 6], [1, 13], [-4, 7], [-5, -5]], '#679bc1');
       polygon(ctx, [[0, -12], [4, -5], [2, 6], [0, 9], [-2, 3]], '#ddf7ff', null);
       polygon(ctx, [[-7, 5], [5, 4], [6, 8], [-6, 9]], '#a8b6d3');
@@ -79,7 +112,7 @@ function mirrorBlades(ctx, level, time, attack, reducedMotion, offset) {
   }
 }
 
-// Shapes follow the silhouettes of the classic icons; no icon image is drawn here.
+// These shapes remain visible while an item's cutout is loading or unavailable.
 function crystal(ctx, x, y, size, color, edge = '#e6f7ff') {
   polygon(ctx, [[x, y - size], [x + size * .65, y - size * .2], [x + size * .45, y + size * .7],
     [x - size * .45, y + size * .7], [x - size * .65, y - size * .2]], color);
@@ -104,6 +137,7 @@ function sword(ctx, level, color, edge, broad = false) {
 function carriedIdentity(ctx, id, level, time, attack, reducedMotion) {
   if (id === 'battlefury') { ctx.translate(28, 30); battlefury(ctx, level, attack); return; }
   if (id === 'dagon') { ctx.translate(-46, 42); dagon(ctx, level, attack); return; }
+  if (equipmentCutout(ctx, id, level)) return;
   if (id === 'mjollnir' || id === 'meteorHammer') {
     shaft(ctx, id === 'mjollnir' ? '#8b7152' : '#726a59');
     const steel = id === 'mjollnir' ? '#769bc3' : '#85897b';
@@ -201,6 +235,7 @@ function carriedIdentity(ctx, id, level, time, attack, reducedMotion) {
   }
 }
 function wornBoot(ctx, id, level) {
+  if (equipmentCutout(ctx, id, 1, BOOT_CUTOUT_SIZE)) return;
   polygon(ctx, [[-7, -12], [4, -12], [4, 0], [12, 3], [13, 9], [-8, 9]], id === 'phaseBoots' ? '#776c9e' : '#865b4f');
   polygon(ctx, [[-9, -14], [6, -14], [6, -8], [-9, -8]], '#a9aab0');
   polygon(ctx, [[-8, 6], [12, 6], [13, 10], [-8, 10]], '#c4c6bc');
@@ -296,17 +331,17 @@ export function drawEvolutionCleave(ctx, fx, progress, { pixel = false, reducedM
 
 export function drawDagonFork(ctx, fx, progress, { pixel = false, reducedMotion = false } = {}) {
   const p = clamp(progress, 0, 1), level = Math.max(1, rank(fx.level));
-  const targets = fx.targets.slice(0, level);
+  const targets = Array.isArray(fx.targets) ? fx.targets.slice(0, level) : [];
   if (!targets.length || p >= 1) return;
   ctx.save(); ctx.globalCompositeOperation = 'source-over';
-  ctx.globalAlpha *= (1 - p) * .95;
+  // The caller owns lifetime fading; keep the resolved beam readable through it.
   ctx.lineCap = pixel ? 'butt' : 'round'; ctx.lineJoin = pixel ? 'miter' : 'round';
   // Every beam terminates on a supplied, actually struck enemy.
   for (let i = 0; i < targets.length; i++) {
     const target = targets[i], dx = target.x - fx.x, dy = target.y - fx.y;
     const distance = Math.hypot(dx, dy);
     ctx.save(); ctx.translate(fx.x, fx.y); ctx.rotate(Math.atan2(dy, dx));
-    const breadth = 3 + level;
+    const breadth = Math.max(3, (fx.beamWidth || 6) * .5);
     polygon(ctx, [[0, -breadth], [distance, -1.5], [distance, 1.5], [0, breadth]], '#ba2946', null);
     ctx.strokeStyle = '#ffada6'; ctx.lineWidth = pixel ? 3 : 2.5;
     ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(distance, 0); ctx.stroke();
@@ -317,9 +352,19 @@ export function drawDagonFork(ctx, fx, progress, { pixel = false, reducedMotion 
       polygon(ctx, [[travel - 6, 0], [travel, -3], [travel + 6, 0], [travel, 3]], '#fff5e2', null);
     }
     ctx.restore();
-    const radius = Math.min(10, Math.max(3, target.r || 6));
+    const radius = clamp(fx.impactRadius || 10, 6, 48);
+    const core = Math.min(radius * .5, 5 + level * 2);
+    const outline = radius * (reducedMotion ? .85 : .6 + p * .4);
     ctx.save(); ctx.translate(target.x, target.y);
-    polygon(ctx, [[0, -radius], [radius * .7, 0], [0, radius], [-radius * .7, 0]], '#f47b79', '#fff0d7');
+    // The solid core marks the actual hit; four short arcs are decorative impact flare.
+    ctx.lineWidth = pixel ? 2.5 : 2;
+    polygon(ctx, [[0, -core], [core * .7, 0], [0, core], [-core * .7, 0]], '#f47b79', '#fff0d7');
+    ctx.strokeStyle = '#ff8c83'; ctx.lineWidth = pixel ? 3 : 2.5;
+    for (let ray = 0; ray < 4; ray++) {
+      const angle = ray * Math.PI / 2 + Math.PI / 4;
+      ctx.beginPath(); ctx.arc(0, 0, outline, angle - .23, angle + .23); ctx.stroke();
+    }
+    polygon(ctx, [[0, -core * .45], [core * .32, 0], [0, core * .45], [-core * .32, 0]], '#fff6e4', null);
     ctx.restore();
   }
   ctx.translate(fx.x, fx.y);
@@ -334,6 +379,10 @@ export function drawMirrorStrike(ctx, level, {
 } = {}) {
   const tier = Math.max(1, rank(level));
   ctx.save(); ctx.globalCompositeOperation = 'source-over';
+  ctx.save(); ctx.rotate(Math.PI / 4);
+  const cutout = equipmentCutout(ctx, 'manta', tier, MANTA_PROJECTILE_SIZE);
+  ctx.restore();
+  if (cutout) { ctx.restore(); return; }
   ctx.lineWidth = pixel ? 1.7 : 1.4; ctx.lineJoin = pixel ? 'miter' : 'round';
   polygon(ctx, [[-10, -4], [3, -5], [16, 0], [3, 5], [-10, 4], [-5, 0]], '#88bce1');
   polygon(ctx, [[-4, -1.5], [14, 0], [-4, 1.5]], '#f0fbff', null);

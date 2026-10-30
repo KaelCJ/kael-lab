@@ -68,7 +68,7 @@
       "product": 0,
       "priority": "未设置",
       "createdAt": "2026-10-13T09:57:07+08:00",
-      "updatedAt": "2026-10-27T03:49:21+08:00",
+      "updatedAt": "2026-10-29T11:47:42+08:00",
       "entry": "2026-10-13_RZOjTODTqbn1E22j3SeT_shared-combat-effects/README.md"
     },
     {
@@ -180,6 +180,26 @@
       "createdAt": "2026-10-27T09:56:23+08:00",
       "updatedAt": "2026-10-27T16:33:49+08:00",
       "entry": "2026-10-27_RUslyllsEtU6MJCn7Ll2_unified-damage-mechanics/README.md"
+    },
+    {
+      "id": "RUNXE6YJb1iiwI3MSYJO",
+      "title": "DotaRogue·击杀成长装备设计",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-29T00:28:53+08:00",
+      "updatedAt": "2026-10-29T16:43:45+08:00",
+      "entry": "2026-10-29_RUNXE6YJb1iiwI3MSYJO_kill-growth-equipment/README.md"
+    },
+    {
+      "id": "RKpUEwNMlnPQMMWED0Ro",
+      "title": "DotaRogue·经典装备本体抠图",
+      "type": 0,
+      "product": 0,
+      "priority": "未设置",
+      "createdAt": "2026-10-29T01:09:00+08:00",
+      "updatedAt": "2026-10-29T09:58:11+08:00",
+      "entry": "2026-10-29_RKpUEwNMlnPQMMWED0Ro_equipment-icon-cutouts/README.md"
     }
   ]
 }

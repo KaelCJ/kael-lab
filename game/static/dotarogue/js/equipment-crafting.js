@@ -1,4 +1,4 @@
-import { EQUIPMENT } from "./equipment.js?v=20261027-unified1";
+import { EQUIPMENT } from "./equipment.js?v=20261030-equipment17";
 
 // Plan the entire target before the caller changes inventory, currency or rewards.
 export function planEquipmentCraft(items, targetId, incomingId = null) {
@@ -23,7 +23,7 @@ export function planEquipmentCraft(items, targetId, incomingId = null) {
 
   function* material(id, state, ancestors) {
     const definition = EQUIPMENT[id];
-    if (!definition || definition.kind === "finished") return;
+    if (!definition) return;
 
     // Identical held instances are interchangeable; the incoming item is distinct.
     let heldTried = false;
@@ -36,6 +36,12 @@ export function planEquipmentCraft(items, targetId, incomingId = null) {
         steps: state.steps
       };
     }
+
+    // Finished equipment can be supplied explicitly (for example, Heart +
+    // Demon Edge -> Radiance Heart), but it must never be auto-crafted while
+    // resolving another recipe. Components and intermediate items may still
+    // recurse through their fixed recipes below.
+    if (definition.kind === "finished") return;
 
     if (!definition.recipe?.length || ancestors.has(id)) return;
     const nextAncestors = new Set(ancestors).add(id);

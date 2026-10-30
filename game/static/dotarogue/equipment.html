@@ -5,11 +5,11 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <meta name="theme-color" content="#0b1720">
-  <meta name="description" content="DotaRogue装备图鉴：49 件装备、28 条固定配方、23 件成品三级成长，以及风怒、顺劈、激励、元素、吸血、圣盾六类装备羁绊。">
+  <meta name="description" content="DotaRogue装备图鉴：74 件装备、53 条固定配方、48 件成品三级成长，以及风怒、顺劈、激励、元素、吸血、圣盾六类装备羁绊。">
   <title>装备图鉴 · DotaRogue</title>
   <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
-  <link rel="stylesheet" href="css/equipment.css?v=20261026-restore1">
-  <script type="module" src="js/equipment-catalog.js?v=20261027-unified1"></script>
+  <link rel="stylesheet" href="css/equipment.css?v=20261030-equipment17">
+  <script type="module" src="js/equipment-catalog.js?v=20261030-equipment17"></script>
   <noscript><style>.stage-nav,.catalog-workbench,.locale-switch{display:none}</style></noscript>
 </head>
 <body>
@@ -36,8 +36,8 @@
           <p><a class="back-link" href="#builds-title" data-copy="buildsJump">查看六类羁绊与搭配装备</a></p>
         </div>
         <div class="intro-metrics" aria-label="图鉴数量">
-          <div><strong>49</strong><span data-copy="itemCount">件当前装备</span></div>
-          <div><strong>28</strong><span data-copy="recipeCount">条固定配方</span></div>
+          <div><strong>74</strong><span data-copy="itemCount">件当前装备</span></div>
+          <div><strong>53</strong><span data-copy="recipeCount">条固定配方</span></div>
           <div><strong>3</strong><span data-copy="stageCount">个合成阶段</span></div>
         </div>
       </section>
@@ -45,7 +45,7 @@
       <nav class="stage-nav" aria-label="合成阶段">
         <a href="#stage-component"><span class="stage-number">01</span><span><strong data-copy="component">基础组件</strong><small data-copy="componentCount">21 件 · 装备 1～2 级</small></span></a>
         <a href="#stage-intermediate"><span class="stage-number">02</span><span><strong data-copy="intermediate">中间件</strong><small data-copy="intermediateCount">5 件 · 装备 3 级</small></span></a>
-        <a href="#stage-finished"><span class="stage-number">03</span><span><strong data-copy="finished">成品</strong><small data-copy="finishedCount">23 件 · 装备 3～5 级</small></span></a>
+        <a href="#stage-finished"><span class="stage-number">03</span><span><strong data-copy="finished">成品</strong><small data-copy="finishedCount">48 件 · 装备 3～5 级</small></span></a>
       </nav>
 
       <div class="catalog-workbench">
@@ -70,7 +70,7 @@
             <div class="item-grid" id="intermediate-list"></div>
           </section>
           <section class="stage-section" id="stage-finished" aria-labelledby="finished-title">
-            <div class="section-heading"><span class="section-number">03 / 03</span><div><h2 id="finished-title" data-copy="finished">成品</h2><p data-copy="finishedHelp">有的经过中间件，有的可由组件直接合成。</p></div><span class="section-count">23</span></div>
+            <div class="section-heading"><span class="section-number">03 / 03</span><div><h2 id="finished-title" data-copy="finished">成品</h2><p data-copy="finishedHelp">有的经过中间件，有的可由组件直接合成。</p></div><span class="section-count">48</span></div>
             <div class="item-grid" id="finished-list"></div>
           </section>
         </div>
@@ -86,11 +86,8 @@
           <p data-copy="upgradeRules">全部成品均可免费三合一：3 件同名同级变成 1 件高一级，最高 Lv.3。默认自动升阶，也保留手动入口和关闭开关；生效与储备共同取料。不同等级不能混用，组件与中间件不参与。</p>
           <p data-copy="upgradeStats">各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。</p>
           <h2 id="builds-title" data-copy="buildsTitle">装备羁绊</h2>
-          <p data-copy="buildsRules">六类羁绊按各卡片的件数门槛激活两档效果。生效格内不同成品各计 1 件，同名重复、强化等级与储备不增加计数。22 件成品各有一至两个羁绊，三合一不减少同名贡献；相位鞋是无羁绊的独立机动成品。点击成员可查看详情与配方。</p>
+          <p data-copy="buildsRules">六类羁绊按各卡片的件数门槛激活两档效果。生效格内不同成品各计 1 件，同名重复、强化等级与储备不增加计数。羁绊成员以当前定义为准；相位鞋、封神之刃、灾星之戒、圣洁斗篷、冰龙之喉、犼妖之灵、陨星魔典、狂月之光、守夜大剑和阿哈利姆法戒为无羁绊的独立成品。三合一不减少同名贡献。点击成员可查看详情与配方。</p>
           <div id="build-list" class="build-list"></div>
-          <h2 data-copy="sourceTitle">素材与改编</h2>
-          <p data-copy="sourceBody">装备名称与图标采用 DotA1／Warcraft III 经典来源，49 张装备图标保存在 assets/art/dota1/equipment/，逐文件来源与映射见 assets/art/dota1/manifest.json。陨星锤使用 Warcraft III 的 Inferno 图标作语义复用。本作配方、羁绊、效果和数值为改编；角色身边的装备实体由 Canvas 绘制，第三方原图不标为本仓库原创。</p>
-          <p><a href="https://hs.17173.com/zt/xinshou/" data-copy="keywordSource">关键词词义参考：炉石新手关键词表</a></p>
         </div>
       </section>
 
@@ -102,19 +99,37 @@
           <p>秘银锤（1）、加速手套（1）、鹰角弓（2）、治疗指环（1）、大剑（2）、阔剑（2）、虚无宝石（2）、小圆盾（1）、活力之球（1）、攻击之爪（1）、恶魔刀锋（2）、短棍（1）、闪避护符（2）、吸血面具（1）、铁艺头盔（1）、希梅斯特的掠夺（2）、魔力法杖（2）、法师长袍（1）、艺人面具（1）、精气之球（2）、速度之鞋（1）。</p>
           <h3>02 中间件 · 5 件</h3>
           <ul><li>秘银锤 + 加速手套 → 漩涡（3）</li><li>治疗指环 + 虚无宝石 → 坚韧球（3）</li><li>阔剑 + 攻击之爪 → 水晶剑（3）</li><li>铁艺头盔 + 吸血面具 → 支配头盔（3）</li><li>魔力法杖 + 法师长袍 + 艺人面具 → 空明杖（3）</li></ul>
-          <h3>03 成品 · 23 件</h3>
+          <h3>03 成品 · 48 件</h3>
           <ul><li>漩涡 + 鹰角弓 → 雷神之锤（5）</li><li>大剑 + 阔剑 + 坚韧球 → 狂战斧（5）</li><li>水晶剑 + 恶魔刀锋 → 大炮（5）</li><li>鹰角弓 + 短棍 + 闪避护符 → 蝴蝶（5）</li><li>小圆盾 + 活力之球 + 治疗指环 → 先锋盾（4）</li><li>支配头盔 + 希梅斯特的掠夺 → 撒旦之邪力（5）</li><li>精气之球 + 空明杖 → 蓝杖（5）</li><li>速度之鞋 + 加速手套 + 活力之球 → 动力鞋（3）</li><li>恶魔刀锋 + 坚韧球 → 辉耀（5）</li><li>恶魔刀锋 + 水晶剑 → 暗灭（5）</li><li>精气之球 + 活力之球 + 闪避护符 → 冰眼（5）</li><li>短棍 + 速度之鞋 + 闪避护符 → 分身斧（5）</li></ul>
           <ul><li>魔力法杖 + 攻击之爪 + 艺人面具 → 红杖（4）</li><li>坚韧球 + 精气之球 + 吸血面具 → 血精石（5）</li><li>空明杖 + 大剑 → 紫苑（5）</li><li>阔剑 + 铁艺头盔 + 法师长袍 → 刃甲（4）</li><li>希梅斯特的掠夺 + 活力之球 + 治疗指环 → 魔龙之心（5）</li><li>速度之鞋 + 攻击之爪 + 铁艺头盔 → 相位鞋（3）</li><li>魔力法杖 + 法师长袍 + 虚无宝石 → 风杖（4）</li><li>支配头盔 + 魔力法杖 + 艺人面具 → 死灵书（5）</li></ul>
-          <ul><li>恶魔刀锋 + 短棍 + 攻击之爪 → 金箍棒（5）</li><li>秘银锤 + 魔力法杖 + 治疗指环 → 陨星锤（5）</li><li>恶魔刀锋 + 大剑 + 阔剑 → 圣剑（5）；完成第 10 波后解锁本局铸造与直购。</li></ul>
+          <ul><li>恶魔刀锋 + 短棍 + 攻击之爪 → 金箍棒（5）</li><li>秘银锤 + 魔力法杖 + 治疗指环 → 陨星锤（5）</li><li>恶魔刀锋 + 大剑 + 阔剑 → 圣剑（5）；完成第 10 波后解锁本局铸造与直购。</li><li>大剑 + 短棍 + 攻击之爪 → 封神之刃（5）；击杀成长强化封神印。</li><li>精气之球 + 法师长袍 + 艺人面具 → 灾星之戒（5）；成功 Q 后触发追击，击杀成长提高预算。</li><li>精气之球 + 虚无宝石 + 法师长袍 → 圣洁斗篷（5）；成功 Q 累积能量后释放纯粹冲击。</li><li>精气之球 + 魔力法杖 + 虚无宝石 → 冰龙之喉（5）；普攻附带寒冰效果并强化控制。</li><li>魔龙之心 + 恶魔刀锋 → 犼妖之灵（5）；周期灼热光环持续伤害周围敌人。</li><li>陨星锤 + 风杖 + 紫苑 → 陨星魔典（5）；站定召唤陨星，成功 Q 后释放控制脉冲。</li><li>蝴蝶 + 分身斧 + 金箍棒 → 狂月之光（5）；远程普攻计数后向额外目标发射月光。</li><li>狂战斧 + 撒旦之邪力 → 守夜大剑（5）；攻击力、全伤害与回蓝持续生效。</li><li>风杖 + 血精石 + 虚无宝石 → 阿哈利姆法戒（4）；成功施放 Q 后额外回复法力。</li><li>分身斧 + 蝴蝶 + 风杖 → 碧玉匕首（5）；每 5 次有效普攻释放翡翠之影造成额外伤害。</li><li>守夜大剑 + 撒旦之邪力 → 祛魔之槌（5）；近战普攻对附近敌人顺劈。</li><li>蓝杖 + 紫苑 + 血精石 → 戮尽斗篷（5）；成功 Q 累积能量并释放范围冲击。</li><li>雷神之锤 + 蝴蝶 + 恶魔刀锋 → 暗影灾劫（5）；有效普攻概率释放连锁闪电。</li></ul>
+          <ul><li>浩劫之锤：狂战斧 + 陨星锤 + 先锋盾（5）；普攻概率释放浩劫连锁，成功 Q 累积 3 次后触发范围冲击。</li><li>极寒核心：冰眼 + 蓝杖（5）；普攻附带更强减速与短暂削弱。</li><li>新月弓：蝴蝶 + 分身斧 + 鹰角弓（5）；远程每 4／3／2 次普攻向额外目标发射连射。</li><li>抹灭法球：血精石 + 蓝杖 + 精气之球（5）；主动技能伤害强化并削弱命中目标。</li><li>神珍：圣剑 + 蝴蝶（5）；普攻概率造成基于全属性的额外纯粹伤害。</li><li>否决挂饰：暗灭 + 紫苑 + 恶魔刀锋（5）；成功 Q 否决最近敌人并禁锢。</li><li>巫祭短剑：冰眼 + 紫苑 + 撒旦之邪力（5）；普攻附带寒毒，成功 Q 引爆最近目标。</li><li>三恒照世：分身斧 + 蓝杖 + 撒旦之邪力（5）；普攻概率造成基于全属性的额外纯粹伤害。</li><li>万物破除者：圣剑 + 暗灭 + 魔龙之心（5）；高额单次普攻达到生命阈值时追加终结伤害。</li><li>地球核心：魔龙之心 + 辉耀 + 先锋盾（5）；击杀永久提高生命并持续灼烧周围敌人。</li><li>莫比乌斯吊坠：分身斧 + 血精石 + 精气之球（5）；每 5／4／3 次普攻发射四／五／六道幻影。</li><li>幽冥渗透者短剑：蓝杖 + 紫苑 + 红杖（5）；成功 Q 释放幽冥冲击并短暂削弱目标。</li></ul>
           <h3>成品装备强化 Lv.1–3</h3>
-          <p>全部 23 件成品装备均支持免费三合一，包括先锋盾、动力鞋和撒旦之邪力；组件与中间件不参与升阶。固定配方与商店直购提供 Lv.1。3 件同名 Lv.1 合成 1 件 Lv.2，3 件同名 Lv.2 合成 1 件 Lv.3，最高 Lv.3。默认自动升阶，也保留手动入口和关闭开关；生效与储备共同取料，不同强化等级不可混用。</p>
+          <p>全部 48 件成品装备均支持免费三合一，包括先锋盾、动力鞋和撒旦之邪力；组件与中间件不参与升阶。固定配方与商店直购提供 Lv.1。3 件同名 Lv.1 合成 1 件 Lv.2，3 件同名 Lv.2 合成 1 件 Lv.3，最高 Lv.3。默认自动升阶，也保留手动入口和关闭开关；生效与储备共同取料，不同强化等级不可混用。</p>
           <p>强化等级独立于括号中的基础等级。可加属性按 1／3／9 倍保留，同类被动只取最强的一份。暴击率最多 90%、闪避最多 55%、主动冷却缩减最多 60%，基础攻击间隔最短 0.09 秒；超过上限的贡献不会额外生效。Lv.2 与 Lv.3 的卖价分别为 Lv.1 的 3 倍与 9 倍。</p>
           <ul><li>雷神之锤：闪电概率 25%／30%／35%，首目标基础伤害 42／84／126，最多命中 4／5／6 个目标。</li><li>狂战斧：Lv.1 冲击分裂，以首个命中为中心、半径 88；Lv.2 扇面横扫，以玩家为中心朝首个命中方向扫过 200°、半径 108；Lv.3 回旋环斩，以玩家为中心覆盖 360°、半径 132。仅近战有效普攻触发，每次攻击仅一次，排除首目标；分裂为触发普攻暴击前伤害的 35%／45%／60%，不暴击、不触发普攻吸血、不触发普攻命中被动或计数。</li><li>大炮：暴击率加值 14%／42%／126%，暴击伤害加值 45%／135%／405%。</li><li>蝴蝶：攻速加值 25%／75%／225%，闪避加值 16%／48%／144%。</li><li>先锋盾：最大生命 16／48／144，护甲 4／12／36，每 5 秒回血 3／9／27；各级均有 35% 概率格挡 3 点有来源伤害。</li><li>动力鞋：最大生命 10／30／90，移速 12%／36%／108%，攻速 22%／66%／198%。</li><li>撒旦之邪力：攻击力 12／36／108，最大生命 14／42／126，护甲 4／12／36，普攻吸血 18%／54%／162%，每 5 秒回血 1／3／9；总吸血上限 65%。各级生命低于 35% 时触发 5 秒额外 12% 吸血，冷却 20 秒。</li><li>蓝杖：已接入主动强化的伤害或增益倍率 1.25／1.40／1.60；不增加蓝耗，不叠乘多把蓝杖。</li><li>辉耀：灼热基础伤害每秒 8／16／24，半径 165／185／205；再受所有伤害加成。</li><li>暗灭：后续所有伤害提高 18%／26%／35%，持续 4 秒；同类取最强。</li><li>冰眼：移动减速 45%／55%／65%，持续 2.5／3／3.5 秒；不增加冻结。</li><li>分身斧：每 5 次有效普攻触发；Lv.1 双影投射／Lv.2 四影扇射／Lv.3 六影齐射，分别发射 2／4／6 道幻影，左右展开至约 9.2°／20.1°／31.5°。总倍率为触发普攻暴击前伤害的 130%／170%／220%，在各道间均分；一级每道 65%，多弹不会逐弹复制整次伤害。同次攻击命中多敌只计一次，同类共用计数、只取最高阶；幻影不暴击、不触发普攻吸血、不触发普攻命中被动或计数。</li></ul>
           <ul><li>红杖：一级攻击力 +11、每秒回蓝 +1。每 6 秒冲击 500 范围内无遮挡敌人；Lv.1 单束冲击／Lv.2 双束分光／Lv.3 三束棱光，最多 1／2／3 束。主目标优先精英／首领；二、三级副目标限朝向主目标的 90°／150° 扇面内。单次总基础伤害 38／76／114 + 攻击力 × 0.7；仅一个目标时全额，多个时按实际目标数分摊，主目标权重 2、每个副目标权重 1，无目标保留就绪。冲击不暴击、不触发普攻吸血、不触发普攻命中被动或计数。</li><li>血精石：一级最大生命 +12、最大法力 +45、每 5 秒回血 +3、每秒回蓝 +2、普攻吸血 +5%。英雄技能按实际扣除生命回复 8%／12%／16%，范围与持续伤害效率为 25%，滚动 1 秒最多回复最大生命 4%；装备追加、幻影与装备召唤伤害不触发；Kael 炽魂仍属于英雄技能。</li><li>紫苑：一级攻击力 +20、攻速 +12%、每秒回蓝 +2。普攻标记存活敌人 5 秒；成功施放 Q 时引爆 600 范围内最近的一个标记，基础伤害 16／32／48 + 攻击力 × 0.5／0.65／0.8，不沉默。</li><li>刃甲：一级攻击力 +11、护甲 +4。向存活攻击者反射实际掉血的 35%／50%／65%，每击上限 14／28／42，共用 0.4 秒间隔；闪避、完全吸收和无来源伤害不触发，反伤不再放大全伤害。</li><li>魔龙之心：一级最大生命 +30、攻击力 +5、每 5 秒回血 +4。连续 5 秒未实际承伤后，每秒回复最大生命的 1.5%／2%／2.5%；实际承伤中断，闪避或完全吸收不中断。</li><li>相位鞋：一级移速 +14%、攻击力 +6、护甲 +3、每 5 秒回血 +1。冲刺结束后移速额外 +20%／28%／36%，持续 2 秒；4 秒内下一次有效普攻追加 8／16／24 + 攻击力加值 × 0.3 基础伤害，同次攻击只追加一次。</li><li>风杖：一级攻击力 +10、每秒回蓝 +2、移速 +6%。每 9 秒吹起 160 范围内最近敌人 1／1.3／1.6 秒，停止其移动与攻击；精英半时长，首领仅 20%，目标仍可受伤，无目标保留就绪。</li><li>死灵书：一级攻击力 +13、护甲 +3、普攻吸血 +9%、每 5 秒回血 +1、每秒回蓝 +1。每 12 秒召出战士与射手，持续 6／7／8 秒，最多两名；每 0.9／1.1 秒攻击一次，基础伤害各为 10／18／26 + 攻击力 × 0.25。不触发普攻或技能吸血、英雄或装备被动；召唤击杀不产材料、宝箱、经验或魂。</li></ul>
-          <ul><li>金箍棒：攻击力 12／36／108，攻速 12%／36%／108%。每 4／3／2 次有效普攻向命中方向释放贯穿冲击，长 460／520／580、半宽 16／20／24，最多命中 2／3／4 敌，各造成触发普攻暴击前伤害的 45%／55%／65%。</li><li>陨星锤：攻击力 14／42／126，每 5 秒回血 2／6／18。站定蓄力 0.8／0.6／0.4 秒后轰击 450 内目标，半径 64／84／104，各造成 30／60／90 + 攻击力 × 0.6 基础伤害；命中后才启动 7 秒冷却。移动中断蓄力，无目标保留就绪。</li><li>圣剑：攻击力 36／108／324。每 5／4／3 次有效普攻发出剑气，长 560、半宽 16／24／32，最多命中 6／8／10 敌，各造成 40／80／120 + 触发普攻暴击前伤害 × 0.5 基础伤害；持有时受到伤害提高 15%／20%／25%，风险同类取最高。每局完成第 10 波后解锁。</li></ul>
-          <p>三件新品同次攻击命中多敌只计一次；同类被动只取最高阶。派生伤害不暴击、不触发普攻吸血，也不触发英雄或装备普攻命中被动与计数；吸血羁绊另按实际失血结算，距离及地形遮挡以实际判定为准。</p>
+          <ul><li>金箍棒：攻击力 12／36／108，攻速 12%／36%／108%。每 4／3／2 次有效普攻向命中方向释放贯穿冲击，长 460／520／580、半宽 16／20／24，最多命中 2／3／4 敌，各造成触发普攻暴击前伤害的 45%／55%／65%。</li><li>陨星锤：攻击力 14／42／126，每 5 秒回血 2／6／18。站定蓄力 0.8／0.6／0.4 秒后轰击 450 内目标，半径 64／84／104，各造成 30／60／90 + 攻击力 × 0.6 基础伤害；命中后才启动 7 秒冷却。移动中断蓄力，无目标保留就绪。</li><li>圣剑：攻击力 36／108／324。每 5／4／3 次有效普攻发出剑气，长 560、半宽 16／24／32，最多命中 6／8／10 敌，各造成 40／80／120 + 触发普攻暴击前伤害 × 0.5 基础伤害；持有时受到伤害提高 15%／20%／25%，风险同类取最高。每局完成第 10 波后解锁。</li><li>陨星魔典：攻击力 18／54／162，每秒回蓝 2／6／18，主动冷却缩减 10%／30%／90%。站定蓄力 0.6／0.5／0.4 秒后轰击 520／570／620 内目标，半径 78／98／118，造成 38／76／114 + 攻击力 × 0.7／0.8／0.9；成功 Q 后对 150／175／200 范围内敌人施加 0.8／1.1／1.4 秒控制，移动或冲刺中断蓄力。</li></ul>
+          <ul><li>碧玉匕首：每 5／4／3 次有效普攻沿命中方向释放翡翠之影，最多命中 3／4／5 个目标，额外伤害比例 55%／70%／85%。</li><li>祛魔之槌：近战有效普攻对首目标周围 105／130／155 范围内其他敌人顺劈 35%／50%／65% 原始伤害。</li><li>戮尽斗篷：成功 Q 累积 5／4／3 层，轰击 560／640／720 范围内半径 190／230／270 区域，造成基础伤害并移除存活目标 6%／8%／10% 当前生命。</li><li>暗影灾劫：有效普攻有 20%／27%／34% 概率释放连锁闪电，造成 18／36／54 + 攻击力 × 0.35 伤害，最多跳跃 3／5／7 次。</li><li>浩劫之锤：狂战斧 + 陨星锤 + 先锋盾；普攻概率释放浩劫连锁，成功 Q 累积 3 次后触发范围冲击。</li><li>极寒核心：冰眼 + 蓝杖；普攻附带更强减速与短暂削弱。</li><li>新月弓：蝴蝶 + 分身斧 + 鹰角弓；远程每 4／3／2 次普攻向额外目标发射连射。</li><li>抹灭法球：血精石 + 蓝杖 + 精气之球；主动技能伤害强化并削弱命中目标。</li><li>神珍：圣剑 + 蝴蝶；普攻概率造成基于全属性的额外纯粹伤害。</li><li>否决挂饰：暗灭 + 紫苑 + 恶魔刀锋；成功 Q 否决最近敌人并禁锢。</li><li>巫祭短剑：冰眼 + 紫苑 + 撒旦之邪力；普攻附带寒毒，成功 Q 引爆最近目标。</li><li>三恒照世：分身斧 + 蓝杖 + 撒旦之邪力；普攻概率造成基于全属性的额外纯粹伤害。</li><li>万物破除者：圣剑 + 暗灭 + 魔龙之心；高额单次普攻达到生命阈值时追加终结伤害。</li><li>地球核心：魔龙之心 + 辉耀 + 先锋盾；击杀永久提高生命并持续灼烧周围敌人。</li><li>莫比乌斯吊坠：分身斧 + 血精石 + 精气之球；每 5／4／3 次普攻发射四／五／六道幻影。</li><li>幽冥渗透者短剑：蓝杖 + 紫苑 + 红杖；成功 Q 释放幽冥冲击并短暂削弱目标。</li></ul><p>新增装备的同次攻击命中多敌只计一次；同类被动只取最高阶。派生伤害不暴击、不触发普攻吸血，也不触发英雄或装备普攻命中被动与计数；吸血羁绊另按实际失血结算，距离及地形遮挡以实际判定为准。</p>
+          <h3>击杀成长：封神之刃与灾星之戒</h3>
+          <p>普通／精英／首领的合法击杀分别获得 1／3／6 点，最多 360；0／60／180／360 点对应初铸／聚魂／铭刻／觉醒，成长系数为 0.25／0.5／0.75／1。同名装备共享本局账本，只在生效格持有时增长；储备不生效，出售、重买、重新装备和三合一保留进度。</p>
+          <p>封神之刃：攻击力 +14／42／126、攻速 +8%／24%／72%；每次本人普攻仅在首个有效直接命中后追加一次，按出手时的原始普攻与阶段计算。Lv.1／2／3 在四阶段的追加比例为：</p>
+          <ul>
+            <li>初铸 · 0 点：6.25%／8.75%／11.25%。</li>
+            <li>聚魂 · 60 点：12.5%／17.5%／22.5%。</li>
+            <li>铭刻 · 180 点：18.75%／26.25%／33.75%。</li>
+            <li>觉醒 · 360 点：25%／35%／45%。</li>
+          </ul>
+          <p>灾星之戒：攻击力 +8／24／72、最大法力 +25／75／225、每秒回蓝 +1／3／9。成功 Q 后追击 500 范围内最多 1／2／3 个无遮挡目标；主目标优先首领、再精英，多目标按 2:1:1 权重分配，缺目标按实际数量重分配，无目标保留就绪。独立间隔固定 8 秒，不受主动冷缩或激励影响。AP 为施放 Q 前的攻击力，四阶段的 Lv.1／2／3 总基础预算为：</p>
+          <ul>
+            <li>初铸 · 0 点：6 + AP × 0.1；12 + AP × 0.125；18 + AP × 0.15。</li>
+            <li>聚魂 · 60 点：12 + AP × 0.2；24 + AP × 0.25；36 + AP × 0.3。</li>
+            <li>铭刻 · 180 点：18 + AP × 0.3；36 + AP × 0.375；54 + AP × 0.45。</li>
+            <li>觉醒 · 360 点：24 + AP × 0.4；48 + AP × 0.5；72 + AP × 0.6。</li>
+          </ul>
+          <p>两件追加伤害均为装备来源，不暴击、不触发普通／技能吸血、普攻命中被动或计数；同名被动只用最高生效强化等级。两件图标直接采用《守望轮回谷》对应装备原图，等级与成长由独立文字显示。</p>
           <h3>六类装备羁绊</h3>
-          <p>只计生效格内不同成品，同名重复、强化等级与储备不增加件数。22 件成品各有一至两个羁绊；相位鞋是无羁绊的独立机动成品，保留冲刺后移速与下一次普攻强化。元素、吸血在 2／3 件激活两档，其余在 2／4 件激活。</p>
+          <p>只计生效格内不同成品，同名重复、强化等级与储备不增加件数。羁绊成员以当前定义为准；相位鞋是无羁绊的独立机动成品，保留冲刺后移速与下一次普攻强化。元素、吸血在 2／3 件激活两档，其余在 2／4 件激活。</p>
           <ul>
             <li><strong>风怒 · 2／4 件</strong>：雷神之锤、蝴蝶、动力鞋、分身斧、金箍棒、紫苑。每 4 次有效普攻后间隔追加 1／2 次追击，各为原始普攻的 60%；仅追原目标，死亡、脱离射程或被地形阻挡时取消。</li>
             <li><strong>顺劈 · 2／4 件</strong>：狂战斧、大炮、暗灭、圣剑。有效普攻向首目标周围 80／110 范围最多 3 名额外敌人造成原始普攻 15%／30% 的伤害，同次攻击只触发一次。</li>
@@ -123,11 +138,13 @@
             <li><strong>吸血 · 2／3 件</strong>：撒旦之邪力、血精石、死灵书。所有实际扣除敌人生命的伤害额外回复 4%／6%，任意滑动一秒最多回复最大生命 2%／3%；溢出伤害与尸体不算，满血不消耗额度，不复活。</li>
             <li><strong>圣盾 · 2／4 件</strong>：先锋盾、刃甲、魔龙之心、冰眼、撒旦之邪力。生效 14／9 秒后获得一次完全抵挡正伤害的盾，未用不叠加，消耗后重新计时；闪避或已完全格挡不消耗，切装不刷新，暂停不推进。</li>
           </ul>
-          <p>羁绊派生攻击不暴击、不触发普攻命中被动与计数；吸血羁绊按真实失血独立结算。装备名称参考 DotA，关键词词义参考炉石／魔兽；归属、阈值与数值均为本作适配，不表示原版物品自带这些效果。三张新品 SVG 图标为本仓库独立绘制。</p>
+          <p>羁绊派生攻击不暴击、不触发普攻命中被动与计数；吸血羁绊按真实失血独立结算。</p>
           <details lang="zh-TW">
-            <summary>繁體中文：六類羈絆與搭配</summary>
+            <summary>繁體中文：擊殺成長與六類羈絆</summary>
             <p>普攻、技能、裝備與 Buff 使用同一攻擊力與傷害結算；近戰、遠程、穿透、彈射與控制是不同機制。所有英雄普攻皆可暴擊與普攻吸血；血精石技能吸血只由英雄技能觸發。</p>
-            <p>目前 49 件裝備、28 條固定配方；23 件成品均有 Lv.1–3。只計生效格內不同成品，重複、強化等級與儲備不增加件數；22 件成品有一至兩個羈絆，相位鞋為無羈絆的獨立機動成品。</p>
+            <p>目前 74 件裝備、53 條固定配方；48 件成品均有 Lv.1–3。只計生效格內不同成品，重複、強化等級與儲備不增加件數；羈絆成員以定義為準，無羈絆成品仍依目前定義顯示。游廊新增圖標直接採用《守望輪迴谷》對應裝備原圖，等級與成長由獨立文字顯示。</p>
+            <p>封神之刃／災星之戒：普通、精英、首領的合法擊殺各 +1／3／6 點，最高 360。初鑄／聚魂／銘刻／覺醒門檻為 0／60／180／360，係數 0.25／0.5／0.75／1；同名共用進度，只有生效格成長，儲備不生效，出售重買與三合一保留進度。兩件皆無羈絆。</p>
+            <p>封神之刃每次普攻只在首個有效直接命中追加一次；四階段的 Lv.1／2／3 比例依序為 6.25%／8.75%／11.25%、12.5%／17.5%／22.5%、18.75%／26.25%／33.75%、25%／35%／45%。災星之戒成功 Q 後追擊 500 範圍內最多 1／2／3 目標，總基礎預算為（24／48／72 + AP × 0.4／0.5／0.6）再乘該階段係數；AP、強化與階段於 Q 前快照。主目標優先首領、再精英，多目標依 2:1:1 分配，按實際目標數重分配；無目標保留就緒。獨立間隔固定 8 秒，不受主動冷縮或激勵影響。</p>
             <ul>
               <li><strong>風怒 · 2／4 件</strong>：雷神之錘、蝴蝶、動力鞋、分身斧、金箍棒、紫苑。每 4 次有效普攻後間隔追擊原目標 1／2 次，各為原始普攻的 60%；目標死亡、離開射程或被地形阻擋時取消。</li>
               <li><strong>順劈 · 2／4 件</strong>：狂戰斧、大炮、黯滅、聖劍。有效普攻對首目標周圍 80／110 範圍最多 3 名額外敵人造成原始普攻 15%／30% 的傷害。</li>
@@ -136,12 +153,14 @@
               <li><strong>吸血 · 2／3 件</strong>：撒旦之邪力、血精石、死靈書。所有實際扣除敵人生命的傷害額外回復 4%／6%，任意滑動一秒最多回復最大生命 2%／3%；溢出傷害與屍體不計，滿血不消耗額度，不復活。</li>
               <li><strong>聖盾 · 2／4 件</strong>：先鋒盾、刃甲、魔龍之心、冰眼、撒旦之邪力。生效 14／9 秒後獲得一次完全抵擋正傷害的盾，未用不疊加，消耗後重新計時；閃避或完全格擋不消耗，切裝不刷新，暫停不推進。</li>
             </ul>
-            <p>羈絆衍生攻擊不暴擊、不觸發普攻命中被動與計數；吸血羈絆按實際失血結算。裝備名稱參考 DotA，關鍵字詞義參考爐石／魔獸；歸屬、門檻與數值均為本作適配，並非原版物品效果。三張新品 SVG 圖示為本倉庫獨立繪製。</p>
+            <p>羈絆衍生攻擊不暴擊、不觸發普攻命中被動與計數；吸血羈絆按實際失血結算。裝備名稱參考 DotA，關鍵字詞義參考爐石／魔獸；歸屬、門檻與數值均為本作適配，並非原版物品效果。二十五張游廊裝備圖示直接採用來源記錄中的對應原圖。</p>
           </details>
           <details lang="en">
-            <summary>English: six synergies and their equipment</summary>
+            <summary>English: kill growth and six equipment synergies</summary>
             <p>Basics, hero skills, gear and buffs share attack power and one damage model. Melee, ranged, piercing, bounce and control are mechanics. Every hero’s basic attacks can crit and trigger basic lifesteal; Bloodstone skill lifesteal only triggers from hero skills.</p>
-            <p>49 items, 28 fixed recipes and 23 finished items with Lv.1–3 upgrades. Each distinct active finished item counts once; duplicates, upgrade levels and reserve items add no count. 22 finished items have one or two synergies. Phase Boots are independent mobility gear with no synergy.</p>
+            <p>74 items, 53 fixed recipes and 48 finished items with Lv.1–3 upgrades. Each distinct active finished item counts once; duplicates, upgrade levels and reserve items add no count. Synergy membership follows the current definitions; independent finished gear is listed from the current definitions. New Arcade equipment uses the corresponding source icons.</p>
+            <p>Godseal Blade / Calamity Ring: eligible normal, elite and boss kills grant 1 / 3 / 6 growth points, capped at 360. Forged / Soulbound / Engraved / Awakened start at 0 / 60 / 180 / 360 points with coefficients 0.25 / 0.5 / 0.75 / 1. Active copies share one ledger; reserve copies give no effects or growth. Selling, rebuying and merging keep progress. Neither item belongs to a synergy. Their icons use the corresponding original Dota 2 Arcade item art; separate text shows upgrade and growth levels.</p>
+            <p>Godseal Blade adds damage once on the first direct basic hit. The four stages give Lv.1 / 2 / 3 ratios of 6.25% / 8.75% / 11.25%, 12.5% / 17.5% / 22.5%, 18.75% / 26.25% / 33.75%, and 25% / 35% / 45%. After a successful Q, Calamity Ring chases up to 1 / 2 / 3 unobstructed targets within 500. Its total base budget is (24 / 48 / 72 + AP × 0.4 / 0.5 / 0.6) × the stage coefficient; AP, level and growth are captured before Q. Bosses take primary priority, then elites; distribute multiple targets with weights 2:1:1 over the actual targets. No target leaves it ready. Its independent 8 sec interval is unaffected by active cooldown reduction or Inspire.</p>
             <ul>
               <li><strong>Windfury · 2 / 4 items</strong>: Mjollnir, the Butterfly, Power Treads, Manta Style, Monkey King Bar, Orchid Malevolence. Every 4 successful basics queue 1 / 2 delayed follow-ups at 60% of the original raw basic damage each. Only the original target is chased; death, range or terrain can cancel them.</li>
               <li><strong>Cleave · 2 / 4 items</strong>: Battle Fury, Buriza-Dokyanon, Desolator, Divine Rapier. Each successful basic hits up to 3 additional enemies within 80 / 110 of its first target for 15% / 30% of raw basic damage.</li>
@@ -150,7 +169,7 @@
               <li><strong>Lifesteal · 2 / 3 items</strong>: Satanic, Bloodstone, Necronomicon. All damage that actually removes enemy HP grants 4% / 6% extra healing, capped at 2% / 3% max HP in any rolling second. Overkill and corpses do not count, full HP spends no allowance, and it cannot revive you.</li>
               <li><strong>Divine Shield · 2 / 4 items</strong>: Vanguard, Blade Mail, Heart of Tarrasque, Eye of Skadi, Satanic. After 14 / 9 active seconds, gain one full block of positive damage. Charges do not stack; consumption starts the next timer. Dodges and fully blocked hits do not spend it. Swapping cannot refresh it; pausing stops the timer.</li>
             </ul>
-            <p>Derived synergy attacks cannot crit or trigger basic-hit passives or counters. Lifesteal uses actual HP removed. Item names reference DotA and keyword meanings reference Hearthstone / Warcraft; membership, thresholds and values are adapted for this game, not original item effects. The three new SVG icons are original repository artwork.</p>
+            <p>Derived synergy attacks cannot crit or trigger basic-hit passives or counters. Lifesteal uses actual HP removed. Item names reference DotA and keyword meanings reference Hearthstone / Warcraft; membership, thresholds and values are adapted for this game, not original item effects. New Arcade items use the corresponding source icons recorded in the public source note.</p>
           </details>
           <p><a href="index.html">返回游戏</a></p>
         </section>
