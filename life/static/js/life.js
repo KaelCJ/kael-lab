@@ -1,53 +1,30 @@
 (() => {
-  const storageKey = 'kael-lab-life-checklist-v1';
-  const tasks = [...document.querySelectorAll('[data-task]')];
-  const notes = [...document.querySelectorAll('.note')];
-  const progress = document.querySelector('[data-progress]');
-  const progressBar = document.querySelector('[data-progress-bar]');
-  const storageNote = document.querySelector('[data-storage-note]');
+  const form = document.querySelector('[data-calculator]');
+  const inputs = [...form.querySelectorAll('input')];
+  const perGram = document.querySelector('#per-gram');
+  const perHundred = document.querySelector('#per-hundred');
+  const note = document.querySelector('[data-result-note]');
+  const format = new Intl.NumberFormat('zh-CN', { maximumSignificantDigits: 6 });
 
-  const showProgress = () => {
-    const count = tasks.filter(task => task.checked).length;
-    progress.textContent = count === tasks.length ? `${tasks.length} 件小事，都准备好了。` : `已准备好 ${count} / ${tasks.length} 件小事`;
-    progressBar.style.width = `${count / tasks.length * 100}%`;
-  };
-
-  try {
-    const saved = JSON.parse(localStorage.getItem(storageKey) || '[]');
-    if (Array.isArray(saved)) tasks.forEach(task => { task.checked = saved.includes(task.dataset.task); });
-  } catch {
-    storageNote.textContent = '浏览器暂时无法读取记录，仍可在本页勾选。';
-  }
-
-  const saveProgress = () => {
-    try {
-      localStorage.setItem(storageKey, JSON.stringify(tasks.filter(task => task.checked).map(task => task.dataset.task)));
-      storageNote.textContent = '勾选仅保存在当前浏览器。';
-    } catch {
-      storageNote.textContent = '本次更改未保存，刷新可能恢复原进度。';
-    }
-    showProgress();
-  };
-
-  const openLinkedNote = () => {
-    const linkedNote = notes.find(note => `#${note.id}` === location.hash);
-    if (linkedNote) linkedNote.open = true;
-  };
-
-  notes.forEach(note => { note.open = note.id === 'food' || `#${note.id}` === location.hash; });
-  // Opening before the native anchor jump keeps the destination's contents in view.
-  document.querySelectorAll('.topic-card').forEach(link => {
-    link.addEventListener('click', () => {
-      const note = notes.find(item => `#${item.id}` === link.hash);
-      if (note) note.open = true;
+  const update = () => {
+    const [price, grams, count] = inputs.map(input => input.valueAsNumber);
+    const incomplete = inputs.some(input => input.value === '' && !input.validity.badInput);
+    const valid = [price, grams, count].every(Number.isFinite) && price >= 0 && grams > 0 && Number.isInteger(count) && count > 0;
+    const total = grams * count;
+    const unitPrice = price / total;
+    const usable = valid && total > 0 && Number.isFinite(total) && Number.isFinite(unitPrice * 100);
+    inputs.forEach((input, index) => {
+      const invalid = input.validity.badInput || (input.value !== '' && (!Number.isFinite(input.valueAsNumber) || (index === 0 ? price < 0 : index === 1 ? grams <= 0 : count <= 0 || !Number.isInteger(count))));
+      input.setAttribute('aria-invalid', String(invalid));
     });
-  });
-  window.addEventListener('hashchange', openLinkedNote);
-  tasks.forEach(task => task.addEventListener('change', saveProgress));
-  document.querySelector('[data-reset]').addEventListener('click', () => {
-    tasks.forEach(task => { task.checked = false; });
-    saveProgress();
-  });
-  showProgress();
-  document.querySelector('[data-progress-note]').hidden = false;
+    perGram.value = usable ? format.format(unitPrice) : '—';
+    perHundred.value = usable ? format.format(unitPrice * 100) : '—';
+    note.textContent = usable ? `共 ${format.format(total)}g · 实付 ${format.format(price)} 元` : incomplete ? '填入价格和规格，自动换算。' : '请填写有效金额、正克数和整数份数。';
+    note.toggleAttribute('data-error', !usable && !incomplete);
+  };
+
+  form.addEventListener('input', update);
+  form.addEventListener('submit', event => event.preventDefault());
+  form.hidden = false;
+  update();
 })();

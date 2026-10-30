@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="酸奶价格与选购资料：换算每克价格，并查看奶制品购买要点。">
+  <meta name="theme-color" content="#f6f5ed">
+  <title>酸奶资料 · 食物 · 生活 · Kael Lab</title>
+  <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="../css/life.css?v=ia-20261027">
+  <script src="../js/life.js?v=ia-20261027" defer></script>
+</head>
+<body>
+  <a class="skip-link" href="#main">跳到主要内容</a>
+  <header class="site-header wrap">
+    <a class="brand" href="../../../index.html" aria-label="返回 Kael Lab 首页"><span class="brand-mark" aria-hidden="true">K</span>Kael Lab <span class="divider">/</span> 酸奶</a>
+    <a class="home-link" href="index.html">返回食物资料 <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18 6 6 18M6 6v12h12"/></svg></a>
+  </header>
+  <main class="wrap" id="main">
+    <header class="page-heading">
+      <p class="breadcrumb"><a href="../index.html">生活</a> / <a href="index.html">食</a> / 酸奶</p>
+      <h1>酸奶资料</h1>
+      <p>先算清单价，再看怎么买。</p>
+    </header>
+    <div class="reference-grid">
+      <section class="price-panel" aria-labelledby="price-title">
+        <header class="panel-heading"><span class="section-label">单价</span><h2 id="price-title">多少钱一克？</h2></header>
+        <p class="formula">到手总价 ÷（每份克数 × 份数）</p>
+        <form data-calculator hidden aria-label="酸奶单价换算">
+          <div class="fields">
+            <label for="price">总价（元）<input id="price" name="price" type="number" min="0" step="any" inputmode="decimal" autocomplete="off" required></label>
+            <label for="grams">每份（g）<input id="grams" name="grams" type="number" min="0" step="any" inputmode="decimal" autocomplete="off" required></label>
+            <label for="count">份数<input id="count" name="count" type="number" min="1" step="1" inputmode="numeric" value="1" autocomplete="off" required></label>
+          </div>
+          <div class="results" role="status" aria-live="polite" aria-atomic="true">
+            <p class="unit-price"><output id="per-gram" for="price grams count">—</output><span>元 / g</span></p>
+            <p class="per-hundred"><output id="per-hundred" for="price grams count">—</output> 元 / 100g</p>
+            <p class="result-note" data-result-note>填入价格和规格，自动换算。</p>
+          </div>
+        </form>
+        <noscript><p class="no-script">启用 JavaScript 可直接换算单价。</p></noscript>
+        <p class="panel-foot">用优惠后的实付价比；牛奶按 mL 单独算。</p>
+      </section>
+      <section class="notes-panel" aria-labelledby="milk-title">
+        <header class="panel-heading"><span class="section-label">选购</span><h2 id="milk-title">奶怎么买</h2></header>
+        <dl class="buying-notes">
+          <div><dt>先看是什么奶</dt><dd>看产品名称和配料表，分清牛奶与含乳饮料，再比较同类产品。</dd></div>
+          <div><dt>营养看同一份量</dt><dd>换成每 100g 或每 100mL 再比，别把“每份”和“每 100”直接比较。</dd></div>
+          <div><dt>按喝得完的量买</dt><dd>留意生产日期、保质期和包装上的保存要求，再决定买多少。</dd></div>
+        </dl>
+        <p class="source">参考：<a href="https://wsjk.ln.gov.cn/wsjk/jkln/jkzs/2025060311355430529/index.shtml" target="_blank" rel="noopener noreferrer">辽宁省卫健委 · 奶及奶制品选购</a></p>
+      </section>
+    </div>
+  </main>
+  <footer class="site-footer wrap">Kael Lab · 生活 / 食 / 酸奶</footer>
+</body>
+</html>
