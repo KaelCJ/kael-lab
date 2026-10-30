@@ -1,0 +1,469 @@
+"""Editable, project-drawn DotA1/Warcraft III silhouette reconstruction.
+
+These paths are authored for this game. They do not embed/reference official
+artwork. Most heroes use new anatomy; Kael, Luna and Terrorblade deliberately
+reuse the ordinary project's richer pose geometry, then apply classic palette
+and outline treatment while leaving all ordinary inputs untouched.
+"""
+from __future__ import annotations
+import copy
+import xml.etree.ElementTree as ET
+
+NS = 'http://www.w3.org/2000/svg'
+ET.register_namespace('', NS)
+INK = '#171d25'
+
+def p(d, fill, stroke=INK, w=3, extra=''):
+    return f'<path d="{d}" fill="{fill}" stroke="{stroke}" stroke-width="{w}" {extra}/>'
+
+def l(d, stroke, w=2, extra=''):
+    return p(d, 'none', stroke, w, extra)
+
+def e(x,y,rx,ry,fill,stroke=INK,w=3):
+    return f'<ellipse cx="{x}" cy="{y}" rx="{rx}" ry="{ry}" fill="{fill}" stroke="{stroke}" stroke-width="{w}"/>'
+
+def g(content, transform=''):
+    return f'<g transform="{transform}">{content}</g>'
+
+def grad(name, colors):
+    return f'<linearGradient id="{name}" x1="0" y1="0" x2=".8" y2="1">'+''.join(f'<stop offset="{i/(len(colors)-1):.3f}" stop-color="{c}"/>' for i,c in enumerate(colors))+'</linearGradient>'
+
+PALETTES = {
+ 'rover': {'skin':['#f4cca0','#c18c67','#754d3d'],'cloth':['#5274a2','#294570','#172943'],'metal':['#e7dfc7','#a1adb0','#48535d'],'beard':['#fff9e9','#e2e2d9','#929e9b'],'leather':['#bb9463','#77533a','#392e29']},
+ 'bulwark': {'skin':['#cca356','#916337','#4c3829'],'cloth':['#ae7946','#72472e','#3e2b24'],'metal':['#d6bc80','#a17c45','#61472f'],'beard':['#e8cf8c','#b48a44','#604529'],'leather':['#ad7950','#6c4532','#342823']},
+ 'conductor': {'skin':['#e0e2df','#a6b0b4','#5e6d7b'],'cloth':['#b0b9bf','#798995','#3d4c5c'],'metal':['#f1ede0','#b6b9b1','#647586'],'beard':['#f6edcd','#c3bea7','#818b8b'],'leather':['#d4be82','#928b70','#565c5b']},
+ 'scavenger': {'skin':['#a4cfd3','#65a0b6','#33566f'],'cloth':['#c75634','#862e24','#3e2020'],'metal':['#eee2b8','#afad92','#526977'],'beard':['#d2e37d','#94b74b','#497334'],'leather':['#b09460','#765937','#392e26']},
+ 'jugg': {'skin':['#b3cc6e','#779c48','#3d5b31'],'cloth':['#ee6b3c','#ba3626','#591f21'],'metal':['#ffffe7','#c1cbd0','#607a83'],'beard':['#424343','#242d2a','#131d1c'],'leather':['#dbad6d','#93633b','#463027']},
+ 'sf': {'skin':['#34383a','#14191c','#070b0f'],'cloth':['#282c30','#12191d','#06090b'],'metal':['#697172','#343e43','#0b1117'],'beard':['#ffdb92','#d77a37','#762f23'],'leather':['#ffda8b','#d56b36','#692922']},
+ 'kael': {'skin':['#ffe4ba','#dfb58b','#9d6b56'],'cloth':['#f7f5ee','#d9dbe4','#9b94b0'],'metal':['#fff0aa','#d6a847','#8f5c2b'],'beard':['#fff1ad','#e5c267','#9a733d'],'leather':['#a193b5','#625073','#30263f']},
+ 'luna': {'skin':['#d0c8ef','#9990c4','#615a8c'],'cloth':['#9f7bad','#624776','#30273f'],'metal':['#f2fbf9','#bdcddc','#6b7d99'],'beard':['#708093','#38434f','#111721'],'leather':['#a59c76','#70634d','#352e2b']},
+ 'tb': {'skin':['#c4afcb','#91799d','#514666'],'cloth':['#4d4161','#302e44','#191e2c'],'metal':['#edf5ce','#a8c495','#4f766e'],'beard':['#b6b3a0','#7e827e','#3c424b'],'leather':['#b8aa74','#7a7751','#3d443c']},
+}
+
+def definitions(hero, demon=False):
+    palette = dict(PALETTES[hero])
+    if demon: palette['skin']=['#797e99','#4c4d6c','#252b40']
+    return '<defs>'+''.join(grad('d1-'+k,v) for k,v in palette.items())+'</defs>'
+
+S='url(#d1-skin)';C='url(#d1-cloth)';M='url(#d1-metal)';B='url(#d1-beard)';L='url(#d1-leather)'
+
+class Rig:
+    def __init__(self, root, hero, side, pose, demon=False):
+        self.root=root; self.hero=hero; self.side=side; self.pose=pose;self.demon=demon
+        self.transforms={el.get('id'):el.get('transform','') for el in root.iter() if el.get('id')}
+    def group(self, name, content, scale=False):
+        if scale: content=g(content,'scale(2)')
+        return f'<g id="{name}" transform="{self.transforms.get(name, "")}">{content}</g>'
+    def leaf(self,name,content):
+        return self.group(name,content,self.hero=='jugg' and not self.side)
+
+
+def boot(x,y,flip=False,stone=False):
+    b=p(f'M{x} {y}l25-2 3 22 15 11-2 10-47 1-8-9 8-12Z',M if stone else L)
+    b+=l(f'M{x+1} {y+8}l23-1M{x-5} {y+30}l41 0','#c9bd93',2)
+    return g(b,f'translate({2*x+25} 0) scale(-1 1)' if flip else '')
+
+
+def rifle(front=True):
+    if front:
+        return p('M22 230L39 211L111 213L125 228L43 252L20 247Z',L)+p('M89 214L219 187L239 190L240 201L106 235L93 231Z',M)+l('M111 216L231 191','#f7f3da',3)+p('M223 187L243 184L246 201L231 207Z','#434c51')+e(241,194,3,7,'#101a22',w=1)+p('M107 210L132 210L143 223L125 236L104 232Z','#80643c')+l('M124 236Q117 255 138 249L141 234','#ac9863',3)+l('M39 223L91 225','#d2a76f',3)+l('M151 204L148 198L167 194L171 200','#292e30',3)
+    return p('M66 228L91 211L158 213L188 225L141 243L79 248L62 239Z',L)+p('M144 215L235 195L252 200L252 213L156 238L145 231Z',M)+l('M160 219L246 201','#f6f3da',3)+p('M240 195L255 193L256 211L246 216Z','#4a5155')+e(252,203,2,6,'#101a22',w=1)+p('M152 215L177 215L191 228L171 239L151 232Z','#937147')+l('M170 237Q169 254 188 247L191 231','#ac9863',3)+l('M87 223L134 225','#d2a76f',3)
+
+
+def rover_front(r):
+    G=r.group
+    # The dwarf's upper body stays full-sized, but sits 60 units lower.
+    # Short thighs and broad boots replace the old long trouser columns.
+    left=p('M75 251L113 250L107 283L74 285L64 268Z','#414d53')+p('M64 276L100 275L103 291L112 299L105 310L63 310L52 303L55 294Z',L)+l('M63 286L98 285M59 303L103 303','#c9bd93',2)
+    right=p('M141 251L178 251L183 279L174 288L140 284Z','#3c444b')+p('M144 277L179 276L183 292L194 300L186 309L143 310L135 302L137 289Z',L)+l('M145 286L177 285M143 303L185 302','#c9bd93',2)
+    body=g(G('pose-left-leg',left),'translate(0 48)')+g(G('pose-right-leg',right),'translate(0 48)')
+    # A barrel chest, low belt and short coat leave only the boot-heavy shins.
+    body+=p('M66 222Q41 235 42 276L48 310L82 327L119 318L157 329L196 313L195 273Q188 231 164 221Z',C)
+    body+=p('M70 231Q91 242 116 242L111 306L84 316L56 300L53 268Z','#3c5f91',stroke='none')+p('M145 239L169 230L185 254L186 304L159 316L139 306Z','#263d69',stroke='none')
+    body+=p('M67 237L52 298L82 319L115 313L104 240Z','#2e4d76')+p('M147 240L137 316L170 323L191 311L177 236Z','#1d3454')
+    body+=l('M53 312L83 323L113 315M147 319L171 327L188 317','#bfb28a',3)
+    body+=p('M61 290Q124 306 190 287L192 307Q122 326 59 308Z',L)+p('M116 298L145 297L145 318L117 319Z','#c4a76b')+p('M122 303L138 302L138 312L122 313Z','#303948',w=1)
+    body+=p('M58 230L32 239L31 298L48 310L65 289Z',L)+l('M37 252L56 247M37 287L56 283','#c9ab73',3)
+    upper=''
+    upper+=G('pose-rifle-left-arm',p('M72 172Q48 161 40 184L48 222L87 236L104 219L78 207L88 188Z',C)+p('M47 205L77 211L72 229L48 225Z',L))
+    upper+=G('pose-rifle-right-arm',p('M169 172Q188 162 197 182L202 207L173 226L154 211L178 198Z',C)+p('M174 202L194 207L180 225L161 217Z',L))
+    # A compact face sits inside the hood; the wide beard is distinct from it.
+    upper+=p('M66 114Q65 80 99 68Q138 58 170 79L183 125L165 169L143 169L151 115Q151 85 122 83Q95 82 89 111L94 157L74 173L55 150Z',C)
+    upper+=p('M86 94Q116 77 145 94L155 127L141 152L101 151L81 130Z',S)
+    upper+=p('M78 108L99 94L147 97L158 113L150 121L133 113L105 114L88 124Z','#18304d')
+    upper+=l('M100 120L112 119M137 119L145 120','#f3e2bd',3)+p('M119 117Q109 130 121 136L135 132L130 120Z','#cf9c76',w=2)
+    upper+=p('M88 130L77 150L82 178L72 201L98 192L94 214L117 201L125 225L141 202L158 210L157 188L174 191L165 160L159 133L145 140L128 145L109 140Z',B)
+    upper+=p('M94 143Q113 153 126 148L130 181L116 196L101 184Z','#e1e1d8',stroke='none')+p('M130 151L151 142L158 165L148 190L135 194Z','#b3b9b6',stroke='none')
+    upper+=l('M88 145Q106 153 120 147M135 148L154 142M94 160L104 181M122 160L125 191M148 159L142 178','#fffbea',3)
+    upper+=p('M73 102Q73 83 101 76Q131 66 157 83L163 93Q124 77 94 99Z','#6484ac',stroke='none')
+    upper+=l('M64 181Q53 194 60 209M162 179Q176 178 186 189','#6c8aad',4)+l('M82 279L98 284M153 280L169 283','#7190ad',3)
+    upper+=p('M89 147Q100 159 114 157L117 185L104 191L100 173Z','#fffdf1',stroke='none')+p('M144 151L158 146L161 174L150 193L139 196Z','#bac7c4',stroke='none')
+    hold=G('hero-weapon',rifle())+p('M93 219L102 211L117 215L129 225L119 239L102 237L90 229Z',S)+p('M161 203L173 201L183 208L178 222L163 226L154 216Z',S)+l('M102 220L117 227M163 209L175 213','#f9d5a7',2)
+    upper+=G('pose-rifle-hold',hold)
+    body+=g(upper,'translate(0 60)')
+    return G('hero-motion',G('hero-body',g(body,'matrix(.94 0 -.08 1 28 0)'))+G('hero-accessory',''))
+
+
+def rover_side(r):
+    parts={}
+    parts['side-back']=p('M103 165L66 165L45 190L47 237L78 250L104 232Z',L)+l('M55 193L80 192M54 228L78 231','#c4a471',3)
+    parts['side-far-leg']=p('M103 260L128 267L119 284L87 284L77 274Z','#303b45')+p('M77 277L111 276L115 288L126 294L119 300L76 300L64 293L67 285Z',L)+l('M76 284L108 283M72 294L117 294','#c9bd93',2)
+    parts['side-far-arm']=p('M103 164Q76 174 84 198L111 229L134 223L112 193L121 178Z','#2b466e')+p('M113 216L133 217L144 228L133 241L115 233Z',S)
+    parts['side-body']=p('M104 163Q148 145 178 173Q198 203 182 249L164 268L122 273L79 253L77 210L85 180Z',C)+p('M95 179L127 165L136 247L113 262L86 246Z','#385783')+l('M88 254L119 269L157 261','#c5af7b',3)+p('M82 232L180 232L177 253L88 262Z',L)+p('M115 237L146 236L145 257L116 259Z','#c2a16a')
+    parts['side-near-leg']=p('M139 264L169 261L178 281L167 290L137 286L129 275Z','#3c4850')+p('M139 278L175 276L180 288L193 294L185 300L140 300L129 293L132 285Z',L)+l('M140 285L173 283M138 294L184 294','#c9bd93',2)
+    parts['side-head']=p('M100 108Q95 85 116 70Q149 47 178 73L191 99L178 132L156 147L133 135L115 159L91 154Z',C)+p('M130 92Q154 75 175 94L183 109L198 120L196 131L169 135L155 152L133 133Z',S)+p('M125 100L136 88L173 91L184 103L180 111L163 103L145 111Z','#1b2f4a')+l('M162 112L174 113','#f4deba',3)+p('M141 125Q160 121 175 136L192 137L186 156L168 183L147 194L147 170L128 177L130 153L117 148Z',B)+l('M143 139L163 153L157 177M164 140L179 145','#fffbed',3)+p('M169 119L185 118L194 124L185 132L174 131Z','#dca984',w=2)
+    parts['side-rig']=p('M169 164Q193 160 210 181L205 203L180 210L156 185Z',C)+l('M174 173L193 180','#7291b6',3)
+    parts['side-forearm']=p('M199 196L223 210L226 228L206 237L179 214Z',C)+p('M192 211L217 219L210 237L191 230Z',L)
+    parts['side-weapon']=rifle(False)+p('M204 222L218 222L228 232L220 245L203 242L197 232Z',S)
+    parts['side-body']+=p('M101 179Q120 171 127 176L126 228L111 241L97 233Z','#51749c',stroke='none')+l('M90 252L111 261M145 263L158 257','#7691ad',3)
+    parts['side-head']+=l('M110 90Q127 66 158 69M132 147Q145 157 146 174','#cad4d0',3)+p('M166 144L180 145L168 168L158 180L158 164Z','#c3cfcb',stroke='none')
+    # 59 source units removed from the legs, with the original 0.96 side rig.
+    # This relocation keeps the old sole while lowering the complete upper rig.
+    return g(g(side_composition(r,parts),'translate(0 56.64)'),'matrix(.94 0 -.08 1 28 0)')
+
+
+def quills(side=False):
+    d='M77 170L30 145L57 143L17 111L58 124L29 79L76 113L65 50L101 106L116 44L129 113L158 67L155 141L183 133L165 173Z' if not side else 'M98 178L44 150L68 145L24 111L70 124L35 81L83 111L65 51L107 106L111 46L132 113L151 83L147 151Z'
+    return p(d,B,'#45372a',3)+l('M65 143L44 119M86 124L74 95M111 120L113 85','#e5cc8f',2.5)
+
+
+def bulwark_front(r):
+    G=r.group
+    body=quills()+G('pose-left-leg',p('M79 260L112 263L105 310L96 334L64 333L62 314Z',S)+p('M63 322L96 321L101 352L85 361L54 356L50 344Z','#63462d')+l('M62 343L60 355M78 344L77 359','#d8c28a',3))
+    body+=G('pose-right-leg',p('M147 264L176 258L196 309L189 338L157 341L147 314Z',S)+p('M157 324L189 322L207 346L199 358L165 360L152 347Z','#63462d')+l('M173 344L175 358M190 342L195 354','#d8c28a',3))
+    body+=p('M65 137Q89 108 125 118Q176 125 192 168L199 216L182 279Q136 298 89 280L52 251L44 206Z',S)+p('M64 169Q83 145 108 142L113 188L94 226L66 237L53 213Z','#b88349',stroke='none')+p('M126 190Q151 183 170 204L166 240L146 258L119 248Z','#c89851',stroke='none')+p('M85 203Q126 184 167 210L169 251L144 274L99 266L77 238Z','#ae8047')+p('M93 206Q125 192 157 208L159 238Q131 226 101 242Z','#d0a15d',stroke='none')+l('M100 212Q129 195 156 210M106 248Q128 257 148 249','#d0a45c',3)
+    body+=p('M78 256L113 269L158 267L184 251L181 273L146 287L101 284L76 274Z',L)+p('M121 270L145 269L146 286L122 287Z','#b9a16b')
+    # The head hangs forward from the hunched shoulder block; it is not a human helmet.
+    body+=p('M117 140L109 113L133 129L156 124L180 111L180 139Q206 148 208 174L196 198L168 208L130 194L108 169Z',S)
+    body+=p('M123 145L110 127L132 140M177 143L183 125L189 150',B,w=2)+p('M155 163Q181 151 203 169L217 188L205 208L173 210L151 191Z','#c79855')+e(185,185,18,12,'#9b6b3c')+e(178,186,3,5,'#382c24',w=1)+e(194,184,3,5,'#382c24',w=1)+p('M155 187L144 176L148 201L165 211Z','#f2e1ae',w=2)+p('M205 189L220 176L215 204L201 213Z','#f2e1ae',w=2)+p('M135 155L153 152L156 161L138 164Z','#34291f',w=1)+p('M176 151L193 154L195 162L178 161Z','#34291f',w=1)+l('M140 158L149 158M180 157L188 158','#f5d484',2)
+    body+=p('M66 159Q37 161 32 199L39 241L70 247L85 224L66 212L76 179Z',S)+p('M36 218L63 218L70 237L57 253L37 245L30 232Z','#8d6035')+l('M44 236L45 248M54 237L55 250','#ded09a',2)
+    body+=G('pose-swing-arm',p('M176 160Q205 151 220 182L225 215L206 239L181 228L191 207L179 190Z',S)+p('M195 211L218 209L230 228L219 245L195 243L185 228Z','#a57b43')+l('M205 228L209 244M216 226L222 238','#e8d9a1',3)+G('pose-melee-weapon',''))
+    body+=p('M76 159Q90 144 111 155L119 181Q95 174 82 194L72 213L64 198Z','#d2ac65',stroke='none')+p('M111 218Q136 204 156 217L158 235Q135 229 113 239Z','#c09350',stroke='none')
+    body+=l('M78 185Q88 177 101 180M91 241Q106 257 126 259M136 267L150 262','#e0b875',3)+l('M66 202L60 220M177 217L177 242','#6f4c2f',3)
+    body+=G('hero-weapon','')
+    return G('hero-motion',G('hero-body',body)+G('hero-accessory',''))
+
+
+def bulwark_side(r):
+    parts={}
+    parts['side-back']=quills(True)
+    parts['side-far-leg']=p('M103 253L129 276L102 318L78 335L58 329L67 309L80 275Z',S)+p('M65 317L92 321L105 344L90 355L53 349L45 338Z','#62472f')
+    parts['side-far-arm']=p('M104 153Q78 165 77 192L81 231L99 242L120 222L111 190L123 169Z','#795632')
+    parts['side-body']=p('M87 130Q116 102 151 125Q179 142 189 185L198 225L175 280L122 294L78 266L65 212Z',S)+p('M91 155Q109 133 126 140L129 186L110 217L87 226L73 207Z','#b88349',stroke='none')+p('M128 186Q151 178 170 196L165 228L145 253L119 243Z','#c69850',stroke='none')+p('M116 161Q157 141 176 187L171 240L145 268L111 247L94 215Z','#aa7c43')+l('M116 196Q137 183 160 197M126 247L148 250','#c79b58',3)+p('M81 250L120 266L173 255L170 275L122 289L82 273Z',L)+p('M113 268L135 270L133 286L114 286Z','#c4ab77')
+    parts['side-near-leg']=p('M146 261L173 263L184 301L167 329L141 333L131 310Z',S)+p('M143 318L172 317L198 339L196 352L151 359L130 348Z','#684b31')+l('M163 341L165 355M179 337L184 353','#e5d4a0',3)
+    parts['side-head']=p('M149 146L139 121L160 135Q181 132 198 152L209 177L229 186L237 205L225 222L195 227L161 204L138 175Z',S)+p('M191 178L223 178L245 194L239 214L214 224L190 205Z','#c29652')+p('M196 204L190 187L180 199L189 223L207 229Z','#f4e5b7',w=2)+p('M230 204L248 191L240 223L225 228Z','#f4e5b7',w=2)+e(233,197,3,5,'#483523',w=1)+p('M176 163L195 164L200 172L179 173Z','#3a2c20',w=1)+l('M181 168L190 169','#e7cb80',2)+p('M145 155L128 140L132 169L152 179Z','#a57a46')
+    parts['side-rig']=p('M170 163Q204 156 217 185L211 210L183 219L158 189Z',S)
+    parts['side-forearm']=p('M200 198Q226 201 234 226L220 246L198 238L181 216Z',S)
+    parts['side-weapon']=p('M210 226L229 228L239 245L226 259L206 251L199 238Z','#ab8147')+l('M216 244L217 255M226 241L230 251','#ecdda9',3)
+    parts['side-body']+=p('M96 151Q119 128 144 145L154 164Q123 149 109 179L99 196L89 179Z','#c49a57',stroke='none')+p('M116 207Q138 191 158 207L157 232L141 247L122 238Z','#bc9050',stroke='none')+l('M117 183Q131 176 146 181M119 242L137 254','#d7ad67',3)
+    parts['side-head']+=p('M166 148Q180 140 191 153L197 164L181 166Z','#d1a460',stroke='none')+l('M201 187L222 190','#dfb878',3)
+    return side_composition(r,parts)
+
+
+def dwarf_helm(side=False):
+    if side:
+        return p('M109 103L99 65L116 46L153 42L183 64L185 96L165 108L136 94Z',M)+p('M131 48L135 23L147 14L159 46Z',L)+p('M110 67L77 51L84 76L108 95Z',M)+p('M158 61L188 48L185 73L169 88Z',M)+l('M114 67L161 63M126 50L129 85','#f0eee0',3)
+    return p('M78 106L76 71L93 53L128 46L163 53L181 74L176 107L156 115L128 99L100 116Z',M)+p('M116 53L118 25L130 13L140 26L142 53Z',L)+p('M79 73L44 50L51 81L78 106Z',M)+p('M176 73L212 50L206 82L176 107Z',M)+l('M90 72L126 63L165 72M129 53L129 87','#f0eee1',3)
+
+
+def hammer(side=False):
+    if side:
+        return l('M210 238L219 156','#46515a',11)+l('M212 235L219 160','#d6c8a0',4)+p('M191 126L237 122L275 145L271 191L220 198L187 171Z',M)+p('M194 134L222 151L218 188L193 168Z','#78858c')+p('M222 151L268 146L265 184L220 190Z','#c7d0ce',w=2)+l('M232 135L263 152L260 180','#fff6da',3)
+    return l('M195 222L230 151','#46515a',11)+l('M195 220L230 151','#d6c99e',4)+p('M194 113L240 108L274 132L271 182L221 188L187 160Z',M)+p('M194 121L224 139L219 179L193 157Z','#788991')+p('M224 139L268 134L264 176L220 182Z','#c6cfcc',w=2)+l('M232 120L263 140L260 170','#fff6df',3)
+
+
+def axe(side=False):
+    if side:
+        blade=p('M47 113L60 121L58 140L71 153L56 168L48 158Q26 164 7 185Q-2 162 3 140Q8 117 23 103Q30 124 43 128Z',M)+p('M23 103Q12 128 17 152L7 185Q-2 162 3 140Q8 117 23 103Z','#eff0e4',w=2)+p('M18 153L43 138L49 152Q29 158 12 175Z','#87999f',stroke='none')+p('M60 121L77 109L92 125L88 150L74 146L59 138Z',M)+l('M27 126L42 133M73 122L84 129','#fff5dd',3)+p('M41 129L56 127L61 144L46 149Z','#b8bbb0',w=2)
+        return l('M66 221L92 126','#4d555b',11)+l('M67 217L91 130','#d1c29b',4)+g(blade,'translate(42 0)')
+    return l('M56 213L48 126','#4d555b',11)+l('M55 210L49 130','#d1c29b',4)+p('M47 113L60 121L58 140L71 153L56 168L48 158Q26 164 7 185Q-2 162 3 140Q8 117 23 103Q30 124 43 128Z',M)+p('M23 103Q12 128 17 152L7 185Q-2 162 3 140Q8 117 23 103Z','#eff0e4',w=2)+p('M18 153L43 138L49 152Q29 158 12 175Z','#87999f',stroke='none')+p('M60 121L77 109L92 125L88 150L74 146L59 138Z',M)+l('M27 126L42 133M73 122L84 129','#fff5dd',3)+p('M41 129L56 127L61 144L46 149Z','#b8bbb0',w=2)
+
+
+def conductor_front(r):
+    G=r.group
+    # A full-size head and broad shoulder block sit over tucked, short legs.
+    body=G('hero-accessory','')
+    body+=G('pose-left-leg',p('M69 306L114 306L110 336L70 339L63 325Z',C)+boot(64,317,stone=True))
+    body+=G('pose-right-leg',p('M139 307L184 304L190 329L182 339L144 337Z',C)+boot(146,316,stone=True))
+    body+=p('M65 208Q124 185 186 207L204 259L188 310L148 325L121 316L87 323L49 302L47 247Z',C)
+    body+=p('M64 218L91 207L110 223L101 263L77 279L57 262Z','#aeb9ba',stroke='none')+p('M144 225L174 222L188 256L174 282L151 291Z','#8c9ba0',stroke='none')
+    body+=p('M82 218L124 204L176 220L185 276L153 304L100 296L73 267Z',S)+p('M105 256L132 245L161 261L153 286L124 299L101 286Z','#c1c9c8',stroke='none')
+    body+=p('M94 266L112 254L130 268L149 254L169 268L154 302L107 303Z','#7f8d97')+l('M103 231L122 244L142 229M129 258L129 281','#d3d8d5',3)
+    body+=p('M53 292L102 303L151 302L194 289L194 309L149 324L103 322L52 313Z',M)+p('M113 300L144 299L151 316L129 331L108 315Z',L)
+    body+=p('M67 198L42 199L24 219L30 248L61 263L89 242L87 214Z',M)+p('M175 198L204 199L226 222L217 250L185 264L163 239Z',M)+l('M37 220L62 210L77 230M178 217L203 210L215 230','#eff0e8',3)
+    cast=p('M62 176L42 190L40 215L64 226L82 207L78 186Z',S)+axe()+p('M42 199L60 196L71 210L62 224L43 222L36 212Z',S)
+    body+=g(G('pose-cast-arm',cast),'translate(0 60)')
+    arm=p('M184 175L207 187L213 212L193 229L170 211L168 190Z',S)+p('M184 198L208 198L215 216L199 231L179 218Z',M)
+    body+=g(G('pose-hammer-arm',arm),'translate(0 60)')
+    head=p('M93 91Q127 71 161 94L165 126L152 152L106 153L89 128Z',S)+dwarf_helm()+p('M92 124L78 143L81 166L70 181L94 183L93 204L112 197L127 228L145 199L162 207L162 184L184 184L176 161L168 136L157 124L143 134L129 139L112 133Z',B)+l('M92 143L112 151L127 145L145 152L164 142M102 165L111 185M129 160L129 204M153 164L146 187','#f5edcf',3)+p('M120 108L112 124L127 131L142 124L134 108Z',S)+l('M101 112L113 111M145 111L157 112','#f6f8e8',3)
+    body+=g(head,'translate(0 78)')
+    body+=p('M80 219L105 212L117 224L105 237L83 234Z','#d8dfdc',stroke='none')+p('M149 218L174 226L181 245L159 240L146 230Z','#b4c0c0',stroke='none')
+    body+=l('M66 273L72 287M176 271L169 288M82 316L101 313M153 314L174 309','#c1ccca',3)+l('M79 225L85 241L82 258M171 241L163 260','#71828c',2)
+    weapon=hammer()+p('M187 213L197 206L207 216L203 232L187 233L180 224Z',S)
+    body+=g(G('hero-weapon',weapon),'translate(0 60)')
+    return G('hero-motion',G('hero-body',g(body,'matrix(.87 0 0 1 16 0)')))
+
+
+def conductor_side(r):
+    parts={}
+    parts['side-back']=p('M101 209L69 219L61 282L80 311L113 304Z',C)
+    parts['side-far-leg']=p('M106 305L132 311L113 337L77 337L78 321Z',C)+boot(68,315,stone=True)
+    far=p('M105 156L79 166L58 193L59 214L73 228L94 218L88 200L119 180Z',S)+axe(True)+p('M57 209L71 207L80 218L76 232L63 235L54 224Z',S)+l('M60 216L70 218M60 223L70 226','#d6dfd9',2)
+    parts['side-far-arm']=far
+    parts['side-body']=p('M101 201Q144 185 176 210L197 251L181 308L136 326L85 309L74 265L76 228Z',C)
+    parts['side-body']+=p('M102 216L129 204L142 220L134 260L108 278L91 262Z','#aab5b8',stroke='none')+p('M147 235L175 230L186 258L168 285L146 293Z','#87969c',stroke='none')
+    parts['side-body']+=p('M115 215L157 207L181 246L170 292L135 313L99 292L91 246Z',S)+l('M114 233L133 247L154 233M136 268L139 291','#d2d8d5',3)
+    parts['side-body']+=p('M85 291L179 287L179 309L129 326L88 309Z',M)+p('M113 299L143 297L144 320L117 321Z',L)
+    parts['side-near-leg']=p('M139 310L168 306L179 328L169 340L133 340L127 326Z',C)+boot(137,316,stone=True)
+    head=p('M128 87L159 82L180 106L181 123L198 131L195 143L177 147L156 165L132 151L116 125Z',S)+dwarf_helm(True)+p('M132 122L153 132L176 125L193 141L184 165L167 191L145 209L143 181L125 183L128 161L113 153L121 133Z',B)+l('M137 141L160 153L154 184M161 143L177 153L166 177','#f5edcf',3)+l('M164 116L177 115','#fffdea',3)+l('M139 72L158 67L174 76M137 158L145 175','#fcf3db',3)
+    parts['side-head']=head
+    rig=p('M170 153L197 154L216 178L208 204L182 209L158 181Z',M)+l('M177 164L196 164L205 179','#f2efdf',3)
+    parts['side-rig']=rig
+    arm=p('M201 195L224 204L232 226L213 241L190 224Z',S)+p('M196 208L221 215L216 232L199 227Z',M)
+    parts['side-forearm']=arm
+    weapon=hammer(True)+p('M203 226L218 225L229 237L221 251L207 248L198 237Z',S)
+    parts['side-weapon']=weapon
+    parts['side-body']+=p('M113 217L141 207L153 220L135 236L109 238Z','#d1d8d4',stroke='none')+p('M148 244L174 239L167 269L150 279Z','#9baeb0',stroke='none')+l('M104 270L117 287M145 304L161 293','#d1d8d2',3)
+    G=r.group
+    s=G('side-back',parts['side-back'])+G('side-far-leg',parts['side-far-leg'])
+    s+=g(G('side-far-arm',parts['side-far-arm']),'translate(0 60)')
+    s+=G('side-body',parts['side-body'])+G('side-near-leg',parts['side-near-leg'])
+    s+=g(G('side-head',parts['side-head']),'translate(0 78)')
+    rig=G('side-rig',parts['side-rig']+G('side-forearm',parts['side-forearm']+G('side-weapon',parts['side-weapon'])))
+    return G('side-motion',s+g(rig,'translate(0 60)'))
+
+
+def goblin(side=False):
+    # Separate green rider, saddle and ogre head make the two-person unit readable.
+    if side:
+        return p('M102 109L116 80L143 78L160 97L151 121L129 137L105 127Z',L)+p('M109 74L89 59L105 61L114 48L131 48L139 59L158 49L149 70L139 81L119 87Z',B)+p('M107 54L106 41L136 37L146 49L137 57Z','#b8944b')+e(120,60,10,8,'#334954','#8eaa9b',2)+e(138,58,9,7,'#334954','#8eaa9b',2)+l('M112 58L122 56M132 56L140 54','#f0dda2',2)+p('M138 65L162 71L142 78L127 77Z','#91b04f')+p('M106 94L90 100L89 131L104 141L112 125L109 111L129 116L140 106Z',B)+p('M134 112L151 118L161 146L147 153L138 134L120 128Z',B)+p('M86 132L105 135L107 147L85 147Z',L)+p('M146 144L164 141L172 151L153 158Z',L)
+    return p('M81 102L87 76L115 66L147 79L155 106L137 126L99 126Z',L)+p('M90 66L67 45L93 49L100 37L124 35L139 48L163 41L147 67L133 81L108 83Z',B)+p('M89 42L91 29L127 25L141 38L131 48L104 49Z','#bb984b')+e(105,54,12,9,'#344b50','#d0b16e',2)+e(130,52,11,9,'#344b50','#d0b16e',2)+l('M99 52L107 49M124 51L132 47','#f4df9d',2)+p('M115 63L109 73L122 79L135 69Z','#b9cf65',w=2)+l('M109 85L130 84','#3d4a31',2)+p('M89 86L76 99L75 124L96 138L105 123L91 111L104 102Z',B)+p('M139 85L159 99L158 123L138 138L125 123L145 111L129 100Z',B)+p('M73 124L93 128L101 145L79 147L67 138Z',L)+p('M140 129L159 123L172 139L160 149L138 147Z',L)
+
+
+def keg(side=False):
+    return p('M38 123L63 107L84 119L89 194L65 207L38 192Z',L)+p('M41 133L85 133L86 145L40 145ZM40 173L87 173L88 186L39 186Z',M)+l('M54 119L54 197M72 120L76 197','#d7b677',2)+p('M47 107L47 98L66 94L72 108Z',M)+l('M64 100Q103 85 99 136','#7d8466',7)
+
+
+def scavenger_front(r):
+    G=r.group
+    body=G('chemical-tank',keg())+G('pose-left-leg',p('M69 271L109 270L102 326L75 349L45 345L51 329Z',S)+p('M47 334L78 332L87 348L69 360L35 355L33 345Z',S)+l('M42 348L44 356M55 348L57 357M68 345L71 353','#e0e0c2',3))+G('pose-right-leg',p('M148 273L189 267L205 324L203 347L172 351L152 326Z',S)+p('M172 334L201 330L221 348L217 359L179 361L167 350Z',S)+l('M184 348L186 359M197 346L200 357M210 347L213 354','#e0e0c2',3))
+    body+=p('M79 142Q109 128 153 140Q201 145 213 199L209 251L179 283L100 287L59 262L45 211L51 175Z',S)+p('M89 184Q128 160 166 180Q195 206 183 249L164 270L111 270L83 244L75 210Z','#83b3bd')+l('M97 200Q129 185 159 198M112 247Q136 258 163 243','#bfd6d3',3)+p('M120 245L126 247L125 254L119 251Z','#477b91',w=1)+p('M71 260L113 277L176 270L207 248L204 271L174 290L111 298L75 280Z',L)+p('M118 276L150 274L153 294L121 299Z',M)
+    body+=p('M67 157Q42 150 27 174L21 209L32 239L59 239L76 210L70 189L84 172Z',S)+p('M25 215L53 212L64 234L53 256L27 249L16 232Z',S)+l('M31 237L32 251M43 235L45 252','#bcd4d2',3)
+    body+=G('pose-swing-arm',p('M182 157Q208 149 225 178L234 211L221 238L194 232L190 213L196 192L176 177Z',S)+p('M203 211L229 210L242 228L235 250L208 253L192 232Z',S)+G('pose-melee-weapon',p('M231 225L243 214L252 234L246 255L231 258Z',M))+l('M212 235L215 251M224 233L229 248','#c5d9d3',3))
+    # Broad blue ogre's bald head is in front of the chest and below the goblin.
+    body+=p('M111 121Q130 103 155 112L175 131L174 162L158 183L123 178L103 158L101 140Z',S)+p('M108 143L127 142L136 150L154 143L169 148L164 169L149 180L127 173Z','#78a7b4')+p('M118 154L124 144L129 154M152 155L159 145L162 156','#f1e7c7',w=2)+l('M117 134L129 132M146 131L159 134','#2c4659',3)+p('M132 133L127 147L139 151L148 146L143 135Z','#a4c6ca',w=2)+l('M132 162L152 164','#38596b',3)
+    body+=p('M74 165L87 148L112 168L94 183Z',C)+p('M165 177L184 157L203 174L186 191Z',C)
+    body+=p('M88 188Q111 173 142 182Q163 186 168 202Q129 193 102 209L90 225Z','#a7cbd0',stroke='none')+p('M173 215Q190 220 185 244L164 263L147 266L163 246Z','#659dad',stroke='none')
+    body+=l('M83 222Q84 241 101 251M103 214Q125 204 143 210','#c5dfda',3)+l('M159 267L174 261','#476f85',3)
+    body+=g(goblin(),'translate(0 -3)')+G('hero-weapon','')
+    return G('hero-motion',G('hero-body',body)+G('hero-accessory',''))
+
+
+def scavenger_side(r):
+    parts={}
+    parts['side-back']=g(keg(),'translate(-9 1)')
+    parts['side-far-leg']=p('M109 264L131 277L107 319L90 340L58 338L64 315L80 283Z',S)+p('M61 326L90 329L99 346L85 356L45 350L43 340Z',S)
+    parts['side-far-arm']=p('M104 154L75 161L64 197L69 231L92 244L112 222L101 194L119 172Z','#54879f')
+    parts['side-body']=p('M109 134Q159 116 187 156L210 216L194 266L151 289L101 282L66 247L67 193L82 157Z',S)+p('M139 168Q179 157 192 199L185 244L153 270L118 257L104 223L111 188Z','#8cb9c1')+l('M133 201Q154 188 176 200M139 250L158 252','#bdd5d3',3)+p('M78 253L112 273L158 275L197 251L195 275L157 296L109 293L79 274Z',L)+p('M137 278L161 277L162 294L139 298Z',M)
+    parts['side-near-leg']=p('M143 270L176 268L192 306L180 333L147 338L130 310Z',S)+p('M151 324L180 320L209 340L208 352L164 360L141 349Z',S)+l('M172 343L175 358M188 339L194 353','#d6dfc9',3)
+    parts['side-head']=p('M144 114Q173 104 190 123L198 145L218 152L214 165L198 169L184 187L158 180L140 159L133 137Z',S)+p('M172 153L199 155L206 168L187 182L170 174Z','#80b0bd')+p('M175 164L178 153L186 166M198 165L205 157L205 172','#f2e6c6',w=2)+l('M174 139L190 140','#2c4659',3)+g(goblin(True),'translate(-6 -11)')
+    parts['side-rig']=p('M173 157Q205 148 221 181L221 205L192 222L165 192Z',S)+p('M172 157L197 149L217 169L200 184Z',C)
+    parts['side-forearm']=p('M204 198L230 210L241 232L221 253L200 239L185 216Z',S)
+    parts['side-weapon']=p('M216 228L236 224L247 242L241 260L221 259L207 246Z',S)+l('M226 244L230 259M237 241L241 251','#cadcce',3)
+    parts['side-body']+=p('M121 175Q149 161 171 178L180 196Q151 182 125 201L114 218L107 204Z','#acd0d2',stroke='none')+p('M175 221L187 211L183 242L161 263L144 269L151 252Z','#70a3b3',stroke='none')+l('M119 225Q121 242 137 248','#c7ded7',3)
+    parts['side-forearm']+=l('M204 208Q219 211 225 224','#b2d4d3',4)
+    return side_composition(r,parts)
+
+
+def banner(side=False):
+    if side:
+        return l('M100 202L73 31','#6e4c32',6)+p('M74 36Q46 27 20 40L33 65L17 89Q48 78 83 93L90 68Z',C)+l('M67 43L31 46M72 81Q45 68 28 80','#f5be68',2)+p('M46 48L60 56L49 68L39 61Z','#e9bf67',w=1)
+    return l('M153 231L175 27','#7b5335',5)+p('M175 32Q199 17 232 31L219 55L234 79Q202 65 169 79Z',C)+l('M181 38Q201 28 222 34M175 68Q196 56 222 68','#f3bb65',2)+p('M197 37L211 46L199 58L189 49Z','#e7be66',w=1)
+
+
+def orc_head(side=False):
+    if side:
+        return p('M120 97Q124 73 149 75L173 86L182 106L195 119L187 136L165 148L145 138L126 127Z',S)+p('M131 93L119 76L105 81L119 109Z',S)+p('M135 85L129 57L141 39L155 37L161 45L152 61L148 82Z',B)+p('M141 42Q134 26 147 17Q164 13 174 28L163 25L153 43Z',B)+p('M165 114L185 116L191 131L174 140L157 132Z','#88a552')+p('M169 129L168 116L178 125L180 137Z','#f4e6b9',w=2)+p('M156 103L173 100L177 108L158 111Z','#263324',w=1)+l('M161 105L168 105','#edc774',2)+l('M144 129L155 137','#3a4c2d',3)
+    return p('M108 90Q127 75 150 90L158 113L149 140L127 151L105 136L96 112Z',S)+p('M103 103L88 91L93 114L105 122ZM151 103L168 90L163 114L151 123Z',S)+p('M110 87L111 66L124 51L141 57L144 83L131 77Z',B)+p('M124 55Q115 37 128 28L143 28L153 41L141 37L134 56Z',B)+p('M108 115L124 119L139 115L150 127L138 143L121 143L105 130Z','#8ba755')+p('M110 133L109 118L120 130L121 140ZM140 132L149 117L148 136L139 143Z','#f0dfac',w=2)+p('M105 106L120 104L121 111L107 113ZM134 104L148 106L146 113L134 111Z','#2c3626',w=1)+l('M108 109L115 108M137 108L144 109','#f4ca74',2)+l('M121 132L136 132','#3c4a29',2)
+
+
+def jugg_front(r):
+    G=r.group;F=r.leaf
+    legs=G('pose-left-leg',g(p('M102 238L124 246L106 304L91 333L70 331L80 294Z',S)+p('M78 298L106 305L97 332L74 330Z',C)+boot(64,317),'scale(2)'))+G('pose-right-leg',g(p('M136 242L158 236L178 291L179 326L156 334L146 300Z',S)+p('M149 301L176 294L184 324L158 333Z',C)+boot(155,317),'scale(2)'))
+    body=F('waist-cloth',p('M95 220L161 218L174 246L147 259L126 244L105 261L84 246Z',C)+p('M119 239L128 243L135 278L123 292L112 276Z',C)+l('M126 251L126 279','#ecaa62',2))
+    body+=F('torso',p('M105 143L126 135L152 141L171 166L159 210L145 236L109 235L91 205L91 169Z',S)+p('M108 151Q124 140 137 150L145 173L132 197L114 190L101 170Z','#a9c56c',stroke='none')+p('M137 154Q153 146 163 163L159 187L145 197L134 183Z','#6f8f49',stroke='none')+p('M103 153L121 162L126 182L107 190L95 176Z','#9cb65f')+p('M134 162L153 152L165 172L151 189L132 182Z','#78994c')+l('M126 183L125 215M111 203L120 206M135 206L145 202','#486638',2)+p('M100 151L147 213L138 220L91 162Z',L)+l('M102 159L137 208','#e3bc7b',2)+p('M95 216L162 214L161 234L102 240L90 229Z',C)+p('M118 218L139 218L141 236L121 239Z',L))
+    body+=F('left-arm',p('M161 149Q181 153 187 178L179 207L162 207L153 190L160 179L148 167Z',S)+p('M162 187L184 190L181 206L164 210Z',C)+p('M164 208L181 207L189 225L180 239L163 230Z',S))
+    body+=F('right-arm',p('M98 149Q75 149 65 172L62 195L79 209L96 193L87 179L107 169Z',S)+p('M66 181L88 184L89 202L67 209L57 198Z',C)+p('M66 204L84 204L93 218L83 234L65 230L57 217Z',S))
+    body+=g(g(p('M99 169Q106 158 116 169L120 180L108 182Z','#b2c976',stroke='none')+p('M137 169Q150 157 159 172L151 181L138 181Z','#a2bc68',stroke='none')+l('M104 194L116 198M136 197L150 192M112 212L118 216M134 215L144 209','#c1ce83',2),'scale(2)'),r.transforms.get('torso',''))
+    body+=F('head',orc_head())
+    # The single broad katana is carried in the classic low two-handed guard.
+    sword=p('M77 218Q114 233 167 267Q200 289 225 314Q176 298 143 280L77 239Z',M)+p('M82 229L174 285L222 312Q178 302 144 281L77 240Z','#7e9093',w=1)+l('M89 232L170 278L211 303','#fff8dd',3)+l('M60 206L86 230','#694832',8)+l('M65 207L81 223','#d4ad65',3)+l('M73 232L88 214','#c6a86c',5)
+    weapon=F('sword',sword)+F('right-hand-grip',p('M67 211L79 209L88 219L84 231L71 233L61 223Z',S)+l('M68 215L79 224','#c4d987',2))
+    return G('hero-motion',G('hero-accessory',F('banner',banner()))+G('legs',legs)+G('hero-body',body)+G('hero-weapon',weapon))
+
+
+def jugg_side(r):
+    parts={}
+    parts['side-back']=banner(True)
+    parts['side-far-leg']=p('M113 244L132 262L103 309L85 335L61 333L71 303L86 267Z',S)+p('M75 306L101 311L91 333L65 332Z',C)+boot(53,318)
+    parts['side-far-arm']=p('M105 151L84 164L82 191L95 214L114 208L107 184L119 167Z',S)+p('M85 184L107 185L115 204L94 215L82 203Z',C)
+    parts['side-body']=p('M111 143L141 135L166 155L181 190L161 234L131 250L101 232L88 193L92 163Z',S)+p('M112 151Q129 139 143 151L151 176L139 195L120 190L107 170Z','#a8c46a',stroke='none')+p('M144 157Q158 152 168 170L159 196L147 205L139 187Z','#6d8c47',stroke='none')+p('M126 153L148 149L168 179L154 212L132 218L112 200L109 176Z','#91ac58')+l('M128 176L140 189L135 218','#4f6838',3)+p('M104 155L162 217L153 228L95 166Z',L)+p('M103 222L161 220L169 241L145 256L125 248L102 259L88 242Z',C)+p('M130 244L143 248L140 283L126 292L116 276Z',C)+l('M130 252L130 277','#f0ae60',2)
+    parts['side-near-leg']=p('M143 247L163 241L177 280L169 315L153 341L131 332L141 304L138 277Z',S)+p('M140 305L166 312L159 337L133 332Z',C)+boot(137,325)
+    parts['side-head']=orc_head(True)
+    parts['side-rig']=p('M168 154Q193 153 207 176L201 199L183 204L160 182Z',S)+p('M172 153L196 153L214 172L202 188L179 179Z',C)
+    parts['side-forearm']=p('M195 192L218 201L229 223L214 238L193 222L179 209Z',S)+p('M197 207L220 215L217 234L195 227Z',C)
+    parts['side-weapon']=p('M211 231Q169 244 124 271L60 321Q104 311 146 289Q187 272 226 246Z',M)+p('M220 242L137 281L62 321Q108 310 149 290L226 247Z','#7d9294',w=1)+l('M208 243L139 277L84 308','#ffffe6',3)+l('M211 231L231 251','#63422c',8)+l('M208 247L229 229','#d6b371',5)+p('M204 228L218 227L228 239L220 251L207 247L200 237Z',S)
+    parts['side-body']+=p('M118 161Q139 149 151 165L159 179L148 185L134 173L120 180Z','#b4ca77',stroke='none')+p('M150 195L164 184L159 211L143 228L135 218Z','#607f3e',stroke='none')+l('M118 197L127 203M135 213L144 211','#c1d18b',2)
+    parts['side-rig']+=l('M174 160L193 162L202 172','#f39052',3)
+    return side_composition(r,parts)
+
+
+def sf_claw(left=True, side=False):
+    """Low, mostly hidden arms with the light talons kept as the cue."""
+    if side:
+        arm = p('M169 160Q187 158 198 173L202 193L198 211L207 231L206 259Q199 250 195 233L194 265Q186 254 185 235L181 261Q174 249 175 231L165 214L155 197L157 176Z','#070d10',stroke='none')
+        arm += p('M174 170Q185 167 192 178L194 195L187 211L173 206L165 190Z','#131923',stroke='none')
+        arm += p('M195 231Q201 246 206 259L206 248L201 232ZM185 232Q187 252 194 265L193 252L190 233ZM176 230Q177 248 185 261L184 249L181 231Z','#d2c58f',stroke='#111820',w=1.1)
+        return arm
+    arm = p('M84 145Q67 143 56 157L47 176L46 198L50 217L43 238L40 267Q48 255 54 236L57 216L57 249Q64 239 67 219L72 201L83 181L94 158Z','#070d10',stroke='none')
+    arm += p('M72 157Q59 158 52 173L52 189L59 203L70 198L77 180L82 163Z','#131923',stroke='none')
+    arm += p('M43 236Q41 253 41 267Q49 254 54 235L56 220L50 229ZM56 231Q55 247 57 249Q64 237 67 218L67 207L61 220ZM68 217Q68 236 72 242Q77 230 75 215L72 205L68 211Z','#d2c58f',stroke='#111820',w=1.1)
+    return arm if left else g(arm,'translate(256 0) scale(-1 1)')
+
+
+def sf_front(r):
+    G = r.group
+    # A single broken soot mass carries the upper body.  The outline is wide
+    # and asymmetrical, but there are no readable pauldrons or chest plates.
+    body = p('M82 237Q71 220 75 201Q61 191 57 179Q64 171 54 163Q68 158 63 148Q78 147 80 137Q95 137 106 149Q125 132 146 147Q163 138 181 151Q190 143 202 145Q194 157 208 165Q195 173 198 186Q186 198 177 210Q163 248 143 258Q126 265 108 255Q94 249 82 237Z','#070d10',w=3)
+    body += p('M79 148Q108 132 143 147Q169 136 190 156L177 201Q164 235 128 249Q96 238 82 204Z','#0b1118',stroke='none')
+    body += p('M96 173Q126 157 159 174L161 207Q146 230 127 238Q108 228 97 206Z','#070d12',stroke='none')
+    body += l('M88 189L99 197M157 192L167 184','#403029',1.6)
+    body += l('M111 216L119 224M139 220L147 211','#6d3828',1.6)
+
+    # The lower half is one continuous smoke body with broad drifting tips,
+    # rather than a waist, tail or central leg.
+    body += p('M82 218Q95 237 113 248Q131 258 149 245Q164 234 177 214Q169 239 183 255Q169 265 169 277Q183 290 163 302Q173 316 154 330L170 344L147 343Q142 359 128 368L117 350L101 365L104 345L83 352L96 334L76 338Q92 320 83 304L64 313Q82 289 73 271L58 279Q78 254 68 235Z','#070e11',w=3)
+    body += p('M99 246Q120 258 142 247Q136 270 148 286L143 307L129 331L117 349L107 342Q124 319 114 303Q101 284 111 266Z','#171625',stroke='none')
+    body += p('M85 269Q100 283 92 300L80 313L94 307Q108 293 105 278L99 264ZM154 266Q151 282 165 298L153 314L157 297Q144 282 144 271Z','#111222',stroke='none')
+    body += l('M98 272Q105 284 101 295M149 275Q143 289 152 300M128 331L121 349','#633528',1.6)
+
+    # The skull is embedded into the soot mass; there is no visible human neck.
+    body += p('M111 119Q119 108 134 112L148 120L151 140L143 158L128 168L111 157L107 140Z','#0a1115',stroke='none')
+    body += p('M119 130L130 134L127 153L114 159L114 143Z','#151522',stroke='none')
+    head = p('M108 118L103 101L109 85L108 73L120 83L128 64L137 83L148 74L146 92L157 101L151 119L141 134L126 141L113 132Z','#060c0f',w=2.5)
+    head += p('M111 101L122 90L135 93L147 88L144 105L131 113L119 110Z','#141d26',stroke='none')
+    head += p('M113 109L124 110L127 113L116 114ZM136 109L147 105L144 112L136 113Z','#d49543',stroke='none')
+    head += p('M120 126L129 121L142 121L136 133L127 136Z','#43251b',w=1.1)+l('M127 126L136 124','#d99b4a',1.1)
+    flame = p('M116 88Q108 76 116 63L123 50L123 64Q135 54 131 40Q146 54 138 71L146 61Q150 79 138 90Z','#873820',stroke='none')
+    flame += p('M120 86Q116 74 125 63L130 54L132 68L138 64Q141 76 134 86Z','#d47930',stroke='none')
+    flame += p('M125 83L127 72L132 68L133 82Z','#edc77e',stroke='none')
+    body += G('hero-accessory',g(flame,'translate(0 8)'))
+    body += g(head,'translate(0 8)')
+    # The right claw sits lower so the idle silhouette is not mechanically mirrored.
+    body += G('hero-weapon',G('pose-left-arm',sf_claw())+G('pose-right-arm',g(sf_claw(False),'translate(0 6)')))
+    return G('hero-motion',G('hero-body',body))
+
+
+def sf_side(r):
+    parts = {}
+    parts['side-back'] = p('M122 148Q104 128 85 129L68 113L75 136L57 129L69 151L59 162L83 181L101 190L128 171Z','#080e11',w=3)+p('M79 146L90 139L107 151L108 170L94 174Z','#111a25',stroke='none')
+    parts['side-far-leg'] = ''
+    parts['side-near-leg'] = ''
+    parts['side-far-arm'] = p('M105 154Q88 151 76 166L69 192L71 214L64 237L65 258L73 247L78 226L82 249L88 260L89 240L88 215L104 199L119 174Z','#070d10',stroke='none')+p('M84 166L76 184L79 207L91 209L103 184L105 169Z','#131923',stroke='none')+p('M65 237L65 258L73 247L76 229L70 233ZM82 238L88 260L88 245L86 232Z','#c7b982',stroke='#111820',w=1.1)
+    parts['side-body'] = p('M101 157Q124 137 151 150L178 174L187 201L175 229L162 249Q158 267 171 286L174 302L161 296Q163 316 148 329L140 342L125 352L106 350Q117 337 116 325L100 335L104 316L88 323L95 303L82 311Q92 295 87 278L78 282Q87 260 92 244L85 219L84 184Z','#080f12',w=3)
+    parts['side-body'] += p('M108 158Q134 143 154 161L166 184L157 218L143 240L124 243L104 224L96 197Z','#111622',stroke='none')
+    parts['side-body'] += p('M113 185Q132 174 150 185L160 200L153 220L140 237L124 240L108 224L101 204Z','#070d12',stroke='none')
+    parts['side-body'] += p('M99 273Q106 290 100 306L108 300L112 283ZM146 274Q145 290 158 303L148 318L150 304L139 289Z','#111222',stroke='none')
+    parts['side-body'] += l('M103 168L111 178M145 207L151 197M121 270Q116 287 124 296M133 322L125 339','#70402c',1.6)
+    # Forward skull and shoulder mass are deliberately joined in profile.
+    neck = p('M135 154Q149 137 169 128L187 136L187 150L170 164L152 180L138 172L130 163Z','#0a1115',stroke='none')
+    neck += p('M151 147L166 138L173 144L163 156L145 169L136 163Z','#151522',stroke='none')
+    head = p('M148 116L144 98L151 84L148 69L161 80L170 61L177 81L191 75L187 95L202 109L197 122L183 132L172 137L159 131Z','#060c0f',w=2.5)
+    head += p('M154 100L165 91L178 94L190 91L191 105L180 114L166 113Z','#141d26',stroke='none')
+    head += p('M172 108L192 105L189 110L176 113Z','#d49543',stroke='none')+p('M180 123L196 116L189 128L178 131Z','#4b271b',w=1)+l('M184 125L190 121','#d99d4a',1.1)
+    flame = p('M157 89Q150 77 158 64L165 50L165 62Q177 54 174 39Q188 52 179 70L187 60Q190 76 179 87Z','#873820',stroke='none')+p('M163 86Q160 75 169 63L174 56L175 70L180 65Q182 77 174 85Z','#cb772f',stroke='none')+p('M169 82L170 72L176 69L175 81Z','#eac680',stroke='none')
+    parts['side-head'] = neck+g(flame+head,'translate(20 12)')
+    parts['side-rig'] = p('M163 156Q178 141 191 145L202 136L201 153L216 149L211 168L222 181L213 198L202 213L183 213L168 200L156 182Z','#080e11',w=3)+p('M177 160Q191 151 205 163L209 180L198 197L181 192L168 177Z','#111622',stroke='none')
+    parts['side-forearm'] = p('M191 196L211 194L223 212L216 232L199 236L181 219Z','#080e11',w=2.5)+p('M193 202L204 200L214 215L207 226L193 223L186 214Z','#141923',stroke='none')
+    parts['side-weapon'] = sf_claw(side=True)
+    return side_composition(r,parts)
+
+def _ordinary_classic(source_root, hero):
+    """Classic skin branch for Kael, Luna and Terrorblade.
+
+    These three are intentionally grounded in the richer ordinary anatomy:
+    Kael's face and layered robe, Luna's full rider/panther contact, and TB's
+    tattooed shoulders and twin blades.  Only the palette and a few outline
+    tones change, so the old pose rig remains the source of truth.
+    """
+    palettes = {
+        'kael': {
+            # White outer cloth is the identity cue, with violet lining and
+            # the ordinary frame's gold trim, face and pose kept intact.
+            '#dd4657':'#f7f5ee','#a32342':'#d9dbe4','#531e37':'#9b94b0',
+            '#dc4356':'#f7f5ee','#a32444':'#d9dbe4','#591f39':'#9b94b0',
+            '#962740':'#efedf3','#681b35':'#bbb4cc','#331c30':'#655777',
+            '#a43148':'#e8e5f0','#3c1b31':'#655777',
+            '#73273e':'#67547e','#cf3c4e':'#eeeaf5','#902b42':'#ddd8e9',
+            '#781e36':'#655177','#ad3248':'#9880bd','#a22b42':'#9679bb',
+            '#a22a43':'#b5a4d0','#b53046':'#b5a4d0','#c7464c':'#b5a4d0',
+            '#d04a57':'#faf7ff','#d54c5c':'#faf7ff','#452c3b':'#42344f',
+            '#432c3c':'#43364f','#472c3b':'#43364f','#512c3e':'#51425f',
+            '#392538':'#30263f'
+        },
+        'luna': {
+            '#7083c7':'#8b78b8','#35437f':'#5d477d','#171d49':'#25203d',
+            '#403c87':'#4c3d82','#141837':'#211b38','#f4d0cd':'#edc1d0',
+            '#c986a1':'#ad789b','#694876':'#684b77','#070d1b':'#080e1d'
+        },
+        'tb': {
+            '#c4a7cd':'#b9a1c4','#776185':'#695278','#9b85ae':'#a487b1',
+            '#434c6a':'#4b4e70','#101825':'#111624','#9cec57':'#a9db68',
+            '#b3b980':'#b7c27f'
+        }
+    }[hero]
+    def recolor(node):
+        for key in ('fill','stroke','stop-color'):
+            value=node.get(key)
+            if value in palettes: node.set(key,palettes[value])
+        for child in list(node): recolor(child)
+    # Copy the complete frame once, avoiding duplicate IDs or nested SVG roots.
+    children = [copy.deepcopy(node) for node in source_root
+                if node.tag not in {'{'+NS+'}title', '{'+NS+'}desc'}]
+    for node in children:
+        recolor(node)
+    body = ''.join(ET.tostring(node, encoding='unicode') for node in children)
+    # The ordinary Kael hand rig extends beyond the frame in several poses.
+    # Keep the vertical foot anchor and every named pose transform, fitting
+    # all Kael views consistently around the horizontal canvas centre.
+    if hero == 'kael':
+        body = g(body, 'matrix(.88 0 0 1 15.36 0)')
+    return body
+
+
+def character(source_root,hero,side,pose,demon=False):
+    r=Rig(source_root,hero,side,pose,demon)
+    # The three weakest first-pass reconstructions now deliberately reuse the
+    # proven ordinary anatomy; this keeps the old expression, pose and contact
+    # while applying a classic DotA1 palette and outline treatment.
+    if hero in {'kael','luna','tb'}:
+        return _ordinary_classic(source_root,hero)
+    body=globals()[hero+('_side' if side else '_front')](r)
+    # Fit the wider reconstructed weapons/anatomy inside the unchanged frame.
+    # These view-level matrices preserve the vertical sole anchor and retain
+    # every original named pose transform unchanged inside the new geometry.
+    fit = {('bulwark',False):'matrix(.95 0 0 1 9 0)',
+           ('conductor',False):'matrix(.93 0 0 1 2 0)',
+           ('scavenger',False):'matrix(.92 0 0 1 6 0)',
+           ('sf',False):'matrix(.92 0 0 1 10 0)'}.get((hero,side))
+    if fit: body=g(body,fit)
+    return definitions(hero,demon)+body
+
+
+def side_composition(r, parts):
+    G=r.group
+    s=''.join(G(n,parts.get(n,'')) for n in ['side-back','side-far-leg','side-far-arm','side-body','side-near-leg'])
+    s+=G('side-head',parts.get('side-head',''))
+    s+=G('side-rig',parts.get('side-rig','')+G('side-forearm',parts.get('side-forearm','')+G('side-weapon',parts.get('side-weapon',''))))
+    return G('side-motion',s)

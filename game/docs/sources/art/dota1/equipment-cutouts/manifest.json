@@ -1,0 +1,380 @@
+{
+  "method": "Reviewed object polygons with antialiased alpha; original RGB pixels centered without scaling.",
+  "sourceManifest": "game/docs/sources/art/dota1/manifest.json",
+  "items": [
+    {
+      "id": "battlefury",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/battlefury.png",
+      "sourceSha256": "2ed3262b8ba59c6a5cb0e7b919e0c09ba9c9a5592e41e4ccad3949de13db8db6",
+      "sourceBounds": [
+        4,
+        4,
+        57,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/battlefury.png",
+      "outputSha256": "98395569b303405c57f893022d668bcc554332952fbb9f910faecb898c083330",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "mjollnir",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/mjollnir.png",
+      "sourceSha256": "2c905ba73ce13981e6a3535b52470c6d93baa45ffa6eb1114649e514ed34a21d",
+      "sourceBounds": [
+        5,
+        4,
+        57,
+        59
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/mjollnir.png",
+      "outputSha256": "5970c50dedf8aa60bc50183db015b2fb4ef19bb70c63f3394dd56521f6383962",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "buriza",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/buriza.png",
+      "sourceSha256": "21faa0ade3734a96efb4a5223403d6bd6ee6ddc3e9018dd8703a3dbef9ca392c",
+      "sourceBounds": [
+        4,
+        7,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/buriza.png",
+      "outputSha256": "154c1b3e4681f372ce18a5ed22be788f7007ed7e18b69856d3d67244ceee3cc6",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "butterfly",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/butterfly.png",
+      "sourceSha256": "b7576f764ee4ba2abc96575acf0edb9ce577bce1395c6d4310ce18a8b99a293b",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/butterfly.png",
+      "outputSha256": "846d36d5401f7825dfced5cb38cc24bf6284bbdbe4bb5dd6b4ef97595cf5ab6f",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "radiance",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/radiance.png",
+      "sourceSha256": "82576764eacdc91595ee76cb8e401f497b9e6a6c694284a0f544e47020fbcacf",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/radiance.png",
+      "outputSha256": "7fdbb009ad8d161b2b3d3a3f74c92702d3923d418915e19e2222d4626d259874",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "desolator",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/desolator.png",
+      "sourceSha256": "b7519b55590ea3d17a73ff736f8a4caf29ddf34a1d55d852c512d20536c3493f",
+      "sourceBounds": [
+        5,
+        11,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/desolator.png",
+      "outputSha256": "58ae05c5be45e25c7c1c4c56564ec0cc1e9899a694cb0a52b89975bc98ad3a55",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "divineRapier",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/divineRapier.png",
+      "sourceSha256": "064bba140acc14b5394d9f73aae48beaf66cf6798e98cc4822db6f23bcb0a179",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/divineRapier.png",
+      "outputSha256": "4b60c4925c946b165361465484714deff57fc4fadff5d0177b39e5b6bfea686c",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "dagon",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/dagon.png",
+      "sourceSha256": "6fea7dda20f08aecdf32446675c0f3526d072042f1d8cd1baa98a30d52d9ee53",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/dagon.png",
+      "outputSha256": "6c471e8490b17838cf694cbcf30638c7659feff2f1f59a6b477b15d2b319ac12",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "aghanim",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/aghanim.png",
+      "sourceSha256": "dd37ff6d4de499ad9d8ac688b652e5e4333cc3db4ce0dadf0120e6d1aecee99c",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/aghanim.png",
+      "outputSha256": "c985522d30cc8d94c1fc10253562313c517794894c2d8f75528475aab621d7cb",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "bloodstone",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/bloodstone.png",
+      "sourceSha256": "c4e709ec48357c467995075563c30312a1f458211119dd42b33144fc1d3f10e3",
+      "sourceBounds": [
+        5,
+        6,
+        57,
+        53
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/bloodstone.png",
+      "outputSha256": "ea6150a35fec056b6f5d9edb44ce3eefe423446aa3f5b763acc436c2f7f3e810",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "orchid",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/orchid.png",
+      "sourceSha256": "be3b66291a5c07c7432729d8beb9739e0d6194ce9229d2d829bfd0cb1e72e0bc",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/orchid.png",
+      "outputSha256": "c08d19c067db67104eca6d34fd5dec949e36a397d13835ca2f9fcff1c60f9c43",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "skadi",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/skadi.png",
+      "sourceSha256": "c460dc6ad17aa27f9cc6db1b6f8eb7581ef08c32538d576af524139f996f22ca",
+      "sourceBounds": [
+        5,
+        4,
+        60,
+        59
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/skadi.png",
+      "outputSha256": "29340f444845df9a22ff42fdcbc001351823ccec1485c9c67fe4b6666fac8af6",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "cyclone",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/cyclone.png",
+      "sourceSha256": "4444e866dd79a9a730389f64dbd65c0ff73ab50afce3db08bfc70ff2e5ddf520",
+      "sourceBounds": [
+        4,
+        4,
+        58,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/cyclone.png",
+      "outputSha256": "6da0b7d54077ca4f2d7dcc3a695547459f5c9e46993b52e37e157c56a5ed54b5",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "necronomicon",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/necronomicon.png",
+      "sourceSha256": "056f1c571d29fc176bc29d5f0f17252a44c4a81da1ac0245adaf6dbd3bbe1c54",
+      "sourceBounds": [
+        4,
+        5,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/necronomicon.png",
+      "outputSha256": "f1021e543c50855ad92b078a93ea91a660a1fcbe084e6075f7028fb7b5d16445",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "manta",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/manta.png",
+      "sourceSha256": "32f23337ce0968598eab5a0796dc59c2e4767f7766db9df6b3b3d7816c0cb43e",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        59
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/manta.png",
+      "outputSha256": "97c896ff69d993735433e6e9875d0575772f72546af5758553746aa9003ecbf4",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "vanguard",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/vanguard.png",
+      "sourceSha256": "29824381869a50dbb50d6b9f5de19cae1c5d32ff04cf9c71dac188745822de41",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/vanguard.png",
+      "outputSha256": "38a3fe7d732b30c443504916239acb1fa1ede5813be025eaa024c0fff19e85cc",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "satanic",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/satanic.png",
+      "sourceSha256": "ffa657d42f7716707422fc19722c899bfc958059805aaff8b831f1bb9c10ce1f",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/satanic.png",
+      "outputSha256": "4ab6e30839405bb49bc5aa63d1557f7fe8f586d010bde148c84eb4f0363a9cee",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "bladeMail",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/bladeMail.png",
+      "sourceSha256": "3b1a8e35152a98423970b7621088113aa06f9a25e7ecac4735927c7b0224c4c1",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/bladeMail.png",
+      "outputSha256": "3ad03cc7755f97f9d87383de2868a300ed36711bafcc996e3d949779b437f14c",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "heart",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/heart.png",
+      "sourceSha256": "14fbac9579d0fbc786f71168de66750a853aa4f5a211febea5c0410bf89c7bfa",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/heart.png",
+      "outputSha256": "38a3c15860dc8144132f8454ecf73794f1bc6e75ebcade3430b985e547218068",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "powerTreads",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/powerTreads.png",
+      "sourceSha256": "fe788238e7ba35ef4f53bc3e07ba093f370568607084c6d7ab5a4c75cadaa193",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/powerTreads.png",
+      "outputSha256": "cdb239f8a08c742bb4745c2eb0c963bddab53645c2a8484339ed986e803dbc79",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "phaseBoots",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/phaseBoots.png",
+      "sourceSha256": "82f47dccab12c70d6a83bd48199052df76d653d119f936acb452731d91c71ec1",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        59
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/phaseBoots.png",
+      "outputSha256": "7b2fb4094c8b34de13ec74035e9133384dd9d4493a1450bb76bfc5aaac2aaf85",
+      "size": [
+        64,
+        64
+      ]
+    },
+    {
+      "id": "monkeyKingBar",
+      "source": "game/static/dotarogue/assets/art/dota1/equipment/monkeyKingBar.png",
+      "sourceSha256": "4dfdfeaaa1c12c5198d0915a447cff41f40b9d8f046546b0e4ea5d44e5204f28",
+      "sourceBounds": [
+        4,
+        4,
+        60,
+        60
+      ],
+      "output": "game/static/dotarogue/assets/art/dota1/equipment-cutouts/monkeyKingBar.png",
+      "outputSha256": "c9bf527c901add4c1b46fe26728fe6335147909b8feff9a557747196bb919641",
+      "size": [
+        64,
+        64
+      ]
+    }
+  ]
+}

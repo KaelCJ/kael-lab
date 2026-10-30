@@ -1,21 +1,23 @@
 import { createStudioRuntime } from './studio-runtime.js?v=20261014-tb1';
 import { createFireRenderer } from './effects/fire.js';
-import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js';
-import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261027-unified1';
+import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261027-map2';
+import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261027-map2';
+import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261030-kael-skills1';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261027-unified1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261027-unified1';
-import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261026-restore1';
-import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261026-restore1';
-import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261027-unified1';
-import { createEquipmentCombat } from './equipment-combat.js?v=20261027-unified1';
-import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261026-restore1';
-import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261026-restore1';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261030-equipment17';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261030-equipment17';
+import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261030-equipment17';
+import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment17';
+import { createEquipmentCombat } from './equipment-combat.js?v=20261030-equipment17';
+import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261030-kael-skills1';
+import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment17';
 import { createWindRenderer } from './effects/wind.js?v=20261027-dota1';
 import { createMeteorRenderer } from './effects/meteor.js';
-import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261027-dota1';
+import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261029-attributes-spell3';
 import { createAudioSystem } from './audio.js?v=20261027-dota1';
-import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unified1';
+import { attackPower, resolveDamage } from './combat-damage.js?v=20261029-attributes-spell3';
+import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261029-attributes1';
 
 (() => {
   'use strict';
@@ -36,6 +38,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   // Legacy key retained so the DotaRogue rename keeps existing browser records.
   const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
   const TAU = Math.PI * 2;
+  const KAEL_TORNADO = { speed: 240, life: 3.2, radius: 34, scale: .72 };
+  const KAEL_METEOR = { speed: 160, life: 4.5, radius: 88, scale: 1.85 };
+  const KAEL_ICE_WALL = { life: 10, halfLength: 240, halfWidth: 36 };
   const clamp = (v, a, b) => Math.max(a, Math.min(b, v));
   const rand = (a, b) => a + Math.random() * (b - a);
   const pick = list => list[Math.floor(Math.random() * list.length)];
@@ -71,13 +76,77 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   const EQUIPMENT_IDS = Object.keys(EQUIPMENT);
   const CHARACTER_ATTACKS = Object.fromEntries(CHARACTERS.map(c => [c.id, c.id]));
   const SHOP_OFFER_COUNT = 5;
+  const KILL_GROWTH_STAGES = [
+    { min: 0, max: 59, q: .25 },
+    { min: 60, max: 179, q: .5 },
+    { min: 180, max: 359, q: .75 },
+    { min: 360, max: 360, q: 1 }
+  ];
+  function killGrowthEntry(id) {
+    const weaponSystem = run?.skills?.weaponSystem;
+    const sources = [weaponSystem?.growth, weaponSystem?.killGrowth, run?.skills?.killGrowth];
+    for (const source of sources) {
+      if (!source) continue;
+      const entry = source instanceof Map ? source.get(id) : source[id];
+      if (entry) return entry;
+    }
+    return null;
+  }
+  function killGrowthState(id) {
+    const entry = killGrowthEntry(id);
+    const points = Math.max(0, Math.min(360, Number(entry?.points ?? entry?.score ?? 0) || 0));
+    const stage = KILL_GROWTH_STAGES.findIndex(({ max }) => points <= max);
+    return { points, stage: stage < 0 ? 3 : stage, q: KILL_GROWTH_STAGES[stage < 0 ? 3 : stage].q,
+      readyAt: Number(entry?.readyAt ?? entry?.chaseReadyAt ?? 0) || 0 };
+  }
+  function killGrowthText(id, compact = false) {
+    const def = EQUIPMENT[id];
+    if (!def?.growth) return '';
+    const state = killGrowthState(id), stage = state.stage;
+    const names = selectedLocale === 'en' ? ['Forged', 'Soulbound', 'Engraved', 'Awakened']
+      : selectedLocale === 'zh-TW' ? ['初鑄', '聚魂', '銘刻', '覺醒'] : ['初铸', '聚魂', '铭刻', '觉醒'];
+    const stageName = names[stage];
+    const next = def.growth.thresholds[stage];
+    const progress = selectedLocale === 'en' ? (next == null ? 'max growth' : `${next - state.points} to ${names[stage + 1]}`)
+      : selectedLocale === 'zh-TW' ? (next == null ? '成長已滿' : `距${names[stage + 1]} ${next - state.points} 點`)
+        : (next == null ? '成长已满' : `距${names[stage + 1]} ${next - state.points} 点`);
+    const base = compact ? `${state.points}/360 · ${stageName}` : `${selectedLocale === 'en' ? 'Growth' : selectedLocale === 'zh-TW' ? '成長' : '成长'} ${state.points}/360 · ${stageName} · ×${state.q.toFixed(2)} · ${progress}`;
+    if (id !== 'calamityRing') return base;
+    const remaining = Math.max(0, state.readyAt - (run?.totalTime || 0));
+    const ready = selectedLocale === 'en' ? (remaining > 0 ? `chase ${remaining.toFixed(1)}s` : 'chase ready')
+      : selectedLocale === 'zh-TW' ? (remaining > 0 ? `追擊 ${remaining.toFixed(1)} 秒` : '追擊就緒')
+        : (remaining > 0 ? `追击 ${remaining.toFixed(1)} 秒` : '追击就绪');
+    return `${base} · ${ready}`;
+  }
+  function killGrowthUiKey() {
+    return ['godsealBlade', 'calamityRing'].map(id => {
+      const state = killGrowthState(id); return `${id}:${state.points}:${state.stage}:${Math.max(0, state.readyAt - (run?.totalTime || 0)).toFixed(1)}`;
+    }).join('|');
+  }
   function equipmentName(def) {
     const name = selectedLocale === 'en' ? (def.nameEn || def.name) : selectedLocale === 'zh-TW' ? (def.nameTw || def.name) : def.name;
     return EQUIPMENT_UPGRADES[def.id] ? `${name} · Lv.${def.level}` : name;
   }
-  function equipmentDesc(def) {
-    if (EQUIPMENT_UPGRADES[def.id]) return equipmentUpgradeDescription(def, selectedLocale, true);
-    return selectedLocale === 'en' ? (def.descEn || def.desc) : selectedLocale === 'zh-TW' ? (def.descTw || def.desc) : def.desc;
+  function equipmentCooldownText(def) {
+    const base = Number(def?.passive?.cooldown);
+    if (!run || !Number.isFinite(base) || def?.passive?.id === 'calamityChase') return '';
+    const current = cooldownWithHaste(base, run.stats.abilityHaste);
+    if (current >= base - 1e-9) return '';
+    const value = current.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
+    return selectedLocale === 'en' ? `Current cooldown ${value}s` : selectedLocale === 'zh-TW' ? `目前冷卻 ${value} 秒` : `当前冷却 ${value} 秒`;
+  }
+  function equipmentDesc(def, item = null) {
+    const description = EQUIPMENT_UPGRADES[def.id]
+      ? equipmentUpgradeDescription(def, selectedLocale, true)
+      : selectedLocale === 'en' ? (def.descEn || def.desc) : selectedLocale === 'zh-TW' ? (def.descTw || def.desc) : def.desc;
+    const attributes = attributeSummary(def.attributes, selectedLocale);
+    const cooldown = equipmentCooldownText(def);
+    const growth = def.growth && run ? killGrowthText(def.id, false) : '';
+    const reserve = item && run?.equipmentReserve?.some(held => held.uid === item.uid)
+      ? selectedLocale === 'en' ? 'Reserve: inactive; no stats, passives or growth'
+        : selectedLocale === 'zh-TW' ? '儲備：未生效；不提供屬性、被動或成長'
+          : '储备：不生效；不提供属性、被动或成长' : '';
+    return [description, attributes, cooldown, growth, reserve].filter(Boolean).join(' · ');
   }
   function buffName(def) { return selectedLocale === 'en' ? (def.nameEn || def.name) : selectedLocale === 'zh-TW' ? (def.nameTw || def.name) : def.name; }
   function buffDesc(def) { return selectedLocale === 'en' ? (def.descEn || def.desc) : selectedLocale === 'zh-TW' ? (def.descTw || def.desc) : def.desc; }
@@ -137,15 +206,15 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         canvasAria: 'DotaRogue游戏战场。电脑使用方向键、WASD 或右键点击移动，空格冲刺、Q 施放主动技能；手机使用摇杆和右侧技能、冲刺按钮。攻击自动进行。',
         home: '← 选择游戏', eyebrow: 'KAEL LAB · BROWSER GAME',
         titleLead: '在敌潮中活过 20 波，或进入无尽模式。选择英雄、升级和装备，打造你的构筑。',
-        chooseCharacter: '选择驾驶员', chooseBiome: '选择战场', difficulty: '难度', pace: '节奏', visuals: '画面', sound: '音效', language: '语言',
+        chooseCharacter: '选择驾驶员', chooseBiome: '选择战场', difficulty: '难度', pace: '节奏', visuals: '角色皮肤', skinPixel: '普通皮肤', skinDota1: 'DotA1 皮肤', sound: '音效', language: '语言',
         start: '开始挑战', controls: '电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机使用摇杆和技能、冲刺按钮。角色自动普攻；主动技能需要蓝量且受冷却限制。',
         levelKicker: '成长选择', levelTitle: '选择一项升级', levelDesc: '每次升级强化一项能力。选择后继续处理剩余等级。',
         shopKicker: '波间补给 · ', shopTitle: '战场补给站', shopCaption: '波末未拾取材料按 80% 折算货币，经验全额保留；商店出售组件，材料齐全后可按固定配方合成，配方不占装备格。', shopEquipment: '装备与属性',
         chestKicker: '波间战利品 · 待开 ', chestTitle: '拾获补给箱', chestDesc: '依次查看宝箱装备，决定收下或拆解。', chestTake: '收下装备', chestScrap: '拆解为材料',
         waveAuto: '自动继续', waveContinue: '继续结算',
-        pauseKicker: '远征暂歇', pauseTitle: '已暂停', pauseDesc: '你的远征会在这里等你。', pauseDriver: '当前驾驶员', pauseStats: '属性', pauseSkills: '角色技能', pauseVisual: '画面：{name}', resume: '继续战斗', resumeCountdown: '继续读秒', restart: '重新开始', backTitle: '返回标题',
+        pauseKicker: '远征暂歇', pauseTitle: '已暂停', pauseDesc: '你的远征会在这里等你。', pauseDriver: '当前驾驶员', pauseStats: '属性', pauseSkills: '角色技能', resume: '继续战斗', resumeCountdown: '继续读秒', restart: '重新开始', backTitle: '返回标题',
         resultRestart: '再来一局', resultHome: '返回标题',
-        soundOn: '开启', soundOff: '关闭', skinPixel: '像素风', skinDraft: '初版',
+        soundOn: '开启', soundOff: '关闭',
         languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English',
         pauseAria: '暂停游戏', pauseTitleAttr: '暂停 (Esc)', skillStripAria: '角色技能', touchAria: '触控操作', joystickAria: '移动摇杆', skillButton: '技能', skillAria: '施放主动技能', skillTitle: '主动技能 (Q)', dash: '冲刺', dashAria: '冲刺', dashTitle: '冲刺 (空格)',
         noScriptTitle: 'DotaRogue', noScript: '这是一款纯前端网页游戏，需要启用 JavaScript 才能游玩。电脑使用 WASD、方向键或鼠标右键移动，Q 主动技能、空格冲刺；手机横竖屏均可使用触控摇杆与右侧按钮。装备按固定组件配方合成，技能同时需要冷却完成和蓝量足够。游戏不需要账号或服务器。',
@@ -156,14 +225,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         scrapFor: '拆解为 ◇ {amount}', acquired: '获得{item}', scrapItem: '拆解{item}：材料 +{amount}', autoRecover: '自动回收 {count} 个宝箱，待结算开启；{status}', fullHealth: '生命已满', healthGain: '生命 +{amount}',
         waveComplete: '第 {wave} 波完成', nextWaveHint: '下一波：第 {wave} 波 · 准备完成后进入倒计时', finalWaveDone: '最终波次已完成 · 正在整理远征结果', startWaveButton: '开始第 {wave} 波 ➜', viewResult: '查看远征结果', soldOut: '售罄', buy: '购买', refresh: '刷新商品 ◇ {cost}', emptySlot: '空槽', merge: '合成', sell: '卖 ◇{price}', lock: '锁定', unlock: '解锁', locked: '🔒',
         insufficient: '材料不足', merged: '已合成{item}',
-        statLife: '生命', statArmor: '护甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴击', statDodge: '闪避', statRegen: '再生', statLuck: '幸运', statAllDamage: '全伤害', statCritDamage: '暴击伤害', statLifesteal: '生命窃取', statRegen5: '每 5 秒回血', statPickup: '拾取范围', statBaseAttackRange: '基础攻击射程', current: '当前：{status}',
+        statLife: '生命', statPrimaryAttribute: '主属性', statStrength: '力量', statAgility: '敏捷', statIntelligence: '智力', statArmor: '护甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴击', statDodge: '闪避', statRegen: '再生', statLuck: '幸运', statAllDamage: '全伤害', statCritDamage: '暴击伤害', statLifesteal: '生命窃取', statRegen5: '每 5 秒回血', statPickup: '拾取范围', statBaseAttackRange: '基础攻击射程', current: '当前：{status}',
         warningBoss: '警告：{boss}接近！', eliteAppears: '{elite}出现！', noTarget: '射程内没有可标定目标', marked: '已标定', overload: '过载边界！', salvageBonus: '拾荒分红：材料 +2', shieldReady: '废件护层就绪', loaded: '满载运转！', dodge: '闪避！', chestDrop: '宝箱掉落：拾取回血，结算开装备', bossDefeated: '首领已击败！', roshanEnrage: '肉山进入暴怒！', chestPending: '宝箱待结算开启；{status}', line: '掠线！', hazard: '小心：{hazard}',
-        activeReady: 'Q / 就绪', cooldown: '{time} 秒', nextHitReady: '下次命中就绪', moving: '移动 {time} / 1 秒', fires: '{count} / 6 次开火', hits: '{count} / 12 次命中', guardReduce: '周围 3 名敌人 · 减伤 22%', needNearby: '需要 3 名近敌', attacks: '{count} / 5 次攻击', counterReady: '4 名敌人 · 自动就绪', materials: '{count} / {max} 材料', shield: '防护 {time} 秒', strengthened: '强化 {time} 秒', triggered: '本波已触发', charge: '{count} / 10 电荷', autoRelease: '3 层自动释放', pulseReleasing: '脉冲释放中',
+        activeReady: 'Q / 就绪', cooldown: '{time} 秒', nextHitReady: '下次命中就绪', moving: '移动 {time} / 1 秒', fires: '{count} / 6 次开火', hits: '{count} / 12 次命中', guardReduce: '周围 3 名敌人 · 减伤 22%', needNearby: '需要 3 名近敌', attacks: '{count} / 5 次攻击', counterReady: '4 名敌人 · 自动就绪', materials: '{count} / {max} 材料', shield: '防护 {time} 秒', strengthened: '强化 {time} 秒', triggered: '本波已触发', charge: '{count} / 10 电荷', autoRelease: '3 层自动释放', pulseReleasing: '脉冲释放中', minimapTitle: '小地图', minimapAria: '经典战场小地图。近卫在左下，天灾在右上；黄色圆点是你，白框是当前视野。',
 
-        currentSkin: '当前{name}，切换为{next}', switchSkin: '切换为{next}',
       },
 
-      biomes: { docks: ['赤沙废港', '灼热沙尘与失控机械', '热流喷口'], grove: ['荧菌裂谷', '发光菌簇与腐蚀孢雾', '孢雾爆发'], frost: ['蓝霜残骸', '冻结碎片与寒流裂缝', '寒流爆裂'] },
+      biomes: { dota: ['DotA 经典战场', '近卫与天灾 · 三路、河道与野区', '远古裂隙'], docks: ['赤沙废港', '灼热沙尘与失控机械', '热流喷口'], grove: ['荧菌裂谷', '发光菌簇与腐蚀孢雾', '孢雾爆发'], frost: ['蓝霜残骸', '冻结碎片与寒流裂缝', '寒流爆裂'] },
       difficulty: { normal: '标准', hard: '挑战', nightmare: '极限' }, pace: { normal: '标准', quick: '速战' },
 
 
@@ -171,17 +239,17 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     },
     'zh-TW': {
       ui: {
-        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue：受 Dota 啟發的網頁生存肉鴿遊戲。桌面與手機橫豎屏都能遊玩，在 20 波遠征或無盡敵潮中移動、自動攻擊、升級和購物。', canvasAria: 'DotaRogue遊戲戰場。電腦使用方向鍵、WASD 或右鍵點擊移動，空格衝刺、Q 施放主動技能；手機使用搖桿和右側技能、衝刺按鈕。攻擊自動進行。', home: '← 選擇遊戲', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: '在敵潮中活過 20 波，或進入無盡模式。選擇英雄、升級和裝備，打造你的構築。', chooseCharacter: '選擇駕駛員', chooseBiome: '選擇戰場', difficulty: '難度', pace: '節奏', visuals: '畫面', sound: '音效', language: '語言', start: '開始挑戰', controls: '電腦：WASD / 方向鍵移動，右鍵點擊目的地自動前往，Q 主動技能、空格衝刺、Esc 暫停。手機使用搖桿和技能、衝刺按鈕。角色自動普攻；主動技能需要魔法且受冷卻限制。', levelKicker: '成長選擇', levelTitle: '選擇一項升級', levelDesc: '每次升級強化一項能力。選擇後繼續處理剩餘等級。', shopKicker: '波間補給 · ', shopTitle: '戰場補給站', shopCaption: '波末未拾取材料按 80% 折算貨幣，經驗全額保留；商店出售組件，材料齊全後可按固定配方合成，配方不占裝備格。', shopEquipment: '裝備與屬性', chestKicker: '波間戰利品 · 待開 ', chestTitle: '拾獲補給箱', chestDesc: '依次查看寶箱裝備，決定收下或拆解。', chestTake: '收下裝備', chestScrap: '拆解為材料', waveAuto: '自動繼續', waveContinue: '繼續結算', pauseKicker: '遠征暫歇', pauseTitle: '已暫停', pauseDesc: '你的遠征會在這裡等你。', pauseDriver: '目前駕駛員', pauseStats: '屬性', pauseSkills: '角色技能', pauseVisual: '畫面：{name}', resume: '繼續戰鬥', resumeCountdown: '繼續讀秒', restart: '重新開始', backTitle: '返回標題', resultRestart: '再來一局', resultHome: '返回標題', soundOn: '開啟', soundOff: '關閉', skinPixel: '像素風', skinDraft: '初版', languageZhCN: '簡體中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: '暫停遊戲', pauseTitleAttr: '暫停 (Esc)', skillStripAria: '角色技能', touchAria: '觸控操作', joystickAria: '移動搖桿', skillButton: '技能', skillAria: '施放主動技能', skillTitle: '主動技能 (Q)', dash: '衝刺', dashAria: '衝刺', dashTitle: '衝刺 (空格)', noScriptTitle: 'DotaRogue', noScript: '這是一款純前端網頁遊戲，需要啟用 JavaScript 才能遊玩。電腦使用 WASD、方向鍵或滑鼠右鍵移動，Q 主動技能、空格衝刺；手機橫豎屏均可使用觸控搖桿與右側按鈕。裝備按固定組件配方合成，技能同時需要冷卻完成和魔法足夠。遊戲不需要帳號或伺服器。', skillPreview: '專屬技能：{skills}', soundState: '{state}', record: '最佳紀錄：{best} · 通關 {wins} 次', bestWave: '第 {wave} 波', noRecord: '暫無', wave: '第 {wave} / {max} 波', boss: '首領', level: '等級 {level}', pending: ' · 待選 {count}', hp: '生命 {hp} / {max}', defeated: '擊敗 {kills}', dashReady: '就緒', dashCooldown: '{time}s', finalWaveStart: '最終波次：擊敗{boss}！', waveStart: '第 {wave} 波開始', expeditionComplete: '遠征完成', expeditionEnded: '遠征終止', coreCalmed: '戰場已清空', reachedWave: '這次抵達第 {wave} 波', victoryMessage: '你撐過了全部 20 波敵潮，成為最後的倖存者。', defeatMessage: '已保存本次紀錄。調整裝備組合，再向更深處出發。', completedWaves: '完成波次', earnedMaterials: '獲得材料', characterLevel: '角色等級', levelsLeft: '剩餘 {count} 次', wavePrepare: '波次準備', waveSummary: '本波結算', nextWaveTitle: '下一波：第 {wave} 波', waveDoneTitle: '第 {wave} 波完成', nextWaveMessage: '戰場即將重新開放，準備迎接新的敵潮。', lootMessage: '戰利品已經記錄，接下來處理寶箱、升級和補給。', finalWaveMessage: '最終敵潮已清理，正在整理遠征結果。', aboutToStart: '即將開始', currentDifficulty: '難度', waveMaterials: '本波材料', pendingChests: '待開寶箱', currentLevel: '目前等級', startNow: '立即開始', seconds: '{time} 秒', secondsRemaining: '剩餘 {time} 秒', scrapFor: '拆解為 ◇ {amount}', acquired: '獲得{item}', scrapItem: '拆解{item}：材料 +{amount}', autoRecover: '自動回收 {count} 個寶箱，待結算開啟；{status}', fullHealth: '生命已滿', healthGain: '生命 +{amount}', waveComplete: '第 {wave} 波完成', nextWaveHint: '下一波：第 {wave} 波 · 準備完成後進入倒計時', finalWaveDone: '最終波次已完成 · 正在整理遠征結果', startWaveButton: '開始第 {wave} 波 ➜', viewResult: '查看遠征結果', soldOut: '售罄', buy: '購買', refresh: '刷新商品 ◇ {cost}', emptySlot: '空槽', merge: '合成', sell: '賣 ◇{price}', lock: '鎖定', unlock: '解鎖', locked: '🔒', insufficient: '材料不足', merged: '已合成{item}', statLife: '生命', statArmor: '護甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴擊', statDodge: '閃避', statRegen: '再生', statLuck: '幸運', statAllDamage: '全傷害', statCritDamage: '暴擊傷害', statLifesteal: '生命竊取', statRegen5: '每 5 秒回血', statPickup: '拾取範圍', statBaseAttackRange: '基礎攻擊射程', current: '目前：{status}', warningBoss: '警告：{boss}接近！', eliteAppears: '{elite}出現！', noTarget: '射程內沒有可標定目標', marked: '已標定', overload: '過載邊界！', salvageBonus: '拾荒分紅：材料 +2', shieldReady: '廢件護層就緒', loaded: '滿載運轉！', dodge: '閃避！', chestDrop: '寶箱掉落：拾取回血，結算開裝備', bossDefeated: '首領已擊敗！', chestPending: '寶箱待結算開啟；{status}', line: '掠線！', hazard: '小心：{hazard}', activeReady: 'Q / 就緒', cooldown: '{time} 秒', nextHitReady: '下次命中就緒', moving: '移動 {time} / 1 秒', fires: '{count} / 6 次開火', hits: '{count} / 12 次命中', guardReduce: '周圍 3 名敵人 · 減傷 22%', needNearby: '需要 3 名近敵', attacks: '{count} / 5 次攻擊', counterReady: '4 名敵人 · 自動就緒', materials: '{count} / {max} 材料', shield: '防護 {time} 秒', strengthened: '強化 {time} 秒', triggered: '本波已觸發', charge: '{count} / 10 電荷', autoRelease: '3 層自動釋放', pulseReleasing: '脈衝釋放中', currentSkin: '目前{name}，切換為{next}', switchSkin: '切換為{next}'
+        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue：受 Dota 啟發的網頁生存肉鴿遊戲。桌面與手機橫豎屏都能遊玩，在 20 波遠征或無盡敵潮中移動、自動攻擊、升級和購物。', canvasAria: 'DotaRogue遊戲戰場。電腦使用方向鍵、WASD 或右鍵點擊移動，空格衝刺、Q 施放主動技能；手機使用搖桿和右側技能、衝刺按鈕。攻擊自動進行。', home: '← 選擇遊戲', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: '在敵潮中活過 20 波，或進入無盡模式。選擇英雄、升級和裝備，打造你的構築。', chooseCharacter: '選擇駕駛員', chooseBiome: '選擇戰場', difficulty: '難度', pace: '節奏', visuals: '角色造型', skinPixel: '普通皮膚', skinDota1: 'DotA1 皮膚', sound: '音效', language: '語言', start: '開始挑戰', controls: '電腦：WASD / 方向鍵移動，右鍵點擊目的地自動前往，Q 主動技能、空格衝刺、Esc 暫停。手機使用搖桿和技能、衝刺按鈕。角色自動普攻；主動技能需要魔法且受冷卻限制。', levelKicker: '成長選擇', levelTitle: '選擇一項升級', levelDesc: '每次升級強化一項能力。選擇後繼續處理剩餘等級。', shopKicker: '波間補給 · ', shopTitle: '戰場補給站', shopCaption: '波末未拾取材料按 80% 折算貨幣，經驗全額保留；商店出售組件，材料齊全後可按固定配方合成，配方不占裝備格。', shopEquipment: '裝備與屬性', chestKicker: '波間戰利品 · 待開 ', chestTitle: '拾獲補給箱', chestDesc: '依次查看寶箱裝備，決定收下或拆解。', chestTake: '收下裝備', chestScrap: '拆解為材料', waveAuto: '自動繼續', waveContinue: '繼續結算', pauseKicker: '遠征暫歇', pauseTitle: '已暫停', pauseDesc: '你的遠征會在這裡等你。', pauseDriver: '目前駕駛員', pauseStats: '屬性', pauseSkills: '角色技能', resume: '繼續戰鬥', resumeCountdown: '繼續讀秒', restart: '重新開始', backTitle: '返回標題', resultRestart: '再來一局', resultHome: '返回標題', soundOn: '開啟', soundOff: '關閉', languageZhCN: '簡體中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: '暫停遊戲', pauseTitleAttr: '暫停 (Esc)', skillStripAria: '角色技能', touchAria: '觸控操作', joystickAria: '移動搖桿', skillButton: '技能', skillAria: '施放主動技能', skillTitle: '主動技能 (Q)', dash: '衝刺', dashAria: '衝刺', dashTitle: '衝刺 (空格)', noScriptTitle: 'DotaRogue', noScript: '這是一款純前端網頁遊戲，需要啟用 JavaScript 才能遊玩。電腦使用 WASD、方向鍵或滑鼠右鍵移動，Q 主動技能、空格衝刺；手機橫豎屏均可使用觸控搖桿與右側按鈕。裝備按固定組件配方合成，技能同時需要冷卻完成和魔法足夠。遊戲不需要帳號或伺服器。', skillPreview: '專屬技能：{skills}', soundState: '{state}', record: '最佳紀錄：{best} · 通關 {wins} 次', bestWave: '第 {wave} 波', noRecord: '暫無', wave: '第 {wave} / {max} 波', boss: '首領', level: '等級 {level}', pending: ' · 待選 {count}', hp: '生命 {hp} / {max}', defeated: '擊敗 {kills}', dashReady: '就緒', dashCooldown: '{time}s', finalWaveStart: '最終波次：擊敗{boss}！', waveStart: '第 {wave} 波開始', expeditionComplete: '遠征完成', expeditionEnded: '遠征終止', coreCalmed: '戰場已清空', reachedWave: '這次抵達第 {wave} 波', victoryMessage: '你撐過了全部 20 波敵潮，成為最後的倖存者。', defeatMessage: '已保存本次紀錄。調整裝備組合，再向更深處出發。', completedWaves: '完成波次', earnedMaterials: '獲得材料', characterLevel: '角色等級', levelsLeft: '剩餘 {count} 次', wavePrepare: '波次準備', waveSummary: '本波結算', nextWaveTitle: '下一波：第 {wave} 波', waveDoneTitle: '第 {wave} 波完成', nextWaveMessage: '戰場即將重新開放，準備迎接新的敵潮。', lootMessage: '戰利品已經記錄，接下來處理寶箱、升級和補給。', finalWaveMessage: '最終敵潮已清理，正在整理遠征結果。', aboutToStart: '即將開始', currentDifficulty: '難度', waveMaterials: '本波材料', pendingChests: '待開寶箱', currentLevel: '目前等級', startNow: '立即開始', seconds: '{time} 秒', secondsRemaining: '剩餘 {time} 秒', scrapFor: '拆解為 ◇ {amount}', acquired: '獲得{item}', scrapItem: '拆解{item}：材料 +{amount}', autoRecover: '自動回收 {count} 個寶箱，待結算開啟；{status}', fullHealth: '生命已滿', healthGain: '生命 +{amount}', waveComplete: '第 {wave} 波完成', nextWaveHint: '下一波：第 {wave} 波 · 準備完成後進入倒計時', finalWaveDone: '最終波次已完成 · 正在整理遠征結果', startWaveButton: '開始第 {wave} 波 ➜', viewResult: '查看遠征結果', soldOut: '售罄', buy: '購買', refresh: '刷新商品 ◇ {cost}', emptySlot: '空槽', merge: '合成', sell: '賣 ◇{price}', lock: '鎖定', unlock: '解鎖', locked: '🔒', insufficient: '材料不足', merged: '已合成{item}', statLife: '生命', statPrimaryAttribute: '主屬性', statStrength: '力量', statAgility: '敏捷', statIntelligence: '智力', statArmor: '護甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴擊', statDodge: '閃避', statRegen: '再生', statLuck: '幸運', statAllDamage: '全傷害', statCritDamage: '暴擊傷害', statLifesteal: '生命竊取', statRegen5: '每 5 秒回血', statPickup: '拾取範圍', statBaseAttackRange: '基礎攻擊射程', current: '目前：{status}', warningBoss: '警告：{boss}接近！', eliteAppears: '{elite}出現！', noTarget: '射程內沒有可標定目標', marked: '已標定', overload: '過載邊界！', salvageBonus: '拾荒分紅：材料 +2', shieldReady: '廢件護層就緒', loaded: '滿載運轉！', dodge: '閃避！', chestDrop: '寶箱掉落：拾取回血，結算開裝備', bossDefeated: '首領已擊敗！', chestPending: '寶箱待結算開啟；{status}', line: '掠線！', hazard: '小心：{hazard}', activeReady: 'Q / 就緒', cooldown: '{time} 秒', nextHitReady: '下次命中就緒', moving: '移動 {time} / 1 秒', fires: '{count} / 6 次開火', hits: '{count} / 12 次命中', guardReduce: '周圍 3 名敵人 · 減傷 22%', needNearby: '需要 3 名近敵', attacks: '{count} / 5 次攻擊', counterReady: '4 名敵人 · 自動就緒', materials: '{count} / {max} 材料', shield: '防護 {time} 秒', strengthened: '強化 {time} 秒', triggered: '本波已觸發', charge: '{count} / 10 電荷', autoRelease: '3 層自動釋放', pulseReleasing: '脈衝釋放中', minimapTitle: '小地圖', minimapAria: '經典戰場小地圖。近衛在左下，天災在右上；黃色圓點是你，白框是目前視野。',
       },
 
-        biomes: { docks: ['赤沙廢港', '灼熱沙塵與失控機械', '熱流噴口'], grove: ['熒菌裂谷', '發光菌簇與腐蝕孢霧', '孢霧爆發'], frost: ['藍霜殘骸', '凍結碎片與寒流裂縫', '寒流爆裂'] }, difficulty: { normal: '標準', hard: '挑戰', nightmare: '極限' }, pace: { normal: '標準', quick: '速戰' },
+        biomes: { dota: ['DotA 經典戰場', '近衛與天災 · 三路、河道與野區', '遠古裂隙'], docks: ['赤沙廢港', '灼熱沙塵與失控機械', '熱流噴口'], grove: ['熒菌裂谷', '發光菌簇與腐蝕孢霧', '孢霧爆發'], frost: ['藍霜殘骸', '凍結碎片與寒流裂縫', '寒流爆裂'] }, difficulty: { normal: '標準', hard: '挑戰', nightmare: '極限' }, pace: { normal: '標準', quick: '速戰' },
         enemies: { crawler: '爬行機', runner: '追獵蟲', tank: '鐵甲獸', shooter: '孢射體', charger: '衝鋒殘骸', splitter: '分裂菌團', elite: '精英哨衛', centaur: '半人馬可汗', satyr: '薩特苦難使者', hellbear: '地獄熊怪粉碎者', darkTroll: '黑暗巨魔召喚師', boss: '遠古暴君' }
     },
     en: {
       ui: {
-        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue is a Dota-inspired survivor roguelite. Move, auto-attack, upgrade and shop through a 20-wave expedition or an endless enemy surge on desktop or mobile.', canvasAria: 'DotaRogue arena. Use WASD or arrow keys, or right-click to move; Space to dash and Q for your active skill. Use the joystick and buttons on mobile. Attacks are automatic.', home: '← Game selection', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: 'Survive 20 waves or face the endless surge. Choose a hero, upgrade and craft your build.', chooseCharacter: 'Choose pilot', chooseBiome: 'Choose battlefield', difficulty: 'Difficulty', pace: 'Pace', visuals: 'Visuals', sound: 'Sound', language: 'Language', start: 'Start run', controls: 'Desktop: WASD / arrows or right-click to move, Q for the active skill, Space to dash, Esc to pause. Mobile uses the joystick and buttons. Basic attacks are automatic; active skills require mana and cooldown.', levelKicker: 'Growth choice', levelTitle: 'Choose an upgrade', levelDesc: 'Each level strengthens one ability. Choose one, then resolve any remaining levels.', shopKicker: 'Between-wave supply · ', shopTitle: 'Battlefield Supply', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Buy components and combine them through fixed recipes when ready. Recipes take no equipment slot.', shopEquipment: 'Loadout & stats', chestKicker: 'Between-wave loot · unopened ', chestTitle: 'Supply chest', chestDesc: 'Review each chest equipment reward, then take or scrap it.', chestTake: 'Take equipment', chestScrap: 'Scrap for materials', waveAuto: 'Continue automatically', waveContinue: 'Continue settlement', pauseKicker: 'Expedition paused', pauseTitle: 'Paused', pauseDesc: 'Your expedition is waiting here.', pauseDriver: 'Current pilot', pauseStats: 'Stats', pauseSkills: 'Character skills', pauseVisual: 'Visuals: {name}', resume: 'Resume battle', resumeCountdown: 'Resume countdown', restart: 'Restart', backTitle: 'Back to title', resultRestart: 'Play again', resultHome: 'Back to title', soundOn: 'On', soundOff: 'Off', skinPixel: 'Pixel', skinDraft: 'Draft', languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: 'Pause game', pauseTitleAttr: 'Pause (Esc)', skillStripAria: 'Character skills', touchAria: 'Touch controls', joystickAria: 'Movement joystick', skillButton: 'Skill', skillAria: 'Cast active skill', skillTitle: 'Active skill (Q)', dash: 'Dash', dashAria: 'Dash', dashTitle: 'Dash (Space)', noScriptTitle: 'DotaRogue', noScript: 'This frontend browser game needs JavaScript. Use WASD, arrow keys or right-click to move, Q for the active skill, and Space to dash. Mobile uses the joystick and buttons. Equipment combines through fixed component recipes, and skills need both cooldown and mana. No account or server is required.', skillPreview: 'Signature ', soundState: '{state}', record: 'Best record: {best} · Wins {wins}', bestWave: 'Wave {wave}', noRecord: 'none', wave: 'Wave {wave} / {max}', boss: 'Boss', level: 'Level {level}', pending: ' · {count} pending', hp: 'HP {hp} / {max}', defeated: 'Defeated {kills}', dashReady: 'Ready', dashCooldown: '{time}s', finalWaveStart: 'Final wave: defeat {boss}!', waveStart: 'Wave {wave} begins', expeditionComplete: 'Expedition complete', expeditionEnded: 'Expedition ended', coreCalmed: 'The battlefield is clear', reachedWave: 'You reached wave {wave}', victoryMessage: 'You survived all 20 enemy waves and became the last survivor.', defeatMessage: 'This record is saved. Tune your loadout and venture deeper.', completedWaves: 'Waves cleared', earnedMaterials: 'Materials earned', characterLevel: 'Pilot level', levelsLeft: '{count} levels left', wavePrepare: 'Wave preparation', waveSummary: 'Wave settlement', nextWaveTitle: 'Next wave: {wave}', waveDoneTitle: 'Wave {wave} complete', nextWaveMessage: 'The battlefield will reopen soon. Prepare for the next enemy surge.', lootMessage: 'Loot recorded. Next, resolve chests, upgrades and supplies.', finalWaveMessage: 'The final enemy surge is cleared. Preparing the expedition result.', aboutToStart: 'Starting', currentDifficulty: 'Difficulty', waveMaterials: 'Wave materials', pendingChests: 'Chests unopened', currentLevel: 'Current level', startNow: 'Start now', seconds: '{time} sec', secondsRemaining: '{time} sec remaining', scrapFor: 'Scrap for ◇ {amount}', acquired: 'Gained {item}', scrapItem: 'Scrapped {item}: +{amount} materials', autoRecover: 'Recovered {count} chest(s); open between waves. {status}', fullHealth: 'Health full', healthGain: 'Health +{amount}', waveComplete: 'Wave {wave} complete', nextWaveHint: 'Next wave: {wave} · countdown after preparation', finalWaveDone: 'Final wave complete · preparing expedition result', startWaveButton: 'Start wave {wave} ➜', viewResult: 'View expedition result', soldOut: 'Sold out', buy: 'Buy', refresh: 'Refresh stock ◇ {cost}', emptySlot: 'Empty slot', merge: 'Merge', sell: 'Sell ◇{price}', lock: 'Lock', unlock: 'Unlock', locked: '🔒', insufficient: 'Not enough materials', merged: 'Crafted {item}', statLife: 'HP', statArmor: 'Armor', statMove: 'Move speed', statAttackSpeed: 'Attack speed', statCrit: 'Crit', statDodge: 'Dodge', statRegen: 'Regen', statLuck: 'Luck', statAllDamage: 'All damage', statCritDamage: 'Crit damage', statLifesteal: 'Lifesteal', statRegen5: 'HP per 5 sec', statPickup: 'Pickup range', statBaseAttackRange: 'Basic attack range', current: 'Current: {status}', warningBoss: 'Warning: {boss} is approaching!', eliteAppears: '{elite} appears!', noTarget: 'No target in range to mark', marked: 'Marked', overload: 'Overload boundary!', salvageBonus: 'Scavenger bonus: +2 materials', shieldReady: 'Scrap shield ready', loaded: 'Fully loaded!', dodge: 'Dodged!', chestDrop: 'Chest dropped: pick it up to heal; open it between waves', bossDefeated: 'Boss defeated!', chestPending: 'Chest queued; {status}', line: 'Tracer volley!', hazard: 'Watch out: {hazard}', activeReady: 'Q / Ready', cooldown: '{time} sec', nextHitReady: 'Next hit ready', moving: 'Move {time} / 1 sec', fires: '{count} / 6 fires', hits: '{count} / 12 hits', guardReduce: '3 nearby enemies · 22% damage reduction', needNearby: 'Need 3 nearby enemies', attacks: '{count} / 5 attacks', counterReady: '4 enemies · counter ready', materials: '{count} / {max} materials', shield: 'Shield {time} sec', strengthened: 'Boosted {time} sec', triggered: 'Triggered this wave', charge: '{count} / 10 charge', autoRelease: 'Auto-release at 3 stacks', pulseReleasing: 'Pulse releasing', currentSkin: 'Current {name}, switch to {next}', switchSkin: 'Switch to {next}'
+        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue is a Dota-inspired survivor roguelite. Move, auto-attack, upgrade and shop through a 20-wave expedition or an endless enemy surge on desktop or mobile.', canvasAria: 'DotaRogue arena. Use WASD or arrow keys, or right-click to move; Space to dash and Q for your active skill. Use the joystick and buttons on mobile. Attacks are automatic.', home: '← Game selection', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: 'Survive 20 waves or face the endless surge. Choose a hero, upgrade and craft your build.', chooseCharacter: 'Choose pilot', chooseBiome: 'Choose battlefield', difficulty: 'Difficulty', pace: 'Pace', visuals: 'Hero skin', skinPixel: 'Standard skin', skinDota1: 'DotA1 skin', sound: 'Sound', language: 'Language', start: 'Start run', controls: 'Desktop: WASD / arrows or right-click to move, Q for the active skill, Space to dash, Esc to pause. Mobile uses the joystick and buttons. Basic attacks are automatic; active skills require mana and cooldown.', levelKicker: 'Growth choice', levelTitle: 'Choose an upgrade', levelDesc: 'Each level strengthens one ability. Choose one, then resolve any remaining levels.', shopKicker: 'Between-wave supply · ', shopTitle: 'Battlefield Supply', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Buy components and combine them through fixed recipes when ready. Recipes take no equipment slot.', shopEquipment: 'Loadout & stats', chestKicker: 'Between-wave loot · unopened ', chestTitle: 'Supply chest', chestDesc: 'Review each chest equipment reward, then take or scrap it.', chestTake: 'Take equipment', chestScrap: 'Scrap for materials', waveAuto: 'Continue automatically', waveContinue: 'Continue settlement', pauseKicker: 'Expedition paused', pauseTitle: 'Paused', pauseDesc: 'Your expedition is waiting here.', pauseDriver: 'Current pilot', pauseStats: 'Stats', pauseSkills: 'Character skills', resume: 'Resume battle', resumeCountdown: 'Resume countdown', restart: 'Restart', backTitle: 'Back to title', resultRestart: 'Play again', resultHome: 'Back to title', soundOn: 'On', soundOff: 'Off', languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: 'Pause game', pauseTitleAttr: 'Pause (Esc)', skillStripAria: 'Character skills', touchAria: 'Touch controls', joystickAria: 'Movement joystick', skillButton: 'Skill', skillAria: 'Cast active skill', skillTitle: 'Active skill (Q)', dash: 'Dash', dashAria: 'Dash', dashTitle: 'Dash (Space)', noScriptTitle: 'DotaRogue', noScript: 'This frontend browser game needs JavaScript. Use WASD, arrow keys or right-click to move, Q for the active skill, and Space to dash. Mobile uses the joystick and buttons. Equipment combines through fixed component recipes, and skills need both cooldown and mana. No account or server is required.', skillPreview: 'Signature ', soundState: '{state}', record: 'Best record: {best} · Wins {wins}', bestWave: 'Wave {wave}', noRecord: 'none', wave: 'Wave {wave} / {max}', boss: 'Boss', level: 'Level {level}', pending: ' · {count} pending', hp: 'HP {hp} / {max}', defeated: 'Defeated {kills}', dashReady: 'Ready', dashCooldown: '{time}s', finalWaveStart: 'Final wave: defeat {boss}!', waveStart: 'Wave {wave} begins', expeditionComplete: 'Expedition complete', expeditionEnded: 'Expedition ended', coreCalmed: 'The battlefield is clear', reachedWave: 'You reached wave {wave}', victoryMessage: 'You survived all 20 enemy waves and became the last survivor.', defeatMessage: 'This record is saved. Tune your loadout and venture deeper.', completedWaves: 'Waves cleared', earnedMaterials: 'Materials earned', characterLevel: 'Pilot level', levelsLeft: '{count} levels left', wavePrepare: 'Wave preparation', waveSummary: 'Wave settlement', nextWaveTitle: 'Next wave: {wave}', waveDoneTitle: 'Wave {wave} complete', nextWaveMessage: 'The battlefield will reopen soon. Prepare for the next enemy surge.', lootMessage: 'Loot recorded. Next, resolve chests, upgrades and supplies.', finalWaveMessage: 'The final enemy surge is cleared. Preparing the expedition result.', aboutToStart: 'Starting', currentDifficulty: 'Difficulty', waveMaterials: 'Wave materials', pendingChests: 'Chests unopened', currentLevel: 'Current level', startNow: 'Start now', seconds: '{time} sec', secondsRemaining: '{time} sec remaining', scrapFor: 'Scrap for ◇ {amount}', acquired: 'Gained {item}', scrapItem: 'Scrapped {item}: +{amount} materials', autoRecover: 'Recovered {count} chest(s); open between waves. {status}', fullHealth: 'Health full', healthGain: 'Health +{amount}', waveComplete: 'Wave {wave} complete', nextWaveHint: 'Next wave: {wave} · countdown after preparation', finalWaveDone: 'Final wave complete · preparing expedition result', startWaveButton: 'Start wave {wave} ➜', viewResult: 'View expedition result', soldOut: 'Sold out', buy: 'Buy', refresh: 'Refresh stock ◇ {cost}', emptySlot: 'Empty slot', merge: 'Merge', sell: 'Sell ◇{price}', lock: 'Lock', unlock: 'Unlock', locked: '🔒', insufficient: 'Not enough materials', merged: 'Crafted {item}', statLife: 'HP', statPrimaryAttribute: 'Primary attribute', statStrength: 'Strength', statAgility: 'Agility', statIntelligence: 'Intelligence', statArmor: 'Armor', statMove: 'Move speed', statAttackSpeed: 'Attack speed', statCrit: 'Crit', statDodge: 'Dodge', statRegen: 'Regen', statLuck: 'Luck', statAllDamage: 'All damage', statCritDamage: 'Crit damage', statLifesteal: 'Lifesteal', statRegen5: 'HP per 5 sec', statPickup: 'Pickup range', statBaseAttackRange: 'Basic attack range', current: 'Current: {status}', warningBoss: 'Warning: {boss} is approaching!', eliteAppears: '{elite} appears!', noTarget: 'No target in range to mark', marked: 'Marked', overload: 'Overload boundary!', salvageBonus: 'Scavenger bonus: +2 materials', shieldReady: 'Scrap shield ready', loaded: 'Fully loaded!', dodge: 'Dodged!', chestDrop: 'Chest dropped: pick it up to heal; open it between waves', bossDefeated: 'Boss defeated!', chestPending: 'Chest queued; {status}', line: 'Tracer volley!', hazard: 'Watch out: {hazard}', activeReady: 'Q / Ready', cooldown: '{time} sec', nextHitReady: 'Next hit ready', moving: 'Move {time} / 1 sec', fires: '{count} / 6 fires', hits: '{count} / 12 hits', guardReduce: '3 nearby enemies · 22% damage reduction', needNearby: 'Need 3 nearby enemies', attacks: '{count} / 5 attacks', counterReady: '4 enemies · counter ready', materials: '{count} / {max} materials', shield: 'Shield {time} sec', strengthened: 'Boosted {time} sec', triggered: 'Triggered this wave', charge: '{count} / 10 charge', autoRelease: 'Auto-release at 3 stacks', pulseReleasing: 'Pulse releasing', minimapTitle: 'Minimap', minimapAria: 'Classic battlefield minimap. Sentinel bottom left, Scourge top right. The yellow dot is you; the white box is the current view.',
       },
-       biomes: { docks: ['Red Sand Docks', 'Scorching dust and rogue machinery', 'Thermal vents'], grove: ['Glowfungus Rift', 'Luminous fungi and corrosive spores', 'Spore burst'], frost: ['Bluefrost Wreckage', 'Frozen debris and cold cracks', 'Cold surge'] }, difficulty: { normal: 'Standard', hard: 'Challenge', nightmare: 'Nightmare' }, pace: { normal: 'Standard', quick: 'Quick' },   enemies: { crawler: 'Crawler', runner: 'Hunter Bug', tank: 'Ironback', shooter: 'Spore Shooter', charger: 'Charging Wreck', splitter: 'Splitting Fungus', elite: 'Elite Sentinel', centaur: 'Centaur Khan', satyr: 'Satyr Tormenter', hellbear: 'Hellbear Smasher', darkTroll: 'Dark Troll Summoner', boss: 'Ancient Tyrant' }
+       biomes: { dota: ['DotA Classic', 'Sentinel & Scourge · three lanes, river & jungle', 'Ancient rift'], docks: ['Red Sand Docks', 'Scorching dust and rogue machinery', 'Thermal vents'], grove: ['Glowfungus Rift', 'Luminous fungi and corrosive spores', 'Spore burst'], frost: ['Bluefrost Wreckage', 'Frozen debris and cold cracks', 'Cold surge'] }, difficulty: { normal: 'Standard', hard: 'Challenge', nightmare: 'Nightmare' }, pace: { normal: 'Standard', quick: 'Quick' },   enemies: { crawler: 'Crawler', runner: 'Hunter Bug', tank: 'Ironback', shooter: 'Spore Shooter', charger: 'Charging Wreck', splitter: 'Splitting Fungus', elite: 'Elite Sentinel', centaur: 'Centaur Khan', satyr: 'Satyr Tormenter', hellbear: 'Hellbear Smasher', darkTroll: 'Dark Troll Summoner', boss: 'Ancient Tyrant' }
     }
   };
   Object.assign(LOCALES['zh-CN'].enemies, { frostWraith: '霜冻幽魂', thunderLizard: '雷霆蜥蜴' });
@@ -202,7 +270,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
 
     pauseEquipment: '当前装备', equipmentStripAria: '已持有装备', recipesTitle: '固定合成', equipmentCatalog: '查看装备图鉴', equipmentCatalogNewTab: '新标签查看装备图鉴',
     equipmentGrade: '{grade}级装备', fullEquipment: '装备格已满', equipmentSold: '装备已卖出',
-    emptyEquipment: '暂无装备', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力',
+    emptyEquipment: '暂无装备', equipmentDetails: '查看全部介绍', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力',
     });
   Object.assign(EXTRA_UI['zh-TW'], {
 
@@ -211,7 +279,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
 
     pauseEquipment: '目前裝備', equipmentStripAria: '已持有裝備', recipesTitle: '固定合成', equipmentCatalog: '查看裝備圖鑑', equipmentCatalogNewTab: '在新分頁查看裝備圖鑑',
     equipmentGrade: '{grade}級裝備', fullEquipment: '裝備格已滿', equipmentSold: '裝備已賣出',
-    emptyEquipment: '暫無裝備', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力',
+    emptyEquipment: '暫無裝備', equipmentDetails: '查看全部介紹', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力',
     });
   Object.assign(EXTRA_UI.en, {
 
@@ -220,7 +288,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
 
     pauseEquipment: 'Current equipment', equipmentStripAria: 'Held equipment', recipesTitle: 'Fixed recipes', equipmentCatalog: 'View equipment archive', equipmentCatalogNewTab: 'Open equipment archive in new tab',
     equipmentGrade: 'Grade {grade}', fullEquipment: 'Equipment slots full', equipmentSold: 'Equipment sold',
-    emptyEquipment: 'No equipment', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power',
+    emptyEquipment: 'No equipment', equipmentDetails: 'View full details', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power',
     });
 
   const BUFF_UI = {
@@ -287,10 +355,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       quickCraftTitle: '即时合成与升阶', allRecipes: '全部配方与合成路线',
       upgradeProgress: '升阶进度与预览（{count} 类）',
       craftSummary: '可合成 {crafts} 项 · 可升阶 {upgrades} 组 · 装备 {used}/{capacity} 格',
-      craftEmpty: '暂时没有可合成项。商品会标注合成用途，全部配方可在下方展开。',
+      craftEmpty: '暂时没有可合成项，可在下方展开全部配方。',
       craftTarget: '合成{item}', craftChain: '一键合成{item}', craftInputs: '消耗：{items}',
       craftRoute: '合成路线：{items}', craftResult: '查看结果', craftKind: '固定配方 · 免费',
-      craftProgress: '直接材料 {owned}/{total}', craftUses: '合成用途：{items}',
+      craftProgress: '直接材料 {owned}/{total}',
       buyCraft: '◇ {cost} 购买并合成{item}', takeCraft: '收下并合成{item}',
       craftChoices: '可完成 {count} 项配方，选择结果', inventoryCount: '持有 {count} 件 · 共占 {count} 格',
       sellOne: '卖出一件 ◇{price}', upgradeGroup: 'Lv.{level} · 持有 {count} 件 · 可合 {groups} 组',
@@ -302,10 +370,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       quickCraftTitle: '即時合成與升階', allRecipes: '全部配方與合成路線',
       upgradeProgress: '升階進度與預覽（{count} 類）',
       craftSummary: '可合成 {crafts} 項 · 可升階 {upgrades} 組 · 裝備 {used}/{capacity} 格',
-      craftEmpty: '暫時沒有可合成項。商品會標註合成用途，全部配方可在下方展開。',
+      craftEmpty: '暫時沒有可合成項，可在下方展開全部配方。',
       craftTarget: '合成{item}', craftChain: '一鍵合成{item}', craftInputs: '消耗：{items}',
       craftRoute: '合成路線：{items}', craftResult: '查看結果', craftKind: '固定配方 · 免費',
-      craftProgress: '直接材料 {owned}/{total}', craftUses: '合成用途：{items}',
+      craftProgress: '直接材料 {owned}/{total}',
       buyCraft: '◇ {cost} 購買並合成{item}', takeCraft: '收下並合成{item}',
       craftChoices: '可完成 {count} 項配方，選擇結果', inventoryCount: '持有 {count} 件 · 共占 {count} 格',
       sellOne: '賣出一件 ◇{price}', upgradeGroup: 'Lv.{level} · 持有 {count} 件 · 可合 {groups} 組',
@@ -317,10 +385,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       quickCraftTitle: 'Craft & upgrade now', allRecipes: 'All recipes & crafting routes',
       upgradeProgress: 'Upgrade progress & previews ({count} types)',
       craftSummary: '{crafts} craft option(s) · {upgrades} upgrade group(s) · Slots {used}/{capacity}',
-      craftEmpty: 'Nothing to craft yet. Offers show their uses; expand all recipes below to plan your build.',
+      craftEmpty: 'Nothing to craft yet. Expand all recipes below to plan your build.',
       craftTarget: 'Craft {item}', craftChain: 'Craft full route: {item}', craftInputs: 'Consumes: {items}',
       craftRoute: 'Crafting route: {items}', craftResult: 'Preview result', craftKind: 'Fixed recipe · Free',
-      craftProgress: 'Direct parts {owned}/{total}', craftUses: 'Used in: {items}',
+      craftProgress: 'Direct parts {owned}/{total}',
       buyCraft: 'Buy & craft {item} · ◇ {cost}', takeCraft: 'Take & craft {item}',
       craftChoices: '{count} recipe option(s): choose a result', inventoryCount: '{count} owned · Uses {count} slots',
       sellOne: 'Sell one · ◇{price}', upgradeGroup: 'Lv.{level} · {count} owned · {groups} merge group(s)',
@@ -359,6 +427,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     document.querySelector('meta[name="description"]')?.setAttribute('content', ui.metaDescription);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(';').forEach(pair => { const [attr, key] = pair.split(':'); if (attr && key) el.setAttribute(attr, t(key)); }));
+    const minimapCaption = document.querySelector('#minimap-panel figcaption');
+    const minimapCanvas = $('minimap');
+    if (minimapCaption) minimapCaption.textContent = selectedLocale === 'en' ? 'Minimap' : selectedLocale === 'zh-TW' ? '小地圖' : '小地图';
+    if (minimapCanvas) minimapCanvas.setAttribute('aria-label', selectedLocale === 'en' ? 'Classic battlefield minimap. Sentinel bottom left, Scourge top right. The yellow dot is you; the white box is the current view.' : selectedLocale === 'zh-TW' ? '經典戰場小地圖。近衛在左下，天災在右上；黃色圓點是你，白框是目前視野。' : '经典战场小地图。近卫在左下，天灾在右上；黄色圆点是你，白框是当前视野。');
     const localeLabel = $('locale-label'); if (localeLabel) localeLabel.textContent = t('language');
     for (const [id, key] of [['locale-zh-CN', 'languageZhCN'], ['locale-zh-TW', 'languageZhTW'], ['locale-en', 'languageEn']]) if ($(id)) { $(id).textContent = t(key); $(id).setAttribute('aria-pressed', String($(id).dataset.locale === selectedLocale)); }
   }
@@ -376,6 +448,19 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (phase === 'result') renderResult(run.resultVictory);
     updateHUD();
   }
+  // DotA1 keeps the current battlefield/UI rendering semantics; draft remains the studio's alternate presentation.
+  function usesPixelPresentation() { return selectedSkin !== 'draft'; }
+  function setSkin(skin) {
+    const next = skin === 'dota1' ? 'dota1' : 'pixel';
+    if (selectedSkin === next) return;
+    selectedSkin = next;
+    $('game').dataset.skin = selectedSkin;
+    loadHeroPoses(run?.character?.id || selectedCharacter, selectedSkin);
+    persist();
+    renderTitle();
+    if (phase === 'pause' && run) renderPauseDetails();
+    if (run) { renderEquipmentStrip(); renderSkillStrip(); }
+  }
   const ENEMY_POSES = {
     crawler: ['step', 'attack'], runner: ['step'], tank: ['step'], shooter: ['attack'],
     centaur: ['step', 'windup', 'attack'], satyr: ['step', 'windup', 'attack'],
@@ -388,18 +473,31 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     ...Object.keys(ENEMIES).flatMap(id => [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)]),
     'roshan', 'roshan-windup', 'roshan-attack',
     ...UPGRADES.slice(0, 14).map((_, index) => `upgrade-${index}`),
-    ...BIOMES.flatMap(({ id }) => ['ground', 'tree', 'rock', 'water', 'trap', 'preview'].map(kind => `map-${id}-${kind}`))
+    ...BIOMES.filter(b => b.id !== 'dota').flatMap(({ id }) => ['ground', 'tree', 'rock', 'water', 'trap', 'preview'].map(kind => `map-${id}-${kind}`))
   ];
   const HERO_ART_VERSION = '?v=20261013-kael-elf1';
   const LUNA_ART_VERSION = '?v=20261013-luna-glaive1';
   const HERO_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
     [id, `./assets/characters/${id}/${id}-idle-a.svg${id === 'luna' ? LUNA_ART_VERSION : HERO_ART_VERSION}`]));
+  const HERO_PORTRAIT_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
+    [id, `./assets/art/dota1/heroes/${id}.png`]));
+  const HERO_DOTA1_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
+    [id, `./assets/characters/dota1/${id}/${id}-idle-a.svg?v=20261028-dota1-reference1`]));
   const HERO_POSE_ART = Object.fromEntries(Object.keys(HERO_ART).flatMap(id =>
     ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
       'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
       'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
       [`${id}-${pose}`, `./assets/characters/${id}/${id}-${pose}.svg${id === 'luna' ? LUNA_ART_VERSION : HERO_ART_VERSION}`])));
   HERO_POSE_ART['luna-glaive'] = `./assets/characters/luna/luna-glaive.svg${LUNA_ART_VERSION}`;
+  const HERO_POSE_DOTA1_ART = Object.fromEntries(Object.keys(HERO_DOTA1_ART).flatMap(id =>
+    ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
+      'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
+      'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
+      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.svg?v=20261028-dota1-reference1`])));
+  HERO_POSE_DOTA1_ART['luna-glaive'] = './assets/characters/dota1/luna/luna-glaive.svg?v=20261028-dota1-reference1';
+  for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
+    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.svg?v=20261028-dota1-reference1`;
+  }
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
     for (const side of ['', 'side-']) HERO_POSE_ART[`tb-demon-${side}${pose}`] = `./assets/characters/tb/tb-demon-${side}${pose}.svg?v=20261014-tb1`;
   }
@@ -409,7 +507,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     draft: { ...ART_PATHS, ...HERO_ART, ...EQUIPMENT_ART,
       ...Object.fromEntries(ELITE_ROTATION.filter(id => id !== 'elite').flatMap(id =>
         [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)].map(pose => [pose, `./assets/art/pixel/${pose}.svg`]))) },
-    pixel: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_ART, ...EQUIPMENT_ART }
+    pixel: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_ART, ...EQUIPMENT_ART },
+    dota1: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_DOTA1_ART, ...EQUIPMENT_ART }
   };
   const imagesByPath = {};
   let windRenderer = null, meteorRenderer = null;
@@ -424,21 +523,25 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     return [`${skin}:${id}`, image];
   })));
   const heroPoseImages = {};
-  function loadHeroPoses(id) {
-    for (const [pose, path] of Object.entries(HERO_POSE_ART)) {
-      if (!pose.startsWith(`${id}-`) || heroPoseImages[pose]) continue;
+  function loadHeroPoses(id, skin = selectedSkin) {
+    if (skin === 'dota1') loadHeroPoses(id, 'pixel');
+    const poseArt = skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
+    for (const [pose, path] of Object.entries(poseArt)) {
+      const key = `${skin}:${pose}`;
+      if (!pose.startsWith(`${id}-`) || heroPoseImages[key]) continue;
       const image = new Image();
       image.src = path;
-      heroPoseImages[pose] = image;
+      heroPoseImages[key] = image;
     }
   }
-  const artIcon = (id, fallback) => SKIN_ART[selectedSkin][id]
-    ? `<img class="art-icon" src="${id === 'kael' ? `./assets/characters/kael/kael-portrait.svg${HERO_ART_VERSION}` : id === 'tb' ? './assets/characters/tb/tb-portrait.svg?v=20261014-tb1' : SKIN_ART[selectedSkin][id]}" alt="" decoding="async">`
-    : id === 'kael' ? '<span class="art-icon" aria-hidden="true">✦</span>' : (fallback || '');
-  const artImage = id => {
-    const image = heroPoseImages[id] || artImages[`${selectedSkin}:${id}`];
-    return image?.complete && image.naturalWidth ? image : null;
+  const artIcon = (id, fallback) => {
+    const path = HERO_PORTRAIT_ART[id] || SKIN_ART[selectedSkin][id];
+    return path ? `<img class="art-icon" src="${path}" alt="" decoding="async">` : (fallback || '');
   };
+  const artImage = id => [
+    heroPoseImages[`${selectedSkin}:${id}`], artImages[`${selectedSkin}:${id}`],
+    heroPoseImages[`pixel:${id}`], artImages[`pixel:${id}`]
+  ].find(image => image?.complete && image.naturalWidth) || null;
 
   let save = loadSave();
   selectedLocale = SUPPORTED_LOCALES.includes(save.settings.locale) ? save.settings.locale : DEFAULT_LOCALE;
@@ -448,7 +551,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   let selectedDifficulty = save.settings.difficulty || 'normal';
   let selectedPace = save.settings.pace || 'normal';
   let selectedMode = save.settings.mode === 'endless' ? 'endless' : 'expedition';
-  let selectedSkin = save.settings.skin === 'draft' ? 'draft' : 'pixel';
+  let selectedSkin = save.settings.skin === 'dota1' ? 'dota1' : 'pixel';
   let soundEnabled = save.settings.sound !== false;
   let phase = 'title';
   let previousPhase = 'combat';
@@ -461,7 +564,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   let moveTarget = null;
   let moveFlow = null;
   const decor = Array.from({ length: 125 }, () => ({ x: rand(30, WORLD.w - 30), y: rand(30, WORLD.h - 30), r: rand(2, 13), angle: rand(0, TAU) }));
-  const NAV_STEP = 64, NAV_COLS = Math.floor(WORLD.w / NAV_STEP), NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
+  const NAV_STEP = 64;
+  let NAV_COLS = Math.floor(WORLD.w / NAV_STEP), NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
 
   function terrainCollision(x, y, radius, blockWater = true) {
     if (x < radius || y < radius || x > WORLD.w - radius || y > WORLD.h - radius) return true;
@@ -661,28 +765,6 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function recordKey(character = run?.character, biome = run?.biome, difficulty = run?.difficulty, mode = run?.mode) {
     return `${character.id}:${biome.id}:${difficulty.id}:${mode || 'expedition'}`;
   }
-  function updateSkinButtons() {
-    const name = selectedSkin === 'pixel' ? t('skinPixel') : t('skinDraft');
-    const next = selectedSkin === 'pixel' ? t('skinDraft') : t('skinPixel');
-    $('game').dataset.skin = selectedSkin;
-    for (const id of ['title-skin-button', 'skin-button', 'pause-skin-button']) {
-      const button = $(id);
-      button.textContent = id === 'pause-skin-button' ? t('pauseVisual', { name }) : name;
-      button.setAttribute('aria-label', t('currentSkin', { name, next }));
-      button.title = t('switchSkin', { next });
-    }
-  }
-  function toggleSkin() {
-    selectedSkin = selectedSkin === 'pixel' ? 'draft' : 'pixel';
-    updateSkinButtons(); persist(); resize(); renderTitle();
-    if (!run) return;
-    renderEquipmentStrip(); renderSkillStrip();
-    if (phase === 'shop') renderShop();
-    if (phase === 'pause') renderPauseDetails();
-    if (phase === 'level') renderLevelChoices();
-    if (phase === 'chest') renderChestReward();
-    updateHUD();
-  }
   function showToast(message) {
     const el = $('toast');
     el.textContent = message;
@@ -695,20 +777,24 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function playHeroVoice(event, id = run?.character?.id || selectedCharacter) { audioSystem.playVoice(event, id); }
 
   function renderTitle() {
-    updateSkinButtons();
+    $('game').dataset.skin = selectedSkin;
     $('character-list').innerHTML = CHARACTERS.map(c => `<button class="hero-tile" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}" aria-controls="hero-details"><span class="hero-avatar">${artIcon(c.id, '')}</span><span class="hero-tile-name">${c.id === 'tb' && selectedLocale === 'en' ? 'Terror<wbr>blade' : c.name}</span></button>`).join('');
     $('upcoming-hero-list').innerHTML = UPCOMING_HEROES.map(hero => `<div class="hero-tile hero-tile-unavailable"><span class="hero-avatar"><img class="art-icon" src="./assets/art/hero-pending.svg" alt=""></span><span class="hero-tile-name">${hero.names[SUPPORTED_LOCALES.indexOf(selectedLocale)]}</span><span class="hero-tile-status">${t('unavailableHero')}</span></div>`).join('');
     const selectedHero = CHARACTERS.find(c => c.id === selectedCharacter);
     const details = $('hero-details');
     if (details.dataset.hero !== selectedHero.id || details.dataset.locale !== selectedLocale) {
-      details.innerHTML = `<div class="hero-details-art">${artIcon(selectedHero.id, '')}</div><div class="hero-details-copy"><h3>${selectedHero.name}</h3><p class="hero-profession">${selectedHero.profession}</p><p>${selectedHero.desc}</p><p class="hero-skill"><span>${t('passive')}</span> ${SKILLS[selectedHero.id][1].name}</p><p class="hero-skill"><span>${t('active')}</span> ${SKILLS[selectedHero.id][0].name}</p></div>`;
+      const heroAttributes = attributeSummary(selectedHero.attributes, selectedLocale);
+      details.innerHTML = `<div class="hero-details-art">${artIcon(selectedHero.id, '')}</div><div class="hero-details-copy"><h3>${selectedHero.name}</h3><p class="hero-profession">${selectedHero.profession}</p><p>${selectedHero.desc}</p>${heroAttributes ? `<p class="hero-attributes"><span>${selectedLocale === 'en' ? 'Attributes' : selectedLocale === 'zh-TW' ? '屬性' : '属性'}</span> ${heroAttributes} · ${t('statPrimaryAttribute')} ${attributeLabel(selectedHero.attributes.primary, selectedLocale)}</p>` : ''}<p class="hero-skill"><span>${t('passive')}</span> ${SKILLS[selectedHero.id][1].name}</p><p class="hero-skill"><span>${t('active')}</span> ${SKILLS[selectedHero.id][0].name}</p></div>`;
       details.dataset.hero = selectedHero.id;
       details.dataset.locale = selectedLocale;
     }
-    $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${artIcon(`map-${b.id}-preview`, b.icon)}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
+    $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${b.id === 'dota' ? '<canvas id="dota-map-preview" width="80" height="80" class="art-icon" aria-hidden="true"></canvas>' : artIcon(`map-${b.id}-preview`, b.icon)}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
+    const preview = $('dota-map-preview');
+    drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: 80, h: 80, player: DOTA_SPAWN });
     $('difficulty-list').innerHTML = DIFFICULTIES.map(d => `<button type="button" data-difficulty="${d.id}" aria-pressed="${selectedDifficulty === d.id}">${d.name}</button>`).join('');
     $('pace-list').innerHTML = PACES.map(p => `<button type="button" data-pace="${p.id}" aria-pressed="${selectedPace === p.id}">${p.name}</button>`).join('');
     $('mode-list').innerHTML = MODES.map(m => `<button type="button" data-mode="${m.id}" aria-pressed="${selectedMode === m.id}">${modeName(m.id)}</button>`).join('');
+    $('skin-list').innerHTML = [['pixel', t('skinPixel')], ['dota1', t('skinDota1')]].map(([id, name]) => `<button type="button" data-skin="${id}" aria-pressed="${selectedSkin === id}">${name}</button>`).join('');
     $('sound-button').textContent = soundEnabled ? t('soundOn') : t('soundOff');
     const key = `${selectedCharacter}:${selectedBiome}:${selectedDifficulty}:${selectedMode}`;
     const best = save.records[key] || 0;
@@ -728,14 +814,21 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function createBaseAttack(id) { return { id, uid: ++uid, cool: 0 }; }
   function createRun() {
-    loadHeroPoses(selectedCharacter);
+    loadHeroPoses(selectedCharacter, selectedSkin);
     resetStick(); keys.clear(); moveTarget = null; moveFlow = null;
     const character = CHARACTERS.find(c => c.id === selectedCharacter);
     const biome = BIOMES.find(b => b.id === selectedBiome);
     const difficulty = DIFFICULTIES.find(d => d.id === selectedDifficulty);
-    const stats = { armor: 0, speed: 0, attackPower: 0, attackRange: 0, critDamage: 80, abilityHaste: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, manaRegen: 3, ...character.stats };
+    const attributeProfile = heroAttributeProfile(character.id);
+    const characterAttributes = character.attributes || attributeProfile.base;
+    const primaryAttribute = character.attributes?.primary || attributeProfile.primary;
+    Object.assign(WORLD, biome.id === 'dota' ? DOTA_SIZE : { w: 2600, h: 1700 });
+    NAV_COLS = Math.floor(WORLD.w / NAV_STEP); NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
+    const spawn = biome.id === 'dota' ? DOTA_SPAWN : { x: WORLD.w / 2, y: WORLD.h / 2 };
+    $('minimap-panel').classList.toggle('hidden', biome.id !== 'dota');
+    const stats = { armor: 0, speed: 0, attackPower: 0, primaryAttributePower: 0, attackRange: 0, critDamage: 80, abilityHaste: 0, attackSpeed: 0, crit: 5, dodge: 0, regen: 0, pickup: 0, luck: 0, lifesteal: 0, damage: 0, manaRegen: 3, ...character.stats };
     run = {
-      character, biome, difficulty, mode: selectedMode, stats, player: { x: WORLD.w / 2, y: WORLD.h / 2, radius: 17, hp: character.hp, maxHp: character.hp, mana: 100, maxMana: 100, facing: 0, attackFacing: 0, visualSide: false, visualMirror: 1, attackPose: 0, attackClock: 0, pendingAttack: null, skillPose: 0, skillClock: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
+      character, biome, difficulty, mode: selectedMode, stats, attributes: { strength: 0, agility: 0, intelligence: 0 }, primaryAttribute, player: { x: spawn.x, y: spawn.y, radius: 17, hp: character.hp, maxHp: character.hp, mana: 100, maxMana: 100, facing: 0, attackFacing: 0, visualSide: false, visualMirror: 1, attackPose: 0, attackClock: 0, pendingAttack: null, skillPose: 0, skillClock: 0, animTime: 0, invuln: 0, dashTime: 0, dashCooldown: 0, dashX: 1, dashY: 0 },
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0, voiceLow: false,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       baseAttack: createBaseAttack(CHARACTER_ATTACKS[character.id]),
@@ -743,7 +836,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       equipmentCapacity: EQUIPMENT_CAPACITY,
       pendingChests: 0, chestReward: null, attackSeq: 0, chainProcAttackId: 0, chainReadyAt: 0,
 
-      skills: { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0, manualPickups: 0, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0,
+      skills: { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0, manualPickups: 0, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, madmoonAttackCount: 0, madmoonProcAttackId: 0,
         souls: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0, rageAmp: 1,
         thunder: null, requiem: null, bloodTime: 0, bloodCooldown: 0,
         kaelPassiveTimer: 5, lastPassiveSpell: null, kaelSpellRank: 1,
@@ -757,6 +850,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       waveStartKills: 0, waveStartMoney: 0, waveStartPendingChests: 0, waveSummary: null,
       intermission: null
     };
+    applyAttributeBlock(Object.fromEntries(ATTRIBUTE_KEYS.map(key => [key, Number(characterAttributes[key]) || 0])), 1);
   }
   function startRun() {
     audioSystem.reset();
@@ -786,7 +880,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
 
     const souls = run.skills.souls, manualPickups = run.skills.manualPickups;
     Object.assign(run.skills, { activeCooldown: 0, receivedHits: 0, attackHits: 0, lastBasicAttack: 0,
-      manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
+      manualPickups, radianceClock: 0, mantaAttackCount: 0, mantaProcAttackId: 0, madmoonAttackCount: 0, madmoonProcAttackId: 0, jump: null, leapCooldown: 0, spin: null, rageTime: 0,
       thunder: null, requiem: null, bloodTime: 0, souls,
       kaelPassiveTimer: 5,
       kaelMeteors: [], kaelIceWalls: [], kaelBlast: null, kaelSpirits: [], eclipse: null, tb: createTerrorbladeState(),
@@ -834,8 +928,34 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
 
 
+  function applyAttributeBlock(attributes, direction = 1) {
+    if (!run || !attributes) return;
+    for (const key of ATTRIBUTE_KEYS) {
+      const amount = Number(attributes[key]) || 0;
+      if (!amount) continue;
+      const delta = amount * direction;
+      run.attributes[key] = (run.attributes[key] || 0) + delta;
+      const derived = attributeContribution(key, delta, run.primaryAttribute);
+      for (const [derivedKey, value] of Object.entries(derived)) {
+        if (derivedKey === 'maxHp') {
+          run.player.maxHp = Math.max(1, run.player.maxHp + value);
+          run.player.hp = Math.max(1, Math.min(run.player.maxHp, run.player.hp + value));
+        } else if (derivedKey === 'maxMana') {
+          run.player.maxMana = Math.max(1, run.player.maxMana + value);
+          run.player.mana = Math.max(0, Math.min(run.player.maxMana, run.player.mana + value));
+        } else if (derivedKey === 'attackPower') {
+          run.stats.primaryAttributePower = (run.stats.primaryAttributePower || 0) + value;
+        } else {
+          run.stats[derivedKey] = (run.stats[derivedKey] || 0) + value;
+        }
+      }
+    }
+  }
   function applyBonus(bonus) {
+    const attributes = Object.fromEntries(ATTRIBUTE_KEYS.filter(key => Object.hasOwn(bonus, key)).map(key => [key, bonus[key]]));
+    if (Object.keys(attributes).length) applyAttributeBlock(attributes, 1);
     for (const [key, value] of Object.entries(bonus)) {
+      if (ATTRIBUTE_KEYS.includes(key)) continue;
       if (key === 'maxHp') { run.player.maxHp += value; heal(value); }
       else if (key === 'maxMana') { run.player.maxMana += value; run.player.mana = Math.min(run.player.maxMana, run.player.mana + value); }
       else if (key === 'heal') heal(value);
@@ -845,7 +965,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function heal(amount) { run.player.hp = Math.min(run.player.maxHp, run.player.hp + amount); }
   function applyStatBlock(stats, direction = 1) {
     if (!stats) return;
+    const attributes = Object.fromEntries(ATTRIBUTE_KEYS.filter(key => Object.hasOwn(stats, key)).map(key => [key, stats[key]]));
+    if (Object.keys(attributes).length) applyAttributeBlock(attributes, direction);
     for (const [key, value] of Object.entries(stats)) {
+      if (ATTRIBUTE_KEYS.includes(key)) continue;
       if (key === 'maxHp') {
         run.player.maxHp = Math.max(1, run.player.maxHp + value * direction);
         run.player.hp = Math.max(1, Math.min(run.player.maxHp, run.player.hp + value * direction));
@@ -855,7 +978,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       } else run.stats[key] = (run.stats[key] || 0) + value * direction;
     }
   }
-  function applyEquipmentStats(id, direction = 1) { applyStatBlock(equipmentDef(id)?.stats, direction); }
+  function applyEquipmentStats(id, direction = 1) {
+    const def = equipmentDef(id);
+    applyStatBlock(def?.stats, direction);
+    applyAttributeBlock(def?.attributes, direction);
+  }
   function buffCount(id) { return run?.buffs?.[id] || 0; }
   function addBuff(id) {
     const def = BUFFS[id];
@@ -942,9 +1069,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     guards.length = stacks;
   }
   const WEAPON_TEXT = {
-    'zh-CN': { reserve: '待用储备', reserveHint: '满格物品保留在这里，不提供属性、被动或羁绊；可装备、交换或作为合成材料。', reserveEmpty: '储备为空，满格后仍可继续收集。', active: '装备', loadoutSummary: '装备 {active}/12 · 储备 {reserve}', stash: '移入储备', equip: '装备', swap: '交换装备', swapWith: '替换哪件生效装备', auto: '自动合成与同级升阶', target: '合成目标 {n}', none: '未追踪目标', forgeHint: '按目标顺序完成整条配方，重复成品自动三合一。可关闭自动化，继续手动合成。', forged: '自动完成 {count} 次合成／升阶', builds: '装备羁绊', independent: '独立成品 · 机动', members: '搭配装备', buildRule: '仅生效的不同成品计数，同名重复与强化等级不额外计件。', buildActive: '已激活', buildNext: '下一档 {count} 件', stored: '已收入储备：{item}', unlock: '圣剑铸造：通关第10波解锁（{wave}/10）', unlocked: '本局圣剑已解锁：高额剑气伤害，同时增加承伤。', summary: '生效 {active}/12 · 储备 {reserve} 件', quality: '品级 {grade} · {name}', level: '强化 Lv.{level}', qualities: ['普通','精良','稀有','史诗','传说'] },
-    'zh-TW': { reserve: '待用儲備', reserveHint: '滿格物品保留在這裡，不提供屬性、被動或羈絆；可裝備、交換或作為合成材料。', reserveEmpty: '儲備為空，滿格後仍可繼續收集。', active: '裝備', loadoutSummary: '裝備 {active}/12 · 儲備 {reserve}', stash: '移入儲備', equip: '裝備', swap: '交換裝備', swapWith: '替換哪件生效裝備', auto: '自動合成與同級升階', target: '合成目標 {n}', none: '未追蹤目標', forgeHint: '按目標順序完成整條配方，重複成品自動三合一。可關閉自動化，繼續手動合成。', forged: '自動完成 {count} 次合成／升階', builds: '裝備羈絆', independent: '獨立成品 · 機動', members: '搭配裝備', buildRule: '僅生效的不同成品計數，同名重複與強化等級不額外計件。', buildActive: '已啟用', buildNext: '下一檔 {count} 件', stored: '已收入儲備：{item}', unlock: '聖劍鑄造：通關第10波解鎖（{wave}/10）', unlocked: '本局聖劍已解鎖：高額劍氣傷害，同時增加承傷。', summary: '生效 {active}/12 · 儲備 {reserve} 件', quality: '品級 {grade} · {name}', level: '強化 Lv.{level}', qualities: ['普通','精良','稀有','史詩','傳說'] },
-    en: { reserve: 'Reserve', reserveHint: 'Overflow items stay here without stats, passives or set bonuses. Equip, swap, sell or craft with them.', reserveEmpty: 'Reserve is empty. Full slots never stop collecting.', active: 'Equipment', loadoutSummary: 'Equipment {active}/12 · Reserve {reserve}', stash: 'Store in reserve', equip: 'Equip', swap: 'Swap equipment', swapWith: 'Active item to replace', auto: 'Auto craft and merge', target: 'Crafting priority {n}', none: 'No tracked target', forgeHint: 'Complete whole recipes in priority order; merge matching finished items automatically. Disable to craft manually.', forged: '{count} automatic craft / merge action(s)', builds: 'Equipment synergies', independent: 'Independent · Mobility', members: 'Matching gear', buildRule: 'Count unique active finished items. Copies and upgrade levels do not add set pieces.', buildActive: 'Active', buildNext: 'Next tier: {count} items', stored: 'Stored in reserve: {item}', unlock: 'Divine Rapier: clear wave 10 to unlock ({wave}/10)', unlocked: 'Divine Rapier unlocked for this run: powerful sword waves, with increased damage taken.', summary: 'Active {active}/12 · Reserve {reserve}', quality: 'Grade {grade} · {name}', level: 'Upgrade Lv.{level}', qualities: ['Common','Uncommon','Rare','Epic','Legendary'] }
+    'zh-CN': { reserve: '待用储备', reserveHint: '满格物品保留在这里，不提供属性、被动或羁绊；可装备、交换或作为合成材料。', reserveEmpty: '储备为空，满格后仍可继续收集。', active: '装备', loadoutSummary: '装备 {active}/12 · 储备 {reserve}', stash: '移入储备', equip: '装备', swap: '交换装备', swapWith: '替换哪件生效装备', auto: '自动合成与同级升阶', target: '合成目标 {n}', none: '未追踪目标', forgeHint: '按目标顺序完成整条配方，重复成品自动三合一。可关闭自动化，继续手动合成。', forged: '自动完成 {count} 次合成／升阶', builds: '装备羁绊', independent: '独立成品 · 无羁绊', members: '搭配装备', buildRule: '仅生效的不同成品计数，同名重复与强化等级不额外计件。', buildActive: '已激活', buildNext: '下一档 {count} 件', stored: '已收入储备：{item}', unlock: '圣剑铸造：通关第10波解锁（{wave}/10）', unlocked: '本局圣剑已解锁：高额剑气伤害，同时增加承伤。', summary: '装备 {active}/12 · 储备 {reserve}', quality: '品级 {grade} · {name}', level: '强化 Lv.{level}', qualities: ['普通','精良','稀有','史诗','传说'] },
+    'zh-TW': { reserve: '待用儲備', reserveHint: '滿格物品保留在這裡，不提供屬性、被動或羈絆；可裝備、交換或作為合成材料。', reserveEmpty: '儲備為空，滿格後仍可繼續收集。', active: '裝備', loadoutSummary: '裝備 {active}/12 · 儲備 {reserve}', stash: '移入儲備', equip: '裝備', swap: '交換裝備', swapWith: '替換哪件生效裝備', auto: '自動合成與同級升階', target: '合成目標 {n}', none: '未追蹤目標', forgeHint: '按目標順序完成整條配方，重複成品自動三合一。可關閉自動化，繼續手動合成。', forged: '自動完成 {count} 次合成／升階', builds: '裝備羈絆', independent: '獨立成品 · 無羈絆', members: '搭配裝備', buildRule: '僅生效的不同成品計數，同名重複與強化等級不額外計件。', buildActive: '已啟用', buildNext: '下一檔 {count} 件', stored: '已收入儲備：{item}', unlock: '聖劍鑄造：通關第10波解鎖（{wave}/10）', unlocked: '本局聖劍已解鎖：高額劍氣傷害，同時增加承傷。', summary: '裝備 {active}/12 · 儲備 {reserve}', quality: '品級 {grade} · {name}', level: '強化 Lv.{level}', qualities: ['普通','精良','稀有','史詩','傳說'] },
+    en: { reserve: 'Reserve', reserveHint: 'Overflow items stay here without stats, passives or set bonuses. Equip, swap, sell or craft with them.', reserveEmpty: 'Reserve is empty. Full slots never stop collecting.', active: 'Equipment', loadoutSummary: 'Equipment {active}/12 · Reserve {reserve}', stash: 'Store in reserve', equip: 'Equip', swap: 'Swap equipment', swapWith: 'Active item to replace', auto: 'Auto craft and merge', target: 'Crafting priority {n}', none: 'No tracked target', forgeHint: 'Complete whole recipes in priority order; merge matching finished items automatically. Disable to craft manually.', forged: '{count} automatic craft / merge action(s)', builds: 'Equipment synergies', independent: 'Independent · No synergy', members: 'Matching gear', buildRule: 'Count unique active finished items. Copies and upgrade levels do not add set pieces.', buildActive: 'Active', buildNext: 'Next tier: {count} items', stored: 'Stored in reserve: {item}', unlock: 'Divine Rapier: clear wave 10 to unlock ({wave}/10)', unlocked: 'Divine Rapier unlocked for this run: powerful sword waves, with increased damage taken.', summary: 'Equipment {active}/12 · Reserve {reserve}', quality: 'Grade {grade} · {name}', level: 'Upgrade Lv.{level}', qualities: ['Common','Uncommon','Rare','Epic','Legendary'] }
   };
   function wt(key, values = {}) {
     return Object.entries(values).reduce((value, [name, replacement]) => value.replaceAll(`{${name}}`, replacement), WEAPON_TEXT[selectedLocale][key]);
@@ -953,6 +1080,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function equipmentBadges(def, options = {}) {
     const quality = options.includeQuality === false ? '' : `<span class="equipment-quality">${wt('quality', { grade: def.grade, name: WEAPON_TEXT[selectedLocale].qualities[def.grade - 1] })}</span>`;
     return `${quality}${EQUIPMENT_UPGRADES[def.id] ? `<span class="equipment-level">${wt('level', { level: def.level })}</span>` : ''}${equipmentBuilds(def.id).map(id => `<span class="equipment-build-tag">${buildName(id, selectedLocale)}</span>`).join('')}${def.kind === 'finished' && !equipmentBuilds(def.id).length ? `<span class="equipment-build-tag">${wt('independent')}</span>` : ''}`;
+  }
+  function equipmentQualityName(def) {
+    return t('buffRarity_' + (def.grade >= 5 ? 'legendary' : def.grade === 4 ? 'epic' : def.grade === 3 ? 'rare' : 'common'));
   }
   function equipmentOfferMeta(def) {
     const badges = equipmentBadges(def, { includeQuality: false });
@@ -963,11 +1093,14 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function craftPlans(incomingId = null) { return availableEquipmentCrafts(allEquipment(), incomingId).filter(plan => unlockedEquipment(plan.id)); }
   function commitLoadout(next, preserveResources = true) {
     if (!next) return false;
-    const hp = run.player.hp, mana = run.player.mana, delta = {};
+    const hp = run.player.hp, mana = run.player.mana, delta = {}, attributeDelta = {};
     for (const [items, sign] of [[run.equipment, -1], [next.active, 1]]) for (const item of items) {
-      for (const [key, value] of Object.entries(equipmentDef(item).stats)) delta[key] = (delta[key] || 0) + sign * value;
+      const def = equipmentDef(item);
+      for (const [key, value] of Object.entries(def.stats)) delta[key] = (delta[key] || 0) + sign * value;
+      for (const [key, value] of Object.entries(def.attributes || {})) attributeDelta[key] = (attributeDelta[key] || 0) + sign * value;
     }
     applyStatBlock(delta);
+    applyAttributeBlock(attributeDelta);
     if (preserveResources) { run.player.hp = Math.min(hp, run.player.maxHp); run.player.mana = Math.min(mana, run.player.maxMana); }
     run.equipment = next.active; run.equipmentReserve = next.reserve;
     run.builds = resolveBuilds(run.equipment);
@@ -1025,8 +1158,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     const level = equipmentLevel(item);
     if (level === 3) return `<span class="upgrade-max">${t('upgradeMax')}</span>`;
     const next = equipmentDef({ id: item.id, level: level + 1 });
-    const actual = t('upgradeActual', { crit: clamp(run.stats.crit, 0, 90), dodge: clamp(run.stats.dodge, 0, 55), haste: clamp(run.stats.abilityHaste, 0, 60) });
-    return `<details class="upgrade-preview"><summary>${t('upgradePreview')}</summary><p><strong>${equipmentName(next)}</strong></p><p>${equipmentUpgradeDescription(next, selectedLocale)}</p><p>${t('upgradeKept')}</p><p>${actual}</p></details><div class="craft-actions"><button class="upgrade-button" type="button" data-upgrade="${item.uid}" ${count < 3 ? 'disabled' : ''}>${t('upgradeTo', { level: level + 1, count })}</button>${count >= 6 ? `<button class="upgrade-button" type="button" data-upgrade="${item.uid}" data-batch="true">${t('upgradeBatch', { level: level + 1, groups: Math.floor(count / 3) })}</button>` : ''}</div>`;
+    const actual = t('upgradeActual', { crit: clamp(run.stats.crit, 0, 90), dodge: clamp(run.stats.dodge, 0, 55), haste: Number(clamp(run.stats.abilityHaste, 0, 60).toFixed(2)) });
+    return `<details class="upgrade-preview"><summary>${t('upgradePreview')}</summary><p><strong>${equipmentName(next)}</strong></p><p>${[equipmentUpgradeDescription(next, selectedLocale), attributeSummary(next.attributes, selectedLocale)].filter(Boolean).join(' · ')}</p>${EQUIPMENT[item.id]?.growth ? `<p>${killGrowthText(item.id, false)} · ${t('upgradeKept')}</p>` : `<p>${t('upgradeKept')}</p>`}<p>${actual}</p></details><div class="craft-actions"><button class="upgrade-button" type="button" data-upgrade="${item.uid}" ${count < 3 ? 'disabled' : ''}>${t('upgradeTo', { level: level + 1, count })}</button>${count >= 6 ? `<button class="upgrade-button" type="button" data-upgrade="${item.uid}" data-batch="true">${t('upgradeBatch', { level: level + 1, groups: Math.floor(count / 3) })}</button>` : ''}</div>`;
   }
 
   function focusCraftResult(id) {
@@ -1166,7 +1299,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     $('chests-left').textContent = run.pendingChests;
     const canTake = equipmentCanFit();
     const plans = craftPlans(run.chestReward.id);
-    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def)}</p>${equipmentBadges(def)}${canTake ? '' : `<p class="equipment-full-note">${wt('reserveHint')}</p>`}</div>`;
+    $('chest-reward').innerHTML = `<span class="chest-reward-icon">${equipmentIcon(run.chestReward.id)}</span><div><strong>${equipmentName(def)}</strong><p>${equipmentDesc(def, run.chestReward)}</p>${equipmentBadges(def)}${canTake ? '' : `<p class="equipment-full-note">${wt('reserveHint')}</p>`}</div>`;
     const organize = canTake ? '' : craftPlans().map(plan => `<button type="button" data-chest-organize="${plan.id}">${t('craftTarget', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
       + equipmentGroups().filter(group => equipmentUpgradeIndices(allEquipment(), group[0].uid)).map(group => `<button type="button" data-upgrade="${group[0].uid}">${equipmentName(equipmentDef(group[0]))} · ${t('upgradeTo', { level: equipmentLevel(group[0]) + 1, count: group.length })}</button>`).join('');
     $('chest-craft-list').innerHTML = plans.map(plan => `<button type="button" data-chest-craft="${plan.id}">${t('takeCraft', { item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
@@ -1321,13 +1454,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const name = isBuff ? buffName(def) : equipmentName(def);
       const desc = isBuff ? buffDesc(def) : equipmentDesc(def);
       const icon = isBuff ? buffIcon(def) : equipmentIcon(offer.id);
+      const qualityLabel = isBuff ? '' : ` title="${equipmentQualityName(def)}" aria-label="${name} · ${equipmentQualityName(def)}"`;
       const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : equipmentOfferMeta(def);
       const plans = isBuff ? [] : craftPlans(offer.id);
-      const uses = isBuff ? [] : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].recipe?.includes(offer.id) && unlockedEquipment(id));
       const canUpgrade = !isBuff && EQUIPMENT_UPGRADES[offer.id] && allEquipment().filter(item => item.id === offer.id && equipmentLevel(item) === 1).length >= 2;
       const craftActions = plans.map(plan => `<button type="button" data-buy="${i}" data-buy-craft="${plan.id}" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyCraft', { cost: offer.cost, item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
         + (canUpgrade ? `<button type="button" data-buy="${i}" data-buy-upgrade="true" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyUpgrade', { cost: offer.cost })}</button>` : '');
-      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : equipmentAttributes(def)}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong>${name}</strong><p>${desc}</p>${uses.length ? `<p class="offer-craft-hint">${t('craftUses', { items: uses.map(id => equipmentName(equipmentDef(id))).join(' / ') })}</p>` : ''}${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
+      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : equipmentAttributes(def)}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong${qualityLabel}>${name}</strong><p>${desc}</p>${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
     }).join('');
     const rerollCost = shopRerollCost();
     $('reroll-button').textContent = rerollCost === 0 ? t('freeRefresh') : t('refresh', { cost: rerollCost });
@@ -1364,7 +1497,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const item = group[0], def = equipmentDef(item);
       const swap = reserve && !equipmentCanFit() ? `<label>${wt('swapWith')}<select data-swap-for="${item.uid}">${run.equipment.map(active => `<option value="${active.uid}">${equipmentName(equipmentDef(active))}</option>`).join('')}</select></label>` : '';
       const location = reserve ? wt('reserve') : wt('active');
-      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" ${equipmentAttributes(def)} tabindex="-1"><strong>${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count" title="${location}" aria-label="${location} ×${group.length}">×${group.length}</span>${equipmentBadges(def, { includeQuality: false })}<p>${equipmentDesc(def)}</p><div class="equipment-actions">${swap}<button type="button" data-move="${item.uid}" data-to-active="${reserve}">${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('stash')}</button><button type="button" data-sell="${item.uid}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
+      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" ${equipmentAttributes(def)} tabindex="-1"><strong title="${equipmentQualityName(def)}" aria-label="${equipmentName(def)} · ${equipmentQualityName(def)}">${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count" title="${location}" aria-label="${location} ×${group.length}">×${group.length}</span>${equipmentBadges(def, { includeQuality: false })}<details class="equipment-details"><summary>${t('equipmentDetails')}</summary><p>${equipmentDesc(def, item)}</p></details><div class="equipment-actions">${swap}<button type="button" data-move="${item.uid}" data-to-active="${reserve}">${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('stash')}</button><button type="button" data-sell="${item.uid}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
     }).join('');
   }
   function buildCards() {
@@ -1389,12 +1522,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function statSummary() {
     const s = run.stats;
     const signed = value => `${value >= 0 ? '+' : ''}${value}`;
-    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackPower')} ${signed(Number(attackPower(run).toFixed(2)))} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${s.armor}`;
+    return `${t('statLife')} ${Math.ceil(run.player.hp)}/${run.player.maxHp} · ${t('statAttackPower')} ${signed(Number(attackPower(run).toFixed(2)))} · ${t('statAllDamage')} ${signed(s.damage)}% · ${t('statAttackSpeed')} ${signed(attackSpeed().toFixed(0))}% · ${t('statArmor')} ${Number(s.armor.toFixed(2))}`;
   }
   function renderEquipmentStrip() {
     $('equipment-strip').innerHTML = run.equipment.map(item => {
       const def = equipmentDef(item), name = equipmentName(def);
-      return `<span class="equipment-slot ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)} role="img" aria-label="${name}" title="${name}: ${equipmentDesc(def)}">${equipmentIcon(item.id)}<small>${EQUIPMENT_UPGRADES[item.id] ? `Lv.${def.level}` : def.grade}</small></span>`;
+      const growth = def.growth ? `<small class="equipment-growth">${killGrowthText(item.id, true)}</small>` : '';
+      return `<span class="equipment-slot ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)} role="img" aria-label="${name}" title="${name}: ${equipmentDesc(def, item)}">${equipmentIcon(item.id)}<small>${EQUIPMENT_UPGRADES[item.id] ? `Lv.${def.level}` : def.grade}</small>${growth}</span>`;
     }).join('');
   }
   function buyOffer(index, targetId = null, upgrade = false) {
@@ -1622,12 +1756,35 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     );
   }
 
-  function soulAttackBonus() { return attackPower(run) - run.stats.attackPower; }
+  function soulAttackBonus() { return attackPower(run) - run.stats.attackPower - (run.stats.primaryAttributePower || 0); }
   function baseAttackDefinition(id = run.baseAttack.id) { return id === 'tb' && run.skills.tb.time > 0 ? TB_DEMON_ATTACK : BASE_ATTACKS[id]; }
   function basicRange() { return Math.max(48, baseAttackDefinition().range + run.stats.attackRange + (run.character.id === 'rover' ? 140 : 0)); }
   function equipmentPassive(id) {
+    const passiveRank = passive => {
+      if (!passive) return [0];
+      if (passive.id === 'frostAttack') return [passive.slow || 0, passive.duration || 0];
+      if (passive.id === 'mirrorImage') return [
+        (passive.ratio || 0) * (passive.projectiles || 1),
+        passive.projectiles || 0,
+        passive.ratio || 0,
+        passive.spread || 0
+      ];
+      if (passive.id === 'activeAmplify') return [passive.multiplier || 1];
+      return [0];
+    };
     return run.equipment.map(equipmentDef).filter(def => def.passive?.id === id)
-      .sort((a, b) => b.grade - a.grade || b.level - a.level)[0]?.passive;
+      .sort((a, b) => {
+        const gradeRank = b.grade - a.grade;
+        if (gradeRank) return gradeRank;
+        const levelRank = b.level - a.level;
+        if (levelRank) return levelRank;
+        const aRank = passiveRank(a.passive), bRank = passiveRank(b.passive);
+        for (let index = 0; index < Math.max(aRank.length, bRank.length); index += 1) {
+          const rank = (bRank[index] || 0) - (aRank[index] || 0);
+          if (rank) return rank;
+        }
+        return 0;
+      })[0]?.passive;
   }
   function activeAmplify() { return equipmentPassive('activeAmplify')?.multiplier || 1; }
   function skillGrowthMultiplier() { return 1 + (heroGrowthTier(run.level) - 1) * .25; }
@@ -1689,7 +1846,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     const edge = Math.asin(clamp(enemy.r / Math.max(1, distance(enemy, origin)), 0, 1));
     return Math.abs(Math.atan2(Math.sin(delta), Math.cos(delta))) <= degrees * Math.PI / 360 + edge;
   }
-  const equipmentCombat = createEquipmentCombat({ getRun: () => run, passive: equipmentPassive, damageEnemy, blocked: terrainLineBlocked, pulse, isElite, heal, basicRange, label: id => buildName(id, selectedLocale) });
+  const equipmentCombat = createEquipmentCombat({ getRun: () => run, passive: equipmentPassive, damageEnemy, blocked: terrainLineBlocked, pulse, isElite, heal, basicRange,
+    cooldown: (base, activeRun) => cooldownWithHaste(base, activeRun?.stats?.abilityHaste || 0),
+    label: id => buildName(id, selectedLocale) || (EQUIPMENT[id] ? (selectedLocale === 'en' ? (EQUIPMENT[id].nameEn || EQUIPMENT[id].name) : selectedLocale === 'zh-TW' ? (EQUIPMENT[id].nameTw || EQUIPMENT[id].name) : EQUIPMENT[id].name) : id) });
   function updateEquipmentPassives(dt) {
     equipmentCombat.update(dt);
     const s = run.skills, p = run.player;
@@ -1699,7 +1858,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
         .sort((a, b) => Number(b.id === 'boss' || isElite(b)) - Number(a.id === 'boss' || isElite(a)) || distance(a, p) - distance(b, p))[0];
       if (target) {
-        s.dagonReadyAt = run.totalTime + dagon.cooldown;
+        s.dagonReadyAt = run.totalTime + cooldownWithHaste(dagon.cooldown, run.stats.abilityHaste);
         const angle = Math.atan2(target.y - p.y, target.x - p.x);
         const others = run.enemies.filter(e => e !== target && !e.dead && distance(e, p) <= dagon.range + e.r
           && inAttackFan(p, e, angle, dagon.spreadDegrees)
@@ -1711,6 +1870,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
           damageEnemy(targets[i], budget * share, { source: 'equipment' });
         }
         addEquipmentUpgradeEffect('dagon', dagon.level, { x: p.x, y: p.y - 24, r: dagon.range,
+          beamWidth: dagon.beamWidth, impactRadius: dagon.impactRadius,
           targets: targets.map(e => ({ x: e.x, y: e.y, r: e.r })) });
       }
     }
@@ -1719,9 +1879,12 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const target = run.enemies.filter(e => !e.dead && distance(e, p) <= cyclone.range + e.r)
         .sort((a, b) => distance(a, p) - distance(b, p))[0];
       if (target) {
-        s.cycloneReadyAt = run.totalTime + cyclone.cooldown;
+        s.cycloneReadyAt = run.totalTime + cooldownWithHaste(cyclone.cooldown, run.stats.abilityHaste);
         target.cycloneUntil = run.totalTime + cyclone.duration * (target.id === 'boss' ? .2 : isElite(target) ? .5 : 1);
-        addEquipmentUpgradeEffect('cyclone', cyclone.level, { x: target.x, y: target.y, r: target.r + 12 });
+        addEquipmentUpgradeEffect('cyclone', cyclone.level, { x: target.x, y: target.y, r: target.r + cyclone.gustRadius,
+          gustRadius: cyclone.gustRadius,
+          targetX: target.x, targetY: target.y, targetR: target.r,
+          until: target.cycloneUntil });
       }
     }
     const restoration = equipmentPassive('restoration');
@@ -1734,10 +1897,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     const necro = equipmentPassive('necromancy');
     if (necro && run.totalTime >= s.necroReadyAt && s.necroUnits.length === 0 && run.enemies.some(e => !e.dead)) {
-      s.necroReadyAt = run.totalTime + necro.cooldown;
+      s.necroReadyAt = run.totalTime + cooldownWithHaste(necro.cooldown, run.stats.abilityHaste);
       s.necroUnits = [-1, 1].map(side => ({ ...nearestWalkable(p.x + side * 32, p.y + 20, 10), r: 10,
         side, life: necro.duration, attack: .3, damage: necro.damage, attackRatio: necro.attackRatio, level: necro.level, facing: p.facing }));
-      addEquipmentUpgradeEffect('necronomicon', necro.level, { x: p.x, y: p.y, r: 38 });
+      addEquipmentUpgradeEffect('necronomicon', necro.level, { x: p.x, y: p.y, r: 38,
+        summons: s.necroUnits.map(unit => ({ x: unit.x, y: unit.y, side: unit.side })) });
     }
     s.necroUnits = s.necroUnits.filter(unit => {
       unit.life -= dt; unit.attack -= dt; unit.attackFlash = Math.max(0, (unit.attackFlash || 0) - dt);
@@ -1750,7 +1914,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const d = distance(toward, unit); unit.facing = Math.atan2(toward.y - unit.y, toward.x - unit.x);
       if (d > (target ? range * .85 : 40)) moveThroughTerrain(unit, Math.cos(unit.facing) * 155 * dt, Math.sin(unit.facing) * 155 * dt);
       if (target && d <= range + target.r && unit.attack <= 0) {
-        unit.attack = ranged ? 1.1 : .9; unit.attackFlash = .18;
+        unit.attack = ranged ? necro.attackInterval + .2 : necro.attackInterval; unit.attackFlash = .18;
         damageEnemy(target, unit.damage + attackPower(run) * unit.attackRatio, { source: 'summon', rewards: false });
         if (ranged) run.effects.push({ kind: 'line', x1: unit.x, y1: unit.y - 8, x2: target.x, y2: target.y, color: '#9de8bd', life: .16, maxLife: .16, width: 2 });
       }
@@ -1793,15 +1957,52 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     if (affected) { pulse(center.x, center.y, 120, '#a1dfff', .25, 'static'); playSfx('passive-conductor'); }
   }
-  function beginLeap() {
-    const p = run.player, s = run.skills;
-    const target = run.enemies.filter(e => !e.dead && distance(e, p) <= 260 && !terrainLineBlocked(p.x, p.y, e.x, e.y, p.radius))
-      .sort((a, b) => distance(a, p) - distance(b, p))[0];
-    if (!target) return;
-    const angle = Math.atan2(target.y - p.y, target.x - p.x), travel = Math.min(180, Math.max(0, distance(target, p) - 52));
-    s.jump = { time: .44, maxTime: .44, angle, dx: Math.cos(angle) * travel, dy: Math.sin(angle) * travel };
-    s.attackHits = 0; s.leapCooldown = 3;
+  function juggPassiveTier() { return heroGrowthTier(run.level); }
+  function juggLeapMaxSteps(tier = juggPassiveTier()) { return tier >= 3 ? 4 : tier === 2 ? 2 : 1; }
+  function juggPassiveLabel(tier = juggPassiveTier()) {
+    return selectedLocale === 'en' ? ['Leaping Strike', 'Chain Slash', 'Omnislash'][tier - 1]
+      : selectedLocale === 'zh-TW' ? ['躍空斬', '連環躍斬', '無敵斬'][tier - 1]
+        : ['跃空斩', '连环跃斩', '无敌斩'][tier - 1];
+  }
+  function juggPassiveDescription(tier = juggPassiveTier()) {
+    if (selectedLocale === 'en') return [
+      'Every 5 successful melee attacks, leap to one nearby target and strike on landing. Landing grants 0.28 sec invulnerability.',
+      'Every 5 successful melee attacks, chain up to 2 leaping strikes. Prefer targets not hit in this chain; each landing deals skill damage.',
+      'Every 5 successful melee attacks, chain up to 4 leaping strikes. You are invulnerable from the first leap until the chain ends.'
+    ][tier - 1];
+    if (selectedLocale === 'zh-TW') return [
+      '每 5 次有效近戰攻擊，躍向附近一名目標並在落地時斬擊；落地後獲得 0.28 秒無敵。',
+      '每 5 次有效近戰攻擊，最多連續完成 2 次躍斬；優先選擇本次尚未命中的目標，每次落地造成技能傷害。',
+      '每 5 次有效近戰攻擊，最多連續完成 4 次躍斬；從第一次起跳到連段結束期間保持無敵。'
+    ][tier - 1];
+    return [
+      '每 5 次有效近战攻击，跳向附近一名目标并在落地时斩击；落地后获得 0.28 秒无敌。',
+      '每 5 次有效近战攻击，最多连续完成 2 次跳斩；优先选择本次尚未命中的目标，每次落地造成技能伤害。',
+      '每 5 次有效近战攻击，最多连续完成 4 次跳斩；从第一次起跳到连段结束期间保持无敌。'
+    ][tier - 1];
+  }
+  function juggLeapTarget(origin, excluded = new Set()) {
+    const candidates = run.enemies.filter(e => !e.dead && distance(e, origin) <= 260 + e.r
+      && !terrainLineBlocked(origin.x, origin.y, e.x, e.y, run.player.radius));
+    return candidates.sort((a, b) => distance(a, origin) - distance(b, origin)).find(e => !excluded.has(e)) || candidates[0] || null;
+  }
+  function setJuggLeapStep(jump, target) {
+    const p = run.player, angle = Math.atan2(target.y - p.y, target.x - p.x);
+    const travel = Math.min(180, Math.max(0, distance(target, p) - 52));
+    Object.assign(jump, { time: .44, maxTime: .44, angle, dx: Math.cos(angle) * travel, dy: Math.sin(angle) * travel, target });
     p.attackFacing = angle;
+    if (jump.tier >= 3) p.invuln = Math.max(p.invuln, jump.time + .06);
+  }
+  function beginLeap() {
+    const p = run.player, s = run.skills, tier = juggPassiveTier();
+    const target = juggLeapTarget(p);
+    if (!target) return;
+    const jump = { time: .44, maxTime: .44, angle: 0, dx: 0, dy: 0, target: null,
+      tier, stepsRemaining: juggLeapMaxSteps(tier), hitTargets: new Set() };
+    setJuggLeapStep(jump, target);
+    s.jump = jump;
+    s.attackHits = 0; s.leapCooldown = 3;
+    if (tier === 3) p.invuln = Math.max(p.invuln, jump.maxTime * jump.stepsRemaining + .06);
     playSfx('passive-jugg');
   }
   function kaelNearbyTarget(range, predicate = () => true) {
@@ -1814,7 +2015,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function castKaelSpell(id, source = 'active') {
     const s = run.skills, p = run.player, fromActive = source === 'active';
-    const range = { tornado: 774, emp: 190, 'chaos-meteor': 720, 'ice-wall': 240, 'forge-spirit': 340, 'deafening-blast': 170 }[id];
+    const range = { tornado: KAEL_TORNADO.speed * KAEL_TORNADO.life, emp: 190,
+      'chaos-meteor': KAEL_METEOR.speed * KAEL_METEOR.life, 'ice-wall': 240, 'forge-spirit': 340, 'deafening-blast': 170 }[id];
     if (!range) return false;
     const target = kaelNearbyTarget(range, e => !['chaos-meteor', 'forge-spirit'].includes(id)
       || !terrainLineBlocked(p.x, p.y, e.x, e.y, 10));
@@ -1827,8 +2029,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
           const direction = angle + [0, -.24, .24][i];
           const tornado = addShot(p.x, p.y, direction, { id: 'kael' }, 18 + attackPower(run) * .75,
             { skill: true, pierce: 8, kaelSpell: id });
-          Object.assign(tornado, { vx: Math.cos(direction) * 430, vy: Math.sin(direction) * 430,
-            life: 1.8, r: 26, active: fromActive, startedAt: run.totalTime });
+          Object.assign(tornado, { vx: Math.cos(direction) * KAEL_TORNADO.speed, vy: Math.sin(direction) * KAEL_TORNADO.speed,
+            life: KAEL_TORNADO.life, r: KAEL_TORNADO.radius, scale: KAEL_TORNADO.scale, active: fromActive, startedAt: run.totalTime });
         }
         break;
       }
@@ -1850,7 +2052,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         for (let i = 0; i < s.kaelSpellRank; i++) {
           const side = [0, -76, 76][i];
           const meteor = { x: p.x, y: p.y,
-            r: 10, angle, life: 3, tick: 0, travel: 0, trailAngle: angle, active: fromActive };
+            r: 10, angle, life: KAEL_METEOR.life, maxLife: KAEL_METEOR.life, scale: KAEL_METEOR.scale,
+            tick: 0, travel: 0, trailAngle: angle, active: fromActive };
           moveThroughTerrain(meteor, Math.cos(angle) * forward - Math.sin(angle) * side,
             Math.sin(angle) * forward + Math.cos(angle) * side);
           s.kaelMeteors.push(meteor);
@@ -1859,7 +2062,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         break;
       }
       case 'ice-wall':
-        s.kaelIceWalls.push({ x: target.x, y: target.y, angle, life: 6, maxLife: 6, age: 0, tick: .4, active: fromActive });
+        s.kaelIceWalls.push({ x: target.x, y: target.y, angle, life: KAEL_ICE_WALL.life, maxLife: KAEL_ICE_WALL.life,
+          halfLength: KAEL_ICE_WALL.halfLength, halfWidth: KAEL_ICE_WALL.halfWidth, age: 0, tick: .4, active: fromActive });
         pulse(target.x, target.y, 85, '#a7ecff', .55); break;
       case 'forge-spirit':
         s.kaelSpirits = [-1, 1].map(side => ({ x: p.x + side * 38, y: p.y + 4, r: 9, life: 7, attack: 0,
@@ -1960,17 +2164,19 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (id === 'kael') {
       if (!s.lastPassiveSpell) return;
       if (p.mana < cfg.manaCost) { showToast(t('needMana')); updateHUD(); return; }
+      const activeSnapshot = equipmentCombat.activeSnapshot?.();
       if (!castKaelSpell(s.lastPassiveSpell, 'active')) { showToast(t('noTarget')); return; }
       p.mana -= cfg.manaCost;
-      s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
+      s.activeCooldown = cooldownWithHaste(cfg.cooldown, run.stats.abilityHaste);
       addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
-      triggerOrchid(); equipmentCombat.onActive();
+      triggerOrchid(); equipmentCombat.onActive(activeSnapshot);
       updateHUD();
       playHeroVoice('active', id);
       return;
     }
     if (p.mana < cfg.manaCost) { showToast(t('needMana')); updateHUD(); return; }
     if (s.jump || s.spin || s.requiem || s.thunder || s.eclipse) return;
+    const activeSnapshot = equipmentCombat.activeSnapshot?.();
     if (id === 'rover') {
       const target = getTarget(basicRange());
       const angle = target ? Math.atan2(target.y - p.y, target.x - p.x) : p.facing;
@@ -1995,9 +2201,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
     p.skillPose = .56; p.skillClock = 0;
-    s.activeCooldown = cfg.cooldown * (1 - clamp(run.stats.abilityHaste, 0, 60) / 100);
+    s.activeCooldown = cooldownWithHaste(cfg.cooldown, run.stats.abilityHaste);
     addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
-    triggerOrchid(); equipmentCombat.onActive();
+    triggerOrchid(); equipmentCombat.onActive(activeSnapshot);
     playSfx(`skill-${id}`); playHeroVoice('active', id); updateHUD();
   }
   function countScavengedMaterial() {
@@ -2013,14 +2219,14 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const step = Math.min(dt, meteor.life);
       meteor.life -= dt; meteor.tick += step;
       const previousX = meteor.x, previousY = meteor.y;
-      moveThroughTerrain(meteor, Math.cos(meteor.angle) * 240 * step, Math.sin(meteor.angle) * 240 * step);
+      moveThroughTerrain(meteor, Math.cos(meteor.angle) * KAEL_METEOR.speed * step, Math.sin(meteor.angle) * KAEL_METEOR.speed * step);
       const dx = meteor.x - previousX, dy = meteor.y - previousY;
       meteor.travel += Math.hypot(dx, dy) * ((dx || Math.cos(meteor.angle)) < 0 ? -1 : 1);
       if (dx || dy) meteor.trailAngle = Math.atan2(dy, dx);
       while (meteor.tick >= .3 - 1e-9) {
         meteor.tick -= .3;
-        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= 68 + e.r) dealSkillDamage(e, 12 + attackPower(run) * .45, meteor.active);
-        pulse(meteor.x, meteor.y, 68, '#ff9c65', .2, 'meteor');
+        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= KAEL_METEOR.radius + e.r) dealSkillDamage(e, 12 + attackPower(run) * .45, meteor.active);
+        pulse(meteor.x, meteor.y, KAEL_METEOR.radius, '#ff9c65', .2, 'meteor');
       }
     }
     s.kaelMeteors = s.kaelMeteors.filter(meteor => meteor.life > 0);
@@ -2028,9 +2234,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       wall.tick += Math.min(dt, wall.life); wall.life -= dt; wall.age += dt;
       while (wall.tick >= .4 - 1e-9) {
         wall.tick -= .4;
-        const ax = wall.x - Math.sin(wall.angle) * 120, ay = wall.y + Math.cos(wall.angle) * 120;
-        const bx = wall.x + Math.sin(wall.angle) * 120, by = wall.y - Math.cos(wall.angle) * 120;
-        for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + 26) {
+        const ax = wall.x - Math.sin(wall.angle) * wall.halfLength, ay = wall.y + Math.cos(wall.angle) * wall.halfLength;
+        const bx = wall.x + Math.sin(wall.angle) * wall.halfLength, by = wall.y - Math.cos(wall.angle) * wall.halfLength;
+        for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + wall.halfWidth) {
           dealSkillDamage(e, 7 + attackPower(run) * .25, wall.active); e.kaelSlowUntil = run.totalTime + .55;
         }
       }
@@ -2068,19 +2274,39 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (run.character.id === 'tb') updateTerrorblade(s.tb, dt);
     const blood = equipmentPassive('bloodRage');
     if (blood && p.hp / p.maxHp < blood.threshold && s.bloodCooldown <= 0) {
-      s.bloodTime = blood.duration; s.bloodCooldown = blood.cooldown;
+      s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, run.stats.abilityHaste);
       pulse(p.x, p.y, 40, '#dd4c41', .55); showToast(t('bloodRage'));
     }
     if (s.rageTime > 0) { heal(2.5 * s.rageAmp * Math.min(dt, s.rageTime)); s.rageTime = Math.max(0, s.rageTime - dt); }
     if (run.character.id === 'jugg' && s.attackHits >= 5 && s.leapCooldown <= 0 && !s.spin && !s.jump) beginLeap();
     if (s.jump) {
       const jump = s.jump, step = Math.min(dt, jump.time) / jump.maxTime;
+      if (jump.tier >= 3) p.invuln = Math.max(p.invuln, jump.time + .06);
       moveThroughTerrain(p, jump.dx * step, jump.dy * step);
       jump.time -= dt;
       if (jump.time <= 0) {
-        for (const e of run.enemies) if (!e.dead && distance(e, p) <= 76 + e.r && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false)) dealSkillDamage(e, 26 + attackPower(run));
-        run.effects.push({ kind: 'landing', x: p.x, y: p.y, angle: jump.angle, r: 76, color: '#f4ddae', life: .45, maxLife: .45 });
-        s.jump = null; p.invuln = Math.max(p.invuln, .28); p.attackDuration = .42; p.attackPose = .42; p.attackClock = 0; p.landTime = .18; playSfx('blade');
+        const landingTargets = run.enemies.filter(e => !e.dead && distance(e, p) <= 76 + e.r
+          && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false));
+        const freshTargets = landingTargets.filter(e => !jump.hitTargets.has(e));
+        const targets = freshTargets.length ? freshTargets : landingTargets;
+        for (const e of targets) {
+          dealSkillDamage(e, 26 + attackPower(run));
+          jump.hitTargets.add(e);
+        }
+        run.effects.push({ kind: 'landing', x: p.x, y: p.y, angle: jump.angle, r: 76, color: '#f4ddae', tier: jump.tier, life: .45, maxLife: .45 });
+        jump.stepsRemaining -= 1;
+        const nextTarget = jump.stepsRemaining > 0 ? juggLeapTarget(p, jump.hitTargets) : null;
+        if (nextTarget) {
+          setJuggLeapStep(jump, nextTarget);
+          if (jump.tier === 2) p.invuln = Math.max(p.invuln, .28);
+          p.attackDuration = .42; p.attackPose = .42; p.attackClock = 0; p.landTime = .18;
+          playSfx('blade');
+        } else {
+          s.jump = null;
+          p.invuln = Math.max(p.invuln, jump.tier === 3 ? .08 : .28);
+          p.attackDuration = .42; p.attackPose = .42; p.attackClock = 0; p.landTime = .18;
+          playSfx('blade');
+        }
       }
     }
     if (s.spin) {
@@ -2289,7 +2515,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const skadiSlow = run.totalTime < (e.skadiSlowUntil || 0) ? (e.skadiSlowRatio || 1) : 1;
       const enrageSpeed = e.variant === 'roshan' ? (e.enraged ? 1.18 : 1) : (e.enrage > 0 ? 1.35 : 1);
       const frostSlow = run.totalTime < (e.buffSlowUntil || 0) ? 1 - e.buffSlow : 1;
-      let speed = e.speed * Math.min(skadiSlow, frostSlow, auraRate) * enrageSpeed;
+      const elementalSlow = run.totalTime < (e.buildSlowUntil || 0) ? (e.buildSlowRatio || 1) : 1;
+      const iceDragonSlow = run.totalTime < (e.iceDragonUntil || 0) ? (e.iceDragonSlow || 1) : 1;
+      let speed = e.speed * Math.min(skadiSlow, frostSlow, elementalSlow, iceDragonSlow, auraRate) * enrageSpeed;
       if (run.character.id === 'kael' && e.kaelSlowUntil > run.totalTime) speed *= .65;
       const def = ENEMIES[e.id];
       if (def.elite && def.windup) {
@@ -2418,6 +2646,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function killEnemy(e, rewards = true) {
     if (e.dead) return;
     e.dead = true; run.kills += 1;
+    equipmentCombat.onKill?.(e, rewards);
     if (isElite(e) || e.id === 'boss') playHeroVoice('elite');
     if (rewards) {
       if (run.character.id === 'sf' && !e.summoned) run.skills.souls += e.id === 'boss' ? 6 : isElite(e) ? 3 : 1;
@@ -2466,6 +2695,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       registerBaseAttackHit(e, hit);
       triggerEquipmentOnHit(e, hit);
       if (run.character.id === 'conductor') triggerStaticField(e);
+      equipmentCombat.onBasicHitComplete(e, hit);
     }
     return damage;
   }
@@ -2600,7 +2830,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       pierce: options.pierce || 1, hit: new Set(), skill: !!options.skill, illusion: !!options.illusion, kaelSpell: options.kaelSpell, hero: w.id,
       hitCounts: options.hitCounts, maxHits: options.maxHits, attackId: options.attackId, upgradeFx: options.upgradeFx,
       evolutionLevel: options.evolutionLevel, heroGrowthTier: heroGrowthTier(run.level),
-      tbAttack: options.tbAttack, tbImage: !!options.tbImage, imageSide: options.imageSide || 0,
+      tbAttack: options.tbAttack, godsealSnapshot: options.godsealSnapshot, tbImage: !!options.tbImage, imageSide: options.imageSide || 0,
       deadShotJumps: options.kaelSpell ? 0 : buffCount('deadShot'),
       type: def.type, ignoresTerrain: !!def.ignoresTerrain, range: basicRange(), baseDamage: damage };
     run.bullets.push(shot);
@@ -2644,10 +2874,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const target = pending.target;
       if (!target || target.dead || distance(target, p) > basicRange() + (def.type === 'melee' ? target.r : 0)
         || terrainLineBlocked(p.x, p.y, target.x, target.y, 4, false)) { p.pendingAttack = null; return; }
-      type = def.type; damage = baseAttackDamage({ id: weaponId });
+      // Keep the attack's raw damage snapshot from its anticipation frame;
+      // a transformation that starts before contact must not rewrite it.
+      type = def.type; damage = pending.damage;
       angle = Math.atan2(target.y - p.y, target.x - p.x); p.attackFacing = angle;
     }
-    const hit = { attackId, type, range: basicRange(), damage, tbAttack: weaponId === 'tb' ? { counted: false } : null };
+    const hit = { attackId, type, range: basicRange(), damage, godsealSnapshot: pending.godsealSnapshot,
+      tbAttack: weaponId === 'tb' ? { counted: false } : null };
     // Snapshot before the direct hit can create a new image.
     const images = weaponId === 'tb' ? run.skills.tb.images.length : 0;
     const animationScale = pending.duration / .42;
@@ -2662,11 +2895,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       }
       run.effects.push({ kind: 'melee-swing', character: weaponId, x: p.x, y: p.y, r: hit.range, angle, direction: attackId % 2 ? 1 : -1, color: def.color, life: .28 * animationScale, maxLife: .28 * animationScale });
     } else if (def.ignoresTerrain) {
-      addShot(p.x + Math.cos(angle) * 20, p.y + Math.sin(angle) * 20, angle, { id: weaponId }, damage, { attackId });
+      addShot(p.x + Math.cos(angle) * 20, p.y + Math.sin(angle) * 20, angle, { id: weaponId }, damage, { attackId, godsealSnapshot: hit.godsealSnapshot });
       run.effects.push({ kind: 'muzzle', x: p.x + Math.cos(angle) * 20, y: p.y + Math.sin(angle) * 20, angle, r: 10, color: def.color, life: .14 * animationScale, maxLife: .14 * animationScale });
     } else {
       const offset = weaponId === 'tb' ? 0 : 21;
-      addShot(p.x + Math.cos(angle) * offset, p.y + Math.sin(angle) * offset, angle, { id: weaponId }, damage, { attackId, tbAttack: hit.tbAttack });
+      addShot(p.x + Math.cos(angle) * offset, p.y + Math.sin(angle) * offset, angle, { id: weaponId }, damage, { attackId, tbAttack: hit.tbAttack, godsealSnapshot: hit.godsealSnapshot });
       for (let i = 0; i < images; i++) addShot(p.x, p.y, angle, { id: weaponId }, damage * .3,
         { illusion: true, tbImage: true, imageSide: i ? 1 : -1 });
       run.effects.push({ kind: weaponId === 'sf' ? 'soul-muzzle' : 'muzzle', x: p.x + Math.cos(angle) * 21, y: p.y + Math.sin(angle) * 21, angle, r: 13, color: def.color, life: .13 * animationScale, maxLife: .13 * animationScale });
@@ -2683,6 +2916,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     p.attackPose = p.attackDuration; p.attackClock = 0; p.attackFacing = angle;
     const damage = baseAttackDamage(w), attackId = ++run.attackSeq;
     p.pendingAttack = { weaponId: w.id, type: def.type, damage, attackId, angle, target, resolved: false,
+      godsealSnapshot: equipmentCombat.basicAttackSnapshot(),
       duration: p.attackDuration, strikeTime: BASE_ATTACK_STRIKE_TIME * p.attackDuration / .42, elapsed: 0 };
   }
   function updateBaseAttack(dt) {
@@ -2732,7 +2966,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
           } else {
             const dealt = b.tbImage ? damageTerrorbladeImage(e, b.damage)
               : damageEnemy(e, b.damage, { source: b.skill ? 'skill' : b.illusion ? 'summon' : 'basic', area: !!b.skill,
-                  hit: b.skill || b.illusion ? null : { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage, tbAttack: b.tbAttack } });
+                  hit: b.skill || b.illusion ? null : { attackId: b.attackId, type: b.type, range: b.range, damage: b.baseDamage,
+                    godsealSnapshot: b.godsealSnapshot, tbAttack: b.tbAttack } });
             if (dealt > 0) {
               const lunaBounce = b.hero === 'luna' && !b.skill && !b.illusion && b.hit.size === 1
                 && addLunaBounce(e, b.hit, dealt, 0, b.deadShotJumps);
@@ -2792,16 +3027,20 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (id === 'bulwark') return t('quillCount', { count: s.receivedHits % 4 });
     if (id === 'conductor') return t('staticReady');
     if (id === 'scavenger') return t('dividendCount', { count: s.manualPickups % 8 });
-    if (id === 'jugg') return t('leapCount', { count: s.attackHits }) + (s.leapCooldown > 0 ? ` · ${s.leapCooldown.toFixed(1)}s` : '');
+    if (id === 'jugg') return `${juggPassiveLabel()} · ${t('leapCount', { count: s.attackHits })}${s.jump ? ` · ${selectedLocale === 'en' ? `${juggLeapMaxSteps(s.jump.tier) - s.jump.stepsRemaining + 1}/${juggLeapMaxSteps(s.jump.tier)} strikes` : selectedLocale === 'zh-TW' ? `${juggLeapMaxSteps(s.jump.tier) - s.jump.stepsRemaining + 1}/${juggLeapMaxSteps(s.jump.tier)} 段` : `${juggLeapMaxSteps(s.jump.tier) - s.jump.stepsRemaining + 1}/${juggLeapMaxSteps(s.jump.tier)} 段`}` : ''}${s.leapCooldown > 0 ? ` · ${s.leapCooldown.toFixed(1)}s` : ''}`;
     if (id === 'luna') return selectedLocale === 'en' ? 'Bounces 2' : selectedLocale === 'zh-TW' ? '彈射 2' : '弹射 2';
     if (id === 'tb') return `${selectedLocale === 'en' ? 'Charge' : selectedLocale === 'zh-TW' ? '蓄影' : '蓄影'} ${s.tb.hits}/6 · ${selectedLocale === 'en' ? 'Images' : '魔影'} ${s.tb.images.length}/2`;
     return t('soulCount', { count: s.souls, attack: Number(soulAttackBonus().toFixed(2)) });
+  }
+  function skillDescription(index) {
+    const skill = SKILLS[run.character.id][index];
+    return run.character.id === 'jugg' && index === 1 ? juggPassiveDescription() : skill.desc;
   }
   function renderSkillStrip() {
     const skills = SKILLS[run.character.id];
     $('skill-strip').dataset.hero = run.character.id;
     const ready = run.skills.activeCooldown <= 0 && run.player.mana >= ACTIVE_SKILL_CONFIG[run.character.id].manaCost && (run.character.id !== 'kael' || !!run.skills.lastPassiveSpell) && !(run.character.id === 'tb' && run.skills.tb.time > 0);
-    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && ready ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skill.desc} · ${skillGrowthText()}"><strong><span class="skill-kind">${t(i ? 'passive' : 'active')}</span> ${skill.name}${i ? '' : ` · ${heroGrowthTier(run.level)}`}</strong><span>${skillStatus(i)}</span></div>`).join('');
+    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && ready ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skillDescription(i)} · ${skillGrowthText()}"><strong><span class="skill-kind">${t(i ? 'passive' : 'active')}</span> ${skill.name}${i ? '' : ` · ${heroGrowthTier(run.level)}`}</strong><span>${skillStatus(i)}</span></div>`).join('');
     $('skill-button').disabled = !ready;
     $('skill-button').classList.toggle('is-mana-blocked', run.skills.activeCooldown <= 0 && !ready);
     const cost = ACTIVE_SKILL_CONFIG[run.character.id].manaCost;
@@ -2812,18 +3051,22 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function renderPauseDetails() {
     const s = run.stats, p = run.player;
+    $('pause-skin-list').innerHTML = [['pixel', t('skinPixel')], ['dota1', t('skinDota1')]].map(([id, name]) => `<button type="button" data-skin="${id}" aria-pressed="${selectedSkin === id}">${name}</button>`).join('');
     const stats = [
-      [t('statLife'), `${Math.ceil(p.hp)} / ${p.maxHp}`], [t('statArmor'), s.armor], [t('statMove'), `${s.speed}%`], [t('statAttackSpeed'), `${attackSpeed().toFixed(0)}%`],
+      [t('statPrimaryAttribute'), attributeLabel(run.primaryAttribute, selectedLocale)],
+      [t('statStrength'), Number(run.attributes.strength.toFixed(2))], [t('statAgility'), Number(run.attributes.agility.toFixed(2))],
+      [t('statIntelligence'), Number(run.attributes.intelligence.toFixed(2))],
+      [t('statLife'), `${Math.ceil(p.hp)} / ${p.maxHp}`], [t('statArmor'), Number(s.armor.toFixed(2))], [t('statMove'), `${s.speed}%`], [t('statAttackSpeed'), `${attackSpeed().toFixed(0)}%`],
       [t('statAttackPower'), Number(attackPower(run).toFixed(2))], [t('statAllDamage'), `${s.damage}%`],
       [t('statCrit'), `${Math.min(90, s.crit)}%`], [t('statCritDamage'), `${100 + s.critDamage}%`], [t('statDodge'), `${Math.min(55, s.dodge)}%`], [t('statLifesteal'), `${Math.min(65, s.lifesteal)}%`],
-      [t('statRegen5'), s.regen], [t('statPickup'), 75 + s.pickup], [t('statLuck'), s.luck],
+      [t('statRegen5'), Number(s.regen.toFixed(2))], [t('statPickup'), 75 + s.pickup], [t('statLuck'), s.luck],
       [t('statBaseAttackRange'), basicRange()], [t('mana'), `${Math.floor(p.mana)} / ${p.maxMana}`],
-      [t('statManaRegen'), `${s.manaRegen}/s`], [t('statAbilityHaste'), `${clamp(s.abilityHaste, 0, 60)}%`]
+      [t('statManaRegen'), `${Number(s.manaRegen.toFixed(2))}/s`], [t('statAbilityHaste'), `${Number(clamp(s.abilityHaste, 0, 60).toFixed(2))}%`]
     ];
     $('pause-stats').innerHTML = stats.map(([name, value]) => `<div class="pause-stat"><span>${name}</span><strong>${value}</strong></div>`).join('');
     $('pause-equipment').innerHTML = run.equipment.length ? run.equipment.map(item => {
       const def = equipmentDef(item);
-      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)}><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong>${equipmentBadges(def)}<p>${equipmentDesc(def)}</p></div></div>`;
+      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)}><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong>${equipmentBadges(def)}<p>${equipmentDesc(def, item)}</p></div></div>`;
     }).join('') : `<p>${t('emptyEquipment')}</p>`;
     $('pause-builds').innerHTML = `<h3>${wt('builds')}</h3>${buildCards()}<p class="reserve-caption">${wt('summary', { active: run.equipment.length, reserve: run.equipmentReserve.length })}</p>`;
     $('pause-buffs').innerHTML = BUFF_IDS.filter(id => buffCount(id) > 0).map(id => {
@@ -2833,11 +3076,16 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }).join('') || `<p class="equipment-empty">${t('buffEmpty')}</p>`;
     $('pause-buffs').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
     $('pause-skills').dataset.hero = run.character.id;
-    $('pause-skills').innerHTML = `<p>${skillGrowthText()}</p>` + SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${t(i ? 'passive' : 'active')} · ${skill.name}</strong><p>${skill.desc}</p><small>${t('current', { status: skillStatus(i) })}</small></div>`).join('')
+    $('pause-skills').innerHTML = `<p>${skillGrowthText()}</p>` + SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${t(i ? 'passive' : 'active')} · ${skill.name}</strong><p>${skillDescription(i)}</p><small>${t('current', { status: skillStatus(i) })}</small></div>`).join('')
       + (run.character.id === 'kael' ? `<div class="pause-skill"><strong>${selectedLocale === 'en' ? 'Spell pool' : selectedLocale === 'zh-TW' ? '法術池' : '法术池'}</strong><p>${kaelVolleyText(run.skills.kaelSpellRank)}</p>${KAEL_SPELLS.map(spell => `<p${run.skills.lastPassiveSpell === spell.id ? ' class="is-current"' : ''}><strong>${kaelSpellName(spell.id)}</strong> · ${kaelSpellDesc(spell.id)}</p>`).join('')}</div>` : '');
   }
   function updateHUD() {
     if (!run) return;
+    const growthKey = killGrowthUiKey();
+    if (growthKey !== run.growthUiKey) {
+      run.growthUiKey = growthKey;
+      renderEquipmentStrip();
+    }
     $('wave-label').textContent = isEndlessRun() ? `${modeName('endless')} · ${t('bestWave', { wave: run.wave })}` : t('wave', { wave: run.wave, max: MAX_WAVES });
     $('time-label').textContent = run.timeLeft <= 0 && run.bossFight ? t('boss') : String(Math.max(0, Math.ceil(run.timeLeft)));
     $('biome-label').textContent = run.biome.name;
@@ -2947,10 +3195,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     ctx.restore();
   }
   function drawBackdrop(cam) {
+    if (run.biome.id === 'dota') { drawDotaGround(ctx); return; }
     const b = run.biome;
     ctx.fillStyle = b.ground;
     ctx.fillRect(0, 0, WORLD.w, WORLD.h);
-    if (selectedSkin === 'pixel') {
+    if (usesPixelPresentation()) {
       drawPixelGround(cam);
       return;
     }
@@ -2975,7 +3224,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     ctx.globalAlpha = 1;
   }
   function drawTerrain(cam) {
-    if (selectedSkin === 'pixel') {
+    if (run.biome.id === 'dota') return;
+    if (usesPixelPresentation()) {
       for (const o of run.terrain) {
         if (o.kind !== 'water' || o.x + o.w + 16 < cam.x || o.x - 16 > cam.x + viewW || o.y + o.h + 16 < cam.y || o.y - 16 > cam.y + viewH) continue;
         drawWater(o);
@@ -3131,6 +3381,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     ctx.restore();
   }
   function drawScenery(o) {
+    if (run.biome.id === 'dota') {
+      ctx.save();
+      if (run.player.y < o.y && run.player.y > o.y - 100 && Math.abs(run.player.x - o.x) < 50) ctx.globalAlpha = .42;
+      drawDotaTree(ctx, o); ctx.restore(); return;
+    }
     const tree = o.kind === 'tree', top = o.y - (tree ? 80 : 64);
     const image = artImage(`map-${run.biome.id}-${o.kind}`), colors = SCENERY_COLORS[run.biome.id];
     ctx.save();
@@ -3208,14 +3463,14 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       if (!visible(e, cam, e.r + 36)) continue;
       if (e.id === 'elite' && e.windup > 0) {
         ctx.strokeStyle = '#ffc47c'; ctx.lineWidth = 3; ctx.globalAlpha = .95;
-        if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffc47c'; drawPixelArc(e.x, e.y, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
+        if (usesPixelPresentation()) { ctx.fillStyle = '#ffc47c'; drawPixelArc(e.x, e.y, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
         else { ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); ctx.stroke(); }
       }
       if (e.id === 'boss' && e.windup > 0) {
         const telegraphColor = e.variant === 'roshan' ? '#f5b65f' : '#f7a6cf';
         const telegraphTime = e.variant === 'roshan' ? (e.enraged ? .55 : .72) : .55;
         ctx.strokeStyle = telegraphColor; ctx.lineWidth = e.variant === 'roshan' ? 5 : 4; ctx.globalAlpha = .95;
-        if (selectedSkin === 'pixel') { ctx.fillStyle = telegraphColor; drawPixelArc(e.x, e.y, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU, e.variant === 'roshan' ? 8 : 6); }
+        if (usesPixelPresentation()) { ctx.fillStyle = telegraphColor; drawPixelArc(e.x, e.y, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU, e.variant === 'roshan' ? 8 : 6); }
         else { ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU); ctx.stroke(); }
       }
       if (e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
@@ -3226,13 +3481,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     if (run.aimTarget) {
       ctx.strokeStyle = '#ffe69c'; ctx.globalAlpha = Math.min(1, run.aimTarget.life); ctx.lineWidth = 2;
-      if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffe69c'; drawPixelArc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); }
+      if (usesPixelPresentation()) { ctx.fillStyle = '#ffe69c'; drawPixelArc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); }
       else { ctx.beginPath(); ctx.arc(run.aimTarget.x, run.aimTarget.y, 17, 0, TAU); ctx.stroke(); }
       ctx.beginPath(); ctx.moveTo(run.aimTarget.x - 24, run.aimTarget.y); ctx.lineTo(run.aimTarget.x - 11, run.aimTarget.y); ctx.moveTo(run.aimTarget.x + 11, run.aimTarget.y); ctx.lineTo(run.aimTarget.x + 24, run.aimTarget.y); ctx.stroke();
     }
     if (moveTarget) {
       ctx.strokeStyle = '#91f5cf'; ctx.lineWidth = 2; ctx.globalAlpha = .95;
-      if (selectedSkin === 'pixel') { ctx.fillStyle = '#91f5cf'; drawPixelArc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.fillRect(moveTarget.x - 2, moveTarget.y - 2, 4, 4); }
+      if (usesPixelPresentation()) { ctx.fillStyle = '#91f5cf'; drawPixelArc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.fillRect(moveTarget.x - 2, moveTarget.y - 2, 4, 4); }
       else { ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 13, 0, TAU); ctx.stroke(); ctx.beginPath(); ctx.arc(moveTarget.x, moveTarget.y, 3, 0, TAU); ctx.stroke(); }
     }
     ctx.globalAlpha = 1;
@@ -3241,7 +3496,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     for (const h of run.hazards) {
       if (!visible(h, cam, h.r)) continue;
       const active = h.life < 1.5;
-      if (selectedSkin === 'pixel') {
+      if (usesPixelPresentation()) {
         const size = Math.round(h.r / 4) * 8;
         ctx.globalAlpha = active ? .26 : .12;
         ctx.fillStyle = run.biome.accent;
@@ -3272,7 +3527,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const glow = .72 + .22 * Math.sin(ambientTime * 7 + item.drift);
       if (item.kind === 'chest') {
         ctx.save(); ctx.globalAlpha = glow;
-        if (selectedSkin === 'pixel') {
+        if (usesPixelPresentation()) {
           const x = Math.round(item.x), y = Math.round(item.y);
           ctx.fillStyle = '#182932'; ctx.fillRect(x - 14, y - 10, 28, 22);
           ctx.fillStyle = '#9d663e'; ctx.fillRect(x - 11, y - 7, 22, 16);
@@ -3288,7 +3543,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         ctx.restore();
         continue;
       }
-      if (selectedSkin === 'pixel') {
+      if (usesPixelPresentation()) {
         const x = Math.round(item.x), y = Math.round(item.y);
         ctx.globalAlpha = glow;
         ctx.fillStyle = '#b8f9d1';
@@ -3303,9 +3558,9 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function drawEnemy(e) {
     const def = enemyDef(e), visualId = e.variant === 'roshan' ? 'roshan' : e.id;
-    ctx.save(); ctx.translate(selectedSkin === 'pixel' ? Math.round(e.x) : e.x, selectedSkin === 'pixel' ? Math.round(e.y) : e.y);
+    ctx.save(); ctx.translate(usesPixelPresentation() ? Math.round(e.x) : e.x, usesPixelPresentation() ? Math.round(e.y) : e.y);
     ctx.fillStyle = '#0007';
-    if (selectedSkin === 'pixel') ctx.fillRect(-e.r, e.r * .58, e.r * 2, e.r * .5);
+    if (usesPixelPresentation()) ctx.fillRect(-e.r, e.r * .58, e.r * 2, e.r * .5);
     else { ctx.beginPath(); ctx.ellipse(2, e.r * .75, e.r * .95, e.r * .48, 0, 0, TAU); ctx.fill(); }
     if (run.totalTime < (e.cycloneUntil || 0)) {
       ctx.strokeStyle = '#c6f3ed'; ctx.lineWidth = 2;
@@ -3316,20 +3571,20 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     if (e.id === 'elite' && e.windup > 0) {
       ctx.strokeStyle = '#ffc47c'; ctx.lineWidth = 3;
-      if (selectedSkin === 'pixel') { ctx.fillStyle = '#ffc47c'; drawPixelArc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
+      if (usesPixelPresentation()) { ctx.fillStyle = '#ffc47c'; drawPixelArc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
       else { ctx.beginPath(); ctx.arc(0, 0, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); ctx.stroke(); }
     }
     if (e.id === 'boss' && e.windup > 0) {
       const telegraphColor = e.variant === 'roshan' ? '#f5b65f' : '#f7a6cf';
       const telegraphTime = e.variant === 'roshan' ? (e.enraged ? .55 : .72) : .55;
       ctx.strokeStyle = telegraphColor; ctx.lineWidth = e.variant === 'roshan' ? 5 : 4;
-      if (selectedSkin === 'pixel') { ctx.fillStyle = telegraphColor; drawPixelArc(0, 0, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU, e.variant === 'roshan' ? 8 : 6); }
+      if (usesPixelPresentation()) { ctx.fillStyle = telegraphColor; drawPixelArc(0, 0, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU, e.variant === 'roshan' ? 8 : 6); }
       else { ctx.beginPath(); ctx.arc(0, 0, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU); ctx.stroke(); }
     }
     ctx.rotate(((e.id === 'elite' || e.id === 'charger') && (e.windup > 0 || e.charging > 0)) || (def.windup && (e.windup > 0 || e.attackPose > 0))
       ? Math.atan2(e.chargeY, e.chargeX)
       : Math.atan2(run.player.y - e.y, run.player.x - e.x));
-    if (e.id === 'crawler' && selectedSkin !== 'pixel') ctx.translate(0, Math.sin(e.animTime * 22) * .7);
+    if (e.id === 'crawler' && !usesPixelPresentation()) ctx.translate(0, Math.sin(e.animTime * 22) * .7);
     if (e.id === 'elite' && e.windup > 0) ctx.scale(.9, 1.08);
     if (e.id === 'elite' && e.charging > 0) ctx.scale(1.12, .9);
     if (e.enrage > 0 || e.enraged) {
@@ -3347,7 +3602,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       : e.moving && Math.floor(e.animTime * 6) % 2 && ENEMY_POSES[visualId].includes('step') ? `${visualId}-step` : visualId;
     const image = artImage(pose) || artImage(visualId);
     if (image?.complete && image.naturalWidth) {
-      const size = selectedSkin === 'pixel' ? Math.max(32, Math.round(e.r * 2.4 / 4) * 4) : e.r * 2.4;
+      const size = usesPixelPresentation() ? Math.max(32, Math.round(e.r * 2.4 / 4) * 4) : e.r * 2.4;
       if (e.hitFlash > 0) ctx.filter = 'brightness(1.9)';
       ctx.drawImage(image, -size / 2, -size / 2, size, size);
     } else {
@@ -3383,6 +3638,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
 
   function drawKaelOrbs(front, mirror) {
     const time = motionPreference.matches ? 0 : run.totalTime;
+    const classic = selectedSkin === 'dota1';
     const colors = ['#72dcff', '#bb8aff', '#ffad50'];
     ctx.save();
     // Keep the orbit continuous when the body turns, and freeze it with game time.
@@ -3391,8 +3647,8 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       const angle = time * 1.45 + i * TAU / 3 - Math.PI / 2;
       const depth = Math.sin(angle);
       if ((depth >= 0) !== front) continue;
-      const x = Math.cos(angle) * 20, y = -64 + depth * 5;
-      const r = 3.5 + depth * .35;
+      const x = Math.cos(angle) * (classic ? 24 : 20), y = -64 + depth * (classic ? 7 : 5);
+      const r = (classic ? 4.8 : 3.5) + depth * .35;
       ctx.globalAlpha = .16; ctx.fillStyle = colors[i];
       ctx.beginPath(); ctx.arc(x, y, r * 1.9, 0, TAU); ctx.fill();
       ctx.globalAlpha = 1; ctx.strokeStyle = '#362945'; ctx.lineWidth = 1.2;
@@ -3500,7 +3756,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (s.requiem?.delay > 0 || s.thunder) { scaleX *= 1.04; lift += 3; }
     ctx.translate(0, -lift); ctx.rotate(lean); ctx.scale(mirror * scaleX, scaleY);
     const evolutionLevels = Object.fromEntries(Object.keys(EQUIPMENT_UPGRADES).map(id => [id, equippedUpgradeLevel(id)]));
-    const evolutionView = { time: run.totalTime, attack: attackSnap, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches };
+    const evolutionView = { time: run.totalTime, attack: attackSnap, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches };
     drawEvolutionEquipment(ctx, evolutionLevels, evolutionView);
     if (id === 'kael') drawKaelOrbs(false, mirror);
     if (image) {
@@ -3564,7 +3820,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       ctx.save(); ctx.translate(25, -39); drawLunaGlaive(24, -.3); ctx.restore();
       ctx.fillStyle = '#c998c1'; ctx.beginPath(); ctx.arc(25, -39, 2.5, 0, TAU); ctx.fill();
     } else if (id === 'kael') {
-      ctx.fillStyle = '#9f273f'; ctx.strokeStyle = '#edc675'; ctx.lineWidth = 2;
+      ctx.fillStyle = selectedSkin === 'dota1' ? '#edeaf3' : '#9f273f'; ctx.strokeStyle = '#edc675'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(-17, 13); ctx.lineTo(-15, -36); ctx.lineTo(-9, -29); ctx.lineTo(9, -29); ctx.lineTo(15, -36); ctx.lineTo(17, 13); ctx.closePath(); ctx.fill(); ctx.stroke();
       ctx.fillStyle = '#eecb77'; ctx.fillRect(-11, -48, 22, 32);
       ctx.fillStyle = '#f2d7bb'; ctx.beginPath(); ctx.moveTo(-8, -37); ctx.lineTo(-19, -44); ctx.lineTo(-10, -30); ctx.lineTo(10, -30); ctx.lineTo(19, -44); ctx.lineTo(8, -37); ctx.fill();
@@ -3579,24 +3835,24 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function drawProjectiles(cam) {
     for (const b of run.bullets) {
-      if (!visible(b, cam, b.kaelSpell === 'tornado' ? 170 : 100)) continue;
+      if (!visible(b, cam, b.kaelSpell === 'tornado' ? 220 : 100)) continue;
       if (b.kaelSpell === 'tornado' && windRenderer) {
         const age = run.totalTime - b.startedAt;
         // The foot follows the projectile; the upright funnel uses the paused game clock.
         windRenderer.draw(ctx, { x: b.x, y: b.y, time: motionPreference.matches ? 1.4 : age,
-          scale: .56, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
-        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age }, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
+          scale: b.scale, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
+        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age }, { level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
         continue;
       }
       if (b.kaelSpell === 'tornado') {
         const angle = Math.atan2(b.vy, b.vx), opacity = Math.min(1, (run.totalTime - b.startedAt) / .06, b.life / .1);
-        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(angle); ctx.globalAlpha = opacity;
+        ctx.save(); ctx.translate(b.x, b.y); ctx.rotate(angle); ctx.scale(b.scale / .56, b.scale / .56); ctx.globalAlpha = opacity;
         ctx.strokeStyle = '#d8c7ff'; ctx.lineWidth = 4;
         for (let i = 0; i < 3; i++) {
           ctx.beginPath(); ctx.ellipse(-10 + i * 8, 0, 10 + i * 3, 16 + i * 4, 0, 0, TAU); ctx.stroke();
         }
         ctx.restore();
-        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age: run.totalTime - b.startedAt }, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
+        drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age: run.totalTime - b.startedAt }, { level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
         continue;
       }
       const angle = Math.atan2(b.vy, b.vx);
@@ -3611,7 +3867,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         continue;
       }
       if (b.illusion && !b.tbImage) {
-        drawMirrorStrike(ctx, b.evolutionLevel || 1, { pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches, time: run.totalTime });
+        drawMirrorStrike(ctx, b.evolutionLevel || 1, { pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches, time: run.totalTime });
       } else if (b.hero === 'tb') {
         if (b.tbImage) { ctx.globalAlpha = .66; ctx.translate(0, b.imageSide * 7); }
         ctx.fillStyle = '#18352a'; ctx.strokeStyle = '#b2f585'; ctx.lineWidth = 2;
@@ -3641,7 +3897,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         ctx.fillStyle = '#fff0ba'; ctx.beginPath(); ctx.ellipse(1, 0, b.skill ? 8 : 6, b.skill ? 3.5 : 2.5, 0, 0, TAU); ctx.fill();
         ctx.fillStyle = '#b56739'; ctx.fillRect(-7, -2.5, 4, 5);
       }
-      drawHeroGrowthProjectile(ctx, b, { level: run.level, time: run.totalTime, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
+      drawHeroGrowthProjectile(ctx, b, { level: run.level, time: run.totalTime, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
       ctx.restore();
     }
   }
@@ -3690,7 +3946,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r * .87, angle - direction * .55, angle, direction < 0); ctx.stroke();
   }
   function drawEquipmentUpgradeEffect(fx, progress) {
-    const pixel = selectedSkin === 'pixel';
+    const pixel = usesPixelPresentation();
     const view = { pixel, reducedMotion: motionPreference.matches };
     if (fx.weapon === 'battlefury') { drawEvolutionCleave(ctx, fx, progress, view); return; }
     if (fx.weapon === 'dagon') { drawDagonFork(ctx, fx, progress, view); return; }
@@ -3725,10 +3981,46 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         ctx.beginPath(); ctx.moveTo(x - 8, -12); ctx.lineTo(x + 4, 0); ctx.lineTo(x - 8, 12); ctx.stroke();
       }
     } else if (fx.weapon === 'cyclone') {
-      for (let i = 0; i < 3; i++) arc(fx.r * (1 - i * .18), progress * 3 + i, progress * 3 + i + 4.3, '#b9e5df', 2);
+      const gust = fx.gustRadius || fx.r || 28;
+      const targetX = Number.isFinite(fx.targetX) ? fx.targetX - fx.x : 0;
+      const targetY = Number.isFinite(fx.targetY) ? fx.targetY - fx.y : 0;
+      ctx.save(); ctx.translate(targetX, targetY);
+      ctx.globalAlpha *= .8;
+      ctx.fillStyle = '#d8fff1'; ctx.beginPath(); ctx.ellipse(0, 7, gust * .7, gust * .24, 0, 0, TAU); ctx.fill();
+      for (let i = 0; i < 3 + fx.level; i++) {
+        const radius = gust * (1 - i * .12), turn = progress * 4.5 + i * 1.9;
+        arc(radius, turn, turn + 4.2, i % 2 ? '#d9fff3' : '#76d9d0', pixel ? 3 : 2.5);
+      }
+      ctx.strokeStyle = '#f3ffff'; ctx.lineWidth = pixel ? 2 : 1.5;
+      for (let i = 0; i < 2 + fx.level; i++) {
+        const a = progress * 3 + i * TAU / (2 + fx.level), y = -gust * .75 + i * gust * .3;
+        ctx.beginPath(); ctx.moveTo(Math.cos(a) * 5, y); ctx.quadraticCurveTo(Math.cos(a + 1.2) * gust * .55, y - 4, Math.cos(a + 2.4) * gust * .2, y + gust * .16); ctx.stroke();
+      }
+      ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, 3 + fx.level, 0, TAU); ctx.fill();
+      ctx.restore();
     } else if (fx.weapon === 'necronomicon') {
       ctx.scale(1, .45);
-      for (let i = 0; i < fx.level; i++) arc(20 + i * 8 + progress * 10, 0, TAU, '#a4d9b8', 2);
+      const radius = 20 + fx.level * 7 + progress * 12;
+      for (let i = 0; i < fx.level + 1; i++) arc(radius - i * 8, 0, TAU, i % 2 ? '#d7f4ba' : '#79c999', pixel ? 3 : 2);
+      ctx.globalAlpha *= .8;
+      ctx.strokeStyle = '#c8f2bf'; ctx.lineWidth = 2;
+      for (let i = 0; i < 6 + fx.level * 2; i++) {
+        const a = i * TAU / (6 + fx.level * 2) + progress * 2, inner = 8, outer = radius * .92;
+        ctx.beginPath(); ctx.moveTo(Math.cos(a) * inner, Math.sin(a) * inner); ctx.lineTo(Math.cos(a) * outer, Math.sin(a) * outer); ctx.stroke();
+      }
+      ctx.fillStyle = '#6dc58d'; ctx.beginPath(); ctx.arc(0, 0, 7 + fx.level, 0, TAU); ctx.fill();
+      if (Array.isArray(fx.summons)) {
+        ctx.save(); ctx.scale(1, 1 / .45);
+        for (const summon of fx.summons) {
+          const sx = summon.x - fx.x, sy = summon.y - fx.y;
+          ctx.save(); ctx.translate(sx, sy); ctx.globalAlpha *= .75;
+          ctx.strokeStyle = summon.side < 0 ? '#d6f3bf' : '#91d7ff'; ctx.lineWidth = 2;
+          ctx.beginPath(); ctx.arc(0, 0, 10 + fx.level * 2, 0, TAU); ctx.stroke();
+          ctx.fillStyle = summon.side < 0 ? '#a7d98d' : '#80bce1'; ctx.beginPath(); ctx.moveTo(0, -9); ctx.lineTo(6, 7); ctx.lineTo(-6, 7); ctx.closePath(); ctx.fill();
+          ctx.restore();
+        }
+        ctx.restore();
+      }
     } else if (fx.weapon === 'mjollnir') {
       if (fx.level === 3) {
         for (const side of [-1, 0, 1]) {
@@ -3773,6 +4065,36 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         }
         ctx.restore();
       }
+    } else if (fx.weapon === 'shineMadmoon') {
+      const rays = 4 + fx.level * 2;
+      for (let i = 0; i < rays; i++) {
+        const angle = fx.angle + i * TAU / rays, inner = 8 + progress * 10, outer = fx.r * (.55 + progress * .45);
+        ctx.strokeStyle = i % 2 ? '#f0c8ff' : '#fff0b8'; ctx.lineWidth = fx.level >= 3 ? 3 : 2;
+        ctx.beginPath(); ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
+        ctx.lineTo(Math.cos(angle) * outer, Math.sin(angle) * outer); ctx.stroke();
+      }
+      ctx.strokeStyle = '#f8d9ff'; ctx.lineWidth = 2; arc(12 + progress * 10, 0, TAU, '#f8d9ff', 2);
+    } else if (fx.weapon === 'jasperDaggers') {
+      ctx.rotate(fx.angle || 0);
+      ctx.strokeStyle = '#72e4d3'; ctx.lineWidth = fx.level >= 3 ? 4 : 2;
+      const length = fx.r * (.65 + progress * .35);
+      ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(length, 0); ctx.stroke();
+      ctx.strokeStyle = '#d5fff5'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(length * .35, -5); ctx.lineTo(length, 0); ctx.lineTo(length * .35, 5); ctx.stroke();
+    } else if (fx.weapon === 'shadowDisaster') {
+      ctx.strokeStyle = '#b58cff'; ctx.lineWidth = fx.level >= 3 ? 4 : 2;
+      ctx.beginPath(); ctx.arc(0, 0, 10 + progress * fx.r, 0, Math.PI * 2); ctx.stroke();
+      ctx.strokeStyle = '#f0e6ff'; ctx.lineWidth = 2;
+      for (let i = 0; i < 3 + fx.level; i++) {
+        const angle = i * Math.PI * 2 / (3 + fx.level) + progress;
+        ctx.beginPath(); ctx.moveTo(Math.cos(angle) * 5, Math.sin(angle) * 5);
+        ctx.lineTo(Math.cos(angle) * (16 + progress * 9), Math.sin(angle) * (16 + progress * 9)); ctx.stroke();
+      }
+    } else if (fx.weapon === 'bladeOfVigil') {
+      ctx.globalAlpha *= .5; arc(fx.r * (.65 + progress * .35), 0, TAU, '#ffe1a8', 2 + fx.level);
+    } else if (fx.weapon === 'ringAghanim') {
+      ctx.globalAlpha *= .7; arc(18 + progress * 12, 0, TAU, '#b9dcff', 3);
+      for (let i = 0; i < 4 + fx.level; i++) { const angle = i * TAU / (4 + fx.level); ctx.fillStyle = '#e2f4ff'; ctx.fillRect(Math.cos(angle) * 28 - 2, Math.sin(angle) * 28 - 2, 4, 4); }
     } else if (fx.weapon === 'radiance') {
       ctx.globalAlpha *= .65;
       for (let i = 0; i < (fx.level === 3 ? 6 : 3); i++) {
@@ -3892,7 +4214,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       if (!inView) continue;
       const progress = 1 - fx.life / fx.maxLife;
       ctx.globalAlpha = clamp(fx.life / fx.maxLife, 0, 1); ctx.strokeStyle = fx.color; ctx.fillStyle = fx.color;
-      const view = { hero: run.character.id, level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches };
+      const view = { hero: run.character.id, level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches };
       if (emphasized < 24 && (fx.weapon || fx.build || ['quills', 'thunder', 'lunar-impact', 'muzzle', 'kael-emp-bolt', 'kael-emp-explosion'].includes(fx.kind))) {
         emphasized++;
         if (drawWeaponStrike(ctx, fx, progress, view) || drawBuildFeedback(ctx, fx, progress, view)
@@ -3900,6 +4222,10 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       }
       if (fx.kind === 'elite-frost' || fx.kind === 'elite-lightning') drawEliteSpellEffect(fx, progress);
       else if (fx.kind === 'equipment-upgrade') drawEquipmentUpgradeEffect(fx, progress);
+      else if (fx.kind === 'line' && fx.weapon === 'meteorHammer') {
+        ctx.fillStyle = progress * fx.maxLife < (fx.impactDuration || .42) ? '#ffb35e' : '#5a3029';
+        ctx.beginPath(); ctx.ellipse(fx.impactX ?? fx.x2, fx.impactY ?? fx.y2, (fx.r || 64) * .62, (fx.r || 64) * .33, 0, 0, TAU); ctx.fill();
+      }
       else if (fx.kind === 'line') {
         const dx = fx.x2 - fx.x1, dy = fx.y2 - fx.y1, length = Math.hypot(dx, dy) || 1;
         for (const [color, width] of [[fx.color, fx.width || 4], ['#ffffff', 1.4]]) {
@@ -3908,7 +4234,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
           for (let i = 1; i <= segments; i++) {
             const t = i / segments, bend = i === segments ? 0 : Math.sin(i * 2.7 + fx.x1) * (fx.upgradeLevel === 3 ? 10 : 7);
             let x = fx.x1 + dx * t - dy / length * bend, y = fx.y1 + dy * t + dx / length * bend;
-            if (fx.upgradeLevel && selectedSkin === 'pixel' && i < segments) { x = Math.round(x / 2) * 2; y = Math.round(y / 2) * 2; }
+            if (fx.upgradeLevel && usesPixelPresentation() && i < segments) { x = Math.round(x / 2) * 2; y = Math.round(y / 2) * 2; }
             ctx.lineTo(x, y);
           }
           ctx.stroke();
@@ -4015,7 +4341,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         ctx.beginPath(); ctx.moveTo(16, -4); ctx.lineTo(22 + fx.r, 0); ctx.lineTo(18, 6); ctx.lineTo(24, 0); ctx.closePath(); ctx.fill(); ctx.restore();
       } else if (fx.kind === 'landing') {
         ctx.lineWidth = 4; ctx.beginPath(); ctx.ellipse(fx.x, fx.y, fx.r * (.55 + progress * .45), fx.r * (.22 + progress * .14), 0, 0, TAU); ctx.stroke();
-        ctx.save(); ctx.translate(fx.x, fx.y); ctx.rotate(fx.angle); ctx.strokeStyle = '#fff2d2'; ctx.lineWidth = 7; ctx.beginPath(); ctx.moveTo(-22, -40); ctx.lineTo(62, 35); ctx.stroke(); ctx.restore();
+        ctx.save(); ctx.translate(fx.x, fx.y); ctx.rotate(fx.angle); ctx.strokeStyle = '#fff2d2'; ctx.lineWidth = 7;
+        const blades = fx.tier >= 3 ? 3 : fx.tier === 2 ? 2 : 1;
+        for (let i = 0; i < blades; i++) { ctx.save(); ctx.rotate((i - (blades - 1) / 2) * .24); ctx.beginPath(); ctx.moveTo(-22, -40); ctx.lineTo(62, 35); ctx.stroke(); ctx.restore(); }
+        if (fx.tier >= 3) { ctx.globalAlpha *= .7; ctx.strokeStyle = '#b9efff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, fx.r * (.7 + progress * .3), 0, TAU); ctx.stroke(); }
+        ctx.restore();
       } else if (fx.kind === 'melee-swing') drawMeleeSwing(fx);
       else if (fx.kind === 'text') { ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText(fx.text, fx.x, fx.y - progress * 24); }
       else if (fx.kind === 'shards') {
@@ -4051,7 +4381,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   function drawKaelSpirits() { for (const spirit of run.skills.kaelSpirits) drawKaelSpirit(spirit); }
 
   function drawNecroUnit(unit) {
-    const pixel = selectedSkin === 'pixel', ranged = unit.side > 0;
+    const pixel = usesPixelPresentation(), ranged = unit.side > 0;
     ctx.save(); ctx.translate(pixel ? Math.round(unit.x) : unit.x, pixel ? Math.round(unit.y) : unit.y);
     ctx.globalAlpha = clamp(unit.life / .3, 0, 1);
     ctx.fillStyle = '#071b20a0'; ctx.beginPath(); ctx.ellipse(0, 12, 12, 5, 0, 0, TAU); ctx.fill();
@@ -4081,7 +4411,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       ctx.save();
       for (const wall of s.kaelIceWalls) {
         const build = clamp(wall.age / .18, 0, 1), fade = clamp(wall.life / .5, 0, 1);
-        ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle); ctx.scale(1.45, 120 / 58); ctx.globalAlpha = .78 * fade;
+        ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle); ctx.scale(wall.halfWidth / 20, wall.halfLength / 68); ctx.globalAlpha = .78 * fade;
         ctx.fillStyle = '#7bbfd6'; ctx.beginPath(); ctx.ellipse(0, 0, 19 * build, 63 * build, 0, 0, TAU); ctx.fill();
         const chunks = [
           [-10, -49, 17, 34, '#bcefff'], [5, -39, 19, 43, '#75c8e2'], [-7, -22, 22, 38, '#a5e5f5'],
@@ -4328,32 +4658,34 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     ctx.globalAlpha = 1;
     drawHeroGrowthAreas(ctx, { hero: run.character.id, level: run.level, player: p, skills: s,
-      time: run.totalTime, pixel: selectedSkin === 'pixel', reducedMotion: motionPreference.matches });
+      time: run.totalTime, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
   }
   function drawKaelMeteor(meteor) {
-    const age = clamp(3 - meteor.life, 0, 3), reduced = motionPreference.matches;
+    const age = clamp(meteor.maxLife - meteor.life, 0, meteor.maxLife), reduced = motionPreference.matches;
     // Ground position, lifetime and damage still belong to the existing skill.
     const lift = reduced ? 0 : 72 * Math.max(0, 1 - age / .15) ** 2;
     if (meteorRenderer) {
       meteorRenderer.draw(ctx, { x: meteor.x, y: meteor.y, angle: meteor.trailAngle,
-        time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel / 1.45, lift, scale: 1.45,
+        time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel / meteor.scale, lift, scale: meteor.scale,
         opacity: Math.min(1, age / .04, meteor.life / .12), detail: reduced ? 0 : .6 });
     } else {
       ctx.save(); ctx.fillStyle = '#59392c'; ctx.strokeStyle = '#ff9c65'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(meteor.x, meteor.y - 35 - lift, 35, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
+      const radius = 24 * meteor.scale;
+      ctx.beginPath(); ctx.arc(meteor.x, meteor.y - radius - lift, radius, 0, TAU); ctx.fill(); ctx.stroke(); ctx.restore();
     }
-    drawHeroGrowthKaelBody(ctx, 'chaos-meteor', meteor, { level: run.level, pixel: selectedSkin === 'pixel', reducedMotion: reduced });
+    drawHeroGrowthKaelBody(ctx, 'chaos-meteor', meteor, { level: run.level, pixel: usesPixelPresentation(), reducedMotion: reduced });
   }
   function drawCombat() {
     const cam = camera();
     const guards = buffCount('clockworkGuards');
     ctx.save();
     if (run.screenShake > 0 && phase === 'combat') ctx.translate(Math.sin(run.totalTime * 71) * run.screenShake, Math.cos(run.totalTime * 83) * run.screenShake);
-    ctx.translate(selectedSkin === 'pixel' ? -Math.round(cam.x) : -cam.x, selectedSkin === 'pixel' ? -Math.round(cam.y) : -cam.y);
+    ctx.translate(usesPixelPresentation() ? -Math.round(cam.x) : -cam.x, usesPixelPresentation() ? -Math.round(cam.y) : -cam.y);
     drawBackdrop(cam); drawTerrain(cam); drawSkillGround(); drawBuffAuras(); drawOrbitingArray(); drawPickups(cam);
-    if (selectedSkin === 'pixel') {
-      const layers = run.terrain.filter(o => o.kind !== 'water' && o.x + 32 >= cam.x && o.x - 32 <= cam.x + viewW && o.y + 16 >= cam.y && o.y - 80 <= cam.y + viewH)
+    if (usesPixelPresentation() || run.biome.id === 'dota') {
+      const layers = run.terrain.filter(o => o.kind !== 'water' && o.x + (run.biome.id === 'dota' ? 48 : 32) >= cam.x && o.x - (run.biome.id === 'dota' ? 48 : 32) <= cam.x + viewW && o.y + 22 >= cam.y && o.y - (run.biome.id === 'dota' ? 150 : 80) <= cam.y + viewH)
         .map(o => ({ y: o.y, scenery: o }));
+      if (run.biome.id === 'dota') for (const o of DOTA_SCENERY) if (visible(o, cam, 210)) layers.push({ y: o.y, dotaScenery: o });
       for (const e of run.enemies) if (visible(e, cam, e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
       for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 24)) layers.push({ y: spirit.y + 10, spirit });
       for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) layers.push({ y: unit.y + 12, necro: unit });
@@ -4365,7 +4697,12 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       layers.push({ y: run.player.y + 16, player: true });
       layers.sort((a, b) => a.y - b.y);
       for (const layer of layers) {
-        if (layer.scenery) drawScenery(layer.scenery);
+        if (layer.dotaScenery) {
+          const o = layer.dotaScenery;
+          ctx.save();
+          if (run.player.y < o.y && run.player.y > o.y - 190 && Math.abs(run.player.x - o.x) < 100) ctx.globalAlpha = .48;
+          drawDotaScenery(ctx, o, run.totalTime); ctx.restore();
+        } else if (layer.scenery) drawScenery(layer.scenery);
         else if (layer.enemy) drawEnemy(layer.enemy);
         else if (layer.spirit) drawKaelSpirit(layer.spirit);
         else if (layer.necro) drawNecroUnit(layer.necro);
@@ -4383,20 +4720,24 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
       for (let i = 0; i < guards; i++) if (clockworkGuardPoint(i, guards).groundY > run.player.y + 16) drawClockworkGuard(i, guards);
     }
     drawHazards(cam);
-    if (selectedSkin === 'pixel') drawTerrainIndicators(cam);
+    if (usesPixelPresentation()) drawTerrainIndicators(cam);
     for (const e of run.enemies) if (visible(e, cam, 650)) drawEliteTelegraph(e);
     for (const b of run.enemyBullets) {
       if (!visible(b, cam)) continue;
       ctx.fillStyle = b.color;
-      if (selectedSkin === 'pixel') ctx.fillRect(Math.round(b.x - b.r), Math.round(b.y - b.r), b.r * 2, b.r * 2);
+      if (usesPixelPresentation()) ctx.fillRect(Math.round(b.x - b.r), Math.round(b.y - b.r), b.r * 2, b.r * 2);
       else { ctx.shadowColor = '#ff8da8'; ctx.shadowBlur = 9; ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, TAU); ctx.fill(); }
     }
     ctx.shadowBlur = 0;
     drawProjectiles(cam); drawSkillAreas(); drawEffects(cam);
     ctx.restore();
+    if (!studioMode && run.biome.id === 'dota') {
+      const mini = $('minimap');
+      drawDotaMinimap(mini.getContext('2d'), { x: 0, y: 0, w: mini.width, h: mini.height, player: run.player, view: { ...cam, w: viewW, h: viewH } });
+    }
   }
   function drawTitleScene() {
-    if (selectedSkin === 'pixel') {
+    if (usesPixelPresentation()) {
       ctx.fillStyle = '#102530'; ctx.fillRect(0, 0, viewW, viewH);
       for (let i = 0; i < 65; i++) {
         const x = Math.floor((i * 7919 % 1000) / 1000 * viewW / 4) * 4;
@@ -4439,7 +4780,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     canvasScale = dpr;
     canvas.width = Math.round(viewW * canvasScale); canvas.height = Math.round(viewH * canvasScale);
     ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
-    ctx.imageSmoothingEnabled = selectedSkin !== 'pixel';
+    ctx.imageSmoothingEnabled = !usesPixelPresentation();
   }
   function loop(now) {
     const dt = Math.min(.05, (now - (lastFrame || now)) / 1000);
@@ -4450,7 +4791,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (phase === 'combat' && run) updateCombat(dt);
     if (phase === 'wave-result' && run) updateWaveIntermission(dt);
     ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
-    ctx.imageSmoothingEnabled = selectedSkin !== 'pixel';
+    ctx.imageSmoothingEnabled = !usesPixelPresentation();
     ctx.clearRect(0, 0, viewW, viewH);
     if (run && phase !== 'title') drawCombat(); else drawTitleScene();
     requestAnimationFrame(loop);
@@ -4486,10 +4827,16 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     $('biome-list').addEventListener('click', event => { const b = event.target.closest('[data-biome]'); if (b) { selectedBiome = b.dataset.biome; renderTitle(); refocus(`[data-biome="${selectedBiome}"]`); } });
     $('difficulty-list').addEventListener('click', event => { const b = event.target.closest('[data-difficulty]'); if (b) { selectedDifficulty = b.dataset.difficulty; persist(); renderTitle(); refocus(`[data-difficulty="${selectedDifficulty}"]`); } });
     $('pace-list').addEventListener('click', event => { const b = event.target.closest('[data-pace]'); if (b) { selectedPace = b.dataset.pace; persist(); renderTitle(); refocus(`[data-pace="${selectedPace}"]`); } });
+    const skinClick = event => {
+      const button = event.target.closest('button[data-skin]');
+      if (!button) return;
+      const listId = event.currentTarget.id;
+      setSkin(button.dataset.skin);
+      refocus(`#${listId} button[data-skin="${selectedSkin}"]`);
+    };
+    $('skin-list').addEventListener('click', skinClick);
+    $('pause-skin-list').addEventListener('click', skinClick);
     document.querySelectorAll('[data-locale]').forEach(button => button.addEventListener('click', () => { setLocale(button.dataset.locale); refocus(`[data-locale="${selectedLocale}"]`); }));
-    for (const id of ['title-skin-button', 'skin-button', 'pause-skin-button']) {
-      $(id).addEventListener('click', () => { toggleSkin(); $(id).focus({ preventScroll: true }); });
-    }
     $('sound-button').addEventListener('click', () => { soundEnabled = !soundEnabled; if (!soundEnabled) audioSystem.stopAll(); persist(); renderTitle(); refocus('#sound-button'); if (soundEnabled) playSfx('select'); });
     $('start-button').addEventListener('click', startRun);
     $('pause-button').addEventListener('click', pause);
@@ -4605,7 +4952,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     return [
       { id: 'heroes', label: '英雄', items: CHARACTERS.map(hero => {
         const text = HERO_TEXT['zh-CN'][hero.id];
-        return { id: hero.id, name: text[0], description: text[2], levels: 3, icon: HERO_ART[hero.id], source: 'js/heroes.js?v=20261027-unified1', duration: hero.id === 'tb' ? 12 : 8, variants: [
+        return { id: hero.id, name: text[0], description: text[2], levels: 3, icon: HERO_ART[hero.id], source: 'js/heroes.js?v=20261030-kael-skills1', duration: ['tb', 'kael'].includes(hero.id) ? 12 : 8, variants: [
           { id: 'idle', name: '待机', description: '观察待机形态与呼吸。' },
           { id: 'walk', name: '移动', description: '沿当前方向往返，使用真实移动与动作帧。' },
           { id: 'basic', name: '普通攻击', description: '持续攻击静止演示目标。' },
@@ -4622,8 +4969,13 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
           { id: 'evade', name: '技能 · 横移躲避', description: '预警出现后由演示玩家横移，观察固定范围与方向，使用同一真实判定。' }]
       })) },
       { id: 'equipment', label: '武器 / 装备', items: Object.entries(EQUIPMENT).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261027-unified1', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
-        duration: id === 'necronomicon' ? 22 : ['dagon', 'cyclone', 'heart'].includes(id) ? 12 : 8 })) },
+        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261030-equipment17', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
+        duration: id === 'necronomicon' ? 22 : ['dagon', 'cyclone', 'heart'].includes(id) ? 12 : 8,
+        variants: def.growth ? [0, ...def.growth.thresholds].map((points, index) => ({
+          id: String(points),
+          name: `${['初铸', '聚魂', '铭刻', '觉醒'][index]} · ${points}/${def.growth.max}`,
+          description: `工作台受控阶段：${points}/${def.growth.max} 成长点，不计入自然对局成长。`
+        })) : undefined })) },
       { id: 'buffs', label: 'Buff', items: Object.entries(BUFFS).map(([id, def]) => ({ id, name: def.name, description: def.desc,
         icon: def.icon, source: 'js/buffs.js?v=20261027-unified1', stacks: true })) },
       { id: 'effects', label: '特效', items: [
@@ -4651,6 +5003,12 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     if (selection.category === 'equipment') {
       const item = createEquipment(selection.id, selection.level);
       run.equipment.push(item); applyEquipmentStats(item);
+      equipmentCombat.syncLoadout();
+      const growth = EQUIPMENT[selection.id]?.growth;
+      if (growth) {
+        const points = Math.max(0, Math.min(growth.max, Number(selection.variant) || 0));
+        run.skills.weaponSystem.growth[selection.id].points = points;
+      }
       run.player.hp *= .4;
     }
     if (selection.category === 'buffs') {
@@ -4680,6 +5038,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     studioSelection = selection; selectedSkin = selection.skin;
     $('game').dataset.skin = selectedSkin;
     if (!run) return;
+    loadHeroPoses(run.character.id, selectedSkin);
     const p = run.player, reverse = Math.cos(p.facing) * Math.cos(selection.direction) < 0;
     if (reverse) for (const enemy of run.enemies) enemy.x = p.x - (enemy.x - p.x);
     p.facing = p.attackFacing = selection.direction;
@@ -4698,7 +5057,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
         tryActiveSkill();
       } else if (KAEL_SPELL_BY_ID[selection.variant]) castKaelSpell(selection.variant, 'passive');
     }
-    if (selection.category === 'equipment' && ['aghanim', 'orchid', 'bloodstone'].includes(selection.id) && crossed(.5)) tryActiveSkill();
+    if (selection.category === 'equipment' && ['aghanim', 'orchid', 'bloodstone', 'calamityRing'].includes(selection.id) && crossed(.5)) tryActiveSkill();
     if (selection.category === 'equipment' && selection.id === 'phaseBoots' && crossed(.35)) tryDash();
     if (Math.floor(time / .8) !== Math.floor((time - dt) / .8)) {
       if ((passive && selectedCharacter === 'bulwark') || selection.category === 'buffs' || selection.category === 'equipment') {
@@ -4718,7 +5077,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
   }
   function describeStudio(selection) {
     const p = run.player;
-    if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: '使用游戏的地形定义、绘制与两套画面主题。此处不生成敌潮或地形伤害。' };
+    if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: run.biome.id === 'dota' ? '经典三路结构缩制；塔、兵营、商店与野怪为固定布景，河道可通行。此处不生成敌潮或地形伤害。' : '使用游戏的地形定义、绘制与工作台画面主题。此处不生成敌潮或地形伤害。' };
     if (selection.category === 'effects') return { summary: '独立效果 · 与游戏共用绘制模块', detail: '观察场景控制位置与时间；技能的伤害、碰撞和寿命由真实游戏负责。' };
     if (selection.category === 'enemies') {
       const enemy = run.enemies.find(value => value.id === selection.id), def = ENEMIES[selection.id];
@@ -4727,7 +5086,11 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     }
     let detail = `静止演示目标，每 ${selection.duration || 8} 秒重置场景。生命 ${Math.ceil(p.hp)}/${p.maxHp} · 法力 ${Math.floor(p.mana)}/${p.maxMana} · 攻击力 ${Number(attackPower(run).toFixed(2))} · 攻速 ${attackSpeed().toFixed(0)}% · 护甲 ${run.stats.armor} · 射程 ${basicRange()}`;
     if (selection.category === 'heroes') detail += ` · 英雄Lv.${run.level} · ${skillGrowthText()}`;
-    if (selection.category === 'equipment') detail += `。${equipmentDesc(equipmentDef(run.equipment[0]))}；概率被动按实际概率触发。`;
+    if (selection.category === 'equipment') {
+      const def = equipmentDef(run.equipment[0]);
+      detail += `。${equipmentDesc(def)}；概率被动按实际概率触发。`;
+      if (def.growth) detail += ' 工作台受控阶段，不计入自然对局成长。';
+    }
     if (selection.category === 'buffs') {
       if (selection.id === 'orbitingArray') detail += `。${selection.stacks} 层 · ${buffCount('orbitingArray')} 个能量球，每 4 秒向附近目标发散一轮；每环最多 8 球，更多层数增加外环。`;
       else if (selection.id === 'clockworkGuards') detail += `。${selection.stacks} 层 · ${buffCount('clockworkGuards')} 台机械护卫，各自每 1.5 秒发射真实飞弹；每环最多 6 台，更多层数增加外环。飞弹碰撞后造成伤害，不触发普攻命中被动。`;
@@ -4755,7 +5118,7 @@ import { attackPower, resolveDamage } from './combat-damage.js?v=20261027-unifie
     viewW = width / scale; viewH = height / scale;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, width, height);
     if (run && selection?.category !== 'effects') { ctx.scale(scale, scale); drawCombat(); }
-    else { ctx.fillStyle = selectedSkin === 'pixel' ? '#182d33' : '#27383d'; ctx.fillRect(0, 0, width, height); }
+    else { ctx.fillStyle = usesPixelPresentation() ? '#182d33' : '#27383d'; ctx.fillRect(0, 0, width, height); }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); studio.draw(ctx, width, height);
   }
   function initStudio() {

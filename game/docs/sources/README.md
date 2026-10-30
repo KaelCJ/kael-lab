@@ -8,7 +8,11 @@
 | `characters/<id>/art/concept/`、`art/comparison/`、`art/review/` | 原图、透明处理、对照和已保留的静态审阅图；不作为战斗动作帧。 |
 | `characters/<id>/manifest.json` | 角色来源、素材路径与制作状态；文件路径相对于该 manifest。 |
 | `art/dota1/manifest.json`、`audio/dota1/sources.json`、`art/pixel/enemy-expansion-sources.json` | 正式静态文件的来源、用途和 SHA-256；`pathBase` 明确标注仓库根目录基准。 |
+| [art/dota2-arcade/](art/dota2-arcade/) | 《守望轮回谷》25 件成品游廊原图的核验记录；运行 PNG 位于 `game/static/dotarogue/assets/art/dota2-arcade/equipment/`，此处登记来源、名称映射、解码尺寸、哈希与权利状态。 |
+| [art/dota1/equipment-cutouts/](art/dota1/equipment-cutouts/README.md) | 22 种经典装备本体的原图蒙版、离线抠图生成器、来源与产物哈希；正式透明 PNG 位于静态素材目录。 |
+| [守望轮回谷-红杖成长参考.md](守望轮回谷-红杖成长参考.md) | 公开历史页面与本作红杖／法术装备成长的抽象边界；不作为当前数值或原作完整规则证明。 |
 | [migration-manifest.json](migration-manifest.json) | 2026-10-27 来源目录迁移前后的逐文件映射与校验值。 |
+| [characters/dota1/model-study-20261029.md](characters/dota1/model-study-20261029.md) | 影魔之外八英雄及 TB 恶魔形态的本地模型研究记录；只保留公开安全的来源与制作事实，模型、纹理及 PNG 研究产物不属于正式运行资源。 |
 
 六名早期角色 manifest 中的 `character`、`skillIcons`、`activeEffect` 保留旧 Concept 命名，`audio.voiceDir`／`skillDir` 保留计划目录；它们不表示已有对应文件或当前运行消费者。当前角色帧以 `assets.runtime` 为准，声音来源与事件以[声音系统](../core/声音系统.md)为准。灵魂守卫四张全身图和 36 张帧由 `characters/tb/build_art.py` 的路径几何生成，正式文件全部归静态目录。
 

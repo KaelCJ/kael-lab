@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="-48 -48 96 96" fill="none" stroke-linejoin="round" stroke-linecap="round"><title>luna · DotA1-inspired redrawn front · glaive</title><desc>Project-drawn classic hero skin. Six heroes use reconstructed silhouettes; Kael, Luna and Terrorblade retain refined ordinary pose geometry and equipment. Ordinary canvas, transforms and foot anchor retained. No official model, texture, image, script or embedded animation.</desc><g xmlns="http://www.w3.org/2000/svg" id="luna-glaive-shape" stroke-linejoin="round" stroke-linecap="round">
+    <g fill="#c5dfff" stroke="#253560" stroke-width="2.5">
+      <path d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+      <path transform="rotate(120)" d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+      <path transform="rotate(240)" d="M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z" />
+    </g>
+    <g fill="#f6fcff">
+      <path d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+      <path transform="rotate(120)" d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+      <path transform="rotate(240)" d="M-5-44C-14-30-8-21 8-21C22-20 32-11 33 3C22-12 12-15 1-15C-11-16-17-28-5-44Z" />
+    </g>
+    <circle r="12" fill="#35487f" stroke="#e5f5ff" stroke-width="3" />
+    <path d="M-7-2H7V3H-7Z" fill="#c6a36d" stroke="#17254b" stroke-width="2" />
+    <path d="M-4-2V3M0-2V3M4-2V3" stroke="#f0d5a2" stroke-width="1.5" />
+  </g>
+</svg>

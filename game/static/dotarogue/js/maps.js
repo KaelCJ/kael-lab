@@ -1,6 +1,9 @@
+import { buildDotaTerrain } from './dota-map.js?v=20261027-map2';
+
 export const WORLD = { w: 2600, h: 1700 };
 
 export const BIOMES = [
+  { id: 'dota', name: 'DotA 经典战场', icon: '', desc: '近卫与天灾 · 三路、河道与野区', ground: '#344330', grid: '#59604c', accent: '#a8dd94', hazard: '远古裂隙' },
   { id: 'docks', name: '赤沙废港', icon: '◈', desc: '灼热沙尘与失控机械', ground: '#263238', grid: '#40515a', accent: '#ffba72', hazard: '热流喷口' },
   { id: 'grove', name: '荧菌裂谷', icon: '✿', desc: '发光菌簇与腐蚀孢雾', ground: '#26303c', grid: '#3f4c61', accent: '#d6a0f1', hazard: '孢雾爆发' },
   { id: 'frost', name: '蓝霜残骸', icon: '❄', desc: '冻结碎片与寒流裂缝', ground: '#1e3440', grid: '#3b5967', accent: '#9fdcf5', hazard: '寒流爆裂' }
@@ -40,6 +43,7 @@ export const TERRAIN_LAYOUTS = {
 };
 
 export function buildTerrain(id) {
+  if (id === 'dota') return buildDotaTerrain();
   const layout = TERRAIN_LAYOUTS[id];
   return [
     ...layout.water.map(([x, y, w, h], index) => ({
@@ -55,6 +59,7 @@ export function buildTerrain(id) {
 }
 
 export const SCENERY_COLORS = {
+  dota: { ground: '#344330', shade: '#2b382c', light: '#596748', grass: '#678447', bank: '#555b43', shore: '#868773', water: '#537e81', stone: '#7b8179', fish: '#c6d5bd' },
   docks: { ground: '#c7a27b', shade: '#bc956b', light: '#d5b38b', grass: '#7b8550', bank: '#967b58', shore: '#d6bc8b', water: '#5d928d', stone: '#706b5d', fish: '#e1c27f' },
   grove: { ground: '#718460', shade: '#6b7e5b', light: '#788b64', grass: '#83945f', bank: '#5b7056', shore: '#87916a', water: '#4a7475', stone: '#596b61', fish: '#b9d7ae' },
   frost: { ground: '#b9c8c7', shade: '#9eafb3', light: '#e1e6dc', grass: '#778c87', bank: '#8da7aa', shore: '#dae3da', water: '#7498a6', stone: '#74858a', fish: '#d8e9df' }

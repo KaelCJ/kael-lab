@@ -160,14 +160,31 @@ export function drawHeroGrowthAreas(ctx, {
   const clock = reducedMotion ? 0 : time;
   ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.globalAlpha = .85;
   ctx.lineWidth = pixel ? 2 : 1.7; ctx.lineJoin = pixel ? 'miter' : 'round';
-  if (hero === 'jugg' && s.spin) {
+  if (hero === 'jugg' && (s.spin || s.jump)) {
     ctx.save(); ctx.translate(p.x, p.y);
-    const count = tier === 3 ? 6 : 3, angle = reducedMotion ? 0 : (3 - s.spin.time) * 18;
-    for (let i = 0; i < count; i++) {
-      ctx.save(); ctx.rotate(angle + i * TAU / count);
-      shape(ctx, [[92, -4], [126, -12], [132, -2], [105, 7]], '#fff1c8', '#94734f');
-      if (tier === 3) { ctx.strokeStyle = '#f5cc75'; ctx.beginPath(); ctx.moveTo(75, 2); ctx.quadraticCurveTo(100, 17, 119, 9); ctx.stroke(); }
-      ctx.restore();
+    if (s.spin) {
+      const count = tier === 3 ? 6 : 3, angle = reducedMotion ? 0 : (3 - s.spin.time) * 18;
+      for (let i = 0; i < count; i++) {
+        ctx.save(); ctx.rotate(angle + i * TAU / count);
+        shape(ctx, [[92, -4], [126, -12], [132, -2], [105, 7]], '#fff1c8', '#94734f');
+        if (tier === 3) { ctx.strokeStyle = '#f5cc75'; ctx.beginPath(); ctx.moveTo(75, 2); ctx.quadraticCurveTo(100, 17, 119, 9); ctx.stroke(); }
+        ctx.restore();
+      }
+    }
+    if (s.jump && tier >= 2) {
+      const steps = tier === 3 ? 4 : 2, progress = 1 - s.jump.time / s.jump.maxTime;
+      ctx.globalAlpha = .8;
+      ctx.strokeStyle = tier === 3 ? '#c7f4ff' : '#fff1c8'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, -8, 28 + progress * 14, 0, TAU); ctx.stroke();
+      for (let i = 0; i < steps; i++) {
+        const angle = (reducedMotion ? 0 : progress * 2.5) + i * TAU / steps;
+        ctx.save(); ctx.rotate(angle); ctx.strokeStyle = tier === 3 ? '#e9fbff' : '#f7d78d'; ctx.lineWidth = tier === 3 ? 3 : 2;
+        ctx.beginPath(); ctx.moveTo(24, -2); ctx.lineTo(52 + progress * 14, 0); ctx.stroke(); ctx.restore();
+      }
+      if (tier === 3) {
+        ctx.globalAlpha = .5; ctx.strokeStyle = '#89d4ed'; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.arc(0, -8, 37, 0, TAU); ctx.stroke();
+      }
     }
     ctx.restore();
   } else if (hero === 'scavenger' && s.rageTime > 0) {
@@ -245,9 +262,10 @@ export function drawHeroGrowthAreas(ctx, {
       ctx.restore();
     }
   } else if (hero === 'kael') {
-    // Wall detail follows its perpendicular 240-unit line, staying within half-width 26.
+    // Wall detail follows the same length and width as its hit region.
     for (const wall of (s.kaelIceWalls || []).slice(-24)) {
       ctx.save(); ctx.translate(wall.x, wall.y); ctx.rotate(wall.angle);
+      ctx.scale(wall.halfWidth / 26, wall.halfLength / 120);
       ctx.globalAlpha *= clamp(wall.life / .5, 0, 1);
       for (let i = 0; i < (tier === 3 ? 7 : 4); i++) {
         const y = -100 + i * 200 / (tier === 3 ? 6 : 3);
@@ -289,6 +307,7 @@ export function drawHeroGrowthKaelBody(ctx, spell, object, {
   ctx.save(); ctx.translate(object.x, object.y); ctx.globalCompositeOperation = 'source-over';
   ctx.lineWidth = pixel ? 2 : 1.6; ctx.lineJoin = pixel ? 'miter' : 'round';
   if (spell === 'tornado') {
+    ctx.scale(object.scale / .56, object.scale / .56);
     const age = object.age ?? 0;
     ctx.globalAlpha *= Math.min(1, age / .06, object.life / .1);
     for (let i = 0; i < (tier === 3 ? 3 : 2); i++) {
@@ -299,9 +318,10 @@ export function drawHeroGrowthKaelBody(ctx, spell, object, {
       ctx.restore();
     }
   } else {
-    const age = object.age ?? clamp(3 - object.life, 0, 3);
+    const age = object.age ?? clamp(object.maxLife - object.life, 0, object.maxLife);
     const lift = reducedMotion ? 0 : 72 * Math.max(0, 1 - age / .15) ** 2;
-    ctx.translate(0, -34.8 - lift); ctx.rotate(reducedMotion ? 0 : (object.travel || 0) / (24 * 1.45));
+    ctx.translate(0, -24 * object.scale - lift); ctx.rotate(reducedMotion ? 0 : (object.travel || 0) / (24 * object.scale));
+    ctx.scale(object.scale / 1.45, object.scale / 1.45);
     ctx.globalAlpha *= Math.min(1, age / .04, object.life / .12);
     ctx.beginPath(); ctx.arc(0, 0, 29, 0, TAU); ctx.clip();
     for (let i = 0; i < (tier === 3 ? 5 : 3); i++) {

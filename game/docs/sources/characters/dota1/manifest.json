@@ -1,0 +1,1429 @@
+{
+  "schemaVersion": 2,
+  "kind": "project-drawn SVG geometry reconstruction",
+  "count": 181,
+  "editableSourceCount": 20,
+  "geometry": "Rover, Bristleback, Zeus, Alchemist, Juggernaut and Shadow Fiend use new editable paths in geometry.py. Kael, Luna and both Terrorblade forms reuse the richer ordinary pose geometry as a base, with classic palette and outline treatment in geometry.py. Twenty layered source SVGs expose the generated idle anatomy and equipment; ordinary frames remain read-only inputs.",
+  "rights": "New project-drawn paths visually reference classic Warcraft III / DotA1 units. No official model, texture, animation or reference image is included in the SVGs.",
+  "generatorInputs": [
+    {
+      "path": "game/docs/sources/characters/dota1/build_skin.py",
+      "sha256": "c733722013c06f2c57922aa745ae3389c704ccf8c522792e1524dbb0a2426c94"
+    },
+    {
+      "path": "game/docs/sources/characters/dota1/geometry.py",
+      "sha256": "6b8a404c1860ec5761d5d6d3df8a8e7fedae44557d274300f0470ad18a5a76ec"
+    }
+  ],
+  "editableSources": [
+    {
+      "hero": "rover",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/rover-source.svg",
+      "sha256": "7be281238aca748e95a51794bcb6520439cefd6438867b0b520cd72fcc8bfaa5"
+    },
+    {
+      "hero": "rover",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/rover-side-source.svg",
+      "sha256": "edf83784f34c99e9fc2ddee0ccca08a978447d24f955ad7efb06a0ad5e205ff9"
+    },
+    {
+      "hero": "bulwark",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/bulwark-source.svg",
+      "sha256": "4cf696f2e567bd9082999ad8d515d01a79e10236b8150baafdf5e649ab25d8a1"
+    },
+    {
+      "hero": "bulwark",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/bulwark-side-source.svg",
+      "sha256": "f3302d12536ae3a3b057ecaae640402e1ab5c0d1417a404a56f3edfe51d8763b"
+    },
+    {
+      "hero": "conductor",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/conductor-source.svg",
+      "sha256": "2404408b8cf19a7ee000d035f59e6030de6c41c9ff098cab049404928088e7c0"
+    },
+    {
+      "hero": "conductor",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/conductor-side-source.svg",
+      "sha256": "820f96e882f5071dfbb379ca25f0e54905fe832e844e22c93e8be07faa64f268"
+    },
+    {
+      "hero": "scavenger",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/scavenger-source.svg",
+      "sha256": "ca649d4c5df593c7c974a8b4d4c9ef8af0f1090c2e007e07c7159b0049f57244"
+    },
+    {
+      "hero": "scavenger",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/scavenger-side-source.svg",
+      "sha256": "28aa49c3e49ba9cc7732d5412e450c2d3fee3948e8ee2d528b8a48318c68507a"
+    },
+    {
+      "hero": "jugg",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/jugg-source.svg",
+      "sha256": "eee81bcbd7292e6be6c96819ec5d2003cb2ef05c49c81f33f7b49b604388bc31"
+    },
+    {
+      "hero": "jugg",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/jugg-side-source.svg",
+      "sha256": "692a6f23a47f69a80f646e395b42091248c7145ccf7ede54900e8841ce5eb770"
+    },
+    {
+      "hero": "sf",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/sf-source.svg",
+      "sha256": "71bacbe308cec7c0618598502fbf7aaed1705fcf88ae462e3344cabb07a0c020"
+    },
+    {
+      "hero": "sf",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/sf-side-source.svg",
+      "sha256": "6cf01433ae20b457a5d7cb92b889cc21a85c45bf2254910086e11dad8ea4d006"
+    },
+    {
+      "hero": "kael",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/kael-source.svg",
+      "sha256": "7d3eae0c3ef564f88d1ac4a74029bfff543e1042bb205b43585da4f39662e537"
+    },
+    {
+      "hero": "kael",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/kael-side-source.svg",
+      "sha256": "3d8f7c0c4201f7aa0770fa25634e4c9cbce9fcce0363ec9e955958529a2581f3"
+    },
+    {
+      "hero": "luna",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/luna-source.svg",
+      "sha256": "d9c0df84d3ce568132b459afc59366b19363054ed9a64360a32c574df22aa619"
+    },
+    {
+      "hero": "luna",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/luna-side-source.svg",
+      "sha256": "631c20717a1d52b90f59d02065fa1727e0673646080745b3b34d6024200b11e1"
+    },
+    {
+      "hero": "tb",
+      "view": "front",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/tb-source.svg",
+      "sha256": "32c6352e870dc55e524288931ff118d0eed08a52d815f6b10c62602c4cf0646a"
+    },
+    {
+      "hero": "tb",
+      "view": "side",
+      "demon": false,
+      "path": "game/docs/sources/characters/dota1/art/source/tb-side-source.svg",
+      "sha256": "eee60ecdc8b85b6ffa86c4decf184c2a933994be872c19b04cc96f3d04bed6ed"
+    },
+    {
+      "hero": "tb",
+      "view": "front",
+      "demon": true,
+      "path": "game/docs/sources/characters/dota1/art/source/tb-demon-source.svg",
+      "sha256": "b891a2d8ce5c242e8e701735a92126a2edc3d4b0352d8dfa4deb12ab0cc3da76"
+    },
+    {
+      "hero": "tb",
+      "view": "side",
+      "demon": true,
+      "path": "game/docs/sources/characters/dota1/art/source/tb-demon-side-source.svg",
+      "sha256": "272af714bd6d6265159c062c8d1f7e1c371c08282f1791a422f4013688d6c0ce"
+    }
+  ],
+  "files": [
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-idle-a.svg",
+      "sourceSha256": "2534395b8f37a295424a758e1e33578fdaa92681f6b77df0e8ad48a892f52781",
+      "sha256": "7be281238aca748e95a51794bcb6520439cefd6438867b0b520cd72fcc8bfaa5"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-idle-alt.svg",
+      "sourceSha256": "fc6014ff812777a1676467c8f5966c6f58fd426ca7706670c5403c74a209e1e8",
+      "sha256": "d1b6ab1623ad7371a74068761cbfe205a54182972ab9c7116337c6d3e9e1dee5"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-walk-a.svg",
+      "sourceSha256": "c8810410eb9645f0c04e89c11a05649a5e12bd54baeb72010c83d3a5b8d2a154",
+      "sha256": "a447c1175700ec674c7a2bdbc4ef92a145a71899cacc8e3ca1eae2adeb1f1f7e"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-walk-b.svg",
+      "sourceSha256": "d0037097c2e0919c52f4ddcf831e84ca84222e29302f6864f7790a542399a852",
+      "sha256": "5e97bc8ba5efa2ca60ca31e82859ee891e0a1d15d4c0bec9ed14e1a52a6cc9b3"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-dash.svg",
+      "sourceSha256": "6ff548f176f7246d07e1844804590946ada94f4996e11d9197e0d7d23ac69466",
+      "sha256": "b88dd10f2ddcb17633b1c198a77f3c98971b87c4f840ae47e8a9596c688b6948"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-attack-windup.svg",
+      "sourceSha256": "1b2e94942883b1b23d6f7ccca0adaa72a50fdaab739421a087523d573b6ca9ab",
+      "sha256": "09a44e443ea2a53387409c3dff95d3adaf9cf8add62a18788f289c627fc25d28"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-attack.svg",
+      "sourceSha256": "3bcebcb777063a4ec41e7bf93671ba6e230ba4cb959748520f3699b4718400db",
+      "sha256": "1b11c1f1922052698a80979f4a35e3416e774849dd166f5cfe322413ebf89e8c"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-attack-release.svg",
+      "sourceSha256": "4eed1f58d836aaeb93ce0fdf8bba7836d6c1818bd94fe1934d6cb010837c2649",
+      "sha256": "8272fbf3acf7d772280087494d554bc50da96480c77fa74c616388986622382d"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-skill.svg",
+      "sourceSha256": "5330ad5a00839ee276e32be464dd1e428d594933a8c6e123fea6608477b12ef0",
+      "sha256": "7a02ad9ae76ec79ec1181e3c4bad4dd1cb9338c17b7d0742cf3a8ef2f9e9d811"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-idle-a.svg",
+      "sourceSha256": "772d16acafd40d30b68e9e420d0578a282c643950425ec70e0c5c00b374d4c9a",
+      "sha256": "edf83784f34c99e9fc2ddee0ccca08a978447d24f955ad7efb06a0ad5e205ff9"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-idle-alt.svg",
+      "sourceSha256": "71df4b2c0a6d6b3c578d8b067e39c8d43c92db59a8926ea021710513c2e33ad5",
+      "sha256": "c3ca14558b502bf3cb327d4a726a68368a85919d64136663cf74aa4a4c8ff13c"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-walk-a.svg",
+      "sourceSha256": "2e6a5fa18f96c0c541c079d7a152249df2d617fcd6c39660353672fa9397be10",
+      "sha256": "234a95fed27599b75a5c2b9de46fd44b9dfe5e742dc7cf96f72f3797b79a19ee"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-walk-b.svg",
+      "sourceSha256": "c6a1560ba01ea8c9eef3aac4f5b1ea1edff4f2c896b541d8c6ecee6ed9b646a6",
+      "sha256": "b6b925060026a0240ce603bb76efa0dab4454784a37ff97ef1f25794be4952a0"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-dash.svg",
+      "sourceSha256": "a50780991f8134c3c47f4cc3c9a5adb8829895c876373732a69a204860416823",
+      "sha256": "611bac81d0d041d8c0e9ebd549175574b8c43598ab2e02b2061de2eb32e45ff7"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-attack-windup.svg",
+      "sourceSha256": "9b8467db0b4d1f5bc53c30f926eff43f35bfb6e1369c009f3788cf75913a2722",
+      "sha256": "7550aded71378a2f41d0f9dbe23acaa338f32a93214ac4435ef1e3f4f913ba38"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-attack.svg",
+      "sourceSha256": "8e05767775ec1e9bb7b3b7721f949711ba6adcbecc8a644df3c148d984d6a45f",
+      "sha256": "40358a985e34778a8060ea5fb1165eb055107bf097a1f962cc1a50ab9da9d36e"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-attack-release.svg",
+      "sourceSha256": "b042f95e23b1d5dfb793bdfb83eab0817f609849d9b95f83d6cad0deeb41024c",
+      "sha256": "3404839488f56e832645985fdf51e8a12828e9fb84c9ec4bb7ced48d3f3557bd"
+    },
+    {
+      "hero": "rover",
+      "source": "game/static/dotarogue/assets/characters/rover/rover-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/rover/rover-side-skill.svg",
+      "sourceSha256": "5cb2749fcd41488f5b0d62a97369b0d7a8b09b47f94a64a8043b69326d6102ef",
+      "sha256": "f2189342e67920deb01ee3090edb79c7cb6316e0436554396345b8d4c78a3ada"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-idle-a.svg",
+      "sourceSha256": "1814ca742b0295fc99abf895ce68843672cbeebc7bb0ffa3fdd5bbefe3c4fed4",
+      "sha256": "4cf696f2e567bd9082999ad8d515d01a79e10236b8150baafdf5e649ab25d8a1"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-idle-alt.svg",
+      "sourceSha256": "04281c7936c497aaa48b7c6064ec5732ae31391d229844a65d1403f274d43c7f",
+      "sha256": "ce43f73258c0b176bb88c5d89904b76d071d61df8903e8781f345d9d1e4be546"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-walk-a.svg",
+      "sourceSha256": "91d5300fec94b2f7eacfcfb69f1034f1cb9b16f1d08efac40ee429d1fdc8011a",
+      "sha256": "1a57f7f3850b0b7621a1a554e5c73f0dc8ada04915ae6abaa063dcf334cb1ba5"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-walk-b.svg",
+      "sourceSha256": "8eb01aa08ffadcdb7332dffa8a971fa77f5adf561c7b4fd7fcbdc61afd0bcf7e",
+      "sha256": "2a7c7ecc1111078938eb136fd0dcfd4d2e92fb23bea2e5adc6c6460acff7023e"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-dash.svg",
+      "sourceSha256": "c523d8b7d4f245f86adba0f5b68538b2b60d0c16245d25ed71f52d6029e47a0e",
+      "sha256": "1dba7a9394f997cbf6e6ced6ad7f40022fdf9a2eeddc42e26837d105bd64e6da"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-attack-windup.svg",
+      "sourceSha256": "38d1c7821317d16c59baf2cc42875775c823ce19079696109c2a58de375bcb60",
+      "sha256": "4bb17e47d6e052f0f101fc0701f7471bad3f4f7957a9b69fc8dab2ae73c9614d"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-attack.svg",
+      "sourceSha256": "b366eb851a320ccb86228352cfdeb1f945ddb2922ec0490b1bf524a147740ab3",
+      "sha256": "9a20e49cde6c909ea34453eac6125f3a316cad323f26adf3588aab62cac4184d"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-attack-release.svg",
+      "sourceSha256": "084ff5482b37252b69b5f293ec4e3656d769a0c857543ef30e646adb36194772",
+      "sha256": "811a19b4adfe45ebad8142656cffb6f06d4e76d3d6b1d308f98102707f4f01df"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-skill.svg",
+      "sourceSha256": "9ea3b2cbab40b13823002c945e4791bea27ef6c0b6eb5e94b14f1eba43609257",
+      "sha256": "74e41cf9b4ab5bd2ec23594234032da839f986f6947a7bed3d2dccb673d94c9e"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-idle-a.svg",
+      "sourceSha256": "7b96da24aa86cb16c22b1086bb052596b406e6741f4db87c6099822291f2d7fa",
+      "sha256": "f3302d12536ae3a3b057ecaae640402e1ab5c0d1417a404a56f3edfe51d8763b"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-idle-alt.svg",
+      "sourceSha256": "d7cc2e22cf939452ae61907f4421ef15e6c677f29dda66fa4f96a7d845330e1c",
+      "sha256": "d2fc7fedaa511a69fb6d55b29eaf905abe8b0815be6a0d29f2f2b8041cdfe63e"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-walk-a.svg",
+      "sourceSha256": "c3a46f9178b9626e70a3cb1a1074b87dd7c23626acc468b2794cc656a953d130",
+      "sha256": "8a35fdc314f7cd06db9055c9d94beb22920bab77031771a8c99a89b3c41d408b"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-walk-b.svg",
+      "sourceSha256": "a690cc6c78f3959d0749fe8b75d5b0d4fc3f0bca6f91d296d7011adaab6fcb7d",
+      "sha256": "2b7108cc80592a96d42c22459feed940926fd06ce4d22da06500f2c07ff5cc7e"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-dash.svg",
+      "sourceSha256": "9a638b470e1729b5842775cb1c024152d6cc74a14f92f2909beac35bfd81d754",
+      "sha256": "35269d3cab40b44e3f2f247e625de7f455988e3709efea20e944f6fe403cd12b"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-attack-windup.svg",
+      "sourceSha256": "f75534f96e971be6f6e49155f99ca3a0b1ff15f1223d244d4e66f6b89a82f07e",
+      "sha256": "ad4c6a964469907091c334b78b8434052ff8e16c51d34d187cb08f7accb27fdb"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-attack.svg",
+      "sourceSha256": "a8967e44913d5a76d40e829cbab3ef951d242d8ec97d38599cf437567bbf9198",
+      "sha256": "d93e6b6462eed0683c9d739a33b6997c636651f1d6de203f552d547f77694a99"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-attack-release.svg",
+      "sourceSha256": "448b3dc80e058b88c292d26e6f95b889eef646958ae55016c15d4bc4f386c4da",
+      "sha256": "f3cb0c82bb0ee3ca52c146fcc236c86b7ae6de5ab8d9aae84b435087d84b05b1"
+    },
+    {
+      "hero": "bulwark",
+      "source": "game/static/dotarogue/assets/characters/bulwark/bulwark-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/bulwark/bulwark-side-skill.svg",
+      "sourceSha256": "6629c47e69a6874ae750a9152fd11b807b074ce10bb2524d413853d74b6f945e",
+      "sha256": "47c6f44bf34e5658fa439ee27e61553377fd8e992a2dc02eb550a5cdf70d394a"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-idle-a.svg",
+      "sourceSha256": "b64fd829f511c728e89a8397d6a30c8e2889bf580e4d1497b4dfb9358599d918",
+      "sha256": "2404408b8cf19a7ee000d035f59e6030de6c41c9ff098cab049404928088e7c0"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-idle-alt.svg",
+      "sourceSha256": "1622389ee8b08521a4cbdb3a960ad007b9d7b8046b18995f71f8827927ce482d",
+      "sha256": "d202b31439fed29b82bc2a33b4dbf56e29d66b49b155590e5d2078b7cdcea6d8"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-walk-a.svg",
+      "sourceSha256": "f99a1b20f96e3f26269ba84adaae4c47bcc7efece46d060df771656407ebfc21",
+      "sha256": "4a48c1b782c141cf46368a53e117511bf9ff2b960e877fd208478891d372b82a"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-walk-b.svg",
+      "sourceSha256": "582f5c7f7a24593b8b7ae4feba0d0a4454a8c66dcee454ee419678dcf8fa104c",
+      "sha256": "6f382d582335cbfd4d2571c19bb61e4a36b59cacab36b951518f958cd89af219"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-dash.svg",
+      "sourceSha256": "f1a14c3e7f6aa7a0a3265be2ec3d08e1281ba5ef1e0e501c59169b8fa8c19d45",
+      "sha256": "d011beedf9ec0f328e0d06e64bdbef68d88aee8c763d41e517278ac06af6c8b9"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-attack-windup.svg",
+      "sourceSha256": "c71212a11f04e41657169dc7782f1ed2ffa20a6756027bdb322a718d3887b323",
+      "sha256": "7c7c6b963b714a40b7a7b0db922ea39081050cdb885a7d9615130bba868f7446"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-attack.svg",
+      "sourceSha256": "88f640740cab33eced6d7b75fb194cb8399b49784c1f268e6a375e4c9f69f1e1",
+      "sha256": "af83e3b82c630d695b834ff0d97e816502a5ce073711474610e2becc32efea59"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-attack-release.svg",
+      "sourceSha256": "0233a335cc8a71a0be105989dbfc7cd45895cf550a50020ae047097d33865a53",
+      "sha256": "fe99f958724103b11f1cd526f42f3133d5985a7f2770f0c6f8b53383a2828099"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-skill.svg",
+      "sourceSha256": "9dd3a60de5c84d9a3db3c5772879d09284b12c16d1ea5717f333f720777202b6",
+      "sha256": "64ff34782a3239db4bb52ed9707ef10aa6b44f15bef6bfe33a0bd9e3fd478fa4"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-idle-a.svg",
+      "sourceSha256": "e6da4a703ab7079fafb8b043c15c62ec9b578f4fdecd93b8815b156a61c02c9c",
+      "sha256": "820f96e882f5071dfbb379ca25f0e54905fe832e844e22c93e8be07faa64f268"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-idle-alt.svg",
+      "sourceSha256": "429e5a965a6ef2f168a1dfad981b78101bfb8883fd180a1d90cbf01b5acf7eb8",
+      "sha256": "6f328af573a3d4fa00842dbfe402414e5b6cdf5cac23252b1ae4e5bd1bba46d9"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-walk-a.svg",
+      "sourceSha256": "f9e0e8da21e0dd0e004d80afb85b9d9e0386e777457f6e3047925e7fe4ba1cdd",
+      "sha256": "21b5d15219b8411f26b69e43be8626e7005f534b74980533c3f1d80d0aebd0aa"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-walk-b.svg",
+      "sourceSha256": "11936ec15ec56d7d333d0a20065063a684ef9cf69bf56f57d9296ac1882ca497",
+      "sha256": "11407986ee32e111d9ce3acaf417092e779db2814aae644d83d73340e0a7a79e"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-dash.svg",
+      "sourceSha256": "fdf68fb6a703dd02743fedf5f16641847b4ac29faf8cd68e787d2906de7a649c",
+      "sha256": "06f26b107545069ef49d0baa5d142050d418e122199a0c8efdc51da8ce4cca1c"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-attack-windup.svg",
+      "sourceSha256": "87077f6e8cc2f4c38c0a6d91a0b80dab6eac220aaabb6da6bf2b184fa7e7fce4",
+      "sha256": "05a0c90361fd3129c1022ccbea7e0072390e5507206c117d5df3021a21c00a56"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-attack.svg",
+      "sourceSha256": "fe35a16c0df78c6993012dfb3c0148e946cb88879072eaa4acb50a3d91171396",
+      "sha256": "51906aaf94d9ae0eb359cb10c25679ab4b57a7a581c94be8cbc5e6cd8aa7582b"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-attack-release.svg",
+      "sourceSha256": "8bf48a1a5707a56f245fde77cbc30bd7a5581fc94357f31abdd6dee164960bb4",
+      "sha256": "2f74efd5231d80b82da59a48fc91c20fe4a3f82b9846a44e043542ad361ed413"
+    },
+    {
+      "hero": "conductor",
+      "source": "game/static/dotarogue/assets/characters/conductor/conductor-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/conductor/conductor-side-skill.svg",
+      "sourceSha256": "11cafc803a2e3fc34f0ddb252d4b96a9eb7a5b37fa03b0b8da7ef9caa4167c7f",
+      "sha256": "d8a6fd8c27b9d23ff61a6289418b4fb7538b7aa8a8693a5818cd676db0d65155"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-idle-a.svg",
+      "sourceSha256": "88bdcefdb7a5f02ba868dd2bf4bcf8006f820f845eb5cbcd05e7c79929f9974f",
+      "sha256": "ca649d4c5df593c7c974a8b4d4c9ef8af0f1090c2e007e07c7159b0049f57244"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-idle-alt.svg",
+      "sourceSha256": "32ef1a500cb1118a4048ef9f45aee2a2c503e36f669d437cc8c92c70140b745e",
+      "sha256": "d043d283ca20facde1aadf0f36ff45ebfc5b20ddf2af86eea492ac3073804342"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-walk-a.svg",
+      "sourceSha256": "1c72f758aa92217a31641ec4d0f6cd0739930e0666d24c27010f106a7700a5ea",
+      "sha256": "e657be8ec887a80491e8d3f2bf49b77bd6e5454519c14eedc07f68355efdd948"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-walk-b.svg",
+      "sourceSha256": "ff8092268246cda97687ad7f58003cacaed5d888995e1cc1bdd0f773221b4cdc",
+      "sha256": "bc0daed3206045df1e54adcff058d01733406cc9d63776724dce42aaaf2ad084"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-dash.svg",
+      "sourceSha256": "cbb4137b4caf9cc6fb6a1f35c276799cf12e796756845f05c2c1700e5971c3cd",
+      "sha256": "f911d4b5308a8aa9a12b1e1b89e39b83e129fc100c0e7a0336ef2b488a5b09ef"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack-windup.svg",
+      "sourceSha256": "23a010ecbeb3fb1c4eeedc705c1b1e651bd4696018b6ed96afa25f1cc0d01f49",
+      "sha256": "f95b41ac2f409360e84843836aa0d29074616bd2df8a1f62ee7a48b677cade40"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack.svg",
+      "sourceSha256": "194d8d7f65642deeb7657f46352c3df74d6873d4fd7491677de6f68a728e7f4f",
+      "sha256": "3dfb8eed944f53c5ea4bb7eb0bda9279cd312709c2380083cb11e53628c73e05"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-attack-release.svg",
+      "sourceSha256": "75ee8f3c18d491d7b73cecb2ee88f2307d04b05847838769b5c8d31781d9ed9b",
+      "sha256": "11029190a2a7c9e655f6afb9a0c5a81409818f96cb8f5e029f8b91529d0db502"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-skill.svg",
+      "sourceSha256": "262d7819e4dcaf05db9f3303fa9efcaeb0fff0b6fa865e3d3c5630cc38c24c78",
+      "sha256": "507eed77c1bcfbf975dbc1744252b02fb0f6b691590cbaab1a4214f67a94743e"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-idle-a.svg",
+      "sourceSha256": "4b7ba52d007ae5b004b18fa848af8c359b667ce442e5d1cd03104efe15c93e2d",
+      "sha256": "28aa49c3e49ba9cc7732d5412e450c2d3fee3948e8ee2d528b8a48318c68507a"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-idle-alt.svg",
+      "sourceSha256": "358d9756500d94714c0269b33fa2ca32eeef852b541f08755ed51fccbc94f7ed",
+      "sha256": "13f54f5c57638ec88981beb72508455cbc5925f4daa90b7c8190b9318869c9de"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-walk-a.svg",
+      "sourceSha256": "9cebbdea5f53786320dbb2df11f30ae377e51733c0d272249f990e777bf9744f",
+      "sha256": "d38d739d425935250623e6a80f78a6e7c6e5a1578b5bff607f0c222f4a09872b"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-walk-b.svg",
+      "sourceSha256": "78052cab827480485d65b1e2fc4af0ae91c2cb0baabf0e960e42f4936f2ca6ea",
+      "sha256": "2f093ab938b881b61708f382bec087fdd2d824e26c50bf778169568c7a62b0bc"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-dash.svg",
+      "sourceSha256": "f4d4a3357cae3b236f2f1311958a1b1afa7bffa6a15cf79e7f9400e16a6846f5",
+      "sha256": "97108e9a18b724b7cd086a8f6c325099d85f896dd7c83cf45a0a6d5c914e1808"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack-windup.svg",
+      "sourceSha256": "bdc4ecd0c33c490d7de38afc9677807a916c59cedf62a9cf283dcc41666199c6",
+      "sha256": "73b8fbbc1bcc6758ba6f38cb7596f3b1b3560619f1d08e36d9fe026a63fb80a9"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack.svg",
+      "sourceSha256": "2d36dd48a4e97bc6b975cb0157aa50c0c4583a5272fe7e56d8edb88b51d9eb4d",
+      "sha256": "528bd16a6e2ad7488fe9d3614effae57500273fe4e0e46404b5aa74641ceb247"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-attack-release.svg",
+      "sourceSha256": "6df10b656c619af942461447946b946b1504fbed0078f0d1dbd8866e86078271",
+      "sha256": "725f30ff42523f286329999c34c6f03cb8591a44f554ab8f6e743743a22b9074"
+    },
+    {
+      "hero": "scavenger",
+      "source": "game/static/dotarogue/assets/characters/scavenger/scavenger-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/scavenger/scavenger-side-skill.svg",
+      "sourceSha256": "b237660ff082578881f5d6752759748007c944a856ee6a052aeadd8556b21f21",
+      "sha256": "2906a8d1aecfdeda06557d5b12817a65f4de374374dd905590e1d275e8e342ee"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-idle-a.svg",
+      "sourceSha256": "38e827065be15de118eaf467be1e685860a54749a7c3227c3d36a376d6e5d584",
+      "sha256": "eee81bcbd7292e6be6c96819ec5d2003cb2ef05c49c81f33f7b49b604388bc31"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-idle-alt.svg",
+      "sourceSha256": "5bc85ad3d910f55f0ca0b5db2e823fa2151474a1e69da368cc00a00b4329bf75",
+      "sha256": "fe7e7579b29c7c21e9289a4ed5cedb5b9c8cec623f7c3745f0e2f72a85f49f83"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-walk-a.svg",
+      "sourceSha256": "1eedf5184545232525e6e8de2f265580e73af759ce346055c42fbe4f7db4b689",
+      "sha256": "a78e8f61eea3a457aade01fcad478cc6e6336a59e26776e1eca07eec2797f459"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-walk-b.svg",
+      "sourceSha256": "34942383df73886caf5d503b74ba7b2a1380500c4e682902709a94902a9f595b",
+      "sha256": "ec03ccffc5b89f6c98dcdb78d013f67a3ee74d37396144de4825545adcb7de09"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-dash.svg",
+      "sourceSha256": "673d86d7a0632c2d960371718d9460f5edc54ed8c8fb6a820f2eaa692af8edbf",
+      "sha256": "efc9a29cbfa5c5a6cb07bda43fbc8a6ed1b8e77c46de3f7fef00ae9a25e4f848"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-attack-windup.svg",
+      "sourceSha256": "4821c6896e8eaf371a67cf55c545d2edaf8f5b2108a09e3b9b25ee7cbe656a49",
+      "sha256": "b814a2b45b84a445451d318b81bd2b0ba6c764c24b321a37af9982e43c3860ec"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-attack.svg",
+      "sourceSha256": "cb9be0d78082593cb86a6f47c06540ec901b6e72adac0af1479f3c8a567edd8c",
+      "sha256": "8a9076335001ffbb033186b66e9a195d56097eeeb220fb5922083829a392cba0"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-attack-release.svg",
+      "sourceSha256": "d89a0d003ddb215f73c4e8d6a3c55ff66e31fb1e2dace2e9a66ff25faaed77a9",
+      "sha256": "59cd8eb79a3f2f1b4f824243b5d18d9a43ee37ca46bf1714419d332fed7b851e"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-skill.svg",
+      "sourceSha256": "27c7857e28c0ee9e3c6517938452c33c82f22d9605aebe6bdbbb990d89029fc3",
+      "sha256": "d2960daffbbfff0bdc0718441a3c8e48497fc8a5c359fddcc858c4f92201b8dd"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-idle-a.svg",
+      "sourceSha256": "f94daee823283a2553a9aab963b44222c93e7d72e38f582b18293878639fb54c",
+      "sha256": "692a6f23a47f69a80f646e395b42091248c7145ccf7ede54900e8841ce5eb770"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-idle-alt.svg",
+      "sourceSha256": "0fc54cdd1ca2ca3b7509da427fa3ddff287769e265be3b76e8c20ac47f2ded9f",
+      "sha256": "bdb0658cf300634340c86776f101bca452c0a8b6cdeee3e056865789a9cf76e3"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-walk-a.svg",
+      "sourceSha256": "8356c9fcadde5289ebc3cebcffead138c8d908f04cae20858629ec5b702649f9",
+      "sha256": "5e6c27d42dc74554b3feb691600843f50a23dcd6f7af3140a5eea6249bc90b41"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-walk-b.svg",
+      "sourceSha256": "907f0c3e1688d2a9ecc65560ba705ffa822bea99559ea16a24e1eb8d9c0ad9c6",
+      "sha256": "7f2ebee58e0f0165bf7d950866b1964ea6cadf9b02c5a508cb99d9c130920532"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-dash.svg",
+      "sourceSha256": "1ff96d908351554ab300c9a2985ddd911b6cc566479db69085c61505a13560bc",
+      "sha256": "f7dd8c9f4215f1902f19e6710c931f2db498ccde1c97ddbad0667ce06a5fee14"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-attack-windup.svg",
+      "sourceSha256": "656c46e0a6d40c7e9ff81d5c47433b47cbc9f7c168dae999e0ff6083c0e30d27",
+      "sha256": "0e708e6e4a08bef1722bb7accf7f9ab42f186aaca53b127344e3b810b19c4ca9"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-attack.svg",
+      "sourceSha256": "46b5c8c023323717812165ed48f08f6336aaa646904ae65614e7c9781d368c07",
+      "sha256": "e0d242b5cc794ca646f65795c8fa2f7cbeb89064a36c480e6f0dcd0467eca5dd"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-attack-release.svg",
+      "sourceSha256": "17b16cfbeb485d70f0339eb57b33bb386898ccbb3c0960e52c8baf06125f5b3d",
+      "sha256": "be5679e32f0807b5614ab995d4b4c657f5742987b333945f59cbf8c05cdc03a7"
+    },
+    {
+      "hero": "jugg",
+      "source": "game/static/dotarogue/assets/characters/jugg/jugg-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/jugg/jugg-side-skill.svg",
+      "sourceSha256": "0b387e9bce4f9f2ac176204a4f83e02b34d991a219b97bee425926aa85598502",
+      "sha256": "7295de0729b18095beaec12773e28d6a599ee920b675c62832fc02ae9ed13c12"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-idle-a.svg",
+      "sourceSha256": "8f3f107f47a7399fa3d65e0ac58d9b7d767c3954e284aca361243e96580dbea5",
+      "sha256": "71bacbe308cec7c0618598502fbf7aaed1705fcf88ae462e3344cabb07a0c020"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-idle-alt.svg",
+      "sourceSha256": "2f6e17aa04734b1a1ac1b02dd61ae49c325dd937c92b85a079718c91dd56ce5d",
+      "sha256": "36913d08d194e6c60cc6fe9a898090bfc01bcac2f4eec21bb10624163ff1b6ed"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-walk-a.svg",
+      "sourceSha256": "6c4617aafa1f1a775bd7cc78ec9122e8cc338f78f95f15c4a03bc683d3e08309",
+      "sha256": "fadbb9c190c120e73c2f53b65eae8ac5f1df17c687af36de84cc83d57a7686b5"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-walk-b.svg",
+      "sourceSha256": "d2538f554d74d9d35cad993bf7935994a55353a843e1266ba2a0fcbcb214dede",
+      "sha256": "0d06cd9da3a97a08fa6e0d0ad4477292b8dd3f6901ad69f2137bbebb155a8d21"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-dash.svg",
+      "sourceSha256": "f9f09fa7bcb233ed70c671c01b27d52c2879724dcefbb4d19b87347f2c80363f",
+      "sha256": "ad5efdfa62709892fdd6e92bcc48e3b4181bbdf8372ea671671e6352005c85c5"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-attack-windup.svg",
+      "sourceSha256": "a9ea0e7ae361f013c92a5b53712052c6a76db2544448bdceb62352fafcd283c0",
+      "sha256": "a3406dd2d995fdb62cb674a6fa929dded61d68b174894fdf413bad3ebe6f31c6"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-attack.svg",
+      "sourceSha256": "baaff41f8ca01d9300a64db791380dd490550e60352e19df0130472d1ed6cd13",
+      "sha256": "814c27662f7d19393f327a6649a7b0f8878a8f8241636e8138fbf0cf855e5147"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-attack-release.svg",
+      "sourceSha256": "9b360d50644659e7b3a0f10080e7854fd4fc6de4e33f4c8130087c8d93c73d68",
+      "sha256": "dc0de82d5dc2666cf20c31eae4fdd208f820919f64abc2f882c8d1a70c7df78d"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-skill.svg",
+      "sourceSha256": "b14e16450bcbc011ae00833bafda7b56c969fca5a71472406cf0143908bef67a",
+      "sha256": "29986c841e310bc99ebc2900235a170726db1e3db97530a88572d30de9242b42"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-idle-a.svg",
+      "sourceSha256": "6ca7496212b0bf459f1d18b4b96592314055dd2f23da8b59eef533abc0cf1cfa",
+      "sha256": "6cf01433ae20b457a5d7cb92b889cc21a85c45bf2254910086e11dad8ea4d006"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-idle-alt.svg",
+      "sourceSha256": "3da4a20df57ac1068aa7fae68b00118c8de3929de71a42c2df07c40ab4d19d00",
+      "sha256": "90c03ec559ceb5916e002bf0b84f134b98150752e3a07d9418c6bcb6fe38a099"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-walk-a.svg",
+      "sourceSha256": "8a143687875647fb623b3342f77f21d48a5146d7d75aef24b6be6f9c3ccceecd",
+      "sha256": "e03213216efec82779051868073340db2e5849bd51872da84a196eac1b51c7b1"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-walk-b.svg",
+      "sourceSha256": "ea68d5c6129dfeb99934c8a68a628ecc84b4fc50d37d0795bebe925a39d3d745",
+      "sha256": "0d082490cbb522881bfe8ac2ceb8054b5122dd76b5d1b7d489c78ec8bf66a2ec"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-dash.svg",
+      "sourceSha256": "4d06ba952425a234592b261b36a2f248d241bfa808d8643de9e14459a8fb87e5",
+      "sha256": "e647e055e2ace43d3a836519278ada6cce2a546aa44580417fc5cf623c640c56"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-attack-windup.svg",
+      "sourceSha256": "1cf769ff8a7b48f5639fa07869b966680190b1ff17f39fb3d456360e0d22b38c",
+      "sha256": "f710f6b03d9ff38e45f41aece005a6d608f7f95c47fa73508b75dc917f539745"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-attack.svg",
+      "sourceSha256": "1db77ba5c2e02282053c21db111da010ac17cb6f5b524813d9d934c716f84f81",
+      "sha256": "44442bff66d7dfe7dcb22cd3c2ef7ad61304c187c2a3f46389d33557d0f67cc1"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-attack-release.svg",
+      "sourceSha256": "209419cdcfc0f789b2e0404108d0f66d94ed57437bc930190481a8b880dcb720",
+      "sha256": "73bc27d8a3e5d17393abeda8f529108e32fbdc4043f5a47234b7042512dd9d1e"
+    },
+    {
+      "hero": "sf",
+      "source": "game/static/dotarogue/assets/characters/sf/sf-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/sf/sf-side-skill.svg",
+      "sourceSha256": "78a61c5f1ec4a7eff99bc84ab18c48efe13fec879f622dbbd157e8fe50e2a1b3",
+      "sha256": "a9075078d370c28f9e604345f49d692590bbb6a9ebe079006dc962bd7700703d"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-idle-a.svg",
+      "sourceSha256": "2615c5480ee3878f4ac9a04b915414104f3760210d629818e7f1b4f39adbe828",
+      "sha256": "7d3eae0c3ef564f88d1ac4a74029bfff543e1042bb205b43585da4f39662e537"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-idle-alt.svg",
+      "sourceSha256": "1fbd7d39606624f2326f3867de871050b5f2f729369a4a0e3a0c52a5e2d7e8bc",
+      "sha256": "c79ed55cd0f2d2520d6847c6861a4ebb7208da2d2e3fec5b09edb8dfbbcc1c3e"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-walk-a.svg",
+      "sourceSha256": "9b320e5bc8b7f694ccd24625ce1d8824f142ced5c183bbc553aac98b01e3e126",
+      "sha256": "48f41e766db42d50ea2050c25a87b7d2bc64fd0038ed8091f9bdfdd540245b4c"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-walk-b.svg",
+      "sourceSha256": "e5005c071047aaa5964121db5e81ad40679b8488dfa7898dbb3a8a99d0be0b23",
+      "sha256": "6c0e2dbc1bc58ba87e011b44fc0493929322b56e68949a5d239eecd1d508cb3c"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-dash.svg",
+      "sourceSha256": "e1433d1693584698443dc9c54b469f3c5442e35fc4a32a2b7bebcbc66b7af6ea",
+      "sha256": "6b16c444ccefa779ce1932c26c89806fd0847cbf7cba13934e2be5acc59dcdbc"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-attack-windup.svg",
+      "sourceSha256": "da4b147d05652196588b6ab5e39567c42a3f773aa71c43d6423e3736d4a69fe0",
+      "sha256": "c5dc46e9c94762ae395e89f40309081eace86501f77e133bed6a79b1c82230a6"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-attack.svg",
+      "sourceSha256": "5d2939ae33581b2972bf3a676964de17d9ba648e07dc68e041970b6bf25774e4",
+      "sha256": "f4512af786cd1eadd8186bb346cbc22afd0222c4fbe330ac6544bd41329c833f"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-attack-release.svg",
+      "sourceSha256": "e718d7c1c79b3b441a4110f31407115c38deefd5d088f6856ad55a5af17bac65",
+      "sha256": "b0e1624956e4759c260ceac166a2f7a73c878b286a03e8a21fc3176916afff7e"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-skill.svg",
+      "sourceSha256": "ce0760e2dfc77f037f6c08a9352bcf2fab6f5e760de53b791d7650e33b74e9f6",
+      "sha256": "b81ccaed37604ca7bad31dda2e52756c86a38433798d96622892eb593883eaae"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-idle-a.svg",
+      "sourceSha256": "ad2135c1169bb93012e2fc7d04f23b4dd62f78ff88418c8c55b9cd09d8d3a5af",
+      "sha256": "3d8f7c0c4201f7aa0770fa25634e4c9cbce9fcce0363ec9e955958529a2581f3"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-idle-alt.svg",
+      "sourceSha256": "c507132a2805334b410d949d9d1972675f761ec223b2d0e2ac332ab9acf37950",
+      "sha256": "aac0cf2e30fb63012d2aa7717ecc3a3c1ac6a38ad9a9d2c312817a9771b91e5c"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-walk-a.svg",
+      "sourceSha256": "b28912c75dd27a2567c61bdc15ec2d380231002676a4d5553f357f3e4d372a4f",
+      "sha256": "8cb5ddc6d8a3f13a88eec2a0c04c51832896bf028f4bd11a7a0870dae33ed412"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-walk-b.svg",
+      "sourceSha256": "d28940952e2a49a1a58c14c395f40ee86c5e3f646eda7d867d2714bfd8880a31",
+      "sha256": "9cb4e6a883b7503379d0840180e21ed3f5b71d82211d31695c165a63f23a35db"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-dash.svg",
+      "sourceSha256": "f4b58a1a4a6f7ca91997bc28ade993f722063bbf907b8aa64603699393f8252e",
+      "sha256": "c79f2bcb69efd2976c8e45b2fa7e2c05bd3fdf102d16efe759f49c8c939dac1e"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-attack-windup.svg",
+      "sourceSha256": "5b3e90f3da2eb63fb3b5e4646cead7c4657063037985467b141e814a37007a4d",
+      "sha256": "5db09d14fe2eaed038af0ec50d30401d88b7129ef0cb3ca5812d25e04b072dce"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-attack.svg",
+      "sourceSha256": "3ab3401e93cbafece9690fd8e57a5b49232066a6e1502639bef2b5da55fd3f8b",
+      "sha256": "68a0263d251af8666103c6567a4b7ba3c8f99b505f01bd4f1b1871a0be551a84"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-attack-release.svg",
+      "sourceSha256": "35a09945e253213de2bd2a75bf3e80d989d56bce58f3e030fb3dea3896b79394",
+      "sha256": "4807c23fd3a777919be363759cdb19e8fe8dcebb91324a104a2770cf97a4a01a"
+    },
+    {
+      "hero": "kael",
+      "source": "game/static/dotarogue/assets/characters/kael/kael-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/kael/kael-side-skill.svg",
+      "sourceSha256": "67ddac87595790ae2c050a951830e9b2430875fc6869076c02552ac9104f196a",
+      "sha256": "d08fe81c1f69aa8e9dc7257561ed1bb50959bfd608e49b25aed1054e6e9a4100"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-idle-a.svg",
+      "sourceSha256": "95753369aaea371199190d19391fa21d71f2a69ee1b7ef13338e4e88b3015a76",
+      "sha256": "d9c0df84d3ce568132b459afc59366b19363054ed9a64360a32c574df22aa619"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-idle-alt.svg",
+      "sourceSha256": "371420df1508f088cd4492d91798a93e9c1899403aa000f90c108340f79d0559",
+      "sha256": "1ce1dae8a153aad80394b78b62fd01fe62020bdc2c47b0264b58b0354c4cf665"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-walk-a.svg",
+      "sourceSha256": "3ed8ff460dfdfad178b672d676fa6616143665fff1072fee9da0b76c2d055566",
+      "sha256": "24782abef08ae27f0a8da67cac9580db322c4dc292e3ff1d53d9c1f41c3b6d43"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-walk-b.svg",
+      "sourceSha256": "1a3e7de59c52303f3759f34d1e80af8234e35f3eda38c1f67431928a2665701b",
+      "sha256": "5f8e3af1900dc805655a9fc10f87494d895db74b8cdea2eac3152587410f7890"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-dash.svg",
+      "sourceSha256": "420feb092c4db777f5a6e8efd8af34fe4fa14ef3974e0111a38007d96347d923",
+      "sha256": "ee347f78c0d5d197e43eea685dde212219d301b0f04f3692e527bc7a3abdd6d3"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-attack-windup.svg",
+      "sourceSha256": "65cd48e6277959e51be2a9233af22817d014294cb4150f82c2663adb20ec1f6c",
+      "sha256": "f31188626509a466a75049cb0e7de954a981266ce91fab8654446fb57820c038"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-attack.svg",
+      "sourceSha256": "49ee395eb8d0671c3fd9a17de6758e59e1010a5a41a5d5ae8d499a26541d9e12",
+      "sha256": "afc589907f2e1c0c0086ec916a9bd7901e0ccb7cd2df3010610d965ce11e3a07"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-attack-release.svg",
+      "sourceSha256": "965b040726e7fb447992875cced4a7bfa1399c3d748e8441868e9329c073e267",
+      "sha256": "23262c3be2a3d886e1dbbd4539812d6c935797c54bcfbe555878e815e860a7d1"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-skill.svg",
+      "sourceSha256": "763293a4ceef8f9da59ad681fae22ad8a0daa61d763aa971efa2f92d416387b1",
+      "sha256": "22ab264a26a9e90f9e97ae6c55f69cb585c331e1bebe59793ce1fcbf971e6712"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-idle-a.svg",
+      "sourceSha256": "1fdf653061b64506e90ba501461316507fd8f74593fe74dee29253c70536e237",
+      "sha256": "631c20717a1d52b90f59d02065fa1727e0673646080745b3b34d6024200b11e1"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-idle-alt.svg",
+      "sourceSha256": "dd81181f017515d8d92ed6772bdb0c1c4471754348d7633e5fdd4cb1a00f33d2",
+      "sha256": "77536ab855a6078fabbfeae82aa1b66f2c865ec307224dba4c55fc25a1dd7365"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-walk-a.svg",
+      "sourceSha256": "c595af8cf7a8b3216c4d007edc9580eac978ac9b7da5e0164f4cf94638a7ac1c",
+      "sha256": "fa4f8f2f5051219e73a69acfdbc82af7c1f1af4e3db541c0b47be02d2824ba2d"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-walk-b.svg",
+      "sourceSha256": "e4bfc89dbe52814ca79d5109e51352d2adc95a975331f007f26ffb250c9c2dda",
+      "sha256": "a2abea1ff301a6f4020d8c737f7a723b665105a0304001559c91cd07406300fc"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-dash.svg",
+      "sourceSha256": "50f84c07e1c379f4f76d4d184d5f9dd13201adb8051a3a719ac1b094a6c79bb6",
+      "sha256": "ef6e545434c16b886428c2e68ecde2ea5343970ba8a42c47194b2e157240d442"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-attack-windup.svg",
+      "sourceSha256": "f38596bcb33d5ac8d2f0505316a417108b8fc14bc94dc01f24ff534fbfcf6b38",
+      "sha256": "3e4a0696ab426514268c7d1d3f0efee1c5156cab939071282075952277ff2d4f"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-attack.svg",
+      "sourceSha256": "955689ef7634f854c471689d00f73aef19c116989ae201aa3d55c7b43ee9af19",
+      "sha256": "75d0fcd5a50d3c2193ad0fea5c07b407fc41d56d199ea2c7134eef87f0de3382"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-attack-release.svg",
+      "sourceSha256": "e2c775a551149499505d7388be485059a4e6a84116077631b90fa8e224360e98",
+      "sha256": "e8fa65305f83a402f4ae9dcd673fba145aa193895b956b9a8314d0387bd98dc5"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-side-skill.svg",
+      "sourceSha256": "587436917f9f9102e9a916de00dc8ec1d0f9fac0c253b2d9f460f885144e5704",
+      "sha256": "d13b858db29c1a27d385ce918e8fde092fe27f9a5ad90faaaf7476f932d60f50"
+    },
+    {
+      "hero": "luna",
+      "source": "game/static/dotarogue/assets/characters/luna/luna-glaive.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/luna/luna-glaive.svg",
+      "sourceSha256": "a346d7c51392f3680ecaf36b343e68898e56940daae2f20a05191f4722f0df25",
+      "sha256": "6bfad767d591d8313befa5a2e437663db5d94441167d8df29f39c1c652a9c71c"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-idle-a.svg",
+      "sourceSha256": "3a181886662e77212f7e151d66f2e6a820a467a86009080f2c6a60415a924c85",
+      "sha256": "32c6352e870dc55e524288931ff118d0eed08a52d815f6b10c62602c4cf0646a"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-idle-alt.svg",
+      "sourceSha256": "874c455e7596d83c14dab44fa5606c031ed6c83dcb8d4b712738e09acb20c6e2",
+      "sha256": "68cfb50861c28f04a84ab431dfc6503c8fa9b3e45d3babb0593124dc502091e8"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-walk-a.svg",
+      "sourceSha256": "4a46294731a13102e1ee366fdd99d5b198dd5685dd996b9d669518066798caaa",
+      "sha256": "a1c17eab4ea0aefb2edd389b4a25f14a16c0cdd3348cc38ecd45dfb35a0883f7"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-walk-b.svg",
+      "sourceSha256": "ffc64b30518136c346324a50f4b479fbd6b5547860210ae3e56f3a9616b9f1bf",
+      "sha256": "cef3511f7c5e1bf482cf487072acce300800572134560473e7f594ffec338803"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-dash.svg",
+      "sourceSha256": "8a454a13cadc6835e60d9b0d9e0bdcbb28a2be02fcbd5a44b9b6224778c0c547",
+      "sha256": "a70efbc63edb3cdd9c9e9aacd7e8654d5857e1c1069759c4313b525b24203772"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-attack-windup.svg",
+      "sourceSha256": "e15265cc4442789e0d8d47e56756ca046d235ac6f217697dbff57f60fdde32aa",
+      "sha256": "133d3fa2764047e920b20be96c533a0d76343db6ee0d164db4949550b9559343"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-attack.svg",
+      "sourceSha256": "de6e56ac512ac5e1f9fcf8ed9e02220ec8b23c10ac6fe1f02fcb91b434726e53",
+      "sha256": "5bc40e5c66a95e8bf3a2fedee43124be45723c6fa6ad45c6ed301ee342e6d74e"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-attack-release.svg",
+      "sourceSha256": "48191a620d00cb3d54bb29b6c4346c5d75e179b3671539228aedcda69793fb0b",
+      "sha256": "894f737a38f630d4271368ed5f273b296fcddbaf658eeb5171efa26ad21ba88e"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-skill.svg",
+      "sourceSha256": "5e6d6a787a188cbf822fdea822d31ce7b877361d194835ad7571c54b2866b28c",
+      "sha256": "a71085c7e1d804a3285a3fef39a0c1900d151bd23ce85e734dfd7a2b8de92125"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-idle-a.svg",
+      "sourceSha256": "9b6eb2870f57d668a9e70d04f0d5d0d8ebc5861783c660140b27296f66366e5f",
+      "sha256": "eee60ecdc8b85b6ffa86c4decf184c2a933994be872c19b04cc96f3d04bed6ed"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-idle-alt.svg",
+      "sourceSha256": "455d75a4d955a3dfda2e71f007ccb5ac78e2a7d59794fc1d349a627f45c781da",
+      "sha256": "f84110c34d86d5f87c50d0c98dc8dc5a5f95cc5fe4020838c036688d185a56f5"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-walk-a.svg",
+      "sourceSha256": "fe97d9929e539dc52d9b54de28ece4234794d3dc5ba1e5be33fbe64bed221af8",
+      "sha256": "b170890552647f2b41b8b13fee5f49bd4c583047b8503955d806b3e86019ef04"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-walk-b.svg",
+      "sourceSha256": "49b6a11a7ab379117c9ce538c8f0c4e6411b5b2374f7cde0c06bf530470f5615",
+      "sha256": "02e67c4539b5392e5380673ea33cd22f4cdbf73c766193f94724a2d35f624cee"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-dash.svg",
+      "sourceSha256": "bd0bb56092f44a1cec531bd80fe48d59027159c5998f4270d13a2990df8c8a79",
+      "sha256": "523bd75c84ff5524266c4ee7d016cbb5e60c76d842ffd3140cddf092ec57f963"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-attack-windup.svg",
+      "sourceSha256": "26eeb73abb10882b0dbef116d9fd08e8064472da84d0663f3096b21f401ffd88",
+      "sha256": "340b5cd5de22176b99c7379954462980e0805d8c4c2cbae7d626b4afa48fc84b"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-attack.svg",
+      "sourceSha256": "3e0079117dfb3231396ca5561d52a47b9088a446060c4a3477cb8ef4588cbf9d",
+      "sha256": "552e8a192253d5410490cc4b1e51c00fc0d84573c84dfe44d01deaf70837caa1"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-attack-release.svg",
+      "sourceSha256": "1bab13389656d40cb7d9503b42802f045ef70df95d2f97820af716dca3c80639",
+      "sha256": "39cc60c617cfa3ba8b86e6f90da19c044479c63312ec3277a92fe51b40498d20"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-side-skill.svg",
+      "sourceSha256": "d4f3f3c971eda642e2ca9000fa69a66e038530a93080327d45cdbbd8cdeaca3e",
+      "sha256": "c76ef4f962d4050d4d96ab3f309648b1c01da1ce263a66ea0b2ad3b8ec572cef"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-idle-a.svg",
+      "sourceSha256": "9fbe595080dd4b2f6463e89c0aeee1c256239f691fe414e01bf6d08536e54378",
+      "sha256": "b891a2d8ce5c242e8e701735a92126a2edc3d4b0352d8dfa4deb12ab0cc3da76"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-idle-alt.svg",
+      "sourceSha256": "77515f539047f755e5164affe6525112ef6e41dc3c798db2b01c4047ff4d272d",
+      "sha256": "824aa15f6ba535f74f50145233ed906e0ce40356c24c1b12502e17885a1c31dc"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-walk-a.svg",
+      "sourceSha256": "cf536a726759f6c6919b803002075e29ef6fb26326278cedb25bc7b93317c0c4",
+      "sha256": "86f3b22cc956725d53b92297f20724f695d7d49db371189f040bb046da2a69f1"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-walk-b.svg",
+      "sourceSha256": "8f20c49fbc96ffad9dde84f9929ee1c867c475a0ff0e267da0bfa9d4bc374cc3",
+      "sha256": "454012c8fcdfd944528d1329eea38d38552b1543ba98d1d5e27ee928a752fe57"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-dash.svg",
+      "sourceSha256": "6cf686829a0d87c2a653036a8fdd19bdc165b661e65bd0d8f0f760bddf0fccd4",
+      "sha256": "d210eb45f2f8b0be74006e3a99e1c56061ee7eb65c02a8c3d98aa3ed1968cdc9"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-attack-windup.svg",
+      "sourceSha256": "178590928d3a4e42f3b9ad02c0b656670722491090cbeb98effe30bcedb45a82",
+      "sha256": "7a7f2695e156002882669fa10bd1243162764c71e4220ded87af7797e2c496dd"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-attack.svg",
+      "sourceSha256": "48cae03899d4637f70599f52383bf90ff8eaacd676471f60efe7984ed30e7bd1",
+      "sha256": "f8a7d5f254ebdb5fbbd346d3ecb840eb6d6ee4d03295336140eb1dd24084ed48"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-attack-release.svg",
+      "sourceSha256": "ce67d902b037e063b274aaa75776738b1fa43315130f6a5690e9f08b5865a4b9",
+      "sha256": "36691ff7427e1fb1036f0e33b74c158638418fcf344b4df74b6dfcb2278ed09b"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-skill.svg",
+      "sourceSha256": "3ee77e70e63c5d983f6371aec72c04d965b8ca364fc760ae3965934c68012cc9",
+      "sha256": "74081fab30463cf32b73483e2bca0b094ea8190c08abb4aeee97b3e804716080"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-idle-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-idle-a.svg",
+      "sourceSha256": "8d91069a2185719485d7e9a88bc38e1de8aa8362da94a4b206054475780e52e6",
+      "sha256": "272af714bd6d6265159c062c8d1f7e1c371c08282f1791a422f4013688d6c0ce"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-idle-alt.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-idle-alt.svg",
+      "sourceSha256": "ff5b8cf3d904ddc5f44972cc796d9f7dfcd9186943218f95e998688e6b322679",
+      "sha256": "5b7cf6fc6d6ddb9bf8c56d07e2e9c5dddcc2ce3e8a6921f374aef7d2f9da8b3b"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-walk-a.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-walk-a.svg",
+      "sourceSha256": "b1e6c52eb1e39d3f8a2e0660fb4a480764e338f7a2d1c659f2abc587e9387806",
+      "sha256": "8880e44f934a17cd882a798cabf1fd730dbf5f2d916e15fcf6903b830118c22f"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-walk-b.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-walk-b.svg",
+      "sourceSha256": "d855e0b172e70bc71b95b8faba3a438b02663f916a67397889038f7e4d9216d8",
+      "sha256": "7b853b1407bcb514ee1124a9a98cd717094858ad4f9ea0842f899de250f441c1"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-dash.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-dash.svg",
+      "sourceSha256": "527992cb33dd820239e4f6597cb45e0e8e5e1208080d71bf45f2d71f9eedbd61",
+      "sha256": "fe98729220b8541e7086edfa658ed8bf925d721d006ea8ade3b959f33fa3b98f"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack-windup.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-attack-windup.svg",
+      "sourceSha256": "40cb57f2c595edd4ea21c1383755820694fa8bd763ae123406082124d1df95ab",
+      "sha256": "60334f5f18dba2d27612d65e4f9515781138943468f94aa60ea9c9909f5e1242"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-attack.svg",
+      "sourceSha256": "b2e38486267469d5dca749dae0e0d9b4a0ff6f0228ccd1676ca368ee73b37194",
+      "sha256": "64a48badfc3b242c7b457d89280f9ee4c2bf40ac5249e0bf708503de4e846f6f"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-attack-release.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-attack-release.svg",
+      "sourceSha256": "8e5e10513c879207ca2162e89ad65dfc0ae901d9cd8be99c8efd811bb1730a29",
+      "sha256": "ab11fe6ac8f956d13a9b21b4f3d89ce2176a0350bf0f1549c35bce2e495602de"
+    },
+    {
+      "hero": "tb",
+      "source": "game/static/dotarogue/assets/characters/tb/tb-demon-side-skill.svg",
+      "path": "game/static/dotarogue/assets/characters/dota1/tb/tb-demon-side-skill.svg",
+      "sourceSha256": "9d6364004676527e1fe7ded5d3a1a00e2b46071dd0274690adfd3340bef3be2d",
+      "sha256": "a98a7629c517f9de576de41d734e2afec4e36a5d00dc623f4880da049ac09166"
+    }
+  ]
+}
