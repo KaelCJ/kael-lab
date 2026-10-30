@@ -487,8 +487,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     [id, `./assets/characters/${id}/${id}-idle-a.svg${id === 'luna' ? LUNA_ART_VERSION : HERO_ART_VERSION}`]));
   const HERO_PORTRAIT_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
     [id, `./assets/art/dota1/heroes/${id}.png`]));
+  const DOTA1_MODEL_DISPLAY = {"rover": {"height": 149.7765, "bottomRatio": 0.32574031890660593}, "bulwark": {"height": 99.3129, "bottomRatio": 0.19718309859154926}, "conductor": {"height": 118.4795, "bottomRatio": 0.28673835125448033}, "scavenger": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}, "jugg": {"height": 352.9231, "bottomRatio": 0.19729729729729728}, "kael": {"height": 157.2289, "bottomRatio": 0.30000000000000004}, "luna": {"height": 138, "bottomRatio": 0.23206751054852326}, "tb": {"height": 193.3362, "bottomRatio": 0.27813163481953296}, "tb-demon": {"height": 208.8462, "bottomRatio": 0.2762430939226519}, "sf": {"height": 120, "bottomRatio": 0.21666666666666667}, "scavenger-rage": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}};
   const HERO_DOTA1_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
-    [id, `./assets/characters/dota1/${id}/${id}-idle-a.svg?v=20261028-dota1-reference1`]));
+    [id, `./assets/characters/dota1/${id}/${id}-idle-a.png?v=20261030-model-static1`]));
   const HERO_POSE_ART = Object.fromEntries(Object.keys(HERO_ART).flatMap(id =>
     ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
       'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
@@ -499,21 +500,21 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
       'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
       'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
-      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.svg?v=20261028-dota1-reference1`])));
+      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.png?v=20261030-model-static1`])));
   HERO_POSE_DOTA1_ART['luna-glaive'] = './assets/characters/dota1/luna/luna-glaive.svg?v=20261028-dota1-reference1';
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.svg?v=20261028-dota1-reference1`;
+    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.png?v=20261030-model-static1`;
   }
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
     for (const side of ['', 'side-']) HERO_POSE_ART[`tb-demon-${side}${pose}`] = `./assets/characters/tb/tb-demon-${side}${pose}.svg?v=20261014-tb1`;
   }
-  for (const [poses, root] of [[HERO_POSE_ART, './assets/characters/scavenger'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger']]) {
+  for (const [poses, root, extension] of [[HERO_POSE_ART, './assets/characters/scavenger', 'svg'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger', 'png']]) {
     for (const side of ['', 'side-']) {
       for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-        poses[`scavenger-rage-${side}${pose}`] = `${root}/scavenger-rage-${side}${pose}.svg?v=20261030-rage1`;
+        poses[`scavenger-rage-${side}${pose}`] = `${root}/scavenger-rage-${side}${pose}.${extension}?v=20261030-rage1`;
       }
       for (const direction of ['in', 'out']) for (let frame = 0; frame < 3; frame++) {
-        poses[`scavenger-${side}morph-${direction}-${frame}`] = `${root}/scavenger-${side}morph-${direction}-${frame}.svg?v=20261030-rage1`;
+        poses[`scavenger-${side}morph-${direction}-${frame}`] = `${root}/scavenger-${side}morph-${direction}-${frame}.${extension}?v=20261030-rage1`;
       }
     }
   }
@@ -2975,6 +2976,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     p.pendingAttack = { weaponId: w.id, type: def.type, damage, attackId, angle, target, resolved: false,
       godsealSnapshot: equipmentCombat.basicAttackSnapshot(),
       duration: p.attackDuration, strikeTime: BASE_ATTACK_STRIKE_TIME * p.attackDuration / .42, elapsed: 0 };
+    if (def.type === 'melee') run.effects.push({ kind: 'weapon-swing', character: w.id, x: p.x, y: p.y, r: def.range, angle, direction: attackId % 2 ? 1 : -1, color: def.color, life: p.attackDuration, maxLife: p.attackDuration });
+    if (w.id === 'sf') run.effects.push({ kind: 'shadow-attack', x: p.x, y: p.y, r: 48, angle, direction: attackId % 2 ? 1 : -1, color: def.color, life: p.attackDuration, maxLife: p.attackDuration });
+    if (['rover', 'conductor', 'kael', 'luna'].includes(w.id) || (w.id === 'tb' && run.skills.tb?.time > 0)) run.effects.push({ kind: 'hero-attack', character: w.id, demon: w.id === 'tb' && run.skills.tb?.time > 0, x: p.x, y: p.y, angle, direction: attackId % 2 ? 1 : -1, color: def.color, life: p.attackDuration, maxLife: p.attackDuration });
   }
   function updateBaseAttack(dt) {
     const attack = run.baseAttack;
@@ -3064,7 +3068,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function updateEffects(dt) {
     for (let i = run.effects.length - 1; i >= 0; i--) {
       const fx = run.effects[i];
-      if (fx.kind === 'melee-swing') { fx.x = run.player.x; fx.y = run.player.y; }
+      if (fx.kind === 'melee-swing' || fx.kind === 'weapon-swing' || fx.kind === 'shadow-attack' || fx.kind === 'hero-attack') { fx.x = run.player.x; fx.y = run.player.y; }
       fx.life -= dt;
       if (fx.life <= 0) run.effects.splice(i, 1);
     }
@@ -3704,7 +3708,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const angle = time * 1.45 + i * TAU / 3 - Math.PI / 2;
       const depth = Math.sin(angle);
       if ((depth >= 0) !== front) continue;
-      const x = Math.cos(angle) * (classic ? 24 : 20), y = -64 + depth * (classic ? 7 : 5);
+      const x = Math.cos(angle) * (classic ? 24 : 20), y = (classic ? -88 : -64) + depth * (classic ? 7 : 5);
       const r = (classic ? 4.8 : 3.5) + depth * .35;
       ctx.globalAlpha = .16; ctx.fillStyle = colors[i];
       ctx.beginPath(); ctx.arc(x, y, r * 1.9, 0, TAU); ctx.fill();
@@ -3779,7 +3783,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     if (rageMorph) frame = `morph-${rageMorph.direction}-${Math.min(2, Math.floor((1 - rageMorph.time / RAGE_MORPH_DURATION) * 3))}`;
     const image = (p.visualSide && artImage(`${artId}-side-${frame}`)) || artImage(`${artId}-${frame}`) || artImage(`${artId}-idle-a`) || artImage(id);
-    const footImage = !rageMorph && artId !== 'scavenger-rage' && moving && (p.attackPose > 0 || (id === 'luna' && pose === 'skill')) && !p.dashTime && walkFrame
+    const footImage = selectedSkin !== "dota1" && !rageMorph && artId !== 'scavenger-rage' && moving && (p.attackPose > 0 || (id === 'luna' && pose === 'skill')) && !p.dashTime && walkFrame
       ? ((p.visualSide && artImage(`${artId}-side-${walkFrame}`)) || artImage(`${artId}-${walkFrame}`))
       : null;
     const walkPhase = p.animTime * 13;
@@ -3820,10 +3824,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     drawEvolutionEquipment(ctx, evolutionLevels, evolutionView);
     if (id === 'kael') drawKaelOrbs(false, mirror);
     if (image) {
-      const visibleHeight = id === 'tb' ? (demon ? 126 : 98) : id === 'luna' ? 100 : id === 'scavenger' ? 94 : id === 'rover' ? 82 : id === 'sf' ? 90 : 86;
+      const modelProfile = selectedSkin === 'dota1' && image.currentSrc.includes('/assets/characters/dota1/') && /\.png(?:\?|$)/.test(image.currentSrc) ? DOTA1_MODEL_DISPLAY[artId] : null;
+      const visibleHeight = modelProfile ? modelProfile.height : id === 'tb' ? (demon ? 126 : 98) : id === 'luna' ? 100 : id === 'scavenger' ? 94 : id === 'rover' ? 82 : id === 'sf' ? 90 : 86;
       const height = visibleHeight;
       const width = height * image.naturalWidth / image.naturalHeight;
-      const bottom = id === 'tb' ? 16 + height * 30 / 384 : 16;
+      const bottom = modelProfile ? height * modelProfile.bottomRatio : id === 'tb' ? 16 + height * 30 / 384 : 16;
       const footTop = bottom - height + height * (id === 'luna' ? .70 : .66);
       ctx.imageSmoothingEnabled = true;
       if (id === 'tb') {
@@ -3971,7 +3976,182 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
   }
 
+  function drawModelBladeTipTrail(fx) {
+    if (selectedSkin !== 'dota1' || !['jugg', 'scavenger'].includes(fx.character)) return;
+    const p = run.player, s = run.skills;
+    if (fx.character === 'scavenger' && (s.rageTime > 0 || s.rageMorph)) return;
+    if (p.dashTime > 0 || p.skillPose > 0 || s.jump || s.spin) return;
+    const progress = clamp(1 - fx.life / fx.maxLife, 0, 1);
+    const contact = BASE_ATTACK_STRIKE_TIME / .42;
+    if (progress < contact) return;
+    const phase = clamp((progress - contact) / (1 - contact), 0, 1);
+    const poseProgress = clamp(p.attackClock / (p.attackDuration || .42), 0, 1);
+    const release = poseProgress * .42 >= .27, side = p.visualSide;
+    const frame = release ? 'attack-release' : 'attack';
+    const image = (side && artImage(`${fx.character}-side-${frame}`)) || artImage(`${fx.character}-${frame}`);
+    const profile = DOTA1_MODEL_DISPLAY[fx.character];
+    if (!image?.naturalHeight || !profile || !image.currentSrc.includes('/assets/characters/dota1/') || !/\.png(?:\?|$)/.test(image.currentSrc)) return;
+    // Native PNG blade tips were checked against front/side contact/release frames.
+    // Convert with the same frame size, height and foot baseline used by drawPlayer.
+    const tips = fx.character === 'jugg'
+      ? (side ? (release ? [[299, 255]] : [[300, 268]]) : (release ? [[221, 322]] : [[232, 334]]))
+      : (side ? (release ? [[540.2, 252.2], [578.6, 330.6]] : [[519.4, 212.2], [583.4, 301.8]])
+        : (release ? [[484.2, 389.8], [369, 420.2]] : [[511.4, 359.4], [423.4, 431.4]]));
+    const unit = profile.height / image.naturalHeight;
+    const bottom = profile.height * profile.bottomRatio;
+    const attackSnap = Math.sin(poseProgress * Math.PI);
+    const stride = run.movedThisFrame ? Math.sin(p.animTime * 13) : 0;
+    const lift = (run.movedThisFrame ? Math.abs(stride) * 5 : 0) + attackSnap * 4;
+    const lean = (run.movedThisFrame ? stride * .075 : 0) + attackSnap * (fx.character === 'jugg' ? .04 : .028);
+    const alpha = .58 * Math.min(1, phase / .10) * Math.pow(1 - phase, .8);
+    const length = (fx.character === 'jugg' ? (side ? 21 : 12) : (side ? 13 : 9)) * (motionPreference.matches ? .6 : .6 + .4 * Math.sin(phase * Math.PI));
+    ctx.save(); ctx.translate(fx.x, fx.y - lift); ctx.rotate(lean);
+    ctx.scale((p.visualMirror || 1) * (1.025 + attackSnap * .045), 1 + attackSnap * .025);
+    ctx.globalAlpha *= alpha; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (let i = 0; i < tips.length; i++) {
+      const x = (tips[i][0] - image.naturalWidth / 2) * unit;
+      const y = bottom - profile.height + tips[i][1] * unit;
+      // Remain beside the exposed blade tip; never rotate through the target angle.
+      const endX = x + (side ? -length * .72 : length * .55);
+      const endY = y + (side ? length * .7 : -length * .82);
+      const bendX = x + (side ? -length * .12 : length * .46);
+      const bendY = y + (side ? length * .65 : -length * .22);
+      ctx.strokeStyle = fx.character === 'jugg' ? '#f7edca' : '#c6df91'; ctx.lineWidth = 2;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(bendX, bendY, endX, endY); ctx.stroke();
+      ctx.strokeStyle = fx.character === 'jugg' ? '#fffdf0' : '#edf6ca'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.moveTo(x, y); ctx.quadraticCurveTo(bendX, bendY, endX, endY); ctx.stroke();
+    }
+    ctx.restore();
+  }
+  function drawWeaponSwing(fx) {
+    if (selectedSkin !== 'dota1' || !['bulwark', 'scavenger', 'jugg', 'tb'].includes(fx.character)) return;
+    if (fx.character === 'jugg' || fx.character === 'scavenger') { drawModelBladeTipTrail(fx); return; }
+    const progress = clamp(1 - fx.life / fx.maxLife, 0, 1);
+    const contact = BASE_ATTACK_STRIKE_TIME / .42;
+    // The exported model owns the windup; a contact trail must not hit early.
+    if (progress < contact) return;
+    const phase = clamp((progress - contact) / (1 - contact), 0, 1);
+    const direction = fx.direction < 0 ? -1 : 1;
+    const sweep = motionPreference.matches ? .6 : 1 - Math.pow(1 - Math.min(1, phase / .64), 3);
+    const fade = Math.min(1, phase / .09) * Math.pow(1 - phase, .7);
+    const handHeight = fx.character === 'jugg' ? 58 : fx.character === 'scavenger' ? 43 : fx.character === 'tb' ? 46 : 32;
+    const radius = Math.min(94, Math.max(42, fx.r * (fx.character === 'jugg' ? .72 : fx.character === 'bulwark' ? .49 : .61)));
+    ctx.save(); ctx.translate(fx.x, fx.y - handHeight); ctx.rotate(fx.angle);
+    ctx.globalAlpha *= fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (fx.character === 'bulwark') {
+      // Compact, heavy claw rakes in front of the hands, not a radial quill cast.
+      const reach = radius * (.72 + sweep * .28), bend = direction * (1 - sweep) * 19;
+      for (const claw of [-1, 0, 1]) {
+        const side = claw * 8;
+        ctx.strokeStyle = '#352b23'; ctx.lineWidth = claw === 0 ? 8 : 6;
+        ctx.beginPath(); ctx.moveTo(15, side * .6 + bend);
+        ctx.quadraticCurveTo(reach * .64, side + bend * .35, reach - Math.abs(claw) * 5, side * 1.25 - direction * 5); ctx.stroke();
+        ctx.strokeStyle = claw === 0 ? '#f1d59e' : '#c59d61'; ctx.lineWidth = claw === 0 ? 3 : 2;
+        ctx.beginPath(); ctx.moveTo(15, side * .6 + bend);
+        ctx.quadraticCurveTo(reach * .64, side + bend * .35, reach - Math.abs(claw) * 5, side * 1.25 - direction * 5); ctx.stroke();
+      }
+    } else if (fx.character === 'tb') {
+      // Two separate curved blades cross, and the leading hand alternates.
+      ctx.scale(1, .76);
+      for (const side of [-1, 1]) {
+        const turn = direction * side;
+        const head = turn * (-.96 + sweep * 1.83);
+        const tail = turn * (-.96 + Math.max(0, sweep - .53) * 1.83);
+        const bladeRadius = radius - (side > 0 ? 10 : 0);
+        ctx.strokeStyle = '#183b2b'; ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.arc(6, side * 9, bladeRadius, tail, head, turn < 0); ctx.stroke();
+        ctx.strokeStyle = side < 0 ? '#c5f99e' : '#84dca1'; ctx.lineWidth = 3;
+        ctx.beginPath(); ctx.arc(6, side * 9, bladeRadius, tail, head, turn < 0); ctx.stroke();
+        ctx.strokeStyle = '#e2ffd1'; ctx.lineWidth = 1;
+        ctx.beginPath(); ctx.arc(6, side * 9, bladeRadius - 3, tail, head, turn < 0); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
+  function drawShadowAttack(fx) {
+    if (selectedSkin !== 'dota1') return;
+    const progress = clamp(1 - fx.life / fx.maxLife, 0, 1), direction = fx.direction || 1;
+    const eased = progress < .5 ? 2 * progress * progress : 1 - Math.pow(-2 * progress + 2, 2) / 2;
+    const reach = 18 + eased * 34, fade = Math.sin(Math.min(1, progress) * Math.PI);
+    ctx.save(); ctx.translate(fx.x, fx.y); ctx.rotate(fx.angle);
+    ctx.globalAlpha *= .9 * Math.max(.25, fade);
+    ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    for (const claw of [-1, 0, 1]) {
+      const side = claw * 7, bend = side * .035 * direction;
+      ctx.strokeStyle = '#160d27'; ctx.lineWidth = 8;
+      ctx.beginPath(); ctx.moveTo(8, side * .45); ctx.quadraticCurveTo(reach * .48, side + bend * 24, reach, side * 1.65); ctx.stroke();
+      ctx.strokeStyle = claw === 0 ? '#ff8ca8' : '#bb45f1'; ctx.lineWidth = claw === 0 ? 3.5 : 2.5;
+      ctx.beginPath(); ctx.moveTo(8, side * .45); ctx.quadraticCurveTo(reach * .48, side + bend * 24, reach, side * 1.65); ctx.stroke();
+    }
+    ctx.globalAlpha *= .85;
+    ctx.strokeStyle = '#ffd1e2'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(16, 0, 13 + eased * 10, -.65 + direction * .12, .65 + direction * .12); ctx.stroke();
+    ctx.fillStyle = '#ffb3d0'; ctx.beginPath(); ctx.arc(reach + 3, 0, 3.5 + fade * 2, 0, TAU); ctx.fill();
+    ctx.restore();
+  }
+  function drawHeroAttack(fx) {
+    if (selectedSkin !== 'dota1') return;
+    const progress = clamp(1 - fx.life / fx.maxLife, 0, 1), contact = BASE_ATTACK_STRIKE_TIME / .42;
+    if (progress < contact) return;
+    const phase = clamp((progress - contact) / (1 - contact), 0, 1), reduced = motionPreference.matches;
+    const direction = fx.direction < 0 ? -1 : 1;
+    const sweep = reduced ? .6 : 1 - Math.pow(1 - phase, 3);
+    const fade = Math.min(1, phase / .07) * Math.pow(1 - phase, .8);
+    const p = run.player, rifleSide = p.visualSide;
+    const handHeight = fx.character === 'rover' ? (rifleSide ? 22 : 20) : fx.character === 'conductor' ? 29 : fx.character === 'kael' ? 44 : fx.character === 'luna' ? 62 : 57;
+    const facing = fx.character === 'rover' ? (rifleSide ? (p.visualMirror < 0 ? Math.PI : 0) : Math.PI / 2) : fx.angle;
+    ctx.save(); ctx.translate(fx.x, fx.y - handHeight); ctx.rotate(facing);
+    ctx.globalAlpha *= fade; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    if (fx.character === 'rover') {
+      // The rifle is in the model; this is a short flash at its muzzle.
+      const flash = Math.max(0, 1 - phase / .48), reach = rifleSide ? 39 : 18;
+      ctx.globalAlpha *= reduced ? .6 : Math.max(.2, flash);
+      ctx.fillStyle = '#fff2bd'; ctx.strokeStyle = '#e99e42'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(reach - 3, -4); ctx.lineTo(reach + 8, -2);
+      ctx.lineTo(reach + 15 + flash * 8, 0); ctx.lineTo(reach + 8, 2); ctx.lineTo(reach - 3, 4); ctx.closePath(); ctx.fill(); ctx.stroke();
+    } else if (fx.character === 'conductor') {
+      // Separate hammer and axe wakes, joined by one short thunder discharge.
+      for (const side of [-1, 1]) {
+        const head = side * (-.8 + sweep * 1.6), tail = head - side * .65;
+        ctx.strokeStyle = '#1c3545'; ctx.lineWidth = side < 0 ? 7 : 5;
+        ctx.beginPath(); ctx.arc(4, side * 9, side < 0 ? 35 : 43, tail, head, side < 0); ctx.stroke();
+        ctx.strokeStyle = side < 0 ? '#c6f3ff' : '#81c9ff'; ctx.lineWidth = side < 0 ? 3 : 2;
+        ctx.beginPath(); ctx.arc(4, side * 9, side < 0 ? 35 : 43, tail, head, side < 0); ctx.stroke();
+      }
+      ctx.strokeStyle = '#ddfaff'; ctx.lineWidth = 1.5;
+      ctx.beginPath(); ctx.moveTo(20, 0); ctx.lineTo(27, -5); ctx.lineTo(32, 3); ctx.lineTo(43, -2); ctx.stroke();
+    } else if (fx.character === 'kael') {
+      // Three elements converge at the casting hand; head orbs remain separate.
+      const reach = 27 + sweep * 16, spread = reduced ? 7 : 12 * (1 - sweep) + 3;
+      for (const [i, color] of ['#ffb56b', '#a8ddff', '#cfa8ff'].entries()) {
+        ctx.strokeStyle = '#272139'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.moveTo(10, (i - 1) * spread); ctx.quadraticCurveTo(24, (i - 1) * spread, reach, 0); ctx.stroke();
+        ctx.strokeStyle = color; ctx.lineWidth = 2;
+        ctx.beginPath(); ctx.moveTo(10, (i - 1) * spread); ctx.quadraticCurveTo(24, (i - 1) * spread, reach, 0); ctx.stroke();
+      }
+      ctx.fillStyle = '#fff2d8'; ctx.beginPath(); ctx.arc(reach, 0, 3, 0, TAU); ctx.fill();
+    } else if (fx.character === 'luna') {
+      // A narrow crescent traces the glaive release above the mount.
+      const head = direction * (-.9 + sweep * 1.65), tail = head - direction * .65;
+      ctx.scale(1, .7); ctx.strokeStyle = '#253954'; ctx.lineWidth = 7;
+      ctx.beginPath(); ctx.arc(10, 0, 40, tail, head, direction < 0); ctx.stroke();
+      ctx.strokeStyle = '#d9f0ff'; ctx.lineWidth = 3;
+      ctx.beginPath(); ctx.arc(10, 0, 40, tail, head, direction < 0); ctx.stroke();
+      ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 1;
+      ctx.beginPath(); ctx.arc(10, 0, 36, tail, head, direction < 0); ctx.stroke();
+    } else if (fx.character === 'tb' && fx.demon) {
+      const reach = 24 + sweep * 24;
+      for (const claw of [-1, 1]) {
+        ctx.strokeStyle = '#183b2b'; ctx.lineWidth = 7;
+        ctx.beginPath(); ctx.moveTo(8, claw * 7); ctx.quadraticCurveTo(reach * .6, claw * 17, reach, claw * 13); ctx.stroke();
+        ctx.strokeStyle = claw < 0 ? '#baff86' : '#82e1a1'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.moveTo(8, claw * 7); ctx.quadraticCurveTo(reach * .6, claw * 17, reach, claw * 13); ctx.stroke();
+      }
+    }
+    ctx.restore();
+  }
   function drawMeleeSwing(fx) {
+    if (selectedSkin === 'dota1') return;
     if (fx.character === 'scavenger' && (run.skills.rageTime > 0 || run.skills.rageMorph)) return;
     const progress = 1 - fx.life / fx.maxLife, direction = fx.direction || 1;
     const angle = fx.angle + direction * (-.65 + progress * 1.45);
@@ -4273,6 +4453,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     for (const fx of run.effects) {
       const inView = ['line', 'orbit-bolt'].includes(fx.kind) ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) <= cam.y + viewH : visible(fx, cam, (fx.r || 30) + 180);
       if (!inView) continue;
+      if (selectedSkin === 'dota1' && fx.kind === 'muzzle' && ['rover', 'conductor', 'kael', 'luna', 'tb'].includes(run.character.id)) continue;
       const progress = 1 - fx.life / fx.maxLife;
       ctx.globalAlpha = clamp(fx.life / fx.maxLife, 0, 1); ctx.strokeStyle = fx.color; ctx.fillStyle = fx.color;
       const view = { hero: run.character.id, level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches };
@@ -4414,7 +4595,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         for (let i = 0; i < blades; i++) { ctx.save(); ctx.rotate((i - (blades - 1) / 2) * .24); ctx.beginPath(); ctx.moveTo(-22, -40); ctx.lineTo(62, 35); ctx.stroke(); ctx.restore(); }
         if (fx.tier >= 3) { ctx.globalAlpha *= .7; ctx.strokeStyle = '#b9efff'; ctx.lineWidth = 3; ctx.beginPath(); ctx.arc(0, 0, fx.r * (.7 + progress * .3), 0, TAU); ctx.stroke(); }
         ctx.restore();
-      } else if (fx.kind === 'melee-swing') drawMeleeSwing(fx);
+      } else if (fx.kind === 'shadow-attack') drawShadowAttack(fx);
+      else if (fx.kind === 'hero-attack') drawHeroAttack(fx);
+      else if (fx.kind === 'weapon-swing') drawWeaponSwing(fx);
+      else if (fx.kind === 'melee-swing') drawMeleeSwing(fx);
       else if (fx.kind === 'text') { ctx.font = 'bold 18px system-ui'; ctx.textAlign = 'center'; ctx.fillText(fx.text, fx.x, fx.y - progress * 24); }
       else if (fx.kind === 'shards') {
         for (let i = 0; i < 4; i++) { const a = i * TAU / 4 + .4; ctx.fillRect(fx.x + Math.cos(a) * fx.r * progress - 3, fx.y + Math.sin(a) * fx.r * progress - 3, 6, 6); }
