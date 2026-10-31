@@ -2,22 +2,23 @@ import { createStudioRuntime } from './studio-runtime.js?v=20261014-tb1';
 import { createFireRenderer } from './effects/fire.js';
 import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261027-map2';
 import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261027-map2';
-import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261030-alchemist-rage1';
+import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261031-sf-requiem5';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
-import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261027-unified1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261030-equipment18';
+import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261031-equipment19';
 import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261030-equipment18';
 import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261030-equipment18';
 import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment18';
 import { createEquipmentCombat } from './equipment-combat.js?v=20261030-equipment18-skillpower1';
-import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261030-sf-requiem1';
+import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261031-luna-eclipse2';
 import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
 import { createWindRenderer } from './effects/wind.js?v=20261027-dota1';
 import { createMeteorRenderer } from './effects/meteor.js';
-import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem3';
+import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem5';
+import { createEclipseRenderer } from './effects/eclipse.js?v=20261031-luna-eclipse2';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261029-attributes-spell3';
 import { createAudioSystem } from './audio.js?v=20261027-dota1';
-import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261030-skill-power1';
+import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
 import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDerivedSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261030-attribute-contract1';
 
 (() => {
@@ -40,7 +41,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
   const TAU = Math.PI * 2;
   const RAGE_MORPH_DURATION = 1 / 3;
-  const SF_REQUIEM = { range: 280, travelTime: .8, fadeTime: .45 };
+  const SF_REQUIEM = { range: 280, chargeTime: 1, travelTime: 1, fadeTime: 1 };
   const KAEL_TORNADO = { speed: 240, life: 3.2, radius: 34, scale: .72 };
   const KAEL_METEOR = { speed: 160, life: 4.5, radius: 88, scale: 1.85 };
   const KAEL_ICE_WALL = { life: 10, halfLength: 240, halfWidth: 36 };
@@ -59,12 +60,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     blade: './assets/art/blade.svg'
   };
 
-  const UPCOMING_HEROES = [
-    { id: 'meepo', names: ['Meepo', 'Meepo', 'Meepo'] },
-    { id: 'druid', names: ['德鲁伊', '德魯伊', 'Lone Druid'] },
-    { id: 'night-stalker', names: ['夜魔', '夜魔', 'Night Stalker'] },
-    { id: 'pom', names: ['POM', 'POM', 'POM'] }
-  ];
   // Each river is a centerline with a local radius. The same curve drives both
   // the rounded water silhouette and the capsule collision used by movement.
   const DIFFICULTIES = [
@@ -303,30 +298,30 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       buffRarity: 'Buff 品质', buffRarity_common: '普通', buffRarity_rare: '稀有', buffRarity_epic: '史诗', buffRarity_legendary: '传说',
       buffChances: '新 Buff 概率 · 幸运 {luck}',
       shopBuffs: '永久增益', pauseBuffs: '永久增益', buffKind: '永久增益', buffRepeatable: '可重复购买', buffStack: '已持有 {count} 层 · 可重复购买',
-      buffEmpty: '尚未购买永久增益。它们不占装备格；纯正面效果或正负效果都会按层数叠加。', buffBought: '获得{item}：第 {count} 层', buffCharges: '本波薄葬：{count}/{total} 次', buffNextCharges: '下一波薄葬：{count} 次（每波恢复）', thinBurialTriggered: '薄葬抵挡伤害 · 剩余 {count} 次', buffLimits: '叠加下限：有效移速／攻速为基础 20%，射程 48，全伤害 10%。',
+      buffEmpty: '尚未购买永久增益。它们不占装备格，可重复购买并按层数叠加。', buffBought: '获得{item}：第 {count} 层', buffCharges: '本波薄葬：{count}/{total} 次', buffNextCharges: '下一波薄葬：{count} 次（每波恢复）', thinBurialTriggered: '薄葬抵挡伤害 · 剩余 {count} 次', buffLimits: '闪避上限 55%，吸血上限 65%，冷却缩减上限 60%；臂章流失生命最低保留 1。',
       shopRates: '新商品：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位',
     },
     'zh-TW': {
       shopBuffs: '永久增益', pauseBuffs: '永久增益', buffKind: '永久增益', buffRepeatable: '可重複購買', buffStack: '目前持有 {count} 層 · 可重複購買',
       buffRarity: 'Buff 品質', buffRarity_common: '普通', buffRarity_rare: '稀有', buffRarity_epic: '史詩', buffRarity_legendary: '傳說',
       buffChances: '新 Buff 機率 · 幸運 {luck}',
-      buffEmpty: '尚未購買永久增益。它們不占裝備格；純正面效果或正負效果都會按層數疊加。', buffBought: '獲得{item}：第 {count} 層', buffCharges: '本波薄葬：{count}/{total} 次', buffNextCharges: '下一波薄葬：{count} 次（每波恢復）', thinBurialTriggered: '薄葬抵擋傷害 · 剩餘 {count} 次', buffLimits: '疊加下限：有效移速／攻速為基礎 20%，射程 48，全傷害 10%。',
+      buffEmpty: '尚未購買永久增益。它們不占裝備格，可重複購買並按層數疊加。', buffBought: '獲得{item}：第 {count} 層', buffCharges: '本波薄葬：{count}/{total} 次', buffNextCharges: '下一波薄葬：{count} 次（每波恢復）', thinBurialTriggered: '薄葬抵擋傷害 · 剩餘 {count} 次', buffLimits: '閃避上限 55%，吸血上限 65%，冷卻縮減上限 60%；臂章流失生命最低保留 1。',
       shopRates: '新商品：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位',
     },
     en: {
       shopBuffs: 'Permanent buffs', pauseBuffs: 'Permanent buffs', buffKind: 'Permanent buff', buffRepeatable: 'Repeatable', buffStack: '{count} stack(s) owned · repeatable',
       buffRarity: 'Buff rarity', buffRarity_common: 'Common', buffRarity_rare: 'Rare', buffRarity_epic: 'Epic', buffRarity_legendary: 'Legendary',
       buffChances: 'New Buff odds · Luck {luck}',
-      buffEmpty: 'No permanent buffs yet. They use no equipment slots; pure-positive and mixed effects both stack.', buffBought: 'Gained {item}: stack {count}', buffCharges: 'Grave this wave: {count}/{total}', buffNextCharges: 'Grave next wave: {count} (recharges each wave)', thinBurialTriggered: 'Shallow Grave blocked damage · {count} left', buffLimits: 'Stacking floors: movement/attack rate 20% of base, range 48, all damage 10%.',
+      buffEmpty: 'No permanent buffs yet. They use no equipment slots and stack with repeat purchases.', buffBought: 'Gained {item}: stack {count}', buffCharges: 'Grave this wave: {count}/{total}', buffNextCharges: 'Grave next wave: {count} (recharges each wave)', thinBurialTriggered: 'Shallow Grave blocked damage · {count} left', buffLimits: 'Caps: Dodge 55%, lifesteal 65%, cooldown reduction 60%. Armlet HP loss stops at 1 HP.',
       shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot',
     }
   };
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], BUFF_UI[locale]);
 
   const HERO_UI = {
-    'zh-CN': { active: '主动', passive: '被动', availableHeroes: '可玩英雄', upcomingHeroes: '待制作英雄', unavailableHero: '未开放', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位', statAttackPower: '攻击力', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '累计收魂 {count} · 攻击 +{attack}', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '九名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，另有可重复购买的永久增益。固定配方不占装备格，满格仍能合成释放组件格。' },
-    'zh-TW': { active: '主動', passive: '被動', availableHeroes: '可玩英雄', upcomingHeroes: '待製作英雄', unavailableHero: '未開放', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位', statAttackPower: '攻擊力', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '累計收魂 {count} · 攻擊 +{attack}', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '九名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，另有可重複購買的永久增益。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
-    en: { active: 'Active', passive: 'Passive', availableHeroes: 'Playable heroes', upcomingHeroes: 'Planned heroes', unavailableHero: 'Unavailable', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot', statAttackPower: 'Attack power', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count} · Attack +{attack}', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Nine heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, plus repeatable permanent buffs. Fixed recipes take no slot; crafting also works with a full inventory.' }
+    'zh-CN': { active: '主动', passive: '被动', availableHeroes: '可玩英雄', component: '基础组件', intermediate: '中间装备', finished: '成品装备', shopRates: '新商品：成品{finished}%／中间件{intermediate}%，另有 1 个永久增益位', statAttackPower: '攻击力', statManaRegen: '每秒回蓝', statAbilityHaste: '冷却缩减', quillCount: '受击 {count}/4 · 背后减伤40%', staticReady: '静电场 · 同敌1秒', dividendCount: '拾取 {count}/8 · 额外1币', leapCount: '有效攻击 {count}/5', soulCount: '累计收魂 {count} · 攻击 +{attack}', dividend: '炼金分红：货币 +1', bloodRage: '撒旦狂热', chooseCharacter: '选择英雄', pauseDriver: '当前英雄', titleLead: '九名英雄，20波远征或无尽敌潮。收集组件、合成装备，用伤害成长塑造你的构筑。', shopCaption: '波末材料按80%回收，经验全额保留；商店以组件为主，另有可重复购买的永久增益。固定配方不占装备格，满格仍能合成释放组件格。' },
+    'zh-TW': { active: '主動', passive: '被動', availableHeroes: '可玩英雄', component: '基礎組件', intermediate: '中間裝備', finished: '成品裝備', shopRates: '新商品：成品{finished}%／中間件{intermediate}%，另有 1 個永久增益位', statAttackPower: '攻擊力', statManaRegen: '每秒回魔', statAbilityHaste: '冷卻縮減', quillCount: '受擊 {count}/4 · 背後減傷40%', staticReady: '靜電場 · 同敵1秒', dividendCount: '拾取 {count}/8 · 額外1幣', leapCount: '有效攻擊 {count}/5', soulCount: '累計收魂 {count} · 攻擊 +{attack}', dividend: '煉金分紅：貨幣 +1', bloodRage: '撒旦狂熱', chooseCharacter: '選擇英雄', pauseDriver: '當前英雄', titleLead: '九名英雄，20波遠征或無盡敵潮。收集組件、合成裝備，用傷害成長塑造你的構築。', shopCaption: '波末材料按80%回收，經驗全額保留；商店以組件為主，另有可重複購買的永久增益。固定配方不占裝備格，滿格仍能合成釋放組件格。' },
+    en: { active: 'Active', passive: 'Passive', availableHeroes: 'Playable heroes', component: 'Component', intermediate: 'Intermediate', finished: 'Finished item', shopRates: 'New offers: {finished}% finished / {intermediate}% intermediate, plus 1 permanent buff slot', statAttackPower: 'Attack power', statManaRegen: 'Mana per sec', statAbilityHaste: 'Cooldown reduction', quillCount: 'Hits {count}/4 · Rear damage -40%', staticReady: 'Static Field · 1 sec per enemy', dividendCount: 'Pickups {count}/8 · +1 gold', leapCount: 'Successful attacks {count}/5', soulCount: 'Souls {count} · Attack +{attack}', dividend: 'Alchemy Dividend: +1 gold', bloodRage: 'Satanic rage', chooseCharacter: 'Choose a hero', pauseDriver: 'Current hero', titleLead: 'Nine heroes, 20-wave expeditions or endless hordes. Collect components, craft equipment and build your damage growth.', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Most offers are components, plus repeatable permanent buffs. Fixed recipes take no slot; crafting also works with a full inventory.' }
   };
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], HERO_UI[locale]);
 
@@ -528,39 +523,83 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     pixel: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_ART, ...EQUIPMENT_ART },
     dota1: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_DOTA1_ART, ...EQUIPMENT_ART }
   };
+  // Keep the catalog of paths cheap on the title screen. Creating an Image and
+  // assigning src for every skin, enemy, map and equipment icon here makes a
+  // fresh visit download the whole art library before the player has started a
+  // run. Images are now created only when a renderer actually needs them.
   const imagesByPath = {};
+  function imageForPath(path) {
+    if (!path) return null;
+    if (!imagesByPath[path]) {
+      const image = new Image();
+      image.decoding = 'async';
+      image.src = path;
+      imagesByPath[path] = image;
+    }
+    return imagesByPath[path];
+  }
   let windRenderer = null, meteorRenderer = null;
+  let windRendererPromise = null, meteorRendererPromise = null;
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
   const requiemRenderer = createRequiemRenderer();
-  createWindRenderer().then(renderer => { windRenderer = renderer; })
-    .catch(error => console.warn('Wind sprites unavailable; using the projectile fallback.', error));
-  createMeteorRenderer().then(renderer => { meteorRenderer = renderer; })
-    .catch(error => console.warn('Meteor sprites unavailable; using the rock fallback.', error));
-  const artImages = Object.fromEntries(Object.entries(SKIN_ART).flatMap(([skin, paths]) => Object.entries(paths).map(([id, path]) => {
-    const image = imagesByPath[path] || (imagesByPath[path] = new Image());
-    if (!image.src) image.src = path;
-    return [`${skin}:${id}`, image];
-  })));
+  const eclipseRenderer = createEclipseRenderer();
+  function ensureWindRenderer() {
+    if (windRenderer) return Promise.resolve(windRenderer);
+    if (!windRendererPromise) {
+      windRendererPromise = createWindRenderer().then(renderer => {
+        windRenderer = renderer;
+        return renderer;
+      }).catch(error => {
+        windRendererPromise = Promise.resolve(null);
+        console.warn('Wind sprites unavailable; using the projectile fallback.', error);
+        return null;
+      });
+    }
+    return windRendererPromise;
+  }
+  function ensureMeteorRenderer() {
+    if (meteorRenderer) return Promise.resolve(meteorRenderer);
+    if (!meteorRendererPromise) {
+      meteorRendererPromise = createMeteorRenderer().then(renderer => {
+        meteorRenderer = renderer;
+        return renderer;
+      }).catch(error => {
+        meteorRendererPromise = Promise.resolve(null);
+        console.warn('Meteor sprites unavailable; using the rock fallback.', error);
+        return null;
+      });
+    }
+    return meteorRendererPromise;
+  }
   const heroPoseImages = {};
   function loadHeroPoses(id, skin = selectedSkin) {
-    if (skin === 'dota1') loadHeroPoses(id, 'pixel');
     const poseArt = skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
+    const criticalPoses = new Set(['idle-a', 'idle-alt', 'side-idle-a', 'side-idle-alt']);
     for (const [pose, path] of Object.entries(poseArt)) {
       const key = `${skin}:${pose}`;
-      if (!pose.startsWith(`${id}-`) || heroPoseImages[key]) continue;
-      const image = new Image();
-      image.src = path;
-      heroPoseImages[key] = image;
+      const poseName = pose.slice(id.length + 1);
+      if (!pose.startsWith(`${id}-`) || !criticalPoses.has(poseName) || heroPoseImages[key]) continue;
+      heroPoseImages[key] = imageForPath(path);
     }
   }
   const artIcon = (id, fallback) => {
     const path = HERO_PORTRAIT_ART[id] || SKIN_ART[selectedSkin][id];
-    return path ? `<img class="art-icon" src="${path}" alt="" decoding="async">` : (fallback || '');
+    return path ? `<img class="art-icon" src="${path}" alt="" loading="lazy" decoding="async" fetchpriority="low">` : (fallback || '');
   };
-  const artImage = id => [
-    heroPoseImages[`${selectedSkin}:${id}`], artImages[`${selectedSkin}:${id}`],
-    heroPoseImages[`pixel:${id}`], artImages[`pixel:${id}`]
-  ].find(image => image?.complete && image.naturalWidth) || null;
+  function poseImage(skin, id) {
+    const key = `${skin}:${id}`;
+    if (heroPoseImages[key]) return heroPoseImages[key];
+    const path = (skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART)[id];
+    if (!path) return null;
+    return (heroPoseImages[key] = imageForPath(path));
+  }
+  function artImage(id) {
+    const primary = poseImage(selectedSkin, id) || imageForPath(SKIN_ART[selectedSkin]?.[id]);
+    if (primary && !primary.complete) return null;
+    if (primary?.naturalWidth) return primary;
+    const fallback = poseImage('pixel', id) || imageForPath(SKIN_ART.pixel?.[id]);
+    return fallback?.complete && fallback.naturalWidth ? fallback : null;
+  }
 
   let save = loadSave();
   selectedLocale = SUPPORTED_LOCALES.includes(save.settings.locale) ? save.settings.locale : DEFAULT_LOCALE;
@@ -798,7 +837,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function renderTitle() {
     $('game').dataset.skin = selectedSkin;
     $('character-list').innerHTML = CHARACTERS.map(c => `<button class="hero-tile" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}" aria-controls="hero-details"><span class="hero-avatar">${artIcon(c.id, '')}</span><span class="hero-tile-name">${c.id === 'tb' && selectedLocale === 'en' ? 'Terror<wbr>blade' : c.name}</span></button>`).join('');
-    $('upcoming-hero-list').innerHTML = UPCOMING_HEROES.map(hero => `<div class="hero-tile hero-tile-unavailable"><span class="hero-avatar"><img class="art-icon" src="./assets/art/hero-pending.svg" alt=""></span><span class="hero-tile-name">${hero.names[SUPPORTED_LOCALES.indexOf(selectedLocale)]}</span><span class="hero-tile-status">${t('unavailableHero')}</span></div>`).join('');
     const selectedHero = CHARACTERS.find(c => c.id === selectedCharacter);
     const details = $('hero-details');
     if (details.dataset.hero !== selectedHero.id || details.dataset.locale !== selectedLocale) {
@@ -2144,7 +2182,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const multiplier = e.id === 'boss' ? .65 : isElite(e) ? .8 : 1;
       dealSkillDamage(e, (24 + skillPower(run) * .9) * multiplier, true);
     }
-    run.effects.push({ kind: 'lunar-impact', heroGrowthTier: heroGrowthTier(run.level), x: beam.x, y: beam.y, r: 52, color: '#e8ddff', life: .46, maxLife: .46 });
     playSfx('skill-luna');
   }
   function beginLunaEclipse() {
@@ -2152,7 +2189,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (!target) { showToast(t('noTarget')); return false; }
     run.skills.eclipse = { x: p.x, y: p.y, timer: .25, remaining: 9, hits: new Map(), beams: [] };
     scheduleLunaBeam(run.skills.eclipse);
-    pulse(p.x, p.y, 430, '#d9c9ff', .45, 'lunar-field');
     return true;
   }
   function updateLunaSkills(dt) {
@@ -2215,8 +2251,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       pulse(p.x, p.y, 65, '#a4ec6b', .6);
     }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
-    else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y,
-      range: SF_REQUIEM.range, travelTime: SF_REQUIEM.travelTime, fadeTime: SF_REQUIEM.fadeTime,
+    else if (id === 'sf') s.requiem = { delay: SF_REQUIEM.chargeTime, age: 0, x: p.x, y: p.y,
+      range: SF_REQUIEM.range, chargeTime: SF_REQUIEM.chargeTime,
+      travelTime: SF_REQUIEM.travelTime, fadeTime: SF_REQUIEM.fadeTime,
       souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
     else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
@@ -2457,7 +2494,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       addEquipmentUpgradeEffect('butterfly', equippedUpgradeLevel('butterfly'), { angle: source ? Math.atan2(source.y - p.y, source.x - p.x) : p.facing });
       return;
     }
-    let damage = rawDamage * (1 + (equipmentPassive('divineEdge')?.incomingAmp || 0)) * (1 + buffCount('bloodrage') * .1) * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)));
+    let damage = rawDamage * (1 + (equipmentPassive('divineEdge')?.incomingAmp || 0)) * run.difficulty.mult * (15 / (15 + Math.max(-5, run.stats.armor)));
     if (source && run.character.id === 'bulwark') {
       const relative = Math.atan2(source.y - p.y, source.x - p.x) - p.facing;
       const fromRear = Math.abs(Math.atan2(Math.sin(relative), Math.cos(relative))) >= Math.PI - 70 * Math.PI / 180;
@@ -3907,6 +3944,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function drawProjectiles(cam) {
     for (const b of run.bullets) {
       if (!visible(b, cam, b.kaelSpell === 'tornado' ? 220 : 100)) continue;
+      if (b.kaelSpell === 'tornado' && !windRenderer) ensureWindRenderer();
       if (b.kaelSpell === 'tornado' && windRenderer) {
         const age = run.totalTime - b.startedAt;
         // The foot follows the projectile; the upright funnel uses the paused game clock.
@@ -4343,16 +4381,19 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       ctx.globalAlpha *= .7; arc(18 + progress * 12, 0, TAU, '#b9dcff', 3);
       for (let i = 0; i < 4 + fx.level; i++) { const angle = i * TAU / (4 + fx.level); ctx.fillStyle = '#e2f4ff'; ctx.fillRect(Math.cos(angle) * 28 - 2, Math.sin(angle) * 28 - 2, 4, 4); }
     } else if (fx.weapon === 'radiance') {
-      ctx.globalAlpha *= .65;
-      for (let i = 0; i < (fx.level === 3 ? 6 : 3); i++) {
-        const angle = fx.angle + i * TAU / (fx.level === 3 ? 6 : 3) + progress * .25;
-        arc(fx.r, angle, angle + .45, '#ffe09b', 3);
-        if (fx.level === 3) arc(fx.r - 9, angle + .1, angle + .4, '#ff9f50', 2);
-        const radius = fx.r * (.72 + progress * .23), x = Math.cos(angle) * radius, y = Math.sin(angle) * radius;
-        ctx.fillStyle = '#ffd783';
-        if (pixel) ctx.fillRect(Math.round(x - 2), Math.round(y - progress * 7), 4, 4);
-        else { ctx.beginPath(); ctx.ellipse(x, y - progress * 7, 2, 3, angle, 0, TAU); ctx.fill(); }
+      ctx.globalAlpha *= .72;
+      const pieces = 4 + fx.level * 2, outer = fx.r * (.76 + progress * .24);
+      for (let i = 0; i < pieces; i++) {
+        const angle = fx.angle + i * TAU / pieces + progress * .35;
+        arc(outer, angle, angle + (.32 + fx.level * .06), i % 2 ? '#ffb24c' : '#ffe09b', 3 + fx.level * .5);
+        if (fx.level >= 2) arc(outer - 13 - fx.level * 2, angle + .08, angle + .28, '#ff7840', 2);
+        const emberRadius = fx.r * (.55 + progress * .37), x = Math.cos(angle) * emberRadius, y = Math.sin(angle) * emberRadius;
+        ctx.fillStyle = i % 2 ? '#ffd783' : '#fff0bf';
+        if (pixel) ctx.fillRect(Math.round(x - 2), Math.round(y - progress * 9), 4, 4);
+        else { ctx.beginPath(); ctx.ellipse(x, y - progress * 9, 2.5, 3.5, angle, 0, TAU); ctx.fill(); }
       }
+      ctx.globalAlpha *= .7; ctx.fillStyle = '#ffb657';
+      ctx.beginPath(); ctx.arc(0, 0, 10 + fx.level * 3, 0, TAU); ctx.fill();
     } else if (fx.weapon === 'desolator') {
       ctx.rotate(fx.angle);
       for (let i = 0; i < fx.level; i++) {
@@ -4446,15 +4487,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.restore();
   }
   function drawEffects(cam) {
-    const aura = equipmentPassive('radiance');
-    if (aura) {
-      const p = run.player, phase = run.totalTime * 1.6;
-      ctx.save(); ctx.globalAlpha = .18; ctx.strokeStyle = '#ffbd5e'; ctx.lineWidth = 3;
-      ctx.beginPath(); ctx.arc(p.x, p.y, aura.radius + Math.sin(phase) * 4, 0, TAU); ctx.stroke();
-      ctx.globalAlpha = .36; ctx.lineWidth = 2;
-      for (let i = 0; i < 8; i++) { const a = phase + i * TAU / 8; ctx.beginPath(); ctx.moveTo(p.x + Math.cos(a) * (aura.radius - 12), p.y + Math.sin(a) * (aura.radius - 12)); ctx.lineTo(p.x + Math.cos(a) * aura.radius, p.y + Math.sin(a) * aura.radius); ctx.stroke(); }
-      ctx.restore();
-    }
     let emphasized = 0;
     for (const fx of run.effects) {
       const inView = ['line', 'orbit-bolt'].includes(fx.kind) ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) <= cam.y + viewH : visible(fx, cam, (fx.r || 30) + 180);
@@ -4463,7 +4495,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const progress = 1 - fx.life / fx.maxLife;
       ctx.globalAlpha = clamp(fx.life / fx.maxLife, 0, 1); ctx.strokeStyle = fx.color; ctx.fillStyle = fx.color;
       const view = { hero: run.character.id, level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches };
-      if (emphasized < 24 && (fx.weapon || fx.build || ['quills', 'thunder', 'lunar-impact', 'muzzle', 'kael-emp-bolt', 'kael-emp-explosion'].includes(fx.kind))) {
+      if (emphasized < 24 && (fx.weapon || fx.build || ['quills', 'thunder', 'muzzle', 'kael-emp-bolt', 'kael-emp-explosion'].includes(fx.kind))) {
         emphasized++;
         if (drawWeaponStrike(ctx, fx, progress, view) || drawBuildFeedback(ctx, fx, progress, view)
           || drawHeroGrowthEffect(ctx, fx, progress, view)) continue;
@@ -4554,19 +4586,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
           ctx.stroke();
           ctx.restore();
         }
-      } else if (fx.kind === 'lunar-field') {
-        ctx.globalAlpha *= .32; ctx.lineWidth = 3; ctx.setLineDash([12, 10]);
-        ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
-      } else if (fx.kind === 'lunar-impact') {
-        const radius = fx.r * (.45 + progress * .55);
-        ctx.globalAlpha *= .85; ctx.lineWidth = 5; ctx.strokeStyle = '#f0e8ff';
-        ctx.beginPath(); ctx.arc(fx.x, fx.y, radius, 0, TAU); ctx.stroke();
-        ctx.globalAlpha *= .7; ctx.strokeStyle = '#a7c9ff'; ctx.lineWidth = 2;
-        ctx.beginPath(); ctx.moveTo(fx.x, fx.y - 74); ctx.lineTo(fx.x, fx.y - 12); ctx.stroke();
-        for (let i = 0; i < 6; i++) {
-          const a = i * TAU / 6 + progress * 1.8, x = fx.x + Math.cos(a) * radius, y = fx.y + Math.sin(a) * radius;
-          ctx.fillRect(x - 2, y - 2, 4, 4);
-        }
       } else if (fx.kind === 'quills') {
         ctx.save(); ctx.translate(fx.x, fx.y);
         const reach = 24 + progress * (fx.r - 24);
@@ -4576,9 +4595,27 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         ctx.lineWidth = 2;
         for (let i = 0; i < 6; i++) { const a = i * TAU / 6; ctx.beginPath(); ctx.moveTo(fx.x, fx.y); ctx.lineTo(fx.x + Math.cos(a + .2) * fx.r * .55, fx.y + Math.sin(a + .2) * fx.r * .55); ctx.lineTo(fx.x + Math.cos(a) * fx.r, fx.y + Math.sin(a) * fx.r); ctx.stroke(); }
       } else if (fx.kind === 'radiance') {
-        ctx.lineWidth = 3; ctx.globalAlpha *= .7;
-        ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r * (.72 + progress * .28), 0, TAU); ctx.stroke();
-        for (let i = 0; i < 10; i++) { const a = i * TAU / 10 + progress * 2; const r = fx.r * (.35 + progress * .55); ctx.fillRect(fx.x + Math.cos(a) * r - 2, fx.y + Math.sin(a) * r - 2, 4, 4); }
+        const groundY = fx.y + 14, burst = clamp(progress / .7, 0, 1);
+        ctx.save(); ctx.translate(fx.x, groundY);
+        ctx.globalAlpha *= .58 * (1 - progress * .3);
+        ctx.strokeStyle = '#ffd27b'; ctx.lineWidth = 5;
+        ctx.beginPath(); ctx.arc(0, 0, fx.r * (.58 + burst * .42), 0, TAU); ctx.stroke();
+        ctx.globalAlpha *= .7; ctx.strokeStyle = '#ff7b2c'; ctx.lineWidth = 2.5;
+        ctx.beginPath(); ctx.arc(0, 0, fx.r * (.34 + burst * .58), 0, TAU); ctx.stroke();
+        for (let i = 0; i < 12; i++) {
+          const angle = i * TAU / 12 + progress * 2.4, inner = fx.r * (.42 + (i % 2) * .12), outer = fx.r * (.72 + burst * .28);
+          ctx.strokeStyle = i % 3 ? '#ffb34d' : '#ffe6a1'; ctx.lineWidth = i % 3 ? 2 : 3;
+          ctx.beginPath(); ctx.moveTo(Math.cos(angle) * inner, Math.sin(angle) * inner);
+          ctx.lineTo(Math.cos(angle + .08) * outer, Math.sin(angle + .08) * outer); ctx.stroke();
+        }
+        ctx.fillStyle = '#ffe0a0';
+        for (let i = 0; i < 8; i++) {
+          const angle = i * TAU / 8 + progress * 3, r = fx.r * (.48 + progress * .3);
+          const x = Math.cos(angle) * r, y = Math.sin(angle) * r - progress * 22;
+          if (usesPixelPresentation()) ctx.fillRect(Math.round(x - 2), Math.round(y - 2), 4, 4);
+          else { ctx.beginPath(); ctx.ellipse(x, y, 2, 3, angle, 0, TAU); ctx.fill(); }
+        }
+        ctx.restore();
       } else if (fx.kind === 'desolate') {
         ctx.lineWidth = 3; ctx.globalAlpha *= .9;
         ctx.beginPath(); ctx.arc(fx.x, fx.y, fx.r * (1 + progress * .2), 0, TAU); ctx.stroke();
@@ -4672,6 +4709,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function drawSkillGround() {
     const p = run.player;
     drawRequiem('back');
+    eclipseRenderer.draw(ctx, { cast: run.skills.eclipse, level: run.level,
+      reducedMotion: motionPreference.matches, layer: 'ground' });
     if (run.character.id === 'kael') {
       const s = run.skills;
       ctx.save();
@@ -4707,9 +4746,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function drawBuffAuras() {
     const p = run?.player;
     if (!p) return;
+    const aura = equipmentPassive('radiance');
     const assaultStacks = buffCount('assaultCuirass');
     const shivaStacks = buffCount('shivasGuard');
-    if (!assaultStacks && !shivaStacks) return;
+    if (!aura && !assaultStacks && !shivaStacks) return;
     const time = motionPreference.matches ? 0 : run.totalTime;
     const footY = p.y + 14;
     const ellipse = (rx, ry, color, alpha, width, dash = null, offset = 0) => {
@@ -4727,6 +4767,156 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     };
     ctx.save();
     ctx.translate(p.x, footY);
+    if (aura) {
+      const level = clamp(aura.level || 1, 1, 3);
+      const radius = aura.radius;
+      const phase = motionPreference.matches ? 0 : time * (.52 + level * .06);
+      const drawFlameRing = (ringRadius, pieces, width, alpha, colors, wobble = 6) => {
+        for (let i = 0; i < pieces; i++) {
+          const seed = i * 2.37 + level * .71;
+          const start = phase + i * TAU / pieces + Math.sin(seed) * .12;
+          const span = TAU / pieces * (.48 + (Math.sin(seed * 1.7) + 1) * .11);
+          const r = ringRadius + Math.sin(phase * 2.1 + seed) * wobble;
+          ctx.globalAlpha = alpha * (.76 + (Math.sin(seed * 2.4 + phase) + 1) * .12);
+          ctx.strokeStyle = colors[i % colors.length];
+          ctx.lineWidth = width * (.82 + (i % 3) * .12);
+          ctx.lineCap = 'round';
+          ctx.beginPath(); ctx.arc(0, 0, r, start, start + span); ctx.stroke();
+        }
+      };
+
+      // A faint heat veil keeps the centre open while making the large radius
+      // read as a burning area instead of a HUD boundary.
+      const pixelAura = usesPixelPresentation();
+      const heatEdge = pixelAura ? .052 : .075;
+      const heat = ctx.createRadialGradient(0, 0, radius * .34, 0, 0, radius * 1.04);
+      heat.addColorStop(0, 'rgba(255, 174, 82, 0)');
+      heat.addColorStop(.56, `rgba(255, 137, 43, ${pixelAura ? .035 : .018})`);
+      heat.addColorStop(.78, `rgba(255, 92, 22, ${heatEdge})`);
+      heat.addColorStop(1, 'rgba(255, 58, 8, 0)');
+      ctx.globalAlpha = pixelAura ? .46 : .7;
+      ctx.fillStyle = heat;
+      ctx.beginPath(); ctx.arc(0, 0, radius * 1.04, 0, TAU); ctx.fill();
+
+      // Broken rings and a low inner ring give the aura the broad, layered
+      // Immolation silhouette used by the classic effect.
+      const flameBoost = usesPixelPresentation() ? 1.18 : 1;
+      drawFlameRing(radius * .99, 10 + level * 2, 7 + level * 2.4, (.3 + level * .035) * flameBoost,
+        ['#e85e25', '#ff9a35', '#c94b22']);
+      drawFlameRing(radius * .87, 8 + level, 5 + level * 1.8, .24 + level * .03,
+        ['#ffca69', '#ff7130', '#ffd98b']);
+      drawFlameRing(Math.max(42, radius * .24), 6 + level, 4 + level, .3 + level * .025,
+        ['#ffdd86', '#ff8133', '#f05a24'], 3);
+      drawFlameRing(radius * .68, 5 + level, 3 + level, .1 + level * .02,
+        ['#ffda81', '#ff8d3b', '#f05a24'], 4);
+
+      // Broad floor licks keep the large aura from reading as three clean
+      // concentric rings. They remain translucent so the map stays readable.
+      const floorLicks = 9 + level * 3;
+      for (let i = 0; i < floorLicks; i++) {
+        const seed = i * 2.91 + level * .83;
+        const angle = phase * .3 + i * TAU / floorLicks + Math.sin(seed) * .16;
+        const base = radius * (.43 + (i % 4) * .065);
+        const length = 22 + level * 7 + (Math.sin(time * 1.9 + seed) + 1) * 8;
+        const half = .045 + (i % 3) * .012;
+        const tip = base + length;
+        ctx.globalAlpha = (pixelAura ? .15 : .12) + level * .012;
+        ctx.fillStyle = i % 3 ? '#ff9a3b' : '#ffd27b';
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle - half) * base, Math.sin(angle - half) * base);
+        ctx.quadraticCurveTo(Math.cos(angle) * (base + length * .72), Math.sin(angle) * (base + length * .72) - 7, Math.cos(angle + half) * tip, Math.sin(angle + half) * tip);
+        ctx.lineTo(Math.cos(angle) * (base + length * .32), Math.sin(angle) * (base + length * .32));
+        ctx.closePath(); ctx.fill();
+      }
+
+      // A compact, hot inner halo makes the effect read at the hero's feet even
+      // when the outer damage radius extends past the camera.
+      ctx.save(); ctx.scale(1, .46); ctx.shadowColor = '#ff6a25'; ctx.shadowBlur = 16;
+      ctx.globalAlpha = .24 + level * .025; ctx.strokeStyle = '#ff8a32'; ctx.lineWidth = 8 + level * 1.5;
+      ctx.beginPath(); ctx.arc(0, 0, 38 + level * 7, 0, TAU); ctx.stroke();
+      ctx.shadowBlur = 0; ctx.globalAlpha = .42 + level * .035; ctx.strokeStyle = '#ffd27a'; ctx.lineWidth = 2.5;
+      ctx.beginPath(); ctx.arc(0, 0, 27 + level * 5, phase, phase + 4.7); ctx.stroke();
+      ctx.restore();
+
+      ctx.save(); ctx.scale(1, .52);
+      for (let i = 0; i < 6 + level * 2; i++) {
+        const seed = i * 2.7 + level, angle = phase * .9 + i * TAU / (6 + level * 2) + Math.sin(seed) * .2;
+        const inner = 23 + (i % 3) * 5, outer = inner + 13 + level * 4 + (Math.sin(time * 3 + seed) + 1) * 4;
+        const spread = .09 + level * .012;
+        ctx.globalAlpha = .42 + level * .035; ctx.fillStyle = i % 2 ? '#ff8a31' : '#ffd27a';
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle - spread) * inner, Math.sin(angle - spread) * inner);
+        ctx.quadraticCurveTo(Math.cos(angle) * outer, Math.sin(angle) * outer - 10 - level * 2, Math.cos(angle + spread) * inner, Math.sin(angle + spread) * inner);
+        ctx.closePath(); ctx.fill();
+      }
+      ctx.restore();
+
+      const licks = 5 + level * 2;
+      for (let i = 0; i < licks; i++) {
+        const seed = i * 4.1 + level * .6, angle = phase * .42 + i * TAU / licks + Math.sin(seed) * .13;
+        const base = radius * (.82 + (i % 2) * .05), tip = base + 12 + level * 5 + (Math.sin(time * 2.6 + seed) + 1) * 5;
+        const spread = .035 + level * .012, bx = Math.cos(angle) * base, by = Math.sin(angle) * base;
+        ctx.globalAlpha = (.2 + level * .03) * flameBoost;
+        ctx.fillStyle = i % 2 ? '#ff7b2d' : '#ffc15d';
+        ctx.beginPath();
+        ctx.moveTo(Math.cos(angle - spread) * base, Math.sin(angle - spread) * base);
+        ctx.quadraticCurveTo(Math.cos(angle) * tip, Math.sin(angle) * tip - 8 - level * 2, Math.cos(angle + spread) * base, Math.sin(angle + spread) * base);
+        ctx.lineTo(bx, by); ctx.fill();
+      }
+
+      // A weak dashed edge remains as a range hint, but it never dominates the
+      // flame layers.
+      ctx.save();
+      ctx.globalAlpha = .12 + level * .015; ctx.strokeStyle = '#ffd27b'; ctx.lineWidth = 1.5;
+      ctx.setLineDash([18, 26]); ctx.lineDashOffset = -phase * 12;
+      ctx.beginPath(); ctx.arc(0, 0, radius * 1.015, 0, TAU); ctx.stroke();
+      ctx.restore();
+
+      // Fire tongues break up the rings and keep the centre tied to the hero's
+      // feet instead of reading as a clean geometric circle.
+      const tongues = 4 + level * 2;
+      for (let i = 0; i < tongues; i++) {
+        const seed = i * 3.1 + level;
+        const angle = phase * .7 + i * TAU / tongues + Math.sin(seed) * .18;
+        const inner = radius * (.58 + (i % 3) * .035);
+        const outer = inner + 12 + level * 7 + (Math.sin(time * 2.3 + seed) + 1) * 7;
+        const x1 = Math.cos(angle) * inner, y1 = Math.sin(angle) * inner;
+        const x2 = Math.cos(angle) * outer, y2 = Math.sin(angle) * outer - 8 - level * 2;
+        const tx = -Math.sin(angle), ty = Math.cos(angle);
+        ctx.globalAlpha = .34 + level * .025;
+        ctx.strokeStyle = i % 2 ? '#ffad4e' : '#ffe19a';
+        ctx.lineWidth = 2.5 + level * .8;
+        ctx.lineCap = 'round';
+        ctx.beginPath(); ctx.moveTo(x1, y1);
+        ctx.quadraticCurveTo((x1 + x2) * .5 + tx * 7, (y1 + y2) * .5 + ty * 7, x2, y2); ctx.stroke();
+      }
+
+      // Sparse embers sell heat without turning the aura into a particle cloud.
+      const embers = 7 + level * 4;
+      for (let i = 0; i < embers; i++) {
+        const seed = i * 7.13 + level * 1.9;
+        const angle = phase * .45 + seed;
+        const lift = motionPreference.matches ? (i % 3) * 3 : (time * (18 + (i % 4) * 4) + i * 17) % (34 + level * 14);
+        const radial = radius * (.62 + ((i * 17) % 31) / 100) - lift * .22;
+        const x = Math.cos(angle) * radial, y = Math.sin(angle) * radial - lift;
+        const size = 2 + (i % 2) + level * .25;
+        ctx.globalAlpha = .24 + ((i + level) % 3) * .08;
+        ctx.fillStyle = i % 3 ? '#ffb85a' : '#ffe1a0';
+        if (usesPixelPresentation()) ctx.fillRect(Math.round(x - size), Math.round(y - size), Math.ceil(size * 2), Math.ceil(size * 2));
+        else { ctx.beginPath(); ctx.ellipse(x, y, size * .72, size, angle, 0, TAU); ctx.fill(); }
+      }
+
+      // The source is deliberately compact and sits at the foot point; the
+      // broad damage radius is carried by the rings above.
+      ctx.save(); ctx.scale(1, .42);
+      const core = ctx.createRadialGradient(0, 0, 4, 0, 0, 54 + level * 7);
+      core.addColorStop(0, 'rgba(255, 247, 196, .58)');
+      core.addColorStop(.35, 'rgba(255, 154, 58, .28)');
+      core.addColorStop(1, 'rgba(255, 69, 18, 0)');
+      ctx.globalAlpha = pixelAura ? .82 : .72; ctx.fillStyle = core;
+      ctx.beginPath(); ctx.arc(0, 0, 56 + level * 7, 0, TAU); ctx.fill();
+      ctx.restore();
+    }
     if (assaultStacks) {
       const pulse = .34 + Math.sin(time * 1.45) * .035;
       const outerX = 59, outerY = 24;
@@ -4864,26 +5054,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       }
       ctx.restore();
     }
-    if (s.eclipse) {
-      ctx.save();
-      ctx.globalAlpha = .18; ctx.strokeStyle = '#d8c9ff'; ctx.lineWidth = 2; ctx.setLineDash([16, 12]);
-      ctx.beginPath(); ctx.arc(s.eclipse.x, s.eclipse.y, 430, 0, TAU); ctx.stroke(); ctx.setLineDash([]);
-      for (const beam of s.eclipse.beams) {
-        if (beam.warning > 0) {
-          const progress = clamp(1 - beam.warning / .22, 0, 1);
-          ctx.globalAlpha = .25 + progress * .55; ctx.strokeStyle = '#efe5ff'; ctx.lineWidth = 3;
-          ctx.beginPath(); ctx.arc(beam.x, beam.y, 52 + progress * 5, 0, TAU); ctx.stroke();
-          ctx.globalAlpha = .16 + progress * .18; ctx.fillStyle = '#cbbdff'; ctx.beginPath(); ctx.arc(beam.x, beam.y, 52, 0, TAU); ctx.fill();
-        } else {
-          const impact = clamp((-beam.warning) / .4, 0, 1);
-          ctx.globalAlpha = .7 * (1 - impact); ctx.strokeStyle = '#f5edff'; ctx.lineWidth = 8;
-          ctx.beginPath(); ctx.moveTo(beam.x, beam.y - 120); ctx.lineTo(beam.x, beam.y + 8); ctx.stroke();
-          ctx.globalAlpha = .75 * (1 - impact); ctx.strokeStyle = '#b5ceff'; ctx.lineWidth = 2;
-          ctx.beginPath(); ctx.arc(beam.x, beam.y, 52 + impact * 25, 0, TAU); ctx.stroke();
-        }
-      }
-      ctx.restore();
-    }
     if (s.spin) {
       const angle = (3 - s.spin.time) * 18;
       for (let i = 0; i < 3; i++) { ctx.strokeStyle = i ? '#d0b68e' : '#f8eed0'; ctx.lineWidth = i ? 4 : 7; ctx.beginPath(); ctx.arc(p.x, p.y - 8, 92 + i * 20, angle + i * 2, angle + i * 2 + 1.8); ctx.stroke(); }
@@ -4909,6 +5079,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const age = clamp(meteor.maxLife - meteor.life, 0, meteor.maxLife), reduced = motionPreference.matches;
     // Ground position, lifetime and damage still belong to the existing skill.
     const lift = reduced ? 0 : 72 * Math.max(0, 1 - age / .15) ** 2;
+    if (!meteorRenderer) ensureMeteorRenderer();
     if (meteorRenderer) {
       meteorRenderer.draw(ctx, { x: meteor.x, y: meteor.y, angle: meteor.trailAngle,
         time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel / meteor.scale, lift, scale: meteor.scale,
@@ -4965,6 +5136,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       for (let i = 0; i < guards; i++) if (clockworkGuardPoint(i, guards).groundY > run.player.y + 16) drawClockworkGuard(i, guards);
     }
     drawRequiem('front');
+    eclipseRenderer.draw(ctx, { cast: run.skills.eclipse, level: run.level,
+      reducedMotion: motionPreference.matches, layer: 'front' });
     drawHazards(cam);
     if (usesPixelPresentation()) drawTerrainIndicators(cam);
     for (const e of run.enemies) if (visible(e, cam, 650)) drawEliteTelegraph(e);
@@ -5223,7 +5396,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
           description: `工作台受控阶段：${points}/${def.growth.max} 成长点，不计入自然对局成长。`
         })) : undefined })) },
       { id: 'buffs', label: 'Buff', items: Object.entries(BUFFS).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: def.icon, source: 'js/buffs.js?v=20261027-unified1', stacks: true })) },
+        icon: def.icon, source: 'js/buffs.js?v=20261031-positive1-tree-attributes1', stacks: true })) },
       { id: 'effects', label: '特效', items: [
         { id: 'meteor', name: '陨石', description: '燃烧岩石与火尾。与卡尔混沌陨石共用绘制模块。' },
         { id: 'fire', name: '火', description: '焰舌、烟气与火星。也是陨石火尾的组成部分。' },
@@ -5349,6 +5522,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function drawStudioEffect(context, width, height, selection, time) {
     if (selection.category !== 'effects') return;
+    if (selection.id === 'wind' && !windRenderer) ensureWindRenderer();
+    if (selection.id === 'meteor' && !meteorRenderer) ensureMeteorRenderer();
     const renderer = selection.id === 'fire' ? studioFire : selection.id === 'wind' ? windRenderer : meteorRenderer;
     const scale = Math.min(width / 420, height / 360, 1.4) * selection.zoom;
     renderer?.draw(context, { x: width * .5, y: height * .78, time: time + .8,

@@ -1,4 +1,4 @@
-import { buffDamageAmp } from './buffs.js?v=20261027-unified1';
+import { buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
 
 export function attackPower(run) {
   const souls = run.character.id === 'sf' ? run.skills.souls : 0;

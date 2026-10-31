@@ -1,4 +1,4 @@
-import { HERO_VOICE_LINES as VOICE_LINES, HERO_VOICE_PROFILES as VOICE_PROFILE } from './heroes.js?v=20261027-unified1';
+import { HERO_VOICE_LINES as VOICE_LINES, HERO_VOICE_PROFILES as VOICE_PROFILE } from './heroes.js?v=20261031-sf-requiem5';
 
 const VOICE_CLIPS = {
   "rover": {

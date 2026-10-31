@@ -1,5 +1,5 @@
 import { resolveBuilds } from './equipment-builds.js?v=20261030-equipment18';
-import { attackPower, skillPower } from './combat-damage.js?v=20261030-skill-power1';
+import { attackPower, skillPower } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
 
 export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, pulse, isElite, heal, label, basicRange, cooldown = value => value }) {
   function state(run) {

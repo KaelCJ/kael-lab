@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="zh-CN">
 <head>
-  <script src="../../../shared/static/js/analytics.js"></script>
+  <script defer src="../../../shared/static/js/analytics.js"></script>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
   <meta name="theme-color" content="#111827">
@@ -9,7 +9,7 @@
   <meta name="description" content="DotaRogue：受 Dota 启发的网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波远征或无尽敌潮中移动、自动攻击、升级和购物。">
   <title>DotaRogue · Kael Lab</title>
   <link rel="stylesheet" href="css/game.css?v=20261030-equipment18">
-  <script type="module" src="js/game.js?v=20261031-sf-requiem3-alchemist-rage2-model-static1"></script>
+  <script type="module" src="js/game.js?v=20261031-sf-requiem5-luna-eclipse2-alchemist-rage2-model-static1-lazy-effects1-buff-positive1-tree-attributes1"></script>
 </head>
 <body>
   <main id="game" class="game-shell" data-skin="pixel">
@@ -44,7 +44,6 @@
       <div class="setup-panel">
         <div class="setup-column hero-picker"><h2 data-i18n="chooseCharacter">选择英雄</h2><h3 class="hero-group-title" data-i18n="availableHeroes">可玩英雄</h3><div id="character-list" class="hero-grid"></div><div id="hero-details" class="hero-details" aria-live="polite" aria-atomic="true"></div></div>
         <div class="setup-column"><h2 data-i18n="chooseBiome">选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span data-i18n="difficulty">难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="pace">节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="mode">模式</span><div id="mode-list" class="segmented"></div></div><div class="setting-row skin-setting"><span data-i18n="visuals">角色皮肤</span><div id="skin-list" class="segmented" role="group" aria-label="角色皮肤" data-i18n-attr="aria-label:visuals"></div></div><div class="setting-row"><span data-i18n="sound">音效</span><button id="sound-button" class="small-button" type="button"></button></div><div class="setting-row locale-row"><span id="locale-label" data-i18n="language">语言</span><div class="segmented locale-switch"><button id="locale-zh-CN" type="button" data-locale="zh-CN">简体中文</button><button id="locale-zh-TW" type="button" data-locale="zh-TW">繁體中文</button><button id="locale-en" type="button" data-locale="en">English</button></div></div></div>
-        <div class="setup-upcoming"><h2 class="hero-group-title" data-i18n="upcomingHeroes">待制作英雄</h2><div id="upcoming-hero-list" class="hero-grid"></div></div>
         <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button" data-i18n="start">开始挑战 <span aria-hidden="true">➜</span></button></div>
       </div>
       <p class="controls-note" data-i18n="controls">电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机使用摇杆和技能、冲刺按钮。角色自动普攻；主动技能需要蓝量且受冷却限制。</p>
