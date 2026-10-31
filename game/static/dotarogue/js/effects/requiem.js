@@ -141,13 +141,14 @@ export function createRequiemRenderer() {
       const charging = cast.delay > 0;
       const age = Math.max(0, cast.age || 0);
       const range = cast.range ?? 280;
-      const travelTime = cast.travelTime ?? .8;
-      const fadeTime = cast.fadeTime ?? .45;
+      const chargeTime = cast.chargeTime ?? 1;
+      const travelTime = cast.travelTime ?? 1;
+      const fadeTime = cast.fadeTime ?? 1;
       if (!charging && age >= travelTime + fadeTime) return;
       const x = charging ? player.x : cast.x, y = charging ? player.y : cast.y;
       ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.imageSmoothingEnabled = true;
       if (charging) {
-        const progress = clamp(1 - cast.delay / .55);
+        const progress = clamp(1 - cast.delay / chargeTime);
         const alpha = .22 + progress * .28;
         for (let i = 0; i < 6; i++) {
           const angle = i * TAU / 6 + .2;
