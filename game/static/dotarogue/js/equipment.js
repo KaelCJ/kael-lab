@@ -448,12 +448,12 @@ export const EQUIPMENT = {
     name: "辉耀",
     nameTw: "輝耀",
     nameEn: "Radiance",
-    desc: "攻击力 +18，所有伤害 +8%。灼热光环每秒灼烧 165 范围内敌人。",
-    descTw: "攻擊力 +18，所有傷害 +8%。灼熱光環每秒灼燒 165 範圍內敵人。",
-    descEn: "Attack power +18; all damage +8%. A searing aura burns enemies within 165 range every second.",
+    desc: "攻击力 +18，所有伤害 +8%。灼热光环每秒灼烧 360 范围内敌人。",
+    descTw: "攻擊力 +18，所有傷害 +8%。灼熱光環每秒灼燒 360 範圍內敵人。",
+    descEn: "Attack power +18; all damage +8%. A searing aura burns enemies within 360 range every second.",
     stats: { attackPower: 18, "damage": 8 },
     recipe: ["demonEdge", "perseverance"],
-    passive: {"id": "radiance", "radius": 165, "damage": 8, "interval": 1}
+    passive: {"id": "radiance", "radius": 360, "damage": 8, "interval": 1}
   },
   desolator: {
     kind: "finished",
@@ -959,7 +959,7 @@ export const EQUIPMENT_UPGRADES = {
   satanic: {},
   aghanim: { multiplier: [1.25, 1.4, 1.6] },
   powerTreads: {},
-  radiance: { radius: [165, 185, 205], damage: [8, 16, 24] },
+  radiance: { radius: [360, 460, 560], damage: [8, 16, 24] },
   desolator: { multiplier: [0.18, 0.26, 0.35] },
   skadi: { slow: [0.45, 0.55, 0.65], duration: [2.5, 3, 3.5] },
   manta: { ratio: [0.65, 0.85, 1.1], projectiles: [2, 4, 6], spread: [.16, .35, .55] },
