@@ -14,7 +14,7 @@ import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrow
 import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
 import { createWindRenderer } from './effects/wind.js?v=20261027-dota1';
 import { createMeteorRenderer } from './effects/meteor.js';
-import { createRequiemRenderer } from './effects/requiem.js?v=20261030-sf-requiem2';
+import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem3';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261029-attributes-spell3';
 import { createAudioSystem } from './audio.js?v=20261027-dota1';
 import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261030-skill-power1';
@@ -40,6 +40,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
   const TAU = Math.PI * 2;
   const RAGE_MORPH_DURATION = 1 / 3;
+  const SF_REQUIEM = { range: 280, travelTime: .8, fadeTime: .45 };
   const KAEL_TORNADO = { speed: 240, life: 3.2, radius: 34, scale: .72 };
   const KAEL_METEOR = { speed: 160, life: 4.5, radius: 88, scale: 1.85 };
   const KAEL_ICE_WALL = { life: 10, halfLength: 240, halfWidth: 36 };
@@ -2214,7 +2215,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       pulse(p.x, p.y, 65, '#a4ec6b', .6);
     }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
-    else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y, souls: Math.min(36, s.souls), hit: new Set() };
+    else if (id === 'sf') s.requiem = { delay: .55, age: 0, x: p.x, y: p.y,
+      range: SF_REQUIEM.range, travelTime: SF_REQUIEM.travelTime, fadeTime: SF_REQUIEM.fadeTime,
+      souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
     else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
@@ -2393,11 +2396,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         if (cast.delay <= 0) playSfx('skill-sf');
       } else {
         cast.age += dt;
-        const radius = Math.min(280, cast.age / .55 * 280);
+        const range = cast.range ?? SF_REQUIEM.range;
+        const travelTime = cast.travelTime ?? SF_REQUIEM.travelTime;
+        const fadeTime = cast.fadeTime ?? SF_REQUIEM.fadeTime;
+        const radius = Math.min(range, cast.age / travelTime * range);
         for (const e of run.enemies) if (!e.dead && !cast.hit.has(e) && distance(e, cast) <= radius + e.r) {
           cast.hit.add(e); dealSkillDamage(e, 34 + skillPower(run) * .9 + cast.souls * 1.25, true);
         }
-        if (cast.age >= 1) s.requiem = null;
+        if (cast.age >= travelTime + fadeTime) s.requiem = null;
       }
     }
   }
