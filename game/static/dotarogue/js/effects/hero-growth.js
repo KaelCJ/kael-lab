@@ -10,19 +10,12 @@ function shape(ctx, points, fill, stroke = '#152735') {
   if (stroke) { ctx.strokeStyle = stroke; ctx.stroke(); }
 }
 
-function crescent(ctx, x, y, radius, color) {
-  ctx.beginPath(); ctx.moveTo(x + radius * .42, y - radius);
-  ctx.bezierCurveTo(x - radius * 1.25, y - radius * .6, x - radius * 1.25, y + radius * .6, x + radius * .42, y + radius);
-  ctx.bezierCurveTo(x - radius * .15, y + radius * .25, x - radius * .15, y - radius * .25, x + radius * .42, y - radius);
-  ctx.fillStyle = color; ctx.fill(); ctx.stroke();
-}
-
 // Returns true only when the existing effect has been drawn in full.
 export function drawHeroGrowthEffect(ctx, fx, progress, {
   hero, level = 1, pixel = false, reducedMotion = false
 } = {}) {
   const tier = fx.heroGrowthTier || heroGrowthTier(level);
-  const supported = fx.kind === 'quills' || fx.kind === 'thunder' || fx.kind === 'lunar-impact'
+  const supported = fx.kind === 'quills' || fx.kind === 'thunder'
     || (hero === 'rover' && fx.kind === 'muzzle')
     || fx.kind === 'kael-emp-bolt' || fx.kind === 'kael-emp-explosion';
   if (tier < 2 || !supported) return false;
@@ -60,19 +53,6 @@ export function drawHeroGrowthEffect(ctx, fx, progress, {
     if (tier === 3) {
       for (const side of [-1, 1]) shape(ctx, [[side * 8, -159], [side * 25, -145], [side * 15, -125]], '#e5fbff', '#387391');
       ctx.beginPath(); ctx.ellipse(0, -5, fx.r * .6, fx.r * .28, 0, 0, TAU); ctx.stroke();
-    }
-  } else if (fx.kind === 'lunar-impact') {
-    ctx.translate(fx.x, fx.y); ctx.lineWidth = 2;
-    const radius = fx.r * (.45 + (reducedMotion ? .65 : p) * .55);
-    ctx.strokeStyle = '#e9edff'; ctx.beginPath(); ctx.arc(0, 0, radius, 0, TAU); ctx.stroke();
-    ctx.strokeStyle = '#83a9e7'; ctx.lineWidth = 6; ctx.beginPath(); ctx.moveTo(0, -94); ctx.lineTo(0, -6); ctx.stroke();
-    ctx.strokeStyle = '#f8f3ff'; ctx.lineWidth = 2; ctx.stroke();
-    crescent(ctx, 0, -86, tier === 3 ? 15 : 11, '#e5ddff');
-    if (tier === 3) {
-      for (let i = 0; i < 4; i++) {
-        ctx.save(); ctx.rotate(i * TAU / 4); ctx.translate(radius * .76, 0);
-        shape(ctx, [[7, 0], [0, -4], [-7, 0], [0, 4]], '#ddedff', '#5073a1'); ctx.restore();
-      }
     }
   } else if (fx.kind === 'muzzle') {
     ctx.translate(fx.x, fx.y); ctx.rotate(fx.angle); ctx.lineWidth = 1.5;
@@ -202,24 +182,6 @@ export function drawHeroGrowthAreas(ctx, {
       ctx.restore();
     }
     ctx.restore();
-  } else if (hero === 'luna' && s.eclipse) {
-    for (const beam of s.eclipse.beams.slice(0, 10)) {
-      ctx.save(); ctx.translate(beam.x, beam.y);
-      if (beam.warning > 0) {
-        ctx.globalAlpha *= .65; ctx.strokeStyle = '#c4d6ff';
-        for (let i = 0; i < (tier === 3 ? 8 : 4); i++) {
-          const angle = i * TAU / (tier === 3 ? 8 : 4);
-          ctx.beginPath(); ctx.moveTo(Math.cos(angle) * 38, Math.sin(angle) * 38); ctx.lineTo(Math.cos(angle) * 49, Math.sin(angle) * 49); ctx.stroke();
-        }
-      } else {
-        ctx.globalAlpha *= clamp(1 + beam.warning / .4, 0, 1); ctx.strokeStyle = '#6a83b9';
-        crescent(ctx, 0, -111, tier === 3 ? 17 : 12, '#e8e1ff');
-        for (const side of [-1, 1]) {
-          ctx.strokeStyle = '#d4eaff'; ctx.beginPath(); ctx.moveTo(side * 9, -91); ctx.lineTo(side * (tier === 3 ? 16 : 10), -47); ctx.lineTo(side * 6, -7); ctx.stroke();
-        }
-      }
-      ctx.restore();
-    }
   } else if (hero === 'tb' && s.tb?.time > 0) {
     ctx.save(); ctx.translate(p.x, p.y);
     for (const side of [-1, 1]) {

@@ -140,11 +140,15 @@ export function createRequiemRenderer() {
       const tier = level >= 10 ? 3 : level >= 5 ? 2 : 1;
       const charging = cast.delay > 0;
       const age = Math.max(0, cast.age || 0);
-      if (!charging && age >= 1) return;
+      const range = cast.range ?? 280;
+      const chargeTime = cast.chargeTime ?? 1;
+      const travelTime = cast.travelTime ?? 1;
+      const fadeTime = cast.fadeTime ?? 1;
+      if (!charging && age >= travelTime + fadeTime) return;
       const x = charging ? player.x : cast.x, y = charging ? player.y : cast.y;
       ctx.save(); ctx.globalCompositeOperation = 'source-over'; ctx.imageSmoothingEnabled = true;
       if (charging) {
-        const progress = clamp(1 - cast.delay / .55);
+        const progress = clamp(1 - cast.delay / chargeTime);
         const alpha = .22 + progress * .28;
         for (let i = 0; i < 6; i++) {
           const angle = i * TAU / 6 + .2;
@@ -162,8 +166,8 @@ export function createRequiemRenderer() {
           }
         }
       } else {
-        const radius = clamp(age / .55) * 280;
-        const fade = 1 - clamp((age - .55) / .45);
+        const radius = clamp(age / travelTime) * range;
+        const fade = 1 - clamp((age - travelTime) / fadeTime);
         const emerge = clamp(radius / 58);
         ctx.globalAlpha *= fade * emerge;
         // Fixed count preserves the same full-circle reading for all levels and soul counts.

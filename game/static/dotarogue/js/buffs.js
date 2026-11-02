@@ -10,10 +10,10 @@ export const BUFFS = {
   ironBranch: {
     rarity: 'common', price: 10, icon: './assets/art/dota1/buffs/ironBranch.png',
     name: '树枝', nameTw: '樹枝', nameEn: 'Iron Branch',
-    desc: '最大生命 +1、攻击力 +2。',
-    descTw: '最大生命 +1、攻擊力 +2。',
-    descEn: 'Max HP +1 and attack power +2.',
-    stats: { maxHp: 1, attackPower: 2 }
+    desc: '力量 +1、敏捷 +1、智力 +1。',
+    descTw: '力量 +1、敏捷 +1、智力 +1。',
+    descEn: 'Strength +1, Agility +1 and Intelligence +1.',
+    stats: { strength: 1, agility: 1, intelligence: 1 }
   },
   enduranceAura: {
     rarity: 'common', price: 16, icon: './assets/art/dota1/buffs/enduranceAura.png',
@@ -98,58 +98,58 @@ export const BUFFS = {
   livingArmor: {
     rarity: 'common', price: 26, icon: './assets/art/dota1/buffs/livingArmor.png',
     name: '活体护甲', nameTw: '活體護甲', nameEn: 'Living Armor',
-    desc: '最大生命 +18、每 5 秒回血 +1，但移速 -8%；有效移速最低为基础的 20%。',
-    descTw: '最大生命 +18、每 5 秒回血 +1，但移速 -8%；有效移速最低為基礎的 20%。',
-    descEn: 'Max HP +18 and HP per 5 sec +1, but move speed -8%; effective move speed cannot fall below 20% of base.',
-    stats: { maxHp: 18, regen: 1, speed: -8 }
+    desc: '最大生命 +14、每 5 秒回血 +0.8。',
+    descTw: '最大生命 +14、每 5 秒回血 +0.8。',
+    descEn: 'Max HP +14 and HP per 5 sec +0.8.',
+    stats: { maxHp: 14, regen: .8 }
   },
   surge: {
     rarity: 'rare', price: 28, icon: './assets/art/dota1/buffs/surge.png',
     name: '奔腾', nameTw: '奔騰', nameEn: 'Surge',
-    desc: '攻速 +24%、移速 +8%，但护甲 -2。',
-    descTw: '攻速 +24%、移速 +8%，但護甲 -2。',
-    descEn: 'Attack speed +24% and move speed +8%, but Armor -2.',
-    stats: { attackSpeed: 24, speed: 8, armor: -2 }
+    desc: '攻速 +18%、移速 +6%。',
+    descTw: '攻速 +18%、移速 +6%。',
+    descEn: 'Attack speed +18% and move speed +6%.',
+    stats: { attackSpeed: 18, speed: 6 }
   },
   bloodrage: {
     rarity: 'rare', price: 30, icon: './assets/art/dota1/buffs/bloodrage.png',
     name: '血怒', nameTw: '血怒', nameEn: 'Bloodrage',
-    desc: '全伤害 +14%、攻速 +12%，但受到伤害每层 +10%，按独立倍率结算。',
-    descTw: '全傷害 +14%、攻速 +12%，但受到傷害每層 +10%，按獨立倍率結算。',
-    descEn: 'All damage +14% and attack speed +12%, but damage taken increases by 10% per stack as a separate multiplier.',
-    stats: { damage: 14, attackSpeed: 12 }
+    desc: '全伤害 +10%、攻速 +8%。',
+    descTw: '全傷害 +10%、攻速 +8%。',
+    descEn: 'All damage +10% and attack speed +8%.',
+    stats: { damage: 10, attackSpeed: 8 }
   },
   greevilsGreed: {
     rarity: 'common', price: 22, icon: './assets/art/dota1/buffs/greevilsGreed.png',
     name: '贪魔的贪婪', nameTw: '貪魔的貪婪', nameEn: "Greevil's Greed",
-    desc: '拾取范围 +70、幸运 +8，但攻速 -8%；有效攻速最低为基础的 20%。',
-    descTw: '拾取範圍 +70、幸運 +8，但攻速 -8%；有效攻速最低為基礎的 20%。',
-    descEn: 'Pickup range +70 and Luck +8, but attack speed -8%; effective attack speed cannot fall below 20% of base.',
-    stats: { pickup: 70, luck: 8, attackSpeed: -8 }
+    desc: '拾取范围 +55、幸运 +6。',
+    descTw: '拾取範圍 +55、幸運 +6。',
+    descEn: 'Pickup range +55 and Luck +6.',
+    stats: { pickup: 55, luck: 6 }
   },
   coupDeGrace: {
     rarity: 'epic', price: 32, icon: './assets/art/dota1/buffs/coupDeGrace.png',
     name: '恩赐解脱', nameTw: '恩賜解脫', nameEn: 'Coup de Grace',
-    desc: '攻击力 +8、暴击伤害 +20%，但护甲 -3。',
-    descTw: '攻擊力 +8、暴擊傷害 +20%，但護甲 -3。',
-    descEn: 'Attack power +8 and Crit damage +20%, but Armor -3.',
-    stats: { attackPower: 8, critDamage: 20, armor: -3 }
+    desc: '攻击力 +6、暴击伤害 +15%。',
+    descTw: '攻擊力 +6、暴擊傷害 +15%。',
+    descEn: 'Attack power +6 and Crit damage +15%.',
+    stats: { attackPower: 6, critDamage: 15 }
   },
   sacrifice: {
     rarity: 'epic', price: 34, icon: './assets/art/dota1/buffs/sacrifice.png',
     name: '牺牲', nameTw: '犧牲', nameEn: 'Sacrifice',
-    desc: '攻击力 +8、冷却缩减 +8%，但全伤害 -6%；冷却缩减上限 60%，全伤害倍率最低 10%。',
-    descTw: '攻擊力 +8、冷卻縮減 +8%，但全傷害 -6%；冷卻縮減上限 60%，全傷害倍率最低 10%。',
-    descEn: 'Attack power +8 and cooldown reduction +8%, but all damage -6%; cooldown reduction caps at 60% and the all-damage multiplier bottoms out at 10%.',
-    stats: { attackPower: 8, abilityHaste: 8, damage: -6 }
+    desc: '攻击力 +6、冷却缩减 +6%；冷却缩减上限 60%。',
+    descTw: '攻擊力 +6、冷卻縮減 +6%；冷卻縮減上限 60%。',
+    descEn: 'Attack power +6 and cooldown reduction +6%; cooldown reduction caps at 60%.',
+    stats: { attackPower: 6, abilityHaste: 6 }
   },
   madness: {
     rarity: 'common', price: 28, icon: './assets/art/dota1/buffs/madness.png',
     name: '疯狂面具', nameTw: '瘋狂面具', nameEn: 'Mask of Madness',
-    desc: '攻速 +24%、吸血 +4%，但护甲 -3；吸血上限 65%。',
-    descTw: '攻速 +24%、吸血 +4%，但護甲 -3；吸血上限 65%。',
-    descEn: 'Attack speed +24% and Lifesteal +4%, but Armor -3; lifesteal caps at 65%.',
-    stats: { attackSpeed: 24, lifesteal: 4, armor: -3 }
+    desc: '攻速 +18%、吸血 +3%；吸血上限 65%。',
+    descTw: '攻速 +18%、吸血 +3%；吸血上限 65%。',
+    descEn: 'Attack speed +18% and Lifesteal +3%; lifesteal caps at 65%.',
+    stats: { attackSpeed: 18, lifesteal: 3 }
   },
   armlet: {
     rarity: 'epic', price: 32, icon: './assets/art/dota1/buffs/armlet.png',
@@ -162,26 +162,26 @@ export const BUFFS = {
   focusFire: {
     rarity: 'epic', price: 34, icon: './assets/art/dota1/buffs/focusFire.png',
     name: '集中火力', nameTw: '集中火力', nameEn: 'Focus Fire',
-    desc: '攻速 +30%，但全伤害 -8%；全伤害倍率最低 10%。',
-    descTw: '攻速 +30%，但全傷害 -8%；全傷害倍率最低 10%。',
-    descEn: 'Attack speed +30%, but all damage -8%; the all-damage multiplier cannot fall below 10%.',
-    stats: { attackSpeed: 30, damage: -8 }
+    desc: '攻速 +22%。',
+    descTw: '攻速 +22%。',
+    descEn: 'Attack speed +22%.',
+    stats: { attackSpeed: 22 }
   },
   windrun: {
     rarity: 'rare', price: 33, icon: './assets/art/dota1/buffs/windrun.png',
     name: '风行', nameTw: '風行', nameEn: 'Windrun',
-    desc: '移速 +15%、闪避 +8%，但最大生命 -5、护甲 -1；生命上限最低 1，闪避上限 55%。',
-    descTw: '移速 +15%、閃避 +8%，但最大生命 -5、護甲 -1；生命上限最低 1，閃避上限 55%。',
-    descEn: 'Move speed +15% and Dodge +8%, but Max HP -5 and Armor -1; Max HP bottoms out at 1 and dodge caps at 55%.',
-    stats: { speed: 15, dodge: 8, maxHp: -5, armor: -1 }
+    desc: '移速 +12%、闪避 +6%；闪避上限 55%。',
+    descTw: '移速 +12%、閃避 +6%；閃避上限 55%。',
+    descEn: 'Move speed +12% and Dodge +6%; dodge caps at 55%.',
+    stats: { speed: 12, dodge: 6 }
   },
   godsStrength: {
     rarity: 'rare', price: 29, icon: './assets/art/dota1/buffs/godsStrength.png',
     name: '神之力量', nameTw: '神之力量', nameEn: "God's Strength",
-    desc: '攻击力 +8，但基础攻击射程 -16；有效射程最低 48。',
-    descTw: '攻擊力 +8，但基礎攻擊射程 -16；有效射程最低 48。',
-    descEn: 'Attack power +8, but basic attack range -16; effective range cannot fall below 48.',
-    stats: { attackPower: 8, attackRange: -16 }
+    desc: '攻击力 +6。',
+    descTw: '攻擊力 +6。',
+    descEn: 'Attack power +6.',
+    stats: { attackPower: 6 }
   },
   bloodlust: {
     rarity: 'rare', price: 30, icon: './assets/art/dota1/buffs/bloodlust.png',
