@@ -17,6 +17,7 @@ from urllib.parse import urlsplit
 ROOT = Path(__file__).resolve().parents[1]
 SITE = ROOT / "game/static/dotarogue"
 MANIFEST = ROOT / "game/docs/sources/characters/dota1/model-frames-manifest.json"
+WEBP_MANIFEST = MANIFEST.with_name("webp-frames-manifest.json")
 HERO_IDS = {"rover", "bulwark", "conductor", "scavenger", "jugg", "sf", "kael", "luna", "tb"}
 POSES = {"idle-a", "idle-alt", "walk-a", "walk-b", "dash", "attack-windup", "attack", "attack-release", "skill"}
 SIDES = {"", "side-"}
@@ -122,7 +123,7 @@ def frame_maps(game: str) -> tuple[set[str], set[str]]:
     rage_pair = match(r"poses\[`(scavenger-rage-[^`]+)`\] = `([^`]+)`", rage, "rage frame template")
     morph_pair = match(r"poses\[`(scavenger-\$\{side\}morph-[^`]+)`\] = `([^`]+)`", rage, "morph frame template")
     for target, root, extension in roots:
-        require(extension == ("png" if target == "HERO_POSE_DOTA1_ART" else "svg"), f"wrong alchemist format for {target}")
+        require(extension == ("webp" if target == "HERO_POSE_DOTA1_ART" else "svg"), f"wrong alchemist format for {target}")
         for side in SIDES:
             values = {"root": root, "extension": extension, "side": side}
             for pose in pose_list:
@@ -145,15 +146,16 @@ def check_rendering(game: str, display: dict) -> None:
             require(isinstance(value, (int, float)) and math.isfinite(value), f"invalid {form}.{field}")
             require(math.isclose(value, display[form][field], rel_tol=1e-12), f"display profile drift: {form}.{field}")
         require(profile["height"] > 0 and 0 <= profile["bottomRatio"] < 1, f"invalid display bounds: {form}")
-    guard = match(r"const modelProfile = (.*?)\? DOTA1_MODEL_DISPLAY\[artId\] : null;", game, "PNG profile guard").group(1)
-    expected = "selectedSkin === 'dota1' && image.currentSrc.includes('/assets/characters/dota1/') && /\\.png(?:\\?|$)/.test(image.currentSrc)"
-    require(re.sub(r"\s+", "", guard) == re.sub(r"\s+", "", expected), "model display must guard formal PNGs and the skin; SVG fallback keeps its own scale")
+    guard = match(r"const modelProfile = (.*?)\? DOTA1_MODEL_DISPLAY\[artId\] : null;", game, "model profile guard").group(1)
+    expected = "selectedSkin === 'dota1' && image.currentSrc.includes('/assets/characters/dota1/') && /\\.(?:png|webp)(?:\\?|$)/.test(image.currentSrc)"
+    require(re.sub(r"\s+", "", guard) == re.sub(r"\s+", "", expected), "model display must guard formal PNG/WebP and the skin; SVG fallback keeps its own scale")
     require("visibleHeight = modelProfile ? modelProfile.height :" in game and "bottom = modelProfile ? height * modelProfile.bottomRatio :" in game, "missing ordinary fallback height or baseline")
     require(re.search(r"const footImage = selectedSkin !== ['\"]dota1['\"] &&", game) is not None, "DotA1 model frames must not splice SVG walking legs")
     for name in ("drawModelBladeTipTrail", "drawWeaponSwing", "drawShadowAttack", "drawHeroAttack"):
         require(re.search(r"function " + name + r"\(fx\) \{\s*if \(selectedSkin !== 'dota1'", game) is not None, f"{name} must preserve the ordinary skin")
     require("skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART" in game, "skin pose selection missing")
-    require("heroPoseImages[`pixel:${id}`], artImages[`pixel:${id}`]" in game, "ordinary missing-frame fallback missing")
+    require("poseImage('pixel', id) || imageForPath(SKIN_ART.pixel?.[id])" in game, "ordinary missing-frame fallback missing")
+    require("path.replace(/\\.webp(?:\\?.*)?$/, '.png?v=20261030-model-static1')" in game, "accepted PNG format fallback missing")
     for skin, expected_map in [("pixel", "HERO_ART"), ("dota1", "HERO_DOTA1_ART")]:
         consumer = match(r"\b" + skin + r": \{([^\n]+)\}", game, skin + " skin consumer").group(1)
         require("..." + expected_map in consumer, f"{skin} no longer consumes {expected_map}")
@@ -168,13 +170,14 @@ def main() -> int:
     require(set(re.findall(r"\bid:\s*'([a-z0-9-]+)'", playable)) == HERO_IDS, "playable hero set changed; update the frame delivery contract")
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
     model_paths, ordinary_paths = frame_maps(game)
+    source_paths = {str(Path(path).with_suffix(".png")) for path in model_paths}
     assets = manifest["assets"]
     require(len(model_paths) == 210 and len(assets) == 210, "expected 210 static model frames")
     require(manifest["assetCount"] == len(assets) and manifest["totalBytes"] == sum(asset["bytes"] for asset in assets), "manifest totals differ from recorded assets")
     recorded = {asset["path"] for asset in assets}
-    require(len(recorded) == len(assets) and recorded == model_paths, "manifest and actual expanded model mappings differ")
+    require(len(recorded) == len(assets) and recorded == source_paths, "manifest and actual expanded model mappings differ")
     actual = {path.relative_to(ROOT).as_posix() for path in (SITE / "assets/characters/dota1").rglob("*.png")}
-    require(actual == model_paths, "formal PNG files and mapped frame set differ")
+    require(actual == source_paths, "formal PNG files and mapped frame set differ")
     for asset in assets:
         require(asset["path"].endswith(".png"), f"model frame is not PNG: {asset['path']}")
         data = (ROOT / asset["path"]).read_bytes()
@@ -185,6 +188,22 @@ def main() -> int:
         profile = next((key for key in sorted(manifest["display"], key=len, reverse=True) if stem.startswith(key + "-")), None)
         require(profile == asset["displayProfile"], f"wrong display profile for {asset['path']}")
         require(manifest["display"][profile]["frame"] == [asset["width"], asset["height"]], f"profile frame size differs: {asset['path']}")
+    webp = json.loads(WEBP_MANIFEST.read_text(encoding="utf-8"))
+    require(webp["sourceManifestSha256"] == hashlib.sha256(MANIFEST.read_bytes()).hexdigest(), "WebP source manifest changed")
+    require(webp["generatorSha256"] == hashlib.sha256((ROOT / webp["generator"]).read_bytes()).hexdigest(), "WebP generator changed")
+    derived = webp["assets"]
+    require(webp["assetCount"] == len(derived) == 210, "expected 210 lossless WebP frames")
+    require({asset["path"] for asset in derived} == model_paths, "WebP manifest and runtime mappings differ")
+    require({path.relative_to(ROOT).as_posix() for path in (SITE / "assets/characters/dota1").rglob("*.webp")} == model_paths, "WebP file set differs")
+    require(webp["totalBytes"] == sum(asset["bytes"] for asset in derived) < manifest["totalBytes"], "WebP byte totals differ")
+    sources = {asset["path"]: asset for asset in assets}
+    for asset in derived:
+        source = sources[asset["sourcePath"]]
+        data = (ROOT / asset["path"]).read_bytes()
+        require(data[:4] == b"RIFF" and data[8:12] == b"WEBP", f"invalid WebP header: {asset['path']}")
+        require(len(data) == asset["bytes"] and hashlib.sha256(data).hexdigest() == asset["sha256"], f"WebP bytes changed: {asset['path']}")
+        require(asset["sourceSha256"] == source["sha256"] and asset["decodedRGBAEqual"], f"WebP source or pixel validation differs: {asset['path']}")
+        require((asset["width"], asset["height"]) == (source["width"], source["height"]), f"WebP dimensions differ: {asset['path']}")
     require(len(ordinary_paths) == 210 and not ordinary_paths & model_paths, "ordinary skin frame set changed")
     for path in ordinary_paths | {"game/static/dotarogue/assets/characters/luna/luna-glaive.svg"}:
         require(path.endswith(".svg") and ET.parse(ROOT / path).getroot().tag.endswith("svg"), f"ordinary SVG unavailable: {path}")
@@ -194,8 +213,8 @@ def main() -> int:
             continue
         source = path.read_text(encoding="utf-8")
         require(not re.search(r"\.tmp[/\\]|\.playwright-mcp[/\\]|\.logs[/\\]|https?://(?:127\.0\.0\.1|localhost)(?=[:/])", source), f"temporary or local-service dependency in {path.relative_to(ROOT)}")
-    print("PASS: 210 formal PNGs match manifest hashes, dimensions and expanded hero/TB/alchemist mappings.")
-    print("PASS: 11 display profiles, PNG-only scaling, 210 ordinary SVG frames and visual skin guards are present.")
+    print("PASS: 210 accepted PNGs retain their hashes and dimensions; 210 lossless WebPs match runtime mappings and recorded pixel checks.")
+    print("PASS: 11 display profiles, PNG/WebP-only scaling, 210 ordinary SVG frames and visual skin guards are present.")
     print("PASS: delivered text resources have no temporary-directory or localhost-service dependency.")
     print("Static delivery checks only; real-entry gameplay, loading and visual verification remain required.")
     return 0
