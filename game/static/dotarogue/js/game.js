@@ -400,6 +400,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
   };
   for (const locale of SUPPORTED_LOCALES) Object.assign(EXTRA_UI[locale], CRAFT_UI[locale]);
+  for (const [locale, messages] of Object.entries({
+    'zh-CN': ['正在加载角色…', '角色图片加载失败，请重试或切换皮肤。'],
+    'zh-TW': ['正在載入英雄…', '英雄圖片載入失敗，請重試或切換外觀。'],
+    en: ['Loading hero…', 'Hero images could not load. Please retry or switch skins.']
+  })) Object.assign(EXTRA_UI[locale], { heroLoading: messages[0], heroLoadFailed: messages[1] });
 
   function t(key, vars = {}) {
     const value = EXTRA_UI[selectedLocale]?.[key] ?? LOCALES[selectedLocale]?.ui?.[key] ?? EXTRA_UI[DEFAULT_LOCALE]?.[key] ?? LOCALES[DEFAULT_LOCALE].ui[key] ?? key;
@@ -437,6 +442,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     for (const [id, key] of [['locale-zh-CN', 'languageZhCN'], ['locale-zh-TW', 'languageZhTW'], ['locale-en', 'languageEn']]) if ($(id)) { $(id).textContent = t(key); $(id).setAttribute('aria-pressed', String($(id).dataset.locale === selectedLocale)); }
   }
   function setLocale(locale) {
+    cancelHeroPreparation();
     if (!SUPPORTED_LOCALES.includes(locale)) locale = DEFAULT_LOCALE;
     audioSystem.stopVoice();
     selectedLocale = locale; applyLocaleData(); applyStaticLocale(); persist();
@@ -455,6 +461,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function setSkin(skin) {
     const next = skin === 'dota1' ? 'dota1' : 'pixel';
     if (selectedSkin === next) return;
+    cancelHeroPreparation();
     selectedSkin = next;
     $('game').dataset.skin = selectedSkin;
     loadHeroPoses(run?.character?.id || selectedCharacter, selectedSkin);
@@ -485,7 +492,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     [id, `./assets/art/dota1/heroes/${id}.png`]));
   const DOTA1_MODEL_DISPLAY = {"rover": {"height": 149.7765, "bottomRatio": 0.32574031890660593}, "bulwark": {"height": 99.3129, "bottomRatio": 0.19718309859154926}, "conductor": {"height": 118.4795, "bottomRatio": 0.28673835125448033}, "scavenger": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}, "jugg": {"height": 352.9231, "bottomRatio": 0.19729729729729728}, "kael": {"height": 157.2289, "bottomRatio": 0.30000000000000004}, "luna": {"height": 138, "bottomRatio": 0.23206751054852326}, "tb": {"height": 193.3362, "bottomRatio": 0.27813163481953296}, "tb-demon": {"height": 208.8462, "bottomRatio": 0.2762430939226519}, "sf": {"height": 120, "bottomRatio": 0.21666666666666667}, "scavenger-rage": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}};
   const HERO_DOTA1_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
-    [id, `./assets/characters/dota1/${id}/${id}-idle-a.png?v=20261030-model-static1`]));
+    [id, `./assets/characters/dota1/${id}/${id}-idle-a.webp?v=20261031-lossless1`]));
   const HERO_POSE_ART = Object.fromEntries(Object.keys(HERO_ART).flatMap(id =>
     ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
       'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
@@ -496,15 +503,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
       'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
       'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
-      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.png?v=20261030-model-static1`])));
+      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.webp?v=20261031-lossless1`])));
   HERO_POSE_DOTA1_ART['luna-glaive'] = './assets/characters/dota1/luna/luna-glaive.svg?v=20261028-dota1-reference1';
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.png?v=20261030-model-static1`;
+    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.webp?v=20261031-lossless1`;
   }
   for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
     for (const side of ['', 'side-']) HERO_POSE_ART[`tb-demon-${side}${pose}`] = `./assets/characters/tb/tb-demon-${side}${pose}.svg?v=20261014-tb1`;
   }
-  for (const [poses, root, extension] of [[HERO_POSE_ART, './assets/characters/scavenger', 'svg'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger', 'png']]) {
+  for (const [poses, root, extension] of [[HERO_POSE_ART, './assets/characters/scavenger', 'svg'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger', 'webp']]) {
     for (const side of ['', 'side-']) {
       for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
         poses[`scavenger-rage-${side}${pose}`] = `${root}/scavenger-rage-${side}${pose}.${extension}?v=20261030-rage1`;
@@ -528,21 +535,34 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   // fresh visit download the whole art library before the player has started a
   // run. Images are now created only when a renderer actually needs them.
   const imagesByPath = {};
-  function imageForPath(path) {
+  const imageLoads = new WeakMap();
+  function imageForPath(path, priority = 'low') {
     if (!path) return null;
     if (!imagesByPath[path]) {
       const image = new Image();
       image.decoding = 'async';
+      image.fetchPriority = priority;
+      const ready = new Promise((resolve, reject) => {
+        image.addEventListener('load', () => image.decode().then(() => resolve(image), reject), { once: true });
+        image.addEventListener('error', () => {
+          // Keep the accepted PNGs usable when WebP is unavailable.
+          if (/\.webp(?:\?|$)/.test(image.src)) {
+            image.src = path.replace(/\.webp(?:\?.*)?$/, '.png?v=20261030-model-static1');
+          } else reject(new Error('Image unavailable'));
+        });
+      });
+      imageLoads.set(image, ready);
+      ready.catch(() => {}); // Most decorative images have no waiting caller.
       image.src = path;
       imagesByPath[path] = image;
     }
+    if (priority === 'high') imagesByPath[path].fetchPriority = 'high';
     return imagesByPath[path];
   }
   let windRenderer = null, meteorRenderer = null;
   let windRendererPromise = null, meteorRendererPromise = null;
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  const requiemRenderer = createRequiemRenderer();
-  const eclipseRenderer = createEclipseRenderer();
+  let requiemRenderer = null, eclipseRenderer = null;
   function ensureWindRenderer() {
     if (windRenderer) return Promise.resolve(windRenderer);
     if (!windRendererPromise) {
@@ -572,15 +592,60 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return meteorRendererPromise;
   }
   const heroPoseImages = {};
-  function loadHeroPoses(id, skin = selectedSkin) {
+  let heroPreparation = null;
+  function cancelHeroPreparation() {
+    if (!heroPreparation) return;
+    const { button, label } = heroPreparation;
+    button.innerHTML = label; button.disabled = false; button.removeAttribute('aria-busy');
+    heroPreparation = null;
+    $('toast').classList.remove('show');
+  }
+  async function prepareHero(button, id) {
+    if (heroPreparation) return false;
+    const preparation = { button, label: button.innerHTML };
+    heroPreparation = preparation;
+    button.disabled = true; button.textContent = t('heroLoading'); button.setAttribute('aria-busy', 'true');
+    clearTimeout(toastTimer);
+    $('toast').textContent = t('heroLoading'); $('toast').classList.add('show');
+    let timeout;
+    try {
+      await Promise.race([loadHeroPoses(id, selectedSkin, true),
+        new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Image timeout')), 15000); })]);
+      if (heroPreparation !== preparation) return false;
+      cancelHeroPreparation();
+      return true;
+    } catch (_) {
+      if (heroPreparation === preparation) {
+        cancelHeroPreparation();
+        $('toast').textContent = t('heroLoadFailed'); $('toast').classList.add('show');
+      }
+      return false;
+    } finally { clearTimeout(timeout); }
+  }
+  let heroPreloadVersion = 0;
+  function loadHeroPoses(id, skin = selectedSkin, retry = false) {
+    const version = ++heroPreloadVersion;
     const poseArt = skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
-    const criticalPoses = new Set(['idle-a', 'idle-alt', 'side-idle-a', 'side-idle-alt']);
-    for (const [pose, path] of Object.entries(poseArt)) {
-      const key = `${skin}:${pose}`;
-      const poseName = pose.slice(id.length + 1);
-      if (!pose.startsWith(`${id}-`) || !criticalPoses.has(poseName) || heroPoseImages[key]) continue;
-      heroPoseImages[key] = imageForPath(path);
+    const path = poseArt[`${id}-idle-a`] || SKIN_ART[skin][id];
+    if (retry && imagesByPath[path]?.complete && !imagesByPath[path].naturalWidth) {
+      delete imagesByPath[path];
+      delete heroPoseImages[`${skin}:${id}-idle-a`];
     }
+    const idle = imageForPath(path, 'high');
+    const ready = imageLoads.get(idle);
+    // One critical idle first; two background requests at a time, for this hero only.
+    ready.then(() => {
+      const poses = Object.keys(poseArt).filter(pose => pose.startsWith(`${id}-`));
+      let next = 0;
+      const warm = async () => {
+        while (version === heroPreloadVersion && next < poses.length) {
+          const image = poseImage(skin, poses[next++]);
+          await imageLoads.get(image).catch(() => {});
+        }
+      };
+      warm(); warm();
+    }).catch(() => {});
+    return ready;
   }
   const artIcon = (id, fallback) => {
     const path = HERO_PORTRAIT_ART[id] || SKIN_ART[selectedSkin][id];
@@ -612,6 +677,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   let selectedSkin = save.settings.skin === 'dota1' ? 'dota1' : 'pixel';
   let soundEnabled = save.settings.sound !== false;
   let phase = 'title';
+  let titleDirty = true;
   let previousPhase = 'combat';
   let run = null;
   let viewW = 0, viewH = 0, dpr = 1, canvasScale = 1, lastFrame = 0, ambientTime = 0;
@@ -835,6 +901,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function playHeroVoice(event, id = run?.character?.id || selectedCharacter) { audioSystem.playVoice(event, id); }
 
   function renderTitle() {
+    titleDirty = true;
     $('game').dataset.skin = selectedSkin;
     $('character-list').innerHTML = CHARACTERS.map(c => `<button class="hero-tile" type="button" data-character="${c.id}" aria-pressed="${selectedCharacter === c.id}" aria-controls="hero-details"><span class="hero-avatar">${artIcon(c.id, '')}</span><span class="hero-tile-name">${c.id === 'tb' && selectedLocale === 'en' ? 'Terror<wbr>blade' : c.name}</span></button>`).join('');
     const selectedHero = CHARACTERS.find(c => c.id === selectedCharacter);
@@ -910,7 +977,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     };
     applyAttributeBlock(Object.fromEntries(ATTRIBUTE_KEYS.map(key => [key, Number(characterAttributes[key]) || 0])), 1);
   }
-  function startRun() {
+  async function startRun(event) {
+    if (!await prepareHero(event?.currentTarget || $('start-button'), selectedCharacter)) return;
     audioSystem.reset();
     createRun();
     startWave();
@@ -3862,12 +3930,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (rageMorph) { scaleX = 1; scaleY = 1; lift = 0; lean = 0; }
     if (s.requiem?.delay > 0 || s.thunder) { scaleX *= 1.04; lift += 3; }
     ctx.translate(0, -lift); ctx.rotate(lean); ctx.scale(mirror * scaleX, scaleY);
-    const evolutionLevels = Object.fromEntries(Object.keys(EQUIPMENT_UPGRADES).map(id => [id, equippedUpgradeLevel(id)]));
+    const evolutionLevels = {};
+    for (const item of run.equipment) if (EQUIPMENT_UPGRADES[item.id]) {
+      evolutionLevels[item.id] = Math.max(evolutionLevels[item.id] || 0, item.level || 1);
+    }
     const evolutionView = { time: run.totalTime, attack: attackSnap, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches };
     drawEvolutionEquipment(ctx, evolutionLevels, evolutionView);
     if (id === 'kael') drawKaelOrbs(false, mirror);
     if (image) {
-      const modelProfile = selectedSkin === 'dota1' && image.currentSrc.includes('/assets/characters/dota1/') && /\.png(?:\?|$)/.test(image.currentSrc) ? DOTA1_MODEL_DISPLAY[artId] : null;
+      const modelProfile = selectedSkin === 'dota1' && image.currentSrc.includes('/assets/characters/dota1/') && /\.(?:png|webp)(?:\?|$)/.test(image.currentSrc) ? DOTA1_MODEL_DISPLAY[artId] : null;
       const visibleHeight = modelProfile ? modelProfile.height : id === 'tb' ? (demon ? 126 : 98) : id === 'luna' ? 100 : id === 'scavenger' ? 94 : id === 'rover' ? 82 : id === 'sf' ? 90 : 86;
       const height = visibleHeight;
       const width = height * image.naturalWidth / image.naturalHeight;
@@ -4034,7 +4105,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const frame = release ? 'attack-release' : 'attack';
     const image = (side && artImage(`${fx.character}-side-${frame}`)) || artImage(`${fx.character}-${frame}`);
     const profile = DOTA1_MODEL_DISPLAY[fx.character];
-    if (!image?.naturalHeight || !profile || !image.currentSrc.includes('/assets/characters/dota1/') || !/\.png(?:\?|$)/.test(image.currentSrc)) return;
+    if (!image?.naturalHeight || !profile || !image.currentSrc.includes('/assets/characters/dota1/') || !/\.(?:png|webp)(?:\?|$)/.test(image.currentSrc)) return;
     // Native PNG blade tips were checked against front/side contact/release frames.
     // Convert with the same frame size, height and foot baseline used by drawPlayer.
     const tips = fx.character === 'jugg'
@@ -4703,14 +4774,17 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
 
   function drawRequiem(layer) {
     const cast = run.skills.requiem;
-    if (cast) requiemRenderer.draw(ctx, { cast, player: run.player, level: run.level,
+    if (cast) (requiemRenderer ||= createRequiemRenderer()).draw(ctx, { cast, player: run.player, level: run.level,
       reducedMotion: motionPreference.matches, layer });
+  }
+  function drawEclipse(layer) {
+    if (run.skills.eclipse) (eclipseRenderer ||= createEclipseRenderer()).draw(ctx, { cast: run.skills.eclipse,
+      level: run.level, reducedMotion: motionPreference.matches, layer });
   }
   function drawSkillGround() {
     const p = run.player;
     drawRequiem('back');
-    eclipseRenderer.draw(ctx, { cast: run.skills.eclipse, level: run.level,
-      reducedMotion: motionPreference.matches, layer: 'ground' });
+    drawEclipse('ground');
     if (run.character.id === 'kael') {
       const s = run.skills;
       ctx.save();
@@ -5136,8 +5210,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       for (let i = 0; i < guards; i++) if (clockworkGuardPoint(i, guards).groundY > run.player.y + 16) drawClockworkGuard(i, guards);
     }
     drawRequiem('front');
-    eclipseRenderer.draw(ctx, { cast: run.skills.eclipse, level: run.level,
-      reducedMotion: motionPreference.matches, layer: 'front' });
+    drawEclipse('front');
     drawHazards(cam);
     if (usesPixelPresentation()) drawTerrainIndicators(cam);
     for (const e of run.enemies) if (visible(e, cam, 650)) drawEliteTelegraph(e);
@@ -5193,6 +5266,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.globalAlpha = 1;
   }
   function resize() {
+    titleDirty = true;
     viewW = Math.max(1, canvas.clientWidth);
     viewH = Math.max(1, canvas.clientHeight);
     dpr = Math.min(2, window.devicePixelRatio || 1);
@@ -5206,13 +5280,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     lastFrame = now;
     if (studio) { drawStudioFrame(dt); requestAnimationFrame(loop); return; }
     if (phase === 'pause') { requestAnimationFrame(loop); return; }
+    if (phase === 'title' && usesPixelPresentation() && !titleDirty) { requestAnimationFrame(loop); return; }
     ambientTime += dt;
     if (phase === 'combat' && run) updateCombat(dt);
     if (phase === 'wave-result' && run) updateWaveIntermission(dt);
     ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
     ctx.imageSmoothingEnabled = !usesPixelPresentation();
     ctx.clearRect(0, 0, viewW, viewH);
-    if (run && phase !== 'title') drawCombat(); else drawTitleScene();
+    if (run && phase !== 'title') drawCombat(); else { drawTitleScene(); titleDirty = false; }
     requestAnimationFrame(loop);
   }
 
@@ -5225,13 +5300,17 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('resume-button').textContent = previousPhase === 'wave-result' ? t('resumeCountdown') : t('resume');
     $('resume-button').focus({ preventScroll: true });
   }
-  function resume() {
+  async function resume() {
     if (phase !== 'pause') return;
+    const id = run.character.id;
+    const form = id === 'tb' && run.skills.tb.time > 0 ? 'tb-demon'
+      : id === 'scavenger' && run.skills.rageTime > 0 ? 'scavenger-rage' : id;
+    if (!await prepareHero($('resume-button'), form) || phase !== 'pause') return;
     audioSystem.setPaused(false);
     showPhase(previousPhase);
     $(previousPhase === 'wave-result' ? 'wave-result-continue' : 'pause-button').focus({ preventScroll: true });
   }
-  function goTitle() { audioSystem.reset(); run = null; moveFlow = null; keys.clear(); resetStick(); showPhase('title'); renderTitle(); $('start-button').focus({ preventScroll: true }); }
+  function goTitle() { cancelHeroPreparation(); audioSystem.reset(); run = null; moveFlow = null; keys.clear(); resetStick(); showPhase('title'); renderTitle(); $('start-button').focus({ preventScroll: true }); }
   function resetStick() { stick.x = 0; stick.y = 0; stick.pointerId = null; $('joystick-knob').style.transform = 'translate(0,0)'; }
   function moveStick(event) {
     const box = $('joystick').getBoundingClientRect();
@@ -5242,7 +5321,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('joystick-knob').style.transform = `translate(${mx}px, ${my}px)`;
   }
   function bindEvents() {
-    $('character-list').addEventListener('click', event => { const b = event.target.closest('[data-character]'); if (b) { selectedCharacter = b.dataset.character; loadHeroPoses(selectedCharacter); renderTitle(); playSfx('select'); playHeroVoice('select', selectedCharacter); refocus(`[data-character="${selectedCharacter}"]`); } });
+    $('character-list').addEventListener('click', event => { const b = event.target.closest('[data-character]'); if (b) { cancelHeroPreparation(); selectedCharacter = b.dataset.character; loadHeroPoses(selectedCharacter); renderTitle(); playSfx('select'); playHeroVoice('select', selectedCharacter); refocus(`[data-character="${selectedCharacter}"]`); } });
     $('biome-list').addEventListener('click', event => { const b = event.target.closest('[data-biome]'); if (b) { selectedBiome = b.dataset.biome; renderTitle(); refocus(`[data-biome="${selectedBiome}"]`); } });
     $('difficulty-list').addEventListener('click', event => { const b = event.target.closest('[data-difficulty]'); if (b) { selectedDifficulty = b.dataset.difficulty; persist(); renderTitle(); refocus(`[data-difficulty="${selectedDifficulty}"]`); } });
     $('pace-list').addEventListener('click', event => { const b = event.target.closest('[data-pace]'); if (b) { selectedPace = b.dataset.pace; persist(); renderTitle(); refocus(`[data-pace="${selectedPace}"]`); } });
@@ -5337,8 +5416,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       keys.add(key);
     });
     window.addEventListener('keyup', event => { keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key); });
-    window.addEventListener('blur', () => { keys.clear(); pause(); });
-    document.addEventListener('visibilitychange', () => { if (document.hidden) pause(); });
+    window.addEventListener('blur', () => { cancelHeroPreparation(); keys.clear(); pause(); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelHeroPreparation(); pause(); } });
     const joystick = $('joystick');
     joystick.addEventListener('pointerdown', event => { if (phase !== 'combat') return; event.preventDefault(); stick.pointerId = event.pointerId; joystick.setPointerCapture(event.pointerId); moveStick(event); });
     joystick.addEventListener('pointermove', event => { if (event.pointerId === stick.pointerId) { event.preventDefault(); moveStick(event); } });
@@ -5556,6 +5635,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
 
   resize(); applyStaticLocale();
   if (studioMode) initStudio();
-  else { bindEvents(); renderTitle(); }
+  else { bindEvents(); renderTitle(); loadHeroPoses(selectedCharacter); }
   requestAnimationFrame(loop);
 })();
