@@ -1,4 +1,4 @@
-import { buildDotaTerrain } from './dota-map.js?v=20261027-map2';
+import { buildDotaTerrain } from './dota-map.js?v=20261103-mobile-performance1';
 
 export const WORLD = { w: 2600, h: 1700 };
 

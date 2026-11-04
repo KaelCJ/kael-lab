@@ -1,22 +1,21 @@
-import { createStudioRuntime } from './studio-runtime.js?v=20261014-tb1';
 import { createFireRenderer } from './effects/fire.js';
-import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261027-map2';
-import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261027-map2';
+import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261103-mobile-performance1';
+import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261103-mobile-performance1';
 import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261031-sf-requiem5';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
 import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261031-equipment19';
-import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261030-equipment18';
-import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261030-equipment18';
-import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment18';
-import { createEquipmentCombat } from './equipment-combat.js?v=20261030-equipment18-skillpower1';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261104-loading1';
+import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261104-loading1';
+import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261104-loading1';
+import { createEquipmentCombat } from './equipment-combat.js?v=20261104-loading1';
 import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261031-luna-eclipse2';
 import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
-import { createWindRenderer } from './effects/wind.js?v=20261027-dota1';
+import { createWindRenderer } from './effects/wind.js?v=20261103-mobile-performance1';
 import { createMeteorRenderer } from './effects/meteor.js';
 import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem5';
 import { createEclipseRenderer } from './effects/eclipse.js?v=20261031-luna-eclipse2';
-import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike } from './effects/equipment-evolution.js?v=20261029-attributes-spell3';
+import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike, onEquipmentImagesReady } from './effects/equipment-evolution.js?v=20261104-loading1';
 import { createAudioSystem } from './audio.js?v=20261027-dota1';
 import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
 import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDerivedSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261030-attribute-contract1';
@@ -543,12 +542,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       image.decoding = 'async';
       image.fetchPriority = priority;
       const ready = new Promise((resolve, reject) => {
-        image.addEventListener('load', () => image.decode().then(() => resolve(image), reject), { once: true });
+        const unavailable = error => { sceneDirty = true; reject(error); };
+        image.addEventListener('load', () => image.decode().then(() => { sceneDirty = true; resolve(image); }, unavailable), { once: true });
         image.addEventListener('error', () => {
           // Keep the accepted PNGs usable when WebP is unavailable.
           if (/\.webp(?:\?|$)/.test(image.src)) {
             image.src = path.replace(/\.webp(?:\?.*)?$/, '.png?v=20261030-model-static1');
-          } else reject(new Error('Image unavailable'));
+          } else unavailable(new Error('Image unavailable'));
         });
       });
       imageLoads.set(image, ready);
@@ -568,6 +568,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (!windRendererPromise) {
       windRendererPromise = createWindRenderer().then(renderer => {
         windRenderer = renderer;
+        sceneDirty = true;
         return renderer;
       }).catch(error => {
         windRendererPromise = Promise.resolve(null);
@@ -582,6 +583,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (!meteorRendererPromise) {
       meteorRendererPromise = createMeteorRenderer().then(renderer => {
         meteorRenderer = renderer;
+        sceneDirty = true;
         return renderer;
       }).catch(error => {
         meteorRendererPromise = Promise.resolve(null);
@@ -593,7 +595,51 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   const heroPoseImages = {};
   let heroPreparation = null;
-  function cancelHeroPreparation() {
+  let heroPreloadVersion = 0, heroWarmup = null;
+  let heroCacheKey = '', heroEffectsWarmup = null;
+  function trimHeroImages(id, skin) {
+    const hero = id.replace(/-(demon|rage)$/, ''), key = `${skin}:${hero}`;
+    if (heroCacheKey === key) return;
+    heroCacheKey = key;
+    heroPreloadVersion += 1; heroWarmup = null;
+    const root = `./assets/characters/${skin === 'dota1' ? 'dota1/' : ''}${hero}/`;
+    for (const path of Object.keys(imagesByPath)) {
+      if (path.startsWith('./assets/characters/') && !path.startsWith(root)) delete imagesByPath[path];
+    }
+    for (const key of Object.keys(heroPoseImages)) {
+      if (!key.startsWith(`${skin}:${hero}-`)) delete heroPoseImages[key];
+    }
+  }
+  function cancelHeroEffectsWarmup() {
+    if (!heroEffectsWarmup) return;
+    const { timer, idle } = heroEffectsWarmup;
+    if (idle) window.cancelIdleCallback?.(timer); else clearTimeout(timer);
+    heroEffectsWarmup = null;
+  }
+  function warmHeroEffects(id) {
+    if (studioMode) return;
+    const hero = id.replace(/-(demon|rage)$/, '');
+    if (heroEffectsWarmup?.hero === hero) return;
+    cancelHeroEffectsWarmup();
+    const jobs = hero === 'kael' ? [ensureWindRenderer, ensureMeteorRenderer]
+      : hero === 'sf' ? [() => { requiemRenderer ||= createRequiemRenderer(); sceneDirty = true; }]
+      : hero === 'luna' ? [() => { eclipseRenderer ||= createEclipseRenderer(); sceneDirty = true; }] : [];
+    if (!jobs.length) return;
+    const warming = { hero, timer: null, idle: !!window.requestIdleCallback };
+    heroEffectsWarmup = warming;
+    const schedule = () => {
+      if (heroEffectsWarmup !== warming || !jobs.length) return;
+      const prepare = () => {
+        warming.timer = null;
+        if (heroEffectsWarmup !== warming || document.hidden || phase === 'title' || run?.character.id !== hero) return;
+        Promise.resolve().then(jobs.shift()).catch(error => console.warn('Skill graphics warmup unavailable.', error)).then(schedule);
+      };
+      warming.timer = warming.idle ? window.requestIdleCallback(prepare) : setTimeout(prepare, 120);
+    };
+    schedule();
+  }
+  function cancelHeroPreparation(keepWarmup = false) {
+    if (!keepWarmup) { heroPreloadVersion += 1; heroWarmup = null; cancelHeroEffectsWarmup(); }
     if (!heroPreparation) return;
     const { button, label } = heroPreparation;
     button.innerHTML = label; button.disabled = false; button.removeAttribute('aria-busy');
@@ -609,10 +655,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('toast').textContent = t('heroLoading'); $('toast').classList.add('show');
     let timeout;
     try {
-      await Promise.race([loadHeroPoses(id, selectedSkin, true),
+      await Promise.race([loadHeroPoses(id, selectedSkin, { retry: true }),
         new Promise((_, reject) => { timeout = setTimeout(() => reject(new Error('Image timeout')), 15000); })]);
       if (heroPreparation !== preparation) return false;
-      cancelHeroPreparation();
+      cancelHeroPreparation(true);
       return true;
     } catch (_) {
       if (heroPreparation === preparation) {
@@ -622,9 +668,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       return false;
     } finally { clearTimeout(timeout); }
   }
-  let heroPreloadVersion = 0;
-  function loadHeroPoses(id, skin = selectedSkin, retry = false) {
-    const version = ++heroPreloadVersion;
+  function loadHeroPoses(id, skin = selectedSkin, { retry = false, warm = false } = {}) {
+    trimHeroImages(id, skin);
+    const key = `${skin}:${id}`;
+    if (heroWarmup && heroWarmup.key !== key) { heroPreloadVersion += 1; heroWarmup = null; }
     const poseArt = skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
     const path = poseArt[`${id}-idle-a`] || SKIN_ART[skin][id];
     if (retry && imagesByPath[path]?.complete && !imagesByPath[path].naturalWidth) {
@@ -633,18 +680,36 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     const idle = imageForPath(path, 'high');
     const ready = imageLoads.get(idle);
-    // One critical idle first; two background requests at a time, for this hero only.
-    ready.then(() => {
-      const poses = Object.keys(poseArt).filter(pose => pose.startsWith(`${id}-`));
-      let next = 0;
-      const warm = async () => {
-        while (version === heroPreloadVersion && next < poses.length) {
-          const image = poseImage(skin, poses[next++]);
-          await imageLoads.get(image).catch(() => {});
+    // The title needs one idle, not every animation or transformation. Warm
+    // only the current form once a run begins; keep a small fallback ready for Q.
+    if (warm && !heroWarmup) {
+      const version = ++heroPreloadVersion;
+      heroWarmup = { key };
+      ready.then(() => {
+        if (version !== heroPreloadVersion) return;
+        const poses = ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
+          'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
+          'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose => `${id}-${pose}`);
+        if (id === 'tb') poses.unshift('tb-demon-idle-a');
+        if (id === 'scavenger') poses.unshift('scavenger-rage-idle-a', 'scavenger-morph-in-0', 'scavenger-side-morph-in-0');
+        if (id === 'scavenger-rage') {
+          const transitions = [];
+          for (const side of ['', 'side-']) for (const direction of ['in', 'out']) for (let frame = 0; frame < 3; frame++) {
+            transitions.push(`scavenger-${side}morph-${direction}-${frame}`);
+          }
+          poses.unshift(...transitions);
         }
-      };
-      warm(); warm();
-    }).catch(() => {});
+        let next = 0;
+        const warmNext = async () => {
+          while (version === heroPreloadVersion && next < poses.length) {
+            const image = poseImage(skin, poses[next++]);
+            if (image) await imageLoads.get(image).catch(() => {});
+          }
+        };
+        warmNext(); warmNext();
+        warmHeroEffects(id);
+      }).catch(() => { if (version === heroPreloadVersion) heroWarmup = null; });
+    }
     return ready;
   }
   const artIcon = (id, fallback) => {
@@ -677,7 +742,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   let selectedSkin = save.settings.skin === 'dota1' ? 'dota1' : 'pixel';
   let soundEnabled = save.settings.sound !== false;
   let phase = 'title';
-  let titleDirty = true;
+  let titleDirty = true, sceneDirty = true;
+  onEquipmentImagesReady(() => { sceneDirty = true; });
   let previousPhase = 'combat';
   let run = null;
   let viewW = 0, viewH = 0, dpr = 1, canvasScale = 1, lastFrame = 0, ambientTime = 0;
@@ -690,24 +756,73 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   const decor = Array.from({ length: 125 }, () => ({ x: rand(30, WORLD.w - 30), y: rand(30, WORLD.h - 30), r: rand(2, 13), angle: rand(0, TAU) }));
   const NAV_STEP = 64;
   let NAV_COLS = Math.floor(WORLD.w / NAV_STEP), NAV_ROWS = Math.floor(WORLD.h / NAV_STEP);
+  let navigationCache = null;
+  let terrainIndex = null;
+
+  function terrainCandidates(x1, y1, x2, y2, radius) {
+    const cell = 256;
+    if (!terrainIndex || terrainIndex.terrain !== run.terrain || terrainIndex.w !== WORLD.w || terrainIndex.h !== WORLD.h) {
+      const cols = Math.ceil(WORLD.w / cell), rows = Math.ceil(WORLD.h / cell);
+      const buckets = Array.from({ length: cols * rows }, () => []);
+      const entries = run.terrain.map((object, index) => {
+        const segments = object.kind === 'water' ? riverSegments(object) : null;
+        let left = object.x - object.r, right = object.x + object.r;
+        let top = object.y - object.r, bottom = object.y + object.r;
+        if (segments) {
+          left = top = Infinity; right = bottom = -Infinity;
+          for (const { a, b, r } of segments) {
+            // Preserve the existing segment-intersection tolerance in the broad phase.
+            left = Math.min(left, a.x - r - .001, b.x - r - .001);
+            right = Math.max(right, a.x + r + .001, b.x + r + .001);
+            top = Math.min(top, a.y - r - .001, b.y - r - .001);
+            bottom = Math.max(bottom, a.y + r + .001, b.y + r + .001);
+          }
+        }
+        const entry = { object, index, segments, left, right, top, bottom, stamp: 0 };
+        const minCol = clamp(Math.floor(left / cell), 0, cols - 1), maxCol = clamp(Math.floor(right / cell), 0, cols - 1);
+        const minRow = clamp(Math.floor(top / cell), 0, rows - 1), maxRow = clamp(Math.floor(bottom / cell), 0, rows - 1);
+        for (let row = minRow; row <= maxRow; row++) for (let col = minCol; col <= maxCol; col++) buckets[row * cols + col].push(entry);
+        return entry;
+      });
+      terrainIndex = { terrain: run.terrain, w: WORLD.w, h: WORLD.h, cols, rows, buckets, entries, candidates: [], stamp: 0 };
+    }
+    const cache = terrainIndex, left = Math.min(x1, x2) - radius, right = Math.max(x1, x2) + radius;
+    const top = Math.min(y1, y2) - radius, bottom = Math.max(y1, y2) + radius;
+    const minCol = clamp(Math.floor(left / cell), 0, cache.cols - 1), maxCol = clamp(Math.floor(right / cell), 0, cache.cols - 1);
+    const minRow = clamp(Math.floor(top / cell), 0, cache.rows - 1), maxRow = clamp(Math.floor(bottom / cell), 0, cache.rows - 1);
+    // A whole-map segment gains nothing from collecting and sorting the same entries.
+    if ((maxCol - minCol + 1) * (maxRow - minRow + 1) >= cache.cols * cache.rows / 2) return cache.entries;
+    const candidates = cache.candidates, stamp = ++cache.stamp;
+    candidates.length = 0;
+    for (let row = minRow; row <= maxRow; row++) for (let col = minCol; col <= maxCol; col++) {
+      for (const entry of cache.buckets[row * cache.cols + col]) {
+        if (entry.stamp === stamp) continue;
+        entry.stamp = stamp;
+        if (entry.right < left || entry.left > right || entry.bottom < top || entry.top > bottom) continue;
+        candidates.push(entry);
+      }
+    }
+    candidates.sort((a, b) => a.index - b.index);
+    return candidates;
+  }
 
   function terrainCollision(x, y, radius, blockWater = true) {
     if (x < radius || y < radius || x > WORLD.w - radius || y > WORLD.h - radius) return true;
-    for (const o of run.terrain) {
+    for (const { object: o, segments } of terrainCandidates(x, y, x, y, radius)) {
       if (o.kind === 'water') {
-        if (blockWater && riverSegments(o).some(segment => pointSegmentDistance(x, y, segment.a, segment.b) < radius + segment.r)) return true;
+        if (blockWater && segments.some(segment => pointSegmentDistance(x, y, segment.a, segment.b) < radius + segment.r)) return true;
       } else if (Math.hypot(x - o.x, y - o.y) < radius + o.r) return true;
     }
     return false;
   }
   function terrainLineBlocked(x1, y1, x2, y2, radius, blockWater = true) {
-    for (const o of run.terrain) {
+    for (const { object: o, segments } of terrainCandidates(x1, y1, x2, y2, radius)) {
       if (o.kind !== 'water') {
         if (segmentDistance(o, x1, y1, x2, y2) < radius + o.r) return true;
         continue;
       }
       if (!blockWater) continue;
-      if (riverSegments(o).some(segment => segmentSegmentDistance(x1, y1, x2, y2, segment.a.x, segment.a.y, segment.b.x, segment.b.y) < radius + segment.r)) return true;
+      if (segments.some(segment => segmentSegmentDistance(x1, y1, x2, y2, segment.a.x, segment.a.y, segment.b.x, segment.b.y) < radius + segment.r)) return true;
     }
     return false;
   }
@@ -727,7 +842,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function terrainHitTime(x1, y1, x2, y2, radius) {
     let first = Infinity;
-    for (const o of run.terrain) if (o.kind !== 'water') {
+    for (const { object: o } of terrainCandidates(x1, y1, x2, y2, radius)) if (o.kind !== 'water') {
       first = Math.min(first, segmentCircleHitTime(x1, y1, x2, y2, o.x, o.y, radius + o.r));
     }
     return first;
@@ -786,14 +901,29 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return best;
   }
   function makeFlow(x, y, radius) {
-    const size = NAV_COLS * NAV_ROWS, free = new Uint8Array(size), distanceMap = new Int16Array(size);
-    distanceMap.fill(-1);
-    for (let i = 0; i < size; i++) {
-      const point = navPoint(i);
-      free[i] = terrainCollision(point.x, point.y, radius) ? 0 : 1;
+    // Trees, rocks and rivers stay fixed for a terrain array. Cache their grid
+    // and tested edges, rather than scanning every obstacle on each .35s tick.
+    if (!navigationCache || navigationCache.terrain !== run.terrain || navigationCache.w !== WORLD.w || navigationCache.h !== WORLD.h) {
+      navigationCache = { terrain: run.terrain, w: WORLD.w, h: WORLD.h, radii: new Map() };
     }
+    const size = NAV_COLS * NAV_ROWS;
+    let grid = navigationCache.radii.get(radius);
+    if (!grid) {
+      const free = new Uint8Array(size);
+      for (let i = 0; i < size; i++) {
+        const point = navPoint(i);
+        free[i] = terrainCollision(point.x, point.y, radius) ? 0 : 1;
+      }
+      grid = { free, checked: new Uint8Array(size), links: new Uint8Array(size), goal: -2, flow: null };
+      navigationCache.radii.set(radius, grid);
+    }
+    const { free, checked, links } = grid;
     const goal = closestNavIndex(x, y, free, radius, false);
-    if (goal < 0) return { free, distanceMap };
+    if (grid.goal === goal) return grid.flow;
+    const distanceMap = new Int16Array(size);
+    distanceMap.fill(-1);
+    grid.goal = goal; grid.flow = { free, distanceMap };
+    if (goal < 0) return grid.flow;
     const queue = new Int16Array(size);
     let head = 0, tail = 0;
     queue[tail++] = goal; distanceMap[goal] = 0;
@@ -801,14 +931,22 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const index = queue[head++], col = index % NAV_COLS, row = Math.floor(index / NAV_COLS);
       const neighbors = [col > 0 ? index - 1 : -1, col < NAV_COLS - 1 ? index + 1 : -1,
         row > 0 ? index - NAV_COLS : -1, row < NAV_ROWS - 1 ? index + NAV_COLS : -1];
-      for (const next of neighbors) if (next >= 0 && free[next] && distanceMap[next] < 0) {
-        const from = navPoint(index), to = navPoint(next);
-        if (terrainLineBlocked(from.x, from.y, to.x, to.y, radius)) continue;
+      for (let direction = 0; direction < neighbors.length; direction++) {
+        const next = neighbors[direction], bit = 1 << direction;
+        if (next < 0 || !free[next] || distanceMap[next] >= 0) continue;
+        if (!(checked[index] & bit)) {
+          const from = navPoint(index), to = navPoint(next), reverse = 1 << (direction ^ 1);
+          checked[index] |= bit; checked[next] |= reverse;
+          if (!terrainLineBlocked(from.x, from.y, to.x, to.y, radius)) {
+            links[index] |= bit; links[next] |= reverse;
+          }
+        }
+        if (!(links[index] & bit)) continue;
         distanceMap[next] = distanceMap[index] + 1;
         queue[tail++] = next;
       }
     }
-    return { free, distanceMap };
+    return grid.flow;
   }
   function flowDirection(flow, x, y, radius) {
     const index = closestNavIndex(x, y, flow.free, radius);
@@ -929,6 +1067,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ['title-screen', 'level-screen', 'shop-screen', 'chest-screen', 'pause-screen', 'wave-result-screen', 'result-screen'].forEach(id => $(id).classList.add('hidden'));
   }
   function showPhase(next) {
+    sceneDirty = true;
     phase = next;
     if (next !== 'combat') { moveTarget = null; moveFlow = null; }
     hideScreens();
@@ -939,7 +1078,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function createBaseAttack(id) { return { id, uid: ++uid, cool: 0 }; }
   function createRun() {
-    loadHeroPoses(selectedCharacter, selectedSkin);
+    loadHeroPoses(selectedCharacter, selectedSkin, { warm: true });
     resetStick(); keys.clear(); moveTarget = null; moveFlow = null;
     const character = CHARACTERS.find(c => c.id === selectedCharacter);
     const biome = BIOMES.find(b => b.id === selectedBiome);
@@ -957,7 +1096,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0, voiceLow: false,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       baseAttack: createBaseAttack(CHARACTER_ATTACKS[character.id]),
-      equipment: [], equipmentReserve: [], autoForge: true, forgeTargets: ['', ''], builds: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0, orbitReadyAt: 4, orbitIndex: 0, clockworkGuards: [] }, shopOffers: [], rerolls: 0,
+      equipment: [], equipmentReserve: [], equipmentPassives: null, autoForge: true, forgeTargets: ['', ''], builds: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0, orbitReadyAt: 4, orbitIndex: 0, clockworkGuards: [] }, shopOffers: [], rerolls: 0,
       equipmentCapacity: EQUIPMENT_CAPACITY,
       pendingChests: 0, chestReward: null, attackSeq: 0, chainProcAttackId: 0, chainReadyAt: 0,
 
@@ -1227,6 +1366,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     applyAttributeBlock(attributeDelta);
     if (preserveResources) { run.player.hp = Math.min(hp, run.player.maxHp); run.player.mana = Math.min(mana, run.player.maxMana); }
     run.equipment = next.active; run.equipmentReserve = next.reserve;
+    run.equipmentPassives = null;
     run.builds = resolveBuilds(run.equipment);
     equipmentCombat.syncLoadout();
     return true;
@@ -1332,6 +1472,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return `${choice.desc} · ${kaelVolleyText(rank < 3 ? `${rank} → ${rank + 1}` : '3 / 3')}`;
   }
   function renderLevelChoices() {
+    sceneDirty = true;
     $('levels-left').textContent = t('levelsLeft', { count: run.pendingLevels });
     $('level-options').innerHTML = run.levelChoices.map((u, i) => `<button class="choice-option" type="button" data-level="${i}"><span class="choice-icon">${artIcon(`upgrade-${u.artIndex}`, u.icon)}</span><strong>${u.name}</strong><span>${levelChoiceDescription(u)}</span></button>`).join('');
   }
@@ -1419,6 +1560,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('chest-take-button').focus({ preventScroll: true });
   }
   function renderChestReward() {
+    sceneDirty = true;
     const def = equipmentDef(run.chestReward.id);
     $('chests-left').textContent = run.pendingChests;
     const canTake = equipmentCanFit();
@@ -1561,6 +1703,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       + (incomplete.length ? `<details class="craft-progress"><summary>${t('upgradeProgress', { count: incomplete.length })}</summary><div class="quick-craft-list">${incomplete.map(upgradeCard).join('')}</div></details>` : '');
   }
   function renderShop() {
+    sceneDirty = true;
     $('shop-wave').textContent = t('waveComplete', { wave: run.wave });
     const hasNextWave = isEndlessRun() || run.wave < MAX_WAVES;
     const rates = shopRates();
@@ -1884,6 +2027,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function baseAttackDefinition(id = run.baseAttack.id) { return id === 'tb' && run.skills.tb.time > 0 ? TB_DEMON_ATTACK : BASE_ATTACKS[id]; }
   function basicRange() { return Math.max(48, baseAttackDefinition().range + run.stats.attackRange + (run.character.id === 'rover' ? 140 : 0)); }
   function equipmentPassive(id) {
+    if (run.equipmentPassives) return run.equipmentPassives.get(id);
     const passiveRank = passive => {
       if (!passive) return [0];
       if (passive.id === 'frostAttack') return [passive.slow || 0, passive.duration || 0];
@@ -1896,19 +2040,29 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       if (passive.id === 'activeAmplify') return [passive.multiplier || 1];
       return [0];
     };
-    return run.equipment.map(equipmentDef).filter(def => def.passive?.id === id)
-      .sort((a, b) => {
-        const gradeRank = b.grade - a.grade;
-        if (gradeRank) return gradeRank;
-        const levelRank = b.level - a.level;
-        if (levelRank) return levelRank;
-        const aRank = passiveRank(a.passive), bRank = passiveRank(b.passive);
-        for (let index = 0; index < Math.max(aRank.length, bRank.length); index += 1) {
-          const rank = (bRank[index] || 0) - (aRank[index] || 0);
-          if (rank) return rank;
-        }
-        return 0;
-      })[0]?.passive;
+    const compare = (a, b) => {
+      const gradeRank = b.grade - a.grade;
+      if (gradeRank) return gradeRank;
+      const levelRank = b.level - a.level;
+      if (levelRank) return levelRank;
+      const aRank = passiveRank(a.passive), bRank = passiveRank(b.passive);
+      for (let index = 0; index < Math.max(aRank.length, bRank.length); index += 1) {
+        const rank = (bRank[index] || 0) - (aRank[index] || 0);
+        if (rank) return rank;
+      }
+      return 0;
+    };
+    // A loadout stays fixed during combat. Resolve it once; equal candidates
+    // retain their first active position, matching the previous stable sort.
+    const best = new Map();
+    for (const item of run.equipment) {
+      const def = equipmentDef(item);
+      if (!def.passive) continue;
+      const previous = best.get(def.passive.id);
+      if (!previous || compare(def, previous) < 0) best.set(def.passive.id, def);
+    }
+    run.equipmentPassives = new Map([...best].map(([key, def]) => [key, def.passive]));
+    return run.equipmentPassives.get(id);
   }
   function activeAmplify() { return equipmentPassive('activeAmplify')?.multiplier || 1; }
   function skillGrowthMultiplier() { return 1 + (heroGrowthTier(run.level) - 1) * .25; }
@@ -2316,6 +2470,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     } else if (id === 'scavenger') {
       s.rageTime = 6; s.rageAmp = activeAmplify() * skillGrowthMultiplier();
       s.rageMorph = { direction: 'in', time: RAGE_MORPH_DURATION };
+      loadHeroPoses('scavenger-rage', selectedSkin, { warm: true });
       pulse(p.x, p.y, 65, '#a4ec6b', .6);
     }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
@@ -2324,7 +2479,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       travelTime: SF_REQUIEM.travelTime, fadeTime: SF_REQUIEM.fadeTime,
       souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
-    else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
+    else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); loadHeroPoses('tb-demon', selectedSkin, { warm: true }); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
     p.skillPose = .56; p.skillClock = 0;
     s.activeCooldown = cooldownWithHaste(cfg.cooldown, run.stats.abilityHaste);
@@ -2428,7 +2583,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     s.bloodTime = Math.max(0, s.bloodTime - dt);
     updateKaelSkills(dt);
     updateLunaSkills(dt);
-    if (run.character.id === 'tb') updateTerrorblade(s.tb, dt);
+    if (run.character.id === 'tb') {
+      const wasDemon = s.tb.time > 0;
+      updateTerrorblade(s.tb, dt);
+      if (wasDemon && s.tb.time === 0) loadHeroPoses('tb', selectedSkin, { warm: true });
+    }
     const blood = equipmentPassive('bloodRage');
     if (blood && p.hp / p.maxHp < blood.threshold && s.bloodCooldown <= 0) {
       s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, run.stats.abilityHaste);
@@ -2436,7 +2595,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     if (s.rageMorph) {
       s.rageMorph.time = Math.max(0, s.rageMorph.time - dt);
-      if (s.rageMorph.time === 0) s.rageMorph = null;
+      if (s.rageMorph.time === 0) {
+        const restored = s.rageMorph.direction === 'out';
+        s.rageMorph = null;
+        if (restored) loadHeroPoses('scavenger', selectedSkin, { warm: true });
+      }
     }
     if (s.rageTime > 0) {
       const activeTime = Math.min(dt, s.rageTime);
@@ -3111,10 +3274,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       let remove = false;
       const dx = b.x - fromX, dy = b.y - fromY;
       const wallTime = b.ignoresTerrain && !b.deadShotChain ? Infinity : terrainHitTime(fromX, fromY, b.x, b.y, b.r);
-      const hits = run.enemies.filter(e => !e.dead && !b.hit.has(e))
-        .map(e => ({ enemy: e, time: segmentCircleHitTime(fromX, fromY, b.x, b.y, e.x, e.y, b.r + e.r) }))
-        .filter(hit => hit.time <= 1 && hit.time <= wallTime)
-        .sort((a, b) => a.time - b.time);
+      const left = Math.min(fromX, b.x) - b.r, right = Math.max(fromX, b.x) + b.r;
+      const top = Math.min(fromY, b.y) - b.r, bottom = Math.max(fromY, b.y) + b.r;
+      const hits = [];
+      for (const e of run.enemies) {
+        if (e.dead || b.hit.has(e) || e.x + e.r < left || e.x - e.r > right || e.y + e.r < top || e.y - e.r > bottom) continue;
+        const time = segmentCircleHitTime(fromX, fromY, b.x, b.y, e.x, e.y, b.r + e.r);
+        if (time <= 1 && time <= wallTime) hits.push({ enemy: e, time });
+      }
+      hits.sort((a, b) => a.time - b.time);
       for (const { enemy: e } of hits) {
         if (e.dead) continue;
         b.hit.add(e);
@@ -3210,16 +3378,17 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function renderSkillStrip() {
     const skills = SKILLS[run.character.id];
-    $('skill-strip').dataset.hero = run.character.id;
     const ready = run.skills.activeCooldown <= 0 && run.player.mana >= ACTIVE_SKILL_CONFIG[run.character.id].manaCost && (run.character.id !== 'kael' || !!run.skills.lastPassiveSpell) && !(run.character.id === 'tb' && run.skills.tb.time > 0);
-    $('skill-strip').innerHTML = skills.map((skill, i) => `<div class="skill-slot ${i === 0 && ready ? 'is-ready' : i === 0 ? 'is-cooling' : ''}" title="${skillDescription(i)} · ${skillGrowthText()}"><strong><span class="skill-kind">${t(i ? 'passive' : 'active')}</span> ${skill.name}${i ? '' : ` · ${heroGrowthTier(run.level)}`}</strong><span>${skillStatus(i)}</span></div>`).join('');
-    $('skill-button').disabled = !ready;
-    $('skill-button').classList.toggle('is-mana-blocked', run.skills.activeCooldown <= 0 && !ready);
+    const button = $('skill-button');
+    button.disabled = !ready;
+    button.classList.toggle('is-mana-blocked', run.skills.activeCooldown <= 0 && !ready);
     const cost = ACTIVE_SKILL_CONFIG[run.character.id].manaCost;
     const shortStatus = run.character.id === 'tb' && run.skills.tb.time > 0 ? skillStatus(0) : run.skills.activeCooldown > 0 ? `${run.skills.activeCooldown.toFixed(1)}s · ${cost} MP` : run.character.id === 'kael' && !run.skills.lastPassiveSpell ? skillStatus(0) : `${ready ? 'Q' : t('needMana')} · ${cost} MP`;
     const buttonName = run.character.id === 'tb' && selectedLocale === 'en' ? 'Demon Form' : skills[0].name;
-    $('skill-button').innerHTML = `<span>${buttonName}</span><small>${shortStatus}</small>`;
-    $('skill-button').setAttribute('aria-label', `${buttonName} · ${skillStatus(0)} · ${t('mana')} ${cost}`);
+    const label = `<span>${buttonName}</span><small>${shortStatus}</small>`;
+    if (button.innerHTML !== label) button.innerHTML = label;
+    const accessibleName = `${buttonName} · ${skillStatus(0)} · ${t('mana')} ${cost}`;
+    if (button.getAttribute('aria-label') !== accessibleName) button.setAttribute('aria-label', accessibleName);
   }
   function renderPauseDetails() {
     const s = run.stats, p = run.player;
@@ -3251,6 +3420,16 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('pause-skills').innerHTML = `<p>${skillGrowthText()}</p>` + SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${t(i ? 'passive' : 'active')} · ${skill.name}</strong><p>${skillDescription(i)}</p><small>${t('current', { status: skillStatus(i) })}</small></div>`).join('')
       + (run.character.id === 'kael' ? `<div class="pause-skill"><strong>${selectedLocale === 'en' ? 'Spell pool' : selectedLocale === 'zh-TW' ? '法術池' : '法术池'}</strong><p>${kaelVolleyText(run.skills.kaelSpellRank)}</p>${KAEL_SPELLS.map(spell => `<p${run.skills.lastPassiveSpell === spell.id ? ' class="is-current"' : ''}><strong>${kaelSpellName(spell.id)}</strong> · ${kaelSpellDesc(spell.id)}</p>`).join('')}</div>` : '');
   }
+  const hudWidths = new Map();
+  function setHudText(id, value) {
+    const element = $(id), text = String(value);
+    if (element.textContent !== text) element.textContent = text;
+  }
+  function setHudWidth(id, value) {
+    if (hudWidths.get(id) === value) return;
+    $(id).style.width = value;
+    hudWidths.set(id, value);
+  }
   function updateHUD() {
     if (!run) return;
     const growthKey = killGrowthUiKey();
@@ -3258,21 +3437,22 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       run.growthUiKey = growthKey;
       renderEquipmentStrip();
     }
-    $('wave-label').textContent = isEndlessRun() ? `${modeName('endless')} · ${t('bestWave', { wave: run.wave })}` : t('wave', { wave: run.wave, max: MAX_WAVES });
-    $('time-label').textContent = run.timeLeft <= 0 && run.bossFight ? t('boss') : String(Math.max(0, Math.ceil(run.timeLeft)));
-    $('biome-label').textContent = run.biome.name;
-    $('hp-label').textContent = t('hp', { hp: Math.ceil(run.player.hp), max: run.player.maxHp });
-    $('hp-fill').style.width = `${Math.max(0, run.player.hp / run.player.maxHp * 100)}%`;
-    $('mana-label').textContent = t('manaValue', { mana: Math.floor(run.player.mana), max: run.player.maxMana });
-    $('mana-fill').style.width = `${Math.max(0, run.player.mana / run.player.maxMana * 100)}%`;
-    $('xp-label').textContent = `${t('level', { level: run.level })}${run.pendingLevels ? t('pending', { count: run.pendingLevels }) : ''}`;
-    $('xp-fill').style.width = `${run.xp / run.xpNeed * 100}%`;
-    $('money-label').textContent = run.money;
-    $('hud-stats').textContent = isEndlessRun()
+    setHudText('wave-label', isEndlessRun() ? `${modeName('endless')} · ${t('bestWave', { wave: run.wave })}` : t('wave', { wave: run.wave, max: MAX_WAVES }));
+    setHudText('time-label', run.timeLeft <= 0 && run.bossFight ? t('boss') : String(Math.max(0, Math.ceil(run.timeLeft))));
+    setHudText('biome-label', run.biome.name);
+    setHudText('hp-label', t('hp', { hp: Math.ceil(run.player.hp), max: run.player.maxHp }));
+    setHudWidth('hp-fill', `${Math.max(0, run.player.hp / run.player.maxHp * 100)}%`);
+    setHudText('mana-label', t('manaValue', { mana: Math.floor(run.player.mana), max: run.player.maxMana }));
+    setHudWidth('mana-fill', `${Math.max(0, run.player.mana / run.player.maxMana * 100)}%`);
+    setHudText('xp-label', `${t('level', { level: run.level })}${run.pendingLevels ? t('pending', { count: run.pendingLevels }) : ''}`);
+    setHudWidth('xp-fill', `${run.xp / run.xpNeed * 100}%`);
+    setHudText('money-label', run.money);
+    setHudText('hud-stats', isEndlessRun()
       ? `${t('defeated', { kills: run.kills })} · ${t('factor')} F${endlessFactor().toFixed(2)} · ${t('dash')} ${run.player.dashCooldown > 0 ? t('dashCooldown', { time: run.player.dashCooldown.toFixed(1) }) : t('dashReady')}`
-      : `${t('defeated', { kills: run.kills })} · ${t('dash')} ${run.player.dashCooldown > 0 ? t('dashCooldown', { time: run.player.dashCooldown.toFixed(1) }) : t('dashReady')}`;
+      : `${t('defeated', { kills: run.kills })} · ${t('dash')} ${run.player.dashCooldown > 0 ? t('dashCooldown', { time: run.player.dashCooldown.toFixed(1) }) : t('dashReady')}`);
     $('dash-button').disabled = run.player.dashCooldown > 0;
-    $('dash-button').innerHTML = `${t('dash')}<small class="key-hint">${selectedLocale === 'en' ? 'Space' : '空格'}</small>`;
+    const dashLabel = `${t('dash')}<small class="key-hint">${selectedLocale === 'en' ? 'Space' : '空格'}</small>`;
+    if ($('dash-button').innerHTML !== dashLabel) $('dash-button').innerHTML = dashLabel;
     renderSkillStrip();
   }
   function updateCombat(dt) {
@@ -5266,10 +5446,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.globalAlpha = 1;
   }
   function resize() {
+    sceneDirty = true;
     titleDirty = true;
     viewW = Math.max(1, canvas.clientWidth);
     viewH = Math.max(1, canvas.clientHeight);
-    dpr = Math.min(2, window.devicePixelRatio || 1);
+    // Keep UI text at native resolution; limit only the mobile battle canvas.
+    const mobileCanvas = Math.min(viewW, viewH) <= 600 || window.matchMedia('(pointer: coarse)').matches;
+    dpr = Math.min(mobileCanvas ? 1.5 : 2, window.devicePixelRatio || 1);
     canvasScale = dpr;
     canvas.width = Math.round(viewW * canvasScale); canvas.height = Math.round(viewH * canvasScale);
     ctx.setTransform(canvasScale, 0, 0, canvasScale, 0, 0);
@@ -5281,6 +5464,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (studio) { drawStudioFrame(dt); requestAnimationFrame(loop); return; }
     if (phase === 'pause') { requestAnimationFrame(loop); return; }
     if (phase === 'title' && usesPixelPresentation() && !titleDirty) { requestAnimationFrame(loop); return; }
+    if (run && phase !== 'combat' && phase !== 'wave-result' && phase !== 'title' && !sceneDirty) { requestAnimationFrame(loop); return; }
     ambientTime += dt;
     if (phase === 'combat' && run) updateCombat(dt);
     if (phase === 'wave-result' && run) updateWaveIntermission(dt);
@@ -5288,6 +5472,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.imageSmoothingEnabled = !usesPixelPresentation();
     ctx.clearRect(0, 0, viewW, viewH);
     if (run && phase !== 'title') drawCombat(); else { drawTitleScene(); titleDirty = false; }
+    sceneDirty = false;
     requestAnimationFrame(loop);
   }
 
@@ -5306,6 +5491,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const form = id === 'tb' && run.skills.tb.time > 0 ? 'tb-demon'
       : id === 'scavenger' && run.skills.rageTime > 0 ? 'scavenger-rage' : id;
     if (!await prepareHero($('resume-button'), form) || phase !== 'pause') return;
+    loadHeroPoses(form, selectedSkin, { warm: true });
     audioSystem.setPaused(false);
     showPhase(previousPhase);
     $(previousPhase === 'wave-result' ? 'wave-result-continue' : 'pause-button').focus({ preventScroll: true });
@@ -5467,7 +5653,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
           { id: 'evade', name: '技能 · 横移躲避', description: '预警出现后由演示玩家横移，观察固定范围与方向，使用同一真实判定。' }]
       })) },
       { id: 'equipment', label: '武器 / 装备', items: Object.entries(EQUIPMENT).map(([id, def]) => ({ id, name: def.name, description: def.desc,
-        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261030-equipment18', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
+        icon: equipmentIconPath(id), source: 'js/equipment.js?v=20261031-equipment19', levels: EQUIPMENT_UPGRADES[id] ? 3 : 1,
         duration: id === 'necronomicon' ? 22 : ['dagon', 'cyclone', 'heart'].includes(id) ? 12 : 8,
         variants: def.growth ? [0, ...def.growth.thresholds].map((points, index) => ({
           id: String(points),
@@ -5501,6 +5687,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (selection.category === 'equipment') {
       const item = createEquipment(selection.id, selection.level);
       run.equipment.push(item); applyEquipmentStats(item);
+      run.equipmentPassives = null;
       equipmentCombat.syncLoadout();
       const growth = EQUIPMENT[selection.id]?.growth;
       if (growth) {
@@ -5536,7 +5723,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     studioSelection = selection; selectedSkin = selection.skin;
     $('game').dataset.skin = selectedSkin;
     if (!run) return;
-    loadHeroPoses(run.character.id, selectedSkin);
+    loadHeroPoses(run.character.id, selectedSkin, { warm: true });
     const p = run.player, reverse = Math.cos(p.facing) * Math.cos(selection.direction) < 0;
     if (reverse) for (const enemy of run.enemies) enemy.x = p.x - (enemy.x - p.x);
     p.facing = p.attackFacing = selection.direction;
@@ -5621,7 +5808,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     else { ctx.fillStyle = usesPixelPresentation() ? '#182d33' : '#27383d'; ctx.fillRect(0, 0, width, height); }
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0); studio.draw(ctx, width, height);
   }
-  function initStudio() {
+  function initStudio(createStudioRuntime) {
     document.body.classList.add('studio-runtime');
     canvas.setAttribute('aria-label', '当前对象的受控演示，由外部工作台按钮操作');
     studio = createStudioRuntime({ catalog: studioCatalog(), reset: resetStudio, tick: tickStudio,
@@ -5634,7 +5821,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
 
   resize(); applyStaticLocale();
-  if (studioMode) initStudio();
-  else { bindEvents(); renderTitle(); loadHeroPoses(selectedCharacter); }
-  requestAnimationFrame(loop);
+  if (studioMode) {
+    import('./studio-runtime.js?v=20261104-loading1').then(({ createStudioRuntime }) => {
+      initStudio(createStudioRuntime);
+      requestAnimationFrame(loop);
+    }).catch(error => {
+      parent.postMessage({ source: 'dotarogue-runtime', type: 'error', message: error.message }, location.origin);
+    });
+  } else {
+    bindEvents(); renderTitle(); loadHeroPoses(selectedCharacter);
+    requestAnimationFrame(loop);
+  }
 })();

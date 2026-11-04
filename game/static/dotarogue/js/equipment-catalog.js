@@ -1,5 +1,5 @@
-import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261030-equipment18';
-import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261030-equipment18';
+import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261031-equipment19';
+import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261104-loading1';
 import { attributeSummary, attributeDerivedSummary } from './hero-attributes.js?v=20261030-attribute-contract1';
 
 // Legacy key retained so the DotaRogue rename keeps existing browser records.

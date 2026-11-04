@@ -1,5 +1,5 @@
-import { EQUIPMENT, equipmentLevel, equipmentUpgradeIndices } from './equipment.js?v=20261030-equipment18';
-import { planEquipmentCraft } from './equipment-crafting.js?v=20261030-equipment18';
+import { EQUIPMENT, equipmentLevel, equipmentUpgradeIndices } from './equipment.js?v=20261031-equipment19';
+import { planEquipmentCraft } from './equipment-crafting.js?v=20261104-loading1';
 
 function validItem(item) {
   return !!item && item.uid != null && Object.hasOwn(EQUIPMENT, item.id)

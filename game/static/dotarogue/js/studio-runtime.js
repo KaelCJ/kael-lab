@@ -21,6 +21,12 @@ export function createStudioRuntime(api) {
       detail: description?.detail || '', selection });
   }
 
+  function initialize() {
+    if (initialized) { state(); return; }
+    initialized = true;
+    send('catalog', { categories: api.catalog });
+  }
+
   function fail(error) {
     failed = true;
     setPlaying(false);
@@ -71,10 +77,7 @@ export function createStudioRuntime(api) {
     if (!data || typeof data !== 'object' || Array.isArray(data) || data.source !== 'dotarogue-studio') return;
     try {
       if (data.type === 'init') {
-        if (!initialized) {
-          initialized = true;
-          send('catalog', { categories: api.catalog });
-        } else state();
+        initialize();
         return;
       }
       if (!initialized) return;
@@ -121,6 +124,10 @@ export function createStudioRuntime(api) {
       try { state(); } catch (error) { fail(error); }
     }
   });
+
+  let sameOriginParent = false;
+  try { sameOriginParent = parent !== window && parent.location.origin === location.origin; } catch (_) { /* Cross-origin embedding cannot initialize this private preview. */ }
+  if (sameOriginParent) initialize();
 
   return {
     update(dt) {

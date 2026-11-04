@@ -8,6 +8,12 @@ const MANTA_PROJECTILE_SIZE = 25;
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const rank = value => clamp(Math.floor(Number(value) || 0), 0, 3);
 const equipmentImages = new Map();
+const imageReadyListeners = new Set();
+
+export function onEquipmentImagesReady(listener) {
+  imageReadyListeners.add(listener);
+  return () => imageReadyListeners.delete(listener);
+}
 
 function equipmentCutout(ctx, id, level, size = EQUIPMENT_CUTOUT_SIZE) {
   // The Inferno icon has no hammer to extract; retain that item's drawn model.
@@ -15,6 +21,9 @@ function equipmentCutout(ctx, id, level, size = EQUIPMENT_CUTOUT_SIZE) {
   let image = equipmentImages.get(id);
   if (!image) {
     image = new Image(); image.decoding = 'async';
+    image.addEventListener('load', () => image.decode().then(() => {
+      for (const listener of imageReadyListeners) listener();
+    }, () => {}), { once: true });
     image.src = new URL(`../../assets/art/dota1/equipment-cutouts/${id}.png?v=20261029-cutout2`, import.meta.url).href;
     equipmentImages.set(id, image);
   }

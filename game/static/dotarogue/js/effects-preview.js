@@ -1,6 +1,6 @@
 import { createMeteorRenderer } from './effects/meteor.js';
 import { createFireRenderer } from './effects/fire.js';
-import { createWindRenderer } from './effects/wind.js';
+import { createWindRenderer } from './effects/wind.js?v=20261103-mobile-performance1';
 
 const canvas = document.querySelector('#effect-canvas');
 const ctx = canvas.getContext('2d');

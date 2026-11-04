@@ -1,0 +1,221 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Nest 工作项索引",
+  "description": "定义 current.json 与 archive.json 的工作项索引格式。生命周期由记录所在文件表达，不保存 status 或 location。编号唯一性、时间先后、入口与编号对应关系及文件存在性由索引工具和消费者校验。",
+  "anyOf": [
+    {
+      "$ref": "#/$defs/currentIndex"
+    },
+    {
+      "$ref": "#/$defs/archiveIndex"
+    }
+  ],
+  "$defs": {
+    "timestamp": {
+      "type": "string",
+      "title": "秒级时间",
+      "description": "精确到秒且带时区的 RFC 3339 时间，不使用毫秒或无时区本地时间。校验器需启用 date-time 格式断言以检查日期和时间是否合法。",
+      "format": "date-time",
+      "pattern": "^\\d{4}-\\d{2}-\\d{2}T\\d{2}:\\d{2}:\\d{2}(?:Z|[+-]\\d{2}:\\d{2})$"
+    },
+    "priority": {
+      "type": "string",
+      "title": "优先级",
+      "description": "用户可见的工作项优先级。",
+      "enum": [
+        "P0",
+        "P1",
+        "P2",
+        "P3",
+        "未设置"
+      ]
+    },
+    "currentItem": {
+      "type": "object",
+      "title": "当前工作项",
+      "description": "由 current.json 承载的工作项记录。",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "type",
+        "product",
+        "priority",
+        "createdAt",
+        "updatedAt",
+        "entry"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "工作项编号",
+          "description": "工作项的字符串标识，原样保存和匹配，不解释数字或编码格式。",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "title": "工作项名称",
+          "description": "用于查找和展示的简短名称。",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "type": {
+          "type": "integer",
+          "title": "工作项类型",
+          "description": "工作项类型编码；默认值为 0，当前未定义枚举含义。",
+          "default": 0
+        },
+        "product": {
+          "type": "integer",
+          "title": "所属产品",
+          "description": "所属产品编码；默认值为 0，当前未定义枚举含义。",
+          "default": 0
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp",
+          "title": "创建时间",
+          "description": "工作项首次建立的秒级时间。"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp",
+          "title": "更新时间",
+          "description": "工作项索引事实最后变化的秒级时间。"
+        },
+        "entry": {
+          "type": "string",
+          "title": "工作项入口",
+          "description": "相对 .workspace-assistant/10-工作项/ 的 YYYY-MM-DD_<ID>_<短名>/README.md 路径，使用正斜杠。",
+          "minLength": 1,
+          "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}_[^/\\\\\\r\\n]+_[^/\\\\\\r\\n]+/README\\.md(?![\\s\\S])"
+        }
+      }
+    },
+    "archiveItem": {
+      "type": "object",
+      "title": "归档工作项",
+      "description": "由 archive.json 承载的工作项记录；历史无物理入口的记录允许 entry 为 null。",
+      "additionalProperties": false,
+      "required": [
+        "id",
+        "title",
+        "type",
+        "product",
+        "priority",
+        "createdAt",
+        "updatedAt",
+        "entry",
+        "archivedAt"
+      ],
+      "properties": {
+        "id": {
+          "type": "string",
+          "title": "工作项编号",
+          "description": "工作项的字符串标识，原样保存和匹配，不解释数字或编码格式。",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "title": {
+          "type": "string",
+          "title": "工作项名称",
+          "description": "用于查找和展示的简短名称。",
+          "minLength": 1,
+          "pattern": "\\S"
+        },
+        "type": {
+          "type": "integer",
+          "title": "工作项类型",
+          "description": "工作项类型编码；默认值为 0，当前未定义枚举含义。",
+          "default": 0
+        },
+        "product": {
+          "type": "integer",
+          "title": "所属产品",
+          "description": "所属产品编码；默认值为 0，当前未定义枚举含义。",
+          "default": 0
+        },
+        "priority": {
+          "$ref": "#/$defs/priority"
+        },
+        "createdAt": {
+          "$ref": "#/$defs/timestamp",
+          "title": "创建时间",
+          "description": "工作项首次建立的秒级时间。"
+        },
+        "updatedAt": {
+          "$ref": "#/$defs/timestamp",
+          "title": "更新时间",
+          "description": "工作项索引事实最后变化的秒级时间。"
+        },
+        "entry": {
+          "title": "工作项入口",
+          "description": "相对 .workspace-assistant/10-工作项/ 的 归档/YYYY-MM-DD_<ID>_<短名>/README.md 路径，使用正斜杠；没有物理目录的历史记录使用 null。",
+          "type": [
+            "string",
+            "null"
+          ],
+          "minLength": 1,
+          "pattern": "^归档/[0-9]{4}-[0-9]{2}-[0-9]{2}_[^/\\\\\\r\\n]+_[^/\\\\\\r\\n]+/README\\.md(?![\\s\\S])"
+        },
+        "archivedAt": {
+          "$ref": "#/$defs/timestamp",
+          "title": "归档时间",
+          "description": "工作项进入 archive.json 的秒级时间。"
+        }
+      }
+    },
+    "currentIndex": {
+      "type": "object",
+      "title": "当前工作项索引",
+      "description": "current.json 的根对象，承载尚未归档的工作项索引记录。",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "items"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 2,
+          "title": "Schema 版本",
+          "description": "当前索引契约版本。"
+        },
+        "items": {
+          "type": "array",
+          "title": "当前工作项集合",
+          "description": "尚未归档的工作项，数组顺序可作为同优先级下的稳定展示顺序。",
+          "items": {
+            "$ref": "#/$defs/currentItem"
+          }
+        }
+      }
+    },
+    "archiveIndex": {
+      "type": "object",
+      "title": "归档工作项索引",
+      "description": "archive.json 的根对象，承载已经归档的工作项索引记录。",
+      "additionalProperties": false,
+      "required": [
+        "schemaVersion",
+        "items"
+      ],
+      "properties": {
+        "schemaVersion": {
+          "const": 2,
+          "title": "Schema 版本",
+          "description": "当前索引契约版本。"
+        },
+        "items": {
+          "type": "array",
+          "title": "归档工作项集合",
+          "description": "已经整体归档的工作项。",
+          "items": {
+            "$ref": "#/$defs/archiveItem"
+          }
+        }
+      }
+    }
+  }
+}

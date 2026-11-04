@@ -210,6 +210,7 @@ export function buildDotaTerrain() {
 
 let groundCache = null;
 let minimapCache = null;
+const minimapSceneCaches = new Map();
 
 function makeCanvas(width, height) {
   if (typeof OffscreenCanvas !== 'undefined') return new OffscreenCanvas(width, height);
@@ -641,16 +642,8 @@ function sceneryMarkerColor(o) {
   return '#e8d58c';
 }
 
-export function drawDotaMinimap(ctx, { x = 0, y = 0, w = 160, h = 160, player, view } = {}) {
-  if (!ctx || !w || !h) return;
-  const cache = ensureMinimapCache();
-  ctx.save();
-  ctx.clearRect(x, y, w, h);
-  if (cache) ctx.drawImage(cache, x, y, w, h);
-  else drawMinimapGround(ctx, x, y, w, h);
-
+function drawMinimapScenery(ctx, w, h) {
   const sx = w / W, sy = h / H;
-  ctx.save(); ctx.translate(x, y);
   for (const o of DOTA_SCENERY) {
     const px = o.x * sx, py = o.y * sy;
     ctx.fillStyle = sceneryMarkerColor(o);
@@ -660,6 +653,36 @@ export function drawDotaMinimap(ctx, { x = 0, y = 0, w = 160, h = 160, player, v
     else if (o.kind === 'camp') { ctx.beginPath(); ctx.arc(px, py, 3, 0, TAU); ctx.fill(); }
     else { ctx.fillRect(px - 2, py - 2, 4, 4); }
   }
+}
+
+function ensureMinimapSceneCache(w, h) {
+  const key = `${w}:${h}`;
+  if (!minimapSceneCaches.has(key)) {
+    const canvas = makeCanvas(w, h);
+    if (!canvas) return null;
+    const ctx = canvas.getContext('2d'), ground = ensureMinimapCache();
+    if (ground) ctx.drawImage(ground, 0, 0, w, h);
+    else drawMinimapGround(ctx, 0, 0, w, h);
+    // Keep marker sizes in target pixels, as in the uncached minimap.
+    drawMinimapScenery(ctx, w, h);
+    minimapSceneCaches.set(key, canvas);
+  }
+  return minimapSceneCaches.get(key);
+}
+
+export function drawDotaMinimap(ctx, { x = 0, y = 0, w = 160, h = 160, player, view } = {}) {
+  if (!ctx || !w || !h) return;
+  const cache = ensureMinimapSceneCache(w, h);
+  ctx.save();
+  ctx.clearRect(x, y, w, h);
+  if (cache) ctx.drawImage(cache, x, y, w, h);
+  else {
+    drawMinimapGround(ctx, x, y, w, h);
+    ctx.save(); ctx.translate(x, y); drawMinimapScenery(ctx, w, h); ctx.restore();
+  }
+
+  const sx = w / W, sy = h / H;
+  ctx.save(); ctx.translate(x, y);
   if (view && Number.isFinite(view.x) && Number.isFinite(view.y)) {
     ctx.globalAlpha = .92;
     ctx.strokeStyle = '#fff7dc';

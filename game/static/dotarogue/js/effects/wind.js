@@ -95,7 +95,7 @@ export async function createWindRenderer() {
       }
     }
 
-    function ribbon(front, phase, breadth, turns) {
+    function ribbonSamples(phase, breadth, turns) {
       const steps = 112, samples = [];
       for (let i = 0; i <= steps; i++) {
         const u = i / steps, theta = (u * TAU * turns - clock * 4.5 + phase) * turn;
@@ -103,6 +103,10 @@ export async function createWindRenderer() {
         samples.push({ ...p, front: Math.sin(theta) >= 0,
           w: (1.6 + u * breadth) * Math.min(1, u * 10, (1 - u) * 15) });
       }
+      return samples;
+    }
+    function ribbon(front, samples, breadth) {
+      const steps = samples.length - 1;
       // Filled, tapered strips follow a rising helix, split at the depth plane.
       for (let start = 0; start < steps;) {
         let end = start + 1;
@@ -132,8 +136,11 @@ export async function createWindRenderer() {
       }
     }
 
+    // Front and back consume the same geometry. Sample each helix once.
+    const wideRibbon = ribbonSamples(0, 12, 3.4);
+    const thinRibbon = ribbonSamples(2.3, 4, 3.4);
     groundDust(false); particles(false);
-    ribbon(false, 0, 12, 3.4); ribbon(false, 2.3, 4, 3.4);
+    ribbon(false, wideRibbon, 12); ribbon(false, thinRibbon, 4);
 
     // The translucent funnel is a volume under the ribbons, not a stack of rings.
     const body = new Path2D();
@@ -162,7 +169,7 @@ export async function createWindRenderer() {
     ctx.ellipse(axis(1), -246, radius(1) * .87, radius(1) * .17, -.025, 0, TAU); ctx.fill();
     fade(.76); ctx.strokeStyle = '#cadcca'; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.ellipse(axis(1), -246, radius(1), radius(1) * .23, 0, .05, Math.PI - .08); ctx.stroke();
-    ribbon(true, 0, 12, 3.4); ribbon(true, 2.3, 4, 3.4);
+    ribbon(true, wideRibbon, 12); ribbon(true, thinRibbon, 4);
     particles(true); groundDust(true);
     ctx.restore();
   }
