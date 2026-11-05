@@ -5,6 +5,12 @@ const VOICE_CLIPS = {
     "select": "rifleman-aye.m4a",
     "active": "rifleman-fire.m4a"
   },
+  "bulwark": {
+    "select": ["bristleback-what1.mp3", "bristleback-what2.mp3"],
+    "start": ["bristleback-yes1.mp3", "bristleback-yes2.mp3"],
+    "active": ["bristleback-attack1.mp3", "bristleback-attack2.mp3"],
+    "win": ["bristleback-yes1.mp3", "bristleback-yes2.mp3"]
+  },
   "conductor": {
     "select": "mountain-king-aye.m4a",
     "active": "mountain-king-to-arms.m4a"
@@ -62,6 +68,7 @@ export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN'
   let voiceTicket = 0;
   const lastSfxAt = Object.create(null);
   const voiceAt = Object.create(null);
+  const voiceNext = Object.create(null);
 
   function ensureAudio() {
     const AudioCtor = window.AudioContext || window.webkitAudioContext;
@@ -216,7 +223,9 @@ export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN'
   }
 
   function playVoice(event, id = heroId(), fallback = false) {
+    // Keep heroes without verified recordings silent instead of using a system voice.
     if (!enabled() || paused) return false;
+    if (!VOICE_CLIPS[id]) { stopVoice(); return false; }
     const hero = VOICE_LINES[id];
     const voiceEvent = event === 'low' ? 'lowhp' : event;
     const line = hero?.[locale()]?.[voiceEvent] || hero?.['zh-CN']?.[voiceEvent];
@@ -227,18 +236,23 @@ export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN'
     try {
       if (!fallback && VOICE_CLIPS[id]) {
         const clips = VOICE_CLIPS[id];
-        const file = event === 'select' ? clips.select : ['start', 'active', 'elite', 'win'].includes(event) ? clips.active : null;
-        if (file) {
+        const clip = clips[event] || (['start', 'elite', 'win'].includes(event) ? clips.active : null);
+        if (clip) {
           const context = ensureAudio();
           if (context) {
+            const key = `${id}:${event}`, pool = Array.isArray(clip) ? clip : [clip];
+            const next = voiceNext[key] || 0;
             stopVoice();
             lastVoiceAt = now; voiceAt[`${id}:${event}`] = now;
-            for (const clip of Object.values(clips)) loadClip(clip, context);
-            playClip(file, context, .72, true, () => playVoice(event, id, true));
+            voiceNext[key] = (next + 1) % pool.length;
+            for (const file of Array.isArray(clip) ? pool : Object.values(clips)) loadClip(file, context);
+            playClip(pool[next], context, .72, true, () => playVoice(event, id, true));
             return true;
           }
         }
       }
+      // Original Bristleback grunts stay silent on missing events or failed clips.
+      if (id === 'bulwark') { stopVoice(); return false; }
       if (typeof window.speechSynthesis === 'undefined' || typeof window.SpeechSynthesisUtterance === 'undefined') return false;
       const utterance = new SpeechSynthesisUtterance(line);
       const language = VOICE_LANG[locale()] || 'zh-CN';
@@ -288,6 +302,7 @@ export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN'
     paused = false;
     lastVoiceAt = -Infinity;
     for (const key of Object.keys(voiceAt)) delete voiceAt[key];
+    for (const key of Object.keys(voiceNext)) delete voiceNext[key];
   }
 
   return { playSfx, playVoice, stopVoice, stopAll, setPaused, reset };

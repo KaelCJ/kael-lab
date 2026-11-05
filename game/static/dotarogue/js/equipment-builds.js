@@ -1,4 +1,4 @@
-import { EQUIPMENT } from './equipment.js?v=20261031-equipment19';
+import { EQUIPMENT } from './equipment.js?v=20261105-shop-mobile1';
 
 // A synergy is a combination reward, not a claim about the original DotA item.
 export const EQUIPMENT_BUILDS = [

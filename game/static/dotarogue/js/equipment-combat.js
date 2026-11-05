@@ -1,7 +1,7 @@
-import { resolveBuilds } from './equipment-builds.js?v=20261104-loading1';
+import { resolveBuilds } from './equipment-builds.js?v=20261105-shop-mobile1';
 import { attackPower, skillPower } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
 
-export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, pulse, isElite, heal, label, basicRange, cooldown = value => value }) {
+export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, pulse, isElite, heal, label, basicRange, cooldown = value => value, canTarget = enemy => !enemy.dead }) {
   function state(run) {
     return run.skills.weaponSystem ||= {
       attackIds: new Set(), godsealAttackIds: new Set(), windfuryHits: 0, windfuryQueue: [], elementalHits: 0, elementalNext: 0,
@@ -69,7 +69,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
   }
 
   function nearby(run, center, radius, limit, excluded = null) {
-    return run.enemies.filter(enemy => !enemy.dead && enemy !== excluded
+    return run.enemies.filter(enemy => canTarget(enemy) && enemy !== excluded
       && Math.hypot(enemy.x - center.x, enemy.y - center.y) <= radius + enemy.r
       && !blocked(center.x, center.y, enemy.x, enemy.y, 4, false))
       .sort((a, b) => Math.hypot(a.x - center.x, a.y - center.y) - Math.hypot(b.x - center.x, b.y - center.y))
@@ -87,7 +87,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     const p = run.player, angle = Math.atan2(target.y - p.y, target.x - p.x);
     const dx = Math.cos(angle), dy = Math.sin(angle);
     const targets = run.enemies.filter(enemy => {
-      if (enemy.dead) return false;
+      if (!canTarget(enemy)) return false;
       const x = enemy.x - p.x, y = enemy.y - p.y, along = x * dx + y * dy;
       return along >= -enemy.r && along <= config.range + enemy.r
         && Math.hypot(x, y) <= config.range + enemy.r
@@ -109,7 +109,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     const damage = (elemental === 2 ? 20 : 12) + attackPower(run) * .3;
     if (element === 0) {
       const struck = new Set();
-      const nextTarget = center => run.enemies.filter(enemy => !enemy.dead && enemy.hp > 0 && !struck.has(enemy)
+      const nextTarget = center => run.enemies.filter(enemy => canTarget(enemy) && enemy.hp > 0 && !struck.has(enemy)
         && Math.hypot(enemy.x - center.x, enemy.y - center.y) <= 190
         && !blocked(center.x, center.y, enemy.x, enemy.y, 4, false))
         .sort((a, b) => Math.hypot(a.x - center.x, a.y - center.y) - Math.hypot(b.x - center.x, b.y - center.y))[0];
@@ -273,7 +273,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     const moon = passive('madmoon');
     if (moon && hit.type === 'ranged' && ++s.madmoonHits >= moon.hits) {
       s.madmoonHits = 0;
-      const targets = run.enemies.filter(enemy => !enemy.dead && enemy !== target
+      const targets = run.enemies.filter(enemy => canTarget(enemy) && enemy !== target
         && Math.hypot(enemy.x - target.x, enemy.y - target.y) <= moon.range + enemy.r
         && !blocked(run.player.x, run.player.y, enemy.x, enemy.y, 4, false))
         .sort((a, b) => Math.hypot(a.x - target.x, a.y - target.y) - Math.hypot(b.x - target.x, b.y - target.y))
@@ -289,7 +289,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     const crescent = passive('crescentVolley');
     if (crescent && hit.type === 'ranged' && ++s.crescentHits >= crescent.hits) {
       s.crescentHits = 0;
-      const targets = run.enemies.filter(enemy => !enemy.dead && enemy !== target
+      const targets = run.enemies.filter(enemy => canTarget(enemy) && enemy !== target
         && Math.hypot(enemy.x - target.x, enemy.y - target.y) <= crescent.range + enemy.r
         && !blocked(run.player.x, run.player.y, enemy.x, enemy.y, 4, false))
         .sort((a, b) => Math.hypot(a.x - target.x, a.y - target.y) - Math.hypot(b.x - target.x, b.y - target.y))
@@ -420,7 +420,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
     }
     const chase = activeSnapshotValue || activeSnapshot(), growth = activeGrowth(run, 'calamityRing');
     if (!chase || !growth || run.player.hp <= 0 || time < growth.readyAt) return;
-    const legal = run.enemies.filter(enemy => !enemy.dead
+    const legal = run.enemies.filter(enemy => canTarget(enemy)
       && Math.hypot(enemy.x - run.player.x, enemy.y - run.player.y) <= chase.range + enemy.r
       && !blocked(run.player.x, run.player.y, enemy.x, enemy.y, 4, false));
     const rank = enemy => enemy.id === 'boss' ? 2 : isElite(enemy) ? 1 : 0;
@@ -519,7 +519,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
       if (attack.number > windfury) continue;
       if (attack.at > run.totalTime + 1e-9) { s.windfuryQueue.push(attack); continue; }
       const target = attack.target;
-      if (!(p.hp > 0) || target.dead || !(target.hp > 0) || !run.enemies.includes(target)
+      if (!(p.hp > 0) || !canTarget(target) || !(target.hp > 0) || !run.enemies.includes(target)
         || Math.hypot(target.x - p.x, target.y - p.y) > basicRange() + target.r
         || blocked(p.x, p.y, target.x, target.y, 4, false)) continue;
       damageEnemy(target, attack.damage, { source: 'equipment' });

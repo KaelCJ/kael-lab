@@ -1,0 +1,66 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1720">
+  <meta name="description" content="DotaRogue角色图鉴：九名当前英雄的主动技能、被动技能、等级成长与卡尔六法术。">
+  <title>角色图鉴 · DotaRogue</title>
+  <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/catalog.css?v=20261105-catalog1">
+  <script type="module" src="js/heroes-catalog.js?v=20261105-catalog1"></script>
+  <noscript><style>.locale-switch,.catalog-toolbar{display:none}</style></noscript>
+</head>
+<body data-catalog="heroes">
+  <a class="skip-link" href="#catalog-main" data-catalog-copy="skip">跳到角色图鉴</a>
+  <header class="catalog-header">
+    <a class="catalog-brand" href="catalog.html">DotaRogue <span data-catalog-copy="archive">图鉴</span></a>
+    <nav aria-label="图鉴导航" data-catalog-nav>
+      <a href="catalog.html" data-catalog-copy="home">图鉴入口</a>
+      <a href="heroes.html" aria-current="page" data-catalog-copy="heroes">角色</a>
+      <a href="equipment.html" data-catalog-copy="equipment">武器</a>
+      <a href="enemies.html" data-catalog-copy="monsters">怪物</a>
+      <a href="buffs.html" data-catalog-copy="buffs">Buff</a>
+      <a href="studio.html" data-catalog-copy="studio">设计工作台</a>
+      <a href="index.html" data-catalog-copy="back">返回游戏</a>
+    </nav>
+    <div class="locale-switch" role="group" aria-label="语言 / Language">
+      <button type="button" data-locale="zh-CN" aria-pressed="true">简体</button>
+      <button type="button" data-locale="zh-TW" aria-pressed="false">繁體</button>
+      <button type="button" data-locale="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+  <main id="catalog-main" class="catalog-main">
+    <section class="page-intro" aria-labelledby="catalog-title">
+      <p class="eyebrow">DotaRogue</p>
+      <h1 id="catalog-title" data-catalog-copy="title">角色图鉴</h1>
+      <p data-catalog-copy="lead">九名当前英雄的技能与成长规则。按需展开资料，卡尔的六个法术也收录在角色卡中。</p>
+    </section>
+    <div class="catalog-toolbar">
+      <label for="catalog-search" data-catalog-copy="search">搜索角色与技能</label>
+      <input id="catalog-search" data-catalog-search type="search" autocomplete="off">
+    </div>
+    <div id="catalog-list" class="catalog-grid"></div>
+    <p id="catalog-empty" hidden data-catalog-copy="empty">没有匹配的角色或技能。</p>
+    <noscript>
+      <section class="catalog-card">
+        <h2>九名当前英雄</h2>
+        <p>启用 JavaScript 后可搜索并展开完整技能与成长说明。基础名单如下：</p>
+        <ul>
+          <li>矮人火枪手：远程点杀；主动散弹齐射，被动增程瞄准。</li>
+          <li>刚背兽：近战反击；主动刚毛齐射，被动刚背。</li>
+          <li>众神之王：静电与落雷；主动全场雷击，被动静电场。</li>
+          <li>炼金术士：经济与狂暴；主动化学狂暴，被动炼金分红。</li>
+          <li>剑圣：跳斩与旋转；主动剑刃风暴，被动随等级进化的跃空斩。</li>
+          <li>影魔：收魂成长；主动魂之挽歌，被动收魂。</li>
+          <li>召唤师：随机法术；主动回响施法，被动万象轮转。当前法术为混沌之风、电磁脉冲、混沌陨石、寒冰之墙、炽魂召唤与震荡波。</li>
+          <li>月之骑士：月光与弹射；主动月蚀，被动月刃弹射。</li>
+          <li>灵魂守卫：变身与魔影；主动恶魔变身，被动魔影。</li>
+        </ul>
+        <p>技能按英雄 Lv.1～4、Lv.5～9、Lv.10+ 分为三阶，伤害／主动增益倍率为 1、1.25、1.5。英雄等级与装备强化等级分开计算。</p>
+        <p><a href="catalog.html">返回图鉴入口</a> · <a href="index.html">返回游戏</a></p>
+      </section>
+    </noscript>
+  </main>
+</body>
+</html>

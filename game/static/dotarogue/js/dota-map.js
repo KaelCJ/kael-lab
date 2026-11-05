@@ -74,8 +74,8 @@ const SENTINEL_TOWERS = towerObjects('sentinel');
 const SCOURGE_TOWERS = towerObjects('scourge');
 
 /**
- * Display-only buildings and static neutral camps. Building objects are not
- * added to the collision terrain; they are scenery for the first map pass.
+ * Buildings and camp foundations are scenery. Three marked camps host real
+ * neutral units; their state, creatures and minimap markers belong to combat.
  */
 export const DOTA_SCENERY = Object.freeze([
   ...SENTINEL_TOWERS,
@@ -106,16 +106,16 @@ export const DOTA_SCENERY = Object.freeze([
   objectAt(.77, .25, 'barracks', 'scourge', { lane: 'mid', role: 'ranged' }),
   objectAt(.84, .25, 'barracks', 'scourge', { lane: 'bottom', role: 'melee' }),
   objectAt(.86, .29, 'barracks', 'scourge', { lane: 'bottom', role: 'ranged' }),
-  objectAt(.65, .54, 'roshan', 'neutral', { campType: 'roshan' }),
+  objectAt(.65, .54, 'roshan', 'neutral', { campType: 'roshan', activeCamp: 'roshan' }),
   objectAt(.75, .81, 'camp', 'neutral', { tier: 'easy', campType: 'ogre' }),
   objectAt(.60, .73, 'camp', 'neutral', { tier: 'medium', campType: 'centaur' }),
   objectAt(.48, .64, 'camp', 'neutral', { tier: 'medium', campType: 'satyr' }),
-  objectAt(.37, .72, 'camp', 'neutral', { tier: 'hard', campType: 'troll' }),
+  objectAt(.37, .72, 'camp', 'neutral', { tier: 'hard', campType: 'troll', activeCamp: 'red' }),
   objectAt(.49, .82, 'camp', 'neutral', { tier: 'hard', campType: 'hellbear' }),
   objectAt(.24, .55, 'camp', 'neutral', { tier: 'ancient', campType: 'ancient' }),
   objectAt(.25, .24, 'camp', 'neutral', { tier: 'easy', campType: 'ogre' }),
   objectAt(.38, .23, 'camp', 'neutral', { tier: 'medium', campType: 'centaur' }),
-  objectAt(.46, .35, 'camp', 'neutral', { tier: 'medium', campType: 'satyr' }),
+  objectAt(.46, .35, 'camp', 'neutral', { tier: 'medium', campType: 'satyr', activeCamp: 'blue' }),
   objectAt(.57, .25, 'camp', 'neutral', { tier: 'hard', campType: 'troll' }),
   objectAt(.65, .38, 'camp', 'neutral', { tier: 'hard', campType: 'hellbear' }),
   objectAt(.78, .48, 'camp', 'neutral', { tier: 'ancient', campType: 'ancient' }),
@@ -125,6 +125,10 @@ const SCENERY_CLEARANCE = new Map([
   ['tower', 82], ['ancient', 210], ['fountain', 100], ['shop', 82],
   ['barracks', 105], ['camp', 110], ['roshan', 150],
 ]);
+
+function sceneryClearance(o) {
+  return o.activeCamp === 'roshan' ? 250 : o.activeCamp ? 160 : (SCENERY_CLEARANCE.get(o.kind) || 70);
+}
 
 function hash2(x, y, seed = 0) {
   let n = (Math.imul(Math.floor(x), 374761393) ^ Math.imul(Math.floor(y), 668265263) ^ Math.imul(seed, 1442695041)) | 0;
@@ -170,7 +174,7 @@ export function buildDotaTerrain() {
       if (x < 58 || y < 58 || x > W - 58 || y > H - 58) continue;
       if (Math.min(...Object.values(LANES).map(points => polylineDistance(x, y, points))) < laneClearance) continue;
       if (polylineDistance(x, y, RIVER) < riverClearance) continue;
-      const sceneryBlocked = DOTA_SCENERY.some(o => Math.hypot(x - o.x, y - o.y) < (SCENERY_CLEARANCE.get(o.kind) || 70) + 72);
+      const sceneryBlocked = DOTA_SCENERY.some(o => Math.hypot(x - o.x, y - o.y) < sceneryClearance(o) + 72);
       if (sceneryBlocked) continue;
 
       const side = riverSide(x, y);
@@ -200,7 +204,7 @@ export function buildDotaTerrain() {
       const x = cx + (hash2(cx, i, 91) - .5) * 130;
       const y = cy + (hash2(cy, i, 97) - .5) * 130;
       if (polylineDistance(x, y, RIVER) < riverClearance || Math.min(...Object.values(LANES).map(points => polylineDistance(x, y, points))) < laneClearance) continue;
-      if (DOTA_SCENERY.some(o => Math.hypot(x - o.x, y - o.y) < (SCENERY_CLEARANCE.get(o.kind) || 70) + 60)) continue;
+      if (DOTA_SCENERY.some(o => Math.hypot(x - o.x, y - o.y) < sceneryClearance(o) + 60)) continue;
       if (terrain.some(o => Math.hypot(x - o.x, y - o.y) < o.r + 45)) continue;
       terrain.push({ x: Math.round(x), y: Math.round(y), kind: i === 3 ? 'rock' : 'tree', r: i === 3 ? 27 : 22, faction });
     }
@@ -547,20 +551,24 @@ function drawCamp(ctx, o) {
   ctx.restore();
 }
 
-function drawRoshan(ctx, o) {
-  drawShadow(ctx, o.x, o.y + 7, 106, 28, .4);
+function drawActiveCampFoundation(ctx, o) {
+  const roshan = o.activeCamp === 'roshan';
+  const color = o.activeCamp === 'blue' ? '#6e9cae' : o.activeCamp === 'red' ? '#a26a48' : '#9b8c73';
   ctx.save(); ctx.translate(o.x, o.y);
-  ctx.fillStyle = '#453e3d'; ctx.beginPath(); ctx.ellipse(0, -37, 78, 56, 0, 0, TAU); ctx.fill();
-  ctx.fillStyle = '#6c6159'; ctx.beginPath(); ctx.ellipse(-4, -80, 54, 43, -.08, 0, TAU); ctx.fill();
-  ctx.fillStyle = '#a79879'; ctx.beginPath(); ctx.moveTo(-52, -102); ctx.lineTo(-86, -147); ctx.lineTo(-49, -133); ctx.lineTo(-22, -164); ctx.lineTo(-10, -121); ctx.lineTo(26, -160); ctx.lineTo(32, -115); ctx.closePath(); ctx.fill();
-  ctx.fillStyle = '#e8c872'; ctx.beginPath(); ctx.arc(-18, -92, 6, 0, TAU); ctx.arc(21, -92, 6, 0, TAU); ctx.fill();
-  ctx.fillStyle = '#bc6e49'; ctx.beginPath(); ctx.moveTo(-18, -40); ctx.lineTo(0, -23); ctx.lineTo(18, -40); ctx.lineTo(0, -30); ctx.closePath(); ctx.fill();
-  ctx.strokeStyle = '#8e7a64'; ctx.lineWidth = 12; ctx.beginPath(); ctx.moveTo(-59, -48); ctx.lineTo(-98, -2); ctx.moveTo(59, -48); ctx.lineTo(96, -3); ctx.stroke();
+  ctx.fillStyle = '#242d25'; ctx.globalAlpha = .58;
+  ctx.beginPath(); ctx.ellipse(0, 12, roshan ? 134 : 85, roshan ? 66 : 43, 0, 0, TAU); ctx.fill();
+  ctx.globalAlpha = .8; ctx.fillStyle = color;
+  for (let i = 0; i < (roshan ? 9 : 6); i++) {
+    const angle = -Math.PI + i * Math.PI / (roshan ? 8 : 5);
+    const x = Math.cos(angle) * (roshan ? 126 : 78), y = 10 + Math.sin(angle) * (roshan ? 62 : 38);
+    ctx.beginPath(); ctx.ellipse(x, y, roshan ? 24 : 17, roshan ? 14 : 10, angle * .3, 0, TAU); ctx.fill();
+  }
   ctx.restore();
 }
 
 export function drawDotaScenery(ctx, o, time = 0) {
   if (!o || !o.kind) return;
+  if (o.activeCamp) { drawActiveCampFoundation(ctx, o); return; }
   switch (o.kind) {
     case 'tower': drawTower(ctx, o, time); break;
     case 'fountain': drawFountain(ctx, o); break;
@@ -568,7 +576,6 @@ export function drawDotaScenery(ctx, o, time = 0) {
     case 'barracks': drawBarracks(ctx, o); break;
     case 'ancient': drawAncient(ctx, o, time); break;
     case 'camp': drawCamp(ctx, o); break;
-    case 'roshan': drawRoshan(ctx, o); break;
     default: break;
   }
 }
@@ -645,6 +652,7 @@ function sceneryMarkerColor(o) {
 function drawMinimapScenery(ctx, w, h) {
   const sx = w / W, sy = h / H;
   for (const o of DOTA_SCENERY) {
+    if (o.activeCamp) continue;
     const px = o.x * sx, py = o.y * sy;
     ctx.fillStyle = sceneryMarkerColor(o);
     ctx.globalAlpha = o.kind === 'camp' ? .8 : .95;

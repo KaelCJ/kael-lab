@@ -1,14 +1,19 @@
+import { NEUTRAL_CAMP_DEFS } from './neutral-camp-defs.js?v=20261105-catalog1';
+import { JUNGLE_BUFFS } from './jungle-buffs.js?v=20261105-catalog1';
+import { ENEMIES, BOSS_VARIANTS, BOSS_VARIANT_NAMES, ELITE_ROTATION, ELITE_WAVES, ENEMY_NAMES } from './enemies.js?v=20261105-catalog1';
+import { createNeutralCamps, neutralInRange, spawnNeutralCamp, updateNeutralUnit, clearNeutralEffects, jungleBuffActive, jungleBuffEntries } from './neutral-camps.js?v=20261105-catalog1';
+import { drawNeutralGuardian, drawNeutralCampGround, drawNeutralCampLabels, drawNeutralMinimap } from './neutral-camp-art.js?v=20261105-neutral-camps1';
 import { createFireRenderer } from './effects/fire.js';
-import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261103-mobile-performance1';
-import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261103-mobile-performance1';
+import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261105-neutral-camps1';
+import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261105-neutral-camps1';
 import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261031-sf-requiem5';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
-import { BUFFS, BUFF_IDS, buffRarityChances, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
-import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261031-equipment19';
-import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261104-loading1';
-import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261104-loading1';
-import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261104-loading1';
-import { createEquipmentCombat } from './equipment-combat.js?v=20261104-loading1';
+import { BUFFS, BUFF_IDS, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
+import { EQUIPMENT, EQUIPMENT_CAPACITY, EQUIPMENT_UPGRADES, equipmentIconPath, equipmentLevel, resolveEquipment, equipmentUpgradeDescription, equipmentUpgradeIndices, equipmentResale } from './equipment.js?v=20261105-shop-mobile1';
+import { planEquipmentCraft, availableEquipmentCrafts } from './equipment-crafting.js?v=20261105-shop-mobile1';
+import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as moveLoadout, automate } from './equipment-loadout.js?v=20261105-shop-mobile1';
+import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261105-shop-mobile1';
+import { createEquipmentCombat } from './equipment-combat.js?v=20261105-neutral-camps1';
 import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261031-luna-eclipse2';
 import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
 import { createWindRenderer } from './effects/wind.js?v=20261103-mobile-performance1';
@@ -16,7 +21,7 @@ import { createMeteorRenderer } from './effects/meteor.js';
 import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem5';
 import { createEclipseRenderer } from './effects/eclipse.js?v=20261031-luna-eclipse2';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike, onEquipmentImagesReady } from './effects/equipment-evolution.js?v=20261104-loading1';
-import { createAudioSystem } from './audio.js?v=20261027-dota1';
+import { createAudioSystem } from './audio.js?v=20261105-bristleback-original1';
 import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
 import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDerivedSummary, attributeLabel, heroAttributeProfile, cooldownWithHaste } from './hero-attributes.js?v=20261030-attribute-contract1';
 
@@ -130,7 +135,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function equipmentCooldownText(def) {
     const base = Number(def?.passive?.cooldown);
     if (!run || !Number.isFinite(base) || def?.passive?.id === 'calamityChase') return '';
-    const current = cooldownWithHaste(base, run.stats.abilityHaste);
+    const current = cooldownWithHaste(base, effectiveHaste());
     if (current >= base - 1e-9) return '';
     const value = current.toFixed(2).replace(/\.00$/, '').replace(/(\.\d)0$/, '$1');
     return selectedLocale === 'en' ? `Current cooldown ${value}s` : selectedLocale === 'zh-TW' ? `目前冷卻 ${value} 秒` : `当前冷却 ${value} 秒`;
@@ -172,30 +177,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     { dodge: 5 }, { damage: 7 }, { lifesteal: 3 }, { luck: 10 }, { critDamage: 15 },
     { manaRegen: .75 }, { abilityHaste: 6 }
   ].map((bonus, i) => ({ bonus, artIndex: i < 5 ? i : i + 1, icon: ['✚','⬡','»','⚔','◎','↻','✧','◇','✿','↝','✦','◉','❖','✧','◇','⌛'][i] }));
-  const ENEMIES = {
-    crawler: { name: '爬行机', hp: 17, speed: 90, radius: 16, damage: 4, color: '#dd9b79', value: 1 },
-    runner: { name: '追猎虫', hp: 13, speed: 155, radius: 13, damage: 3, color: '#e9cb7c', value: 1 },
-    tank: { name: '铁甲兽', hp: 63, speed: 59, radius: 25, damage: 7, color: '#93aeb3', value: 3 },
-    shooter: { name: '孢射体', hp: 26, speed: 78, radius: 18, damage: 4, color: '#ad9fdb', value: 2 },
-    charger: { name: '冲锋残骸', hp: 40, speed: 94, radius: 21, damage: 6, color: '#f39779', value: 2 },
-    splitter: { name: '分裂菌团', hp: 32, speed: 74, radius: 20, damage: 5, color: '#b2cf8c', value: 2 },
-    elite: { name: '精英哨卫', elite: true, hp: 270, speed: 96, radius: 31, damage: 10, color: '#ffbf79', value: 17 },
-    centaur: { name: '半人马可汗', elite: true, hp: 220, speed: 90, radius: 31, damage: 8, color: '#efc17c', value: 17, windup: .8, cooldown: 4.5, reach: 185, area: 115 },
-    satyr: { name: '萨特苦难使者', elite: true, hp: 195, speed: 83, radius: 28, damage: 8, color: '#d7a3f5', value: 17, windup: .9, cooldown: 4.2, reach: 600 },
-    hellbear: { name: '地狱熊怪粉碎者', elite: true, hp: 255, speed: 80, radius: 34, damage: 9, color: '#ffa77a', value: 17, windup: .95, cooldown: 5.5, reach: 190, area: 125 },
-    darkTroll: { name: '黑暗巨魔召唤师', elite: true, hp: 190, speed: 78, radius: 28, damage: 7, color: '#9de4cf', value: 17, windup: 1, cooldown: 6, reach: 560 },
-    frostWraith: { name: '霜冻幽魂', elite: true, hp: 205, speed: 76, radius: 29, damage: 8, color: '#9fe9ff', value: 17, windup: 1.05, cooldown: 5.4, reach: 510, spellRadius: 115 },
-    thunderLizard: { name: '雷霆蜥蜴', elite: true, hp: 265, speed: 71, radius: 35, damage: 9, color: '#d5c3ff', value: 17, windup: 1.15, cooldown: 5.7, reach: 520, laneRadius: 18 },
-    boss: { name: '远古暴君', hp: 1150, speed: 74, radius: 53, damage: 14, color: '#f3a5c9', value: 40 }
-  };
-  const BOSS_VARIANTS = {
-    roshan: { hp: 1680, speed: 66, radius: 60, damage: 17, color: '#c77b55', value: 55 }
-  };
-  const BOSS_VARIANT_NAMES = {
-    roshan: { 'zh-CN': '肉山（Roshan）', 'zh-TW': '肉山（Roshan）', en: 'Roshan' }
-  };
-  const ELITE_ROTATION = ['centaur', 'satyr', 'hellbear', 'darkTroll', 'elite', 'frostWraith', 'thunderLizard'];
-  const ELITE_WAVES = [3, 5, 7, 9, 12, 15, 18];
   const isElite = enemy => ENEMIES[enemy.id].elite === true;
   const SUPPORTED_LOCALES = ['zh-CN', 'zh-TW', 'en'];
   const DEFAULT_LOCALE = 'zh-CN';
@@ -213,7 +194,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         shopKicker: '波间补给 · ', shopTitle: '战场补给站', shopCaption: '波末未拾取材料按 80% 折算货币，经验全额保留；商店出售组件，材料齐全后可按固定配方合成，配方不占装备格。', shopEquipment: '装备与属性',
         chestKicker: '波间战利品 · 待开 ', chestTitle: '拾获补给箱', chestDesc: '依次查看宝箱装备，决定收下或拆解。', chestTake: '收下装备', chestScrap: '拆解为材料',
         waveAuto: '自动继续', waveContinue: '继续结算',
-        pauseKicker: '远征暂歇', pauseTitle: '已暂停', pauseDesc: '你的远征会在这里等你。', pauseDriver: '当前驾驶员', pauseStats: '属性', pauseSkills: '角色技能', resume: '继续战斗', resumeCountdown: '继续读秒', restart: '重新开始', backTitle: '返回标题',
+        pauseKicker: '远征暂歇', pauseTitle: '已暂停', pauseDesc: '你的远征会在这里等你。', pauseDriver: '当前驾驶员', pauseStats: '属性', catalog: '查看图鉴', pauseCatalog: '打开图鉴', pauseBuffEmpty: '暂无永久增益', pauseSkills: '角色技能', resume: '继续战斗', resumeCountdown: '继续读秒', restart: '重新开始', backTitle: '返回标题',
         resultRestart: '再来一局', resultHome: '返回标题',
         soundOn: '开启', soundOff: '关闭',
         languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English',
@@ -236,26 +217,23 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       difficulty: { normal: '标准', hard: '挑战', nightmare: '极限' }, pace: { normal: '标准', quick: '速战' },
 
 
-      enemies: { crawler: '爬行机', runner: '追猎虫', tank: '铁甲兽', shooter: '孢射体', charger: '冲锋残骸', splitter: '分裂菌团', elite: '精英哨卫', centaur: '半人马可汗', satyr: '萨特苦难使者', hellbear: '地狱熊怪粉碎者', darkTroll: '黑暗巨魔召唤师', boss: '远古暴君' }
+      enemies: ENEMY_NAMES['zh-CN']
     },
     'zh-TW': {
       ui: {
-        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue：受 Dota 啟發的網頁生存肉鴿遊戲。桌面與手機橫豎屏都能遊玩，在 20 波遠征或無盡敵潮中移動、自動攻擊、升級和購物。', canvasAria: 'DotaRogue遊戲戰場。電腦使用方向鍵、WASD 或右鍵點擊移動，空格衝刺、Q 施放主動技能；手機使用搖桿和右側技能、衝刺按鈕。攻擊自動進行。', home: '← 選擇遊戲', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: '在敵潮中活過 20 波，或進入無盡模式。選擇英雄、升級和裝備，打造你的構築。', chooseCharacter: '選擇駕駛員', chooseBiome: '選擇戰場', difficulty: '難度', pace: '節奏', visuals: '角色造型', skinPixel: '普通皮膚', skinDota1: 'DotA1 皮膚', sound: '音效', language: '語言', start: '開始挑戰', controls: '電腦：WASD / 方向鍵移動，右鍵點擊目的地自動前往，Q 主動技能、空格衝刺、Esc 暫停。手機使用搖桿和技能、衝刺按鈕。角色自動普攻；主動技能需要魔法且受冷卻限制。', levelKicker: '成長選擇', levelTitle: '選擇一項升級', levelDesc: '每次升級強化一項能力。選擇後繼續處理剩餘等級。', shopKicker: '波間補給 · ', shopTitle: '戰場補給站', shopCaption: '波末未拾取材料按 80% 折算貨幣，經驗全額保留；商店出售組件，材料齊全後可按固定配方合成，配方不占裝備格。', shopEquipment: '裝備與屬性', chestKicker: '波間戰利品 · 待開 ', chestTitle: '拾獲補給箱', chestDesc: '依次查看寶箱裝備，決定收下或拆解。', chestTake: '收下裝備', chestScrap: '拆解為材料', waveAuto: '自動繼續', waveContinue: '繼續結算', pauseKicker: '遠征暫歇', pauseTitle: '已暫停', pauseDesc: '你的遠征會在這裡等你。', pauseDriver: '目前駕駛員', pauseStats: '屬性', pauseSkills: '角色技能', resume: '繼續戰鬥', resumeCountdown: '繼續讀秒', restart: '重新開始', backTitle: '返回標題', resultRestart: '再來一局', resultHome: '返回標題', soundOn: '開啟', soundOff: '關閉', languageZhCN: '簡體中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: '暫停遊戲', pauseTitleAttr: '暫停 (Esc)', skillStripAria: '角色技能', touchAria: '觸控操作', joystickAria: '移動搖桿', skillButton: '技能', skillAria: '施放主動技能', skillTitle: '主動技能 (Q)', dash: '衝刺', dashAria: '衝刺', dashTitle: '衝刺 (空格)', noScriptTitle: 'DotaRogue', noScript: '這是一款純前端網頁遊戲，需要啟用 JavaScript 才能遊玩。電腦使用 WASD、方向鍵或滑鼠右鍵移動，Q 主動技能、空格衝刺；手機橫豎屏均可使用觸控搖桿與右側按鈕。裝備按固定組件配方合成，技能同時需要冷卻完成和魔法足夠。遊戲不需要帳號或伺服器。', skillPreview: '專屬技能：{skills}', soundState: '{state}', record: '最佳紀錄：{best} · 通關 {wins} 次', bestWave: '第 {wave} 波', noRecord: '暫無', wave: '第 {wave} / {max} 波', boss: '首領', level: '等級 {level}', pending: ' · 待選 {count}', hp: '生命 {hp} / {max}', defeated: '擊敗 {kills}', dashReady: '就緒', dashCooldown: '{time}s', finalWaveStart: '最終波次：擊敗{boss}！', waveStart: '第 {wave} 波開始', expeditionComplete: '遠征完成', expeditionEnded: '遠征終止', coreCalmed: '戰場已清空', reachedWave: '這次抵達第 {wave} 波', victoryMessage: '你撐過了全部 20 波敵潮，成為最後的倖存者。', defeatMessage: '已保存本次紀錄。調整裝備組合，再向更深處出發。', completedWaves: '完成波次', earnedMaterials: '獲得材料', characterLevel: '角色等級', levelsLeft: '剩餘 {count} 次', wavePrepare: '波次準備', waveSummary: '本波結算', nextWaveTitle: '下一波：第 {wave} 波', waveDoneTitle: '第 {wave} 波完成', nextWaveMessage: '戰場即將重新開放，準備迎接新的敵潮。', lootMessage: '戰利品已經記錄，接下來處理寶箱、升級和補給。', finalWaveMessage: '最終敵潮已清理，正在整理遠征結果。', aboutToStart: '即將開始', currentDifficulty: '難度', waveMaterials: '本波材料', pendingChests: '待開寶箱', currentLevel: '目前等級', startNow: '立即開始', seconds: '{time} 秒', secondsRemaining: '剩餘 {time} 秒', scrapFor: '拆解為 ◇ {amount}', acquired: '獲得{item}', scrapItem: '拆解{item}：材料 +{amount}', autoRecover: '自動回收 {count} 個寶箱，待結算開啟；{status}', fullHealth: '生命已滿', healthGain: '生命 +{amount}', waveComplete: '第 {wave} 波完成', nextWaveHint: '下一波：第 {wave} 波 · 準備完成後進入倒計時', finalWaveDone: '最終波次已完成 · 正在整理遠征結果', startWaveButton: '開始第 {wave} 波 ➜', viewResult: '查看遠征結果', soldOut: '售罄', buy: '購買', refresh: '刷新商品 ◇ {cost}', emptySlot: '空槽', merge: '合成', sell: '賣 ◇{price}', lock: '鎖定', unlock: '解鎖', locked: '🔒', insufficient: '材料不足', merged: '已合成{item}', statLife: '生命', statPrimaryAttribute: '主屬性', statStrength: '力量', statAgility: '敏捷', statIntelligence: '智力', statArmor: '護甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴擊', statDodge: '閃避', statRegen: '再生', statLuck: '幸運', statAllDamage: '全傷害', statCritDamage: '暴擊傷害', statLifesteal: '生命竊取', statRegen5: '每 5 秒回血', statPickup: '拾取範圍', statBaseAttackRange: '基礎攻擊射程', current: '目前：{status}', warningBoss: '警告：{boss}接近！', eliteAppears: '{elite}出現！', noTarget: '射程內沒有可標定目標', marked: '已標定', overload: '過載邊界！', salvageBonus: '拾荒分紅：材料 +2', shieldReady: '廢件護層就緒', loaded: '滿載運轉！', dodge: '閃避！', chestDrop: '寶箱掉落：拾取回血，結算開裝備', bossDefeated: '首領已擊敗！', chestPending: '寶箱待結算開啟；{status}', line: '掠線！', hazard: '小心：{hazard}', activeReady: 'Q / 就緒', cooldown: '{time} 秒', nextHitReady: '下次命中就緒', moving: '移動 {time} / 1 秒', fires: '{count} / 6 次開火', hits: '{count} / 12 次命中', guardReduce: '周圍 3 名敵人 · 減傷 22%', needNearby: '需要 3 名近敵', attacks: '{count} / 5 次攻擊', counterReady: '4 名敵人 · 自動就緒', materials: '{count} / {max} 材料', shield: '防護 {time} 秒', strengthened: '強化 {time} 秒', triggered: '本波已觸發', charge: '{count} / 10 電荷', autoRelease: '3 層自動釋放', pulseReleasing: '脈衝釋放中', minimapTitle: '小地圖', minimapAria: '經典戰場小地圖。近衛在左下，天災在右上；黃色圓點是你，白框是目前視野。',
+        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue：受 Dota 啟發的網頁生存肉鴿遊戲。桌面與手機橫豎屏都能遊玩，在 20 波遠征或無盡敵潮中移動、自動攻擊、升級和購物。', canvasAria: 'DotaRogue遊戲戰場。電腦使用方向鍵、WASD 或右鍵點擊移動，空格衝刺、Q 施放主動技能；手機使用搖桿和右側技能、衝刺按鈕。攻擊自動進行。', home: '← 選擇遊戲', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: '在敵潮中活過 20 波，或進入無盡模式。選擇英雄、升級和裝備，打造你的構築。', chooseCharacter: '選擇駕駛員', chooseBiome: '選擇戰場', difficulty: '難度', pace: '節奏', visuals: '角色造型', skinPixel: '普通皮膚', skinDota1: 'DotA1 皮膚', sound: '音效', language: '語言', start: '開始挑戰', controls: '電腦：WASD / 方向鍵移動，右鍵點擊目的地自動前往，Q 主動技能、空格衝刺、Esc 暫停。手機使用搖桿和技能、衝刺按鈕。角色自動普攻；主動技能需要魔法且受冷卻限制。', levelKicker: '成長選擇', levelTitle: '選擇一項升級', levelDesc: '每次升級強化一項能力。選擇後繼續處理剩餘等級。', shopKicker: '波間補給 · ', shopTitle: '戰場補給站', shopCaption: '波末未拾取材料按 80% 折算貨幣，經驗全額保留；商店出售組件，材料齊全後可按固定配方合成，配方不占裝備格。', shopEquipment: '裝備與屬性', chestKicker: '波間戰利品 · 待開 ', chestTitle: '拾獲補給箱', chestDesc: '依次查看寶箱裝備，決定收下或拆解。', chestTake: '收下裝備', chestScrap: '拆解為材料', waveAuto: '自動繼續', waveContinue: '繼續結算', pauseKicker: '遠征暫歇', pauseTitle: '已暫停', pauseDesc: '你的遠征會在這裡等你。', pauseDriver: '目前駕駛員', pauseStats: '屬性', catalog: '查看圖鑑', pauseCatalog: '打開圖鑑', pauseBuffEmpty: '暫無永久增益', pauseSkills: '角色技能', resume: '繼續戰鬥', resumeCountdown: '繼續讀秒', restart: '重新開始', backTitle: '返回標題', resultRestart: '再來一局', resultHome: '返回標題', soundOn: '開啟', soundOff: '關閉', languageZhCN: '簡體中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: '暫停遊戲', pauseTitleAttr: '暫停 (Esc)', skillStripAria: '角色技能', touchAria: '觸控操作', joystickAria: '移動搖桿', skillButton: '技能', skillAria: '施放主動技能', skillTitle: '主動技能 (Q)', dash: '衝刺', dashAria: '衝刺', dashTitle: '衝刺 (空格)', noScriptTitle: 'DotaRogue', noScript: '這是一款純前端網頁遊戲，需要啟用 JavaScript 才能遊玩。電腦使用 WASD、方向鍵或滑鼠右鍵移動，Q 主動技能、空格衝刺；手機橫豎屏均可使用觸控搖桿與右側按鈕。裝備按固定組件配方合成，技能同時需要冷卻完成和魔法足夠。遊戲不需要帳號或伺服器。', skillPreview: '專屬技能：{skills}', soundState: '{state}', record: '最佳紀錄：{best} · 通關 {wins} 次', bestWave: '第 {wave} 波', noRecord: '暫無', wave: '第 {wave} / {max} 波', boss: '首領', level: '等級 {level}', pending: ' · 待選 {count}', hp: '生命 {hp} / {max}', defeated: '擊敗 {kills}', dashReady: '就緒', dashCooldown: '{time}s', finalWaveStart: '最終波次：擊敗{boss}！', waveStart: '第 {wave} 波開始', expeditionComplete: '遠征完成', expeditionEnded: '遠征終止', coreCalmed: '戰場已清空', reachedWave: '這次抵達第 {wave} 波', victoryMessage: '你撐過了全部 20 波敵潮，成為最後的倖存者。', defeatMessage: '已保存本次紀錄。調整裝備組合，再向更深處出發。', completedWaves: '完成波次', earnedMaterials: '獲得材料', characterLevel: '角色等級', levelsLeft: '剩餘 {count} 次', wavePrepare: '波次準備', waveSummary: '本波結算', nextWaveTitle: '下一波：第 {wave} 波', waveDoneTitle: '第 {wave} 波完成', nextWaveMessage: '戰場即將重新開放，準備迎接新的敵潮。', lootMessage: '戰利品已經記錄，接下來處理寶箱、升級和補給。', finalWaveMessage: '最終敵潮已清理，正在整理遠征結果。', aboutToStart: '即將開始', currentDifficulty: '難度', waveMaterials: '本波材料', pendingChests: '待開寶箱', currentLevel: '目前等級', startNow: '立即開始', seconds: '{time} 秒', secondsRemaining: '剩餘 {time} 秒', scrapFor: '拆解為 ◇ {amount}', acquired: '獲得{item}', scrapItem: '拆解{item}：材料 +{amount}', autoRecover: '自動回收 {count} 個寶箱，待結算開啟；{status}', fullHealth: '生命已滿', healthGain: '生命 +{amount}', waveComplete: '第 {wave} 波完成', nextWaveHint: '下一波：第 {wave} 波 · 準備完成後進入倒計時', finalWaveDone: '最終波次已完成 · 正在整理遠征結果', startWaveButton: '開始第 {wave} 波 ➜', viewResult: '查看遠征結果', soldOut: '售罄', buy: '購買', refresh: '刷新商品 ◇ {cost}', emptySlot: '空槽', merge: '合成', sell: '賣 ◇{price}', lock: '鎖定', unlock: '解鎖', locked: '🔒', insufficient: '材料不足', merged: '已合成{item}', statLife: '生命', statPrimaryAttribute: '主屬性', statStrength: '力量', statAgility: '敏捷', statIntelligence: '智力', statArmor: '護甲', statMove: '移速', statAttackSpeed: '攻速', statCrit: '暴擊', statDodge: '閃避', statRegen: '再生', statLuck: '幸運', statAllDamage: '全傷害', statCritDamage: '暴擊傷害', statLifesteal: '生命竊取', statRegen5: '每 5 秒回血', statPickup: '拾取範圍', statBaseAttackRange: '基礎攻擊射程', current: '目前：{status}', warningBoss: '警告：{boss}接近！', eliteAppears: '{elite}出現！', noTarget: '射程內沒有可標定目標', marked: '已標定', overload: '過載邊界！', salvageBonus: '拾荒分紅：材料 +2', shieldReady: '廢件護層就緒', loaded: '滿載運轉！', dodge: '閃避！', chestDrop: '寶箱掉落：拾取回血，結算開裝備', bossDefeated: '首領已擊敗！', chestPending: '寶箱待結算開啟；{status}', line: '掠線！', hazard: '小心：{hazard}', activeReady: 'Q / 就緒', cooldown: '{time} 秒', nextHitReady: '下次命中就緒', moving: '移動 {time} / 1 秒', fires: '{count} / 6 次開火', hits: '{count} / 12 次命中', guardReduce: '周圍 3 名敵人 · 減傷 22%', needNearby: '需要 3 名近敵', attacks: '{count} / 5 次攻擊', counterReady: '4 名敵人 · 自動就緒', materials: '{count} / {max} 材料', shield: '防護 {time} 秒', strengthened: '強化 {time} 秒', triggered: '本波已觸發', charge: '{count} / 10 電荷', autoRelease: '3 層自動釋放', pulseReleasing: '脈衝釋放中', minimapTitle: '小地圖', minimapAria: '經典戰場小地圖。近衛在左下，天災在右上；黃色圓點是你，白框是目前視野。',
       },
 
         biomes: { dota: ['DotA 經典戰場', '近衛與天災 · 三路、河道與野區', '遠古裂隙'], docks: ['赤沙廢港', '灼熱沙塵與失控機械', '熱流噴口'], grove: ['熒菌裂谷', '發光菌簇與腐蝕孢霧', '孢霧爆發'], frost: ['藍霜殘骸', '凍結碎片與寒流裂縫', '寒流爆裂'] }, difficulty: { normal: '標準', hard: '挑戰', nightmare: '極限' }, pace: { normal: '標準', quick: '速戰' },
-        enemies: { crawler: '爬行機', runner: '追獵蟲', tank: '鐵甲獸', shooter: '孢射體', charger: '衝鋒殘骸', splitter: '分裂菌團', elite: '精英哨衛', centaur: '半人馬可汗', satyr: '薩特苦難使者', hellbear: '地獄熊怪粉碎者', darkTroll: '黑暗巨魔召喚師', boss: '遠古暴君' }
+        enemies: ENEMY_NAMES['zh-TW']
     },
     en: {
       ui: {
-        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue is a Dota-inspired survivor roguelite. Move, auto-attack, upgrade and shop through a 20-wave expedition or an endless enemy surge on desktop or mobile.', canvasAria: 'DotaRogue arena. Use WASD or arrow keys, or right-click to move; Space to dash and Q for your active skill. Use the joystick and buttons on mobile. Attacks are automatic.', home: '← Game selection', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: 'Survive 20 waves or face the endless surge. Choose a hero, upgrade and craft your build.', chooseCharacter: 'Choose pilot', chooseBiome: 'Choose battlefield', difficulty: 'Difficulty', pace: 'Pace', visuals: 'Hero skin', skinPixel: 'Standard skin', skinDota1: 'DotA1 skin', sound: 'Sound', language: 'Language', start: 'Start run', controls: 'Desktop: WASD / arrows or right-click to move, Q for the active skill, Space to dash, Esc to pause. Mobile uses the joystick and buttons. Basic attacks are automatic; active skills require mana and cooldown.', levelKicker: 'Growth choice', levelTitle: 'Choose an upgrade', levelDesc: 'Each level strengthens one ability. Choose one, then resolve any remaining levels.', shopKicker: 'Between-wave supply · ', shopTitle: 'Battlefield Supply', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Buy components and combine them through fixed recipes when ready. Recipes take no equipment slot.', shopEquipment: 'Loadout & stats', chestKicker: 'Between-wave loot · unopened ', chestTitle: 'Supply chest', chestDesc: 'Review each chest equipment reward, then take or scrap it.', chestTake: 'Take equipment', chestScrap: 'Scrap for materials', waveAuto: 'Continue automatically', waveContinue: 'Continue settlement', pauseKicker: 'Expedition paused', pauseTitle: 'Paused', pauseDesc: 'Your expedition is waiting here.', pauseDriver: 'Current pilot', pauseStats: 'Stats', pauseSkills: 'Character skills', resume: 'Resume battle', resumeCountdown: 'Resume countdown', restart: 'Restart', backTitle: 'Back to title', resultRestart: 'Play again', resultHome: 'Back to title', soundOn: 'On', soundOff: 'Off', languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: 'Pause game', pauseTitleAttr: 'Pause (Esc)', skillStripAria: 'Character skills', touchAria: 'Touch controls', joystickAria: 'Movement joystick', skillButton: 'Skill', skillAria: 'Cast active skill', skillTitle: 'Active skill (Q)', dash: 'Dash', dashAria: 'Dash', dashTitle: 'Dash (Space)', noScriptTitle: 'DotaRogue', noScript: 'This frontend browser game needs JavaScript. Use WASD, arrow keys or right-click to move, Q for the active skill, and Space to dash. Mobile uses the joystick and buttons. Equipment combines through fixed component recipes, and skills need both cooldown and mana. No account or server is required.', skillPreview: 'Signature ', soundState: '{state}', record: 'Best record: {best} · Wins {wins}', bestWave: 'Wave {wave}', noRecord: 'none', wave: 'Wave {wave} / {max}', boss: 'Boss', level: 'Level {level}', pending: ' · {count} pending', hp: 'HP {hp} / {max}', defeated: 'Defeated {kills}', dashReady: 'Ready', dashCooldown: '{time}s', finalWaveStart: 'Final wave: defeat {boss}!', waveStart: 'Wave {wave} begins', expeditionComplete: 'Expedition complete', expeditionEnded: 'Expedition ended', coreCalmed: 'The battlefield is clear', reachedWave: 'You reached wave {wave}', victoryMessage: 'You survived all 20 enemy waves and became the last survivor.', defeatMessage: 'This record is saved. Tune your loadout and venture deeper.', completedWaves: 'Waves cleared', earnedMaterials: 'Materials earned', characterLevel: 'Pilot level', levelsLeft: '{count} levels left', wavePrepare: 'Wave preparation', waveSummary: 'Wave settlement', nextWaveTitle: 'Next wave: {wave}', waveDoneTitle: 'Wave {wave} complete', nextWaveMessage: 'The battlefield will reopen soon. Prepare for the next enemy surge.', lootMessage: 'Loot recorded. Next, resolve chests, upgrades and supplies.', finalWaveMessage: 'The final enemy surge is cleared. Preparing the expedition result.', aboutToStart: 'Starting', currentDifficulty: 'Difficulty', waveMaterials: 'Wave materials', pendingChests: 'Chests unopened', currentLevel: 'Current level', startNow: 'Start now', seconds: '{time} sec', secondsRemaining: '{time} sec remaining', scrapFor: 'Scrap for ◇ {amount}', acquired: 'Gained {item}', scrapItem: 'Scrapped {item}: +{amount} materials', autoRecover: 'Recovered {count} chest(s); open between waves. {status}', fullHealth: 'Health full', healthGain: 'Health +{amount}', waveComplete: 'Wave {wave} complete', nextWaveHint: 'Next wave: {wave} · countdown after preparation', finalWaveDone: 'Final wave complete · preparing expedition result', startWaveButton: 'Start wave {wave} ➜', viewResult: 'View expedition result', soldOut: 'Sold out', buy: 'Buy', refresh: 'Refresh stock ◇ {cost}', emptySlot: 'Empty slot', merge: 'Merge', sell: 'Sell ◇{price}', lock: 'Lock', unlock: 'Unlock', locked: '🔒', insufficient: 'Not enough materials', merged: 'Crafted {item}', statLife: 'HP', statPrimaryAttribute: 'Primary attribute', statStrength: 'Strength', statAgility: 'Agility', statIntelligence: 'Intelligence', statArmor: 'Armor', statMove: 'Move speed', statAttackSpeed: 'Attack speed', statCrit: 'Crit', statDodge: 'Dodge', statRegen: 'Regen', statLuck: 'Luck', statAllDamage: 'All damage', statCritDamage: 'Crit damage', statLifesteal: 'Lifesteal', statRegen5: 'HP per 5 sec', statPickup: 'Pickup range', statBaseAttackRange: 'Basic attack range', current: 'Current: {status}', warningBoss: 'Warning: {boss} is approaching!', eliteAppears: '{elite} appears!', noTarget: 'No target in range to mark', marked: 'Marked', overload: 'Overload boundary!', salvageBonus: 'Scavenger bonus: +2 materials', shieldReady: 'Scrap shield ready', loaded: 'Fully loaded!', dodge: 'Dodged!', chestDrop: 'Chest dropped: pick it up to heal; open it between waves', bossDefeated: 'Boss defeated!', chestPending: 'Chest queued; {status}', line: 'Tracer volley!', hazard: 'Watch out: {hazard}', activeReady: 'Q / Ready', cooldown: '{time} sec', nextHitReady: 'Next hit ready', moving: 'Move {time} / 1 sec', fires: '{count} / 6 fires', hits: '{count} / 12 hits', guardReduce: '3 nearby enemies · 22% damage reduction', needNearby: 'Need 3 nearby enemies', attacks: '{count} / 5 attacks', counterReady: '4 enemies · counter ready', materials: '{count} / {max} materials', shield: 'Shield {time} sec', strengthened: 'Boosted {time} sec', triggered: 'Triggered this wave', charge: '{count} / 10 charge', autoRelease: 'Auto-release at 3 stacks', pulseReleasing: 'Pulse releasing', minimapTitle: 'Minimap', minimapAria: 'Classic battlefield minimap. Sentinel bottom left, Scourge top right. The yellow dot is you; the white box is the current view.',
+        documentTitle: 'DotaRogue · Kael Lab', metaDescription: 'DotaRogue is a Dota-inspired survivor roguelite. Move, auto-attack, upgrade and shop through a 20-wave expedition or an endless enemy surge on desktop or mobile.', canvasAria: 'DotaRogue arena. Use WASD or arrow keys, or right-click to move; Space to dash and Q for your active skill. Use the joystick and buttons on mobile. Attacks are automatic.', home: '← Game selection', eyebrow: 'KAEL LAB · BROWSER GAME', titleLead: 'Survive 20 waves or face the endless surge. Choose a hero, upgrade and craft your build.', chooseCharacter: 'Choose pilot', chooseBiome: 'Choose battlefield', difficulty: 'Difficulty', pace: 'Pace', visuals: 'Hero skin', skinPixel: 'Standard skin', skinDota1: 'DotA1 skin', sound: 'Sound', language: 'Language', start: 'Start run', controls: 'Desktop: WASD / arrows or right-click to move, Q for the active skill, Space to dash, Esc to pause. Mobile uses the joystick and buttons. Basic attacks are automatic; active skills require mana and cooldown.', levelKicker: 'Growth choice', levelTitle: 'Choose an upgrade', levelDesc: 'Each level strengthens one ability. Choose one, then resolve any remaining levels.', shopKicker: 'Between-wave supply · ', shopTitle: 'Battlefield Supply', shopCaption: 'Uncollected materials convert at 80% and all XP is kept. Buy components and combine them through fixed recipes when ready. Recipes take no equipment slot.', shopEquipment: 'Loadout & stats', chestKicker: 'Between-wave loot · unopened ', chestTitle: 'Supply chest', chestDesc: 'Review each chest equipment reward, then take or scrap it.', chestTake: 'Take equipment', chestScrap: 'Scrap for materials', waveAuto: 'Continue automatically', waveContinue: 'Continue settlement', pauseKicker: 'Expedition paused', pauseTitle: 'Paused', pauseDesc: 'Your expedition is waiting here.', pauseDriver: 'Current pilot', pauseStats: 'Stats', catalog: 'View archive', pauseCatalog: 'Open archive', pauseBuffEmpty: 'No permanent buffs', pauseSkills: 'Character skills', resume: 'Resume battle', resumeCountdown: 'Resume countdown', restart: 'Restart', backTitle: 'Back to title', resultRestart: 'Play again', resultHome: 'Back to title', soundOn: 'On', soundOff: 'Off', languageZhCN: '简体中文', languageZhTW: '繁體中文', languageEn: 'English', pauseAria: 'Pause game', pauseTitleAttr: 'Pause (Esc)', skillStripAria: 'Character skills', touchAria: 'Touch controls', joystickAria: 'Movement joystick', skillButton: 'Skill', skillAria: 'Cast active skill', skillTitle: 'Active skill (Q)', dash: 'Dash', dashAria: 'Dash', dashTitle: 'Dash (Space)', noScriptTitle: 'DotaRogue', noScript: 'This frontend browser game needs JavaScript. Use WASD, arrow keys or right-click to move, Q for the active skill, and Space to dash. Mobile uses the joystick and buttons. Equipment combines through fixed component recipes, and skills need both cooldown and mana. No account or server is required.', skillPreview: 'Signature ', soundState: '{state}', record: 'Best record: {best} · Wins {wins}', bestWave: 'Wave {wave}', noRecord: 'none', wave: 'Wave {wave} / {max}', boss: 'Boss', level: 'Level {level}', pending: ' · {count} pending', hp: 'HP {hp} / {max}', defeated: 'Defeated {kills}', dashReady: 'Ready', dashCooldown: '{time}s', finalWaveStart: 'Final wave: defeat {boss}!', waveStart: 'Wave {wave} begins', expeditionComplete: 'Expedition complete', expeditionEnded: 'Expedition ended', coreCalmed: 'The battlefield is clear', reachedWave: 'You reached wave {wave}', victoryMessage: 'You survived all 20 enemy waves and became the last survivor.', defeatMessage: 'This record is saved. Tune your loadout and venture deeper.', completedWaves: 'Waves cleared', earnedMaterials: 'Materials earned', characterLevel: 'Pilot level', levelsLeft: '{count} levels left', wavePrepare: 'Wave preparation', waveSummary: 'Wave settlement', nextWaveTitle: 'Next wave: {wave}', waveDoneTitle: 'Wave {wave} complete', nextWaveMessage: 'The battlefield will reopen soon. Prepare for the next enemy surge.', lootMessage: 'Loot recorded. Next, resolve chests, upgrades and supplies.', finalWaveMessage: 'The final enemy surge is cleared. Preparing the expedition result.', aboutToStart: 'Starting', currentDifficulty: 'Difficulty', waveMaterials: 'Wave materials', pendingChests: 'Chests unopened', currentLevel: 'Current level', startNow: 'Start now', seconds: '{time} sec', secondsRemaining: '{time} sec remaining', scrapFor: 'Scrap for ◇ {amount}', acquired: 'Gained {item}', scrapItem: 'Scrapped {item}: +{amount} materials', autoRecover: 'Recovered {count} chest(s); open between waves. {status}', fullHealth: 'Health full', healthGain: 'Health +{amount}', waveComplete: 'Wave {wave} complete', nextWaveHint: 'Next wave: {wave} · countdown after preparation', finalWaveDone: 'Final wave complete · preparing expedition result', startWaveButton: 'Start wave {wave} ➜', viewResult: 'View expedition result', soldOut: 'Sold out', buy: 'Buy', refresh: 'Refresh stock ◇ {cost}', emptySlot: 'Empty slot', merge: 'Merge', sell: 'Sell ◇{price}', lock: 'Lock', unlock: 'Unlock', locked: '🔒', insufficient: 'Not enough materials', merged: 'Crafted {item}', statLife: 'HP', statPrimaryAttribute: 'Primary attribute', statStrength: 'Strength', statAgility: 'Agility', statIntelligence: 'Intelligence', statArmor: 'Armor', statMove: 'Move speed', statAttackSpeed: 'Attack speed', statCrit: 'Crit', statDodge: 'Dodge', statRegen: 'Regen', statLuck: 'Luck', statAllDamage: 'All damage', statCritDamage: 'Crit damage', statLifesteal: 'Lifesteal', statRegen5: 'HP per 5 sec', statPickup: 'Pickup range', statBaseAttackRange: 'Basic attack range', current: 'Current: {status}', warningBoss: 'Warning: {boss} is approaching!', eliteAppears: '{elite} appears!', noTarget: 'No target in range to mark', marked: 'Marked', overload: 'Overload boundary!', salvageBonus: 'Scavenger bonus: +2 materials', shieldReady: 'Scrap shield ready', loaded: 'Fully loaded!', dodge: 'Dodged!', chestDrop: 'Chest dropped: pick it up to heal; open it between waves', bossDefeated: 'Boss defeated!', chestPending: 'Chest queued; {status}', line: 'Tracer volley!', hazard: 'Watch out: {hazard}', activeReady: 'Q / Ready', cooldown: '{time} sec', nextHitReady: 'Next hit ready', moving: 'Move {time} / 1 sec', fires: '{count} / 6 fires', hits: '{count} / 12 hits', guardReduce: '3 nearby enemies · 22% damage reduction', needNearby: 'Need 3 nearby enemies', attacks: '{count} / 5 attacks', counterReady: '4 enemies · counter ready', materials: '{count} / {max} materials', shield: 'Shield {time} sec', strengthened: 'Boosted {time} sec', triggered: 'Triggered this wave', charge: '{count} / 10 charge', autoRelease: 'Auto-release at 3 stacks', pulseReleasing: 'Pulse releasing', minimapTitle: 'Minimap', minimapAria: 'Classic battlefield minimap. Sentinel bottom left, Scourge top right. The yellow dot is you; the white box is the current view.',
       },
-       biomes: { dota: ['DotA Classic', 'Sentinel & Scourge · three lanes, river & jungle', 'Ancient rift'], docks: ['Red Sand Docks', 'Scorching dust and rogue machinery', 'Thermal vents'], grove: ['Glowfungus Rift', 'Luminous fungi and corrosive spores', 'Spore burst'], frost: ['Bluefrost Wreckage', 'Frozen debris and cold cracks', 'Cold surge'] }, difficulty: { normal: 'Standard', hard: 'Challenge', nightmare: 'Nightmare' }, pace: { normal: 'Standard', quick: 'Quick' },   enemies: { crawler: 'Crawler', runner: 'Hunter Bug', tank: 'Ironback', shooter: 'Spore Shooter', charger: 'Charging Wreck', splitter: 'Splitting Fungus', elite: 'Elite Sentinel', centaur: 'Centaur Khan', satyr: 'Satyr Tormenter', hellbear: 'Hellbear Smasher', darkTroll: 'Dark Troll Summoner', boss: 'Ancient Tyrant' }
+       biomes: { dota: ['DotA Classic', 'Sentinel & Scourge · three lanes, river & jungle', 'Ancient rift'], docks: ['Red Sand Docks', 'Scorching dust and rogue machinery', 'Thermal vents'], grove: ['Glowfungus Rift', 'Luminous fungi and corrosive spores', 'Spore burst'], frost: ['Bluefrost Wreckage', 'Frozen debris and cold cracks', 'Cold surge'] }, difficulty: { normal: 'Standard', hard: 'Challenge', nightmare: 'Nightmare' }, pace: { normal: 'Standard', quick: 'Quick' },   enemies: ENEMY_NAMES['en']
     }
   };
-  Object.assign(LOCALES['zh-CN'].enemies, { frostWraith: '霜冻幽魂', thunderLizard: '雷霆蜥蜴' });
-  Object.assign(LOCALES['zh-TW'].enemies, { frostWraith: '霜凍幽魂', thunderLizard: '雷霆蜥蜴' });
-  Object.assign(LOCALES.en.enemies, { frostWraith: 'Frost Revenant', thunderLizard: 'Thunder Lizard' });
   Object.assign(LOCALES['zh-CN'].ui, { frostNovaWarning: '霜爆 · 离开蓝圈', thunderFanWarning: '三叉雷击 · 避开雷线' });
   Object.assign(LOCALES['zh-TW'].ui, { frostNovaWarning: '霜爆 · 離開藍圈', thunderFanWarning: '三叉雷擊 · 避開雷線' });
   Object.assign(LOCALES.en.ui, { frostNovaWarning: 'Frost burst · leave the circle', thunderFanWarning: 'Triple lightning · dodge the lanes' });
@@ -271,7 +249,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
 
     pauseEquipment: '当前装备', equipmentStripAria: '已持有装备', recipesTitle: '固定合成', equipmentCatalog: '查看装备图鉴', equipmentCatalogNewTab: '新标签查看装备图鉴',
     equipmentGrade: '{grade}级装备', fullEquipment: '装备格已满', equipmentSold: '装备已卖出',
-    emptyEquipment: '暂无装备', equipmentDetails: '查看全部介绍', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力', statSkillPower: '技能伤害',
+    emptyEquipment: '暂无装备', needMana: '蓝量不足', mana: '法力', manaValue: '法力 {mana} / {max}', statAttackPower: '攻击力', statSkillPower: '技能伤害',
     });
   Object.assign(EXTRA_UI['zh-TW'], {
 
@@ -280,7 +258,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
 
     pauseEquipment: '目前裝備', equipmentStripAria: '已持有裝備', recipesTitle: '固定合成', equipmentCatalog: '查看裝備圖鑑', equipmentCatalogNewTab: '在新分頁查看裝備圖鑑',
     equipmentGrade: '{grade}級裝備', fullEquipment: '裝備格已滿', equipmentSold: '裝備已賣出',
-    emptyEquipment: '暫無裝備', equipmentDetails: '查看全部介紹', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力', statSkillPower: '技能傷害',
+    emptyEquipment: '暫無裝備', needMana: '魔法不足', mana: '魔法', manaValue: '魔法 {mana} / {max}', statAttackPower: '攻擊力', statSkillPower: '技能傷害',
     });
   Object.assign(EXTRA_UI.en, {
 
@@ -289,7 +267,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
 
     pauseEquipment: 'Current equipment', equipmentStripAria: 'Held equipment', recipesTitle: 'Fixed recipes', equipmentCatalog: 'View equipment archive', equipmentCatalogNewTab: 'Open equipment archive in new tab',
     equipmentGrade: 'Grade {grade}', fullEquipment: 'Equipment slots full', equipmentSold: 'Equipment sold',
-    emptyEquipment: 'No equipment', equipmentDetails: 'View full details', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power', statSkillPower: 'Spell power',
+    emptyEquipment: 'No equipment', needMana: 'Not enough mana', mana: 'Mana', manaValue: 'Mana {mana} / {max}', statAttackPower: 'Attack power', statSkillPower: 'Spell power',
     });
 
   const BUFF_UI = {
@@ -433,6 +411,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     document.querySelector('meta[name="description"]')?.setAttribute('content', ui.metaDescription);
     document.querySelectorAll('[data-i18n]').forEach(el => { el.textContent = t(el.dataset.i18n); });
     document.querySelectorAll('[data-i18n-attr]').forEach(el => el.dataset.i18nAttr.split(';').forEach(pair => { const [attr, key] = pair.split(':'); if (attr && key) el.setAttribute(attr, t(key)); }));
+    if ($('jungle-buffs')) $('jungle-buffs').setAttribute('aria-label', selectedLocale === 'en' ? 'Jungle buffs' : selectedLocale === 'zh-TW' ? '野區增益' : '野区增益');
     const minimapCaption = document.querySelector('#minimap-panel figcaption');
     const minimapCanvas = $('minimap');
     if (minimapCaption) minimapCaption.textContent = selectedLocale === 'en' ? 'Minimap' : selectedLocale === 'zh-TW' ? '小地圖' : '小地图';
@@ -851,13 +830,19 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const radius = actor.radius ?? actor.r;
     const steps = Math.max(1, Math.ceil(Math.hypot(dx, dy) / 12));
     const sx = dx / steps, sy = dy / steps;
+    const canMove = (x, y) => {
+      if (terrainCollision(x, y, radius)) return false;
+      if (!actor.neutralCamp) return true;
+      const camp = actor.neutralCamp, next = Math.hypot(x - camp.x, y - camp.y);
+      return next <= camp.leashRadius - radius || next < Math.hypot(actor.x - camp.x, actor.y - camp.y);
+    };
     for (let i = 0; i < steps; i++) {
       const nx = clamp(actor.x + sx, radius, WORLD.w - radius);
       const ny = clamp(actor.y + sy, radius, WORLD.h - radius);
-      if (!terrainCollision(nx, ny, radius)) { actor.x = nx; actor.y = ny; }
+      if (canMove(nx, ny)) { actor.x = nx; actor.y = ny; }
       else {
-        if (!terrainCollision(nx, actor.y, radius)) actor.x = nx;
-        if (!terrainCollision(actor.x, ny, radius)) actor.y = ny;
+        if (canMove(nx, actor.y)) actor.x = nx;
+        if (canMove(actor.x, ny)) actor.y = ny;
       }
     }
   }
@@ -1054,6 +1039,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     $('biome-list').innerHTML = BIOMES.map(b => `<button class="selection-card" type="button" data-biome="${b.id}" aria-pressed="${selectedBiome === b.id}"><span class="selection-icon">${b.id === 'dota' ? '<canvas id="dota-map-preview" width="80" height="80" class="art-icon" aria-hidden="true"></canvas>' : artIcon(`map-${b.id}-preview`, b.icon)}</span><span><strong>${b.name}</strong><small>${b.desc}</small></span></button>`).join('');
     const preview = $('dota-map-preview');
     drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: 80, h: 80, player: DOTA_SPAWN });
+    drawNeutralMinimap(preview.getContext('2d'), NEUTRAL_CAMP_DEFS.map(def => ({ def, unit: null, respawnAt: 0 })), { w: 80, h: 80, time: 0, locale: selectedLocale });
     $('difficulty-list').innerHTML = DIFFICULTIES.map(d => `<button type="button" data-difficulty="${d.id}" aria-pressed="${selectedDifficulty === d.id}">${d.name}</button>`).join('');
     $('pace-list').innerHTML = PACES.map(p => `<button type="button" data-pace="${p.id}" aria-pressed="${selectedPace === p.id}">${p.name}</button>`).join('');
     $('mode-list').innerHTML = MODES.map(m => `<button type="button" data-mode="${m.id}" aria-pressed="${selectedMode === m.id}">${modeName(m.id)}</button>`).join('');
@@ -1069,12 +1055,38 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function showPhase(next) {
     sceneDirty = true;
     phase = next;
+    if (['level', 'shop', 'chest'].includes(next)) $('toast').classList.remove('show');
     if (next !== 'combat') { moveTarget = null; moveFlow = null; }
     hideScreens();
     $('hud').classList.toggle('hidden', next !== 'combat');
     $('touch-controls').classList.toggle('hidden', next !== 'combat');
     const screen = { title: 'title-screen', level: 'level-screen', shop: 'shop-screen', chest: 'chest-screen', pause: 'pause-screen', 'wave-result': 'wave-result-screen', result: 'result-screen' }[next];
     if (screen) $(screen).classList.remove('hidden');
+  }
+  function canTargetEnemy(enemy) {
+    if (!enemy || enemy.dead) return false;
+    if (!enemy.neutralCamp) return true;
+    return neutralInRange(run, enemy) && (enemy.neutralState === 'combat'
+      || Math.hypot(run.player.x - enemy.neutralCamp.x, run.player.y - enemy.neutralCamp.y) <= enemy.neutralCamp.aggroRadius);
+  }
+  function waveEnemyCount() { return run.enemies.filter(enemy => !enemy.dead && !enemy.neutralCamp).length; }
+  function effectiveHaste(activeRun = run) { return (activeRun?.stats.abilityHaste || 0) + (activeRun && jungleBuffActive(activeRun, 'blue') ? 15 : 0); }
+  function effectiveManaRegen() { return run.stats.manaRegen + (jungleBuffActive(run, 'blue') ? 4 : 0); }
+  function localText(text) { return text[selectedLocale] || text.en; }
+  function jungleBuffMarkup(details = false) {
+    return jungleBuffEntries(run).map(([key, def]) => `<div class="jungle-buff jungle-buff-${key}"><strong>${localText(def.name)} · ${Math.ceil(run.jungleBuffs[key] - run.totalTime)}s</strong>${details ? `<span>${localText(def.desc)}</span>` : ''}</div>`).join('');
+  }
+  function ensureNeutralCamps() {
+    for (const camp of run.neutralCamps) if ((!camp.unit || camp.unit.dead) && run.totalTime >= camp.respawnAt) spawnNeutralCamp(run, camp, spawnEnemy);
+  }
+  function awakenFinalRoshan() {
+    if (run.biome.id !== 'dota' || run.wave !== MAX_WAVES || studioMode) return;
+    const camp = run.neutralCamps.find(camp => camp.def.key === 'roshan');
+    if (!camp.unit || camp.unit.dead) spawnNeutralCamp(run, camp, spawnEnemy);
+    const unit = camp.unit;
+    clearNeutralEffects(unit);
+    Object.assign(unit, { x: camp.def.x, y: camp.def.y, hp: unit.maxHp, neutralState: 'idle', windup: 0, attackClock: 1, enraged: false, enrage: 0, finalObjective: true });
+    run.bossFight = true; run.bossesRemaining = 1;
   }
   function createBaseAttack(id) { return { id, uid: ++uid, cool: 0 }; }
   function createRun() {
@@ -1096,7 +1108,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       wave: 0, elapsed: 0, totalTime: 0, timeLeft: 0, kills: 0, money: 0, earned: 0, voiceLow: false,
       level: 1, xp: 0, xpNeed: 8, pendingLevels: 0, levelChoices: [],
       baseAttack: createBaseAttack(CHARACTER_ATTACKS[character.id]),
-      equipment: [], equipmentReserve: [], equipmentPassives: null, autoForge: true, forgeTargets: ['', ''], builds: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0, orbitReadyAt: 4, orbitIndex: 0, clockworkGuards: [] }, shopOffers: [], rerolls: 0,
+      equipment: [], equipmentReserve: [], equipmentPassives: null, builds: [], buffs: {}, buffState: { graveCharges: 0, receivedHits: 0, orbitReadyAt: 4, orbitIndex: 0, clockworkGuards: [] }, shopOffers: [], rerolls: 0,
       equipmentCapacity: EQUIPMENT_CAPACITY,
       pendingChests: 0, chestReward: null, attackSeq: 0, chainProcAttackId: 0, chainReadyAt: 0,
 
@@ -1108,6 +1120,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         eclipse: null, tb: createTerrorbladeState(), dagonReadyAt: 6, cycloneReadyAt: 9, necroReadyAt: 12,
         necroUnits: [], skillHeals: [], lastHurtAt: 0, phaseSpeedUntil: 0, phaseAttackUntil: 0, returnReadyAt: 0 },
       terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
+      neutralCamps: biome.id === 'dota' && !studioMode ? createNeutralCamps() : [], jungleBuffs: {},
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
       spawnClock: 0, nearbySpawnClock: 0, hazardClock: 8, specialSpawned: false, eliteIndex: 0, normalChestDropped: false, regenClock: 0, lifeClock: 0,
       bossFight: false, bossesRemaining: 0, pendingVictory: false, hudClock: 0, screenShake: 0,
@@ -1150,7 +1163,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       kaelPassiveTimer: 5,
       kaelMeteors: [], kaelIceWalls: [], kaelBlasts: [], kaelSpirits: [], eclipse: null, tb: createTerrorbladeState(),
       necroUnits: [], phaseSpeedUntil: 0, phaseAttackUntil: 0 });
-    run.enemies = []; run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
+    run.enemies = run.enemies.filter(e => e.neutralCamp && !e.dead); run.bullets = []; run.enemyBullets = []; run.pickups = []; run.effects = []; run.hazards = [];
+    ensureNeutralCamps();
+    for (const camp of run.neutralCamps) if (camp.unit && !camp.unit.dead) { camp.unit.windup = 0; camp.unit.attackClock = 1; }
+    awakenFinalRoshan();
     run.player.invuln = 1;
     run.waveStartKills = run.kills;
     run.waveStartMoney = run.money;
@@ -1266,7 +1282,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const stacks = buffCount('orbitingArray');
     if (!stacks || !run?.player) return false;
     const p = run.player;
-    const targets = run.enemies.filter(enemy => !enemy.dead
+    const targets = run.enemies.filter(enemy => canTargetEnemy(enemy)
       && distance(enemy, p) <= 260 + enemy.r
       && !terrainLineBlocked(p.x, p.y, enemy.x, enemy.y, 4, false))
       .sort((a, b) => distance(a, p) - distance(b, p));
@@ -1315,7 +1331,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       let target = null, nearest = Infinity;
       for (const enemy of run.enemies) {
         const d = distance(enemy, point);
-        if (enemy.dead || d > 280 + enemy.r || d >= nearest
+        if (!canTargetEnemy(enemy) || d > 280 + enemy.r || d >= nearest
           || terrainLineBlocked(point.x, point.y, enemy.x, enemy.y, 3, false)) continue;
         target = enemy; nearest = d;
       }
@@ -1332,9 +1348,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     guards.length = stacks;
   }
   const WEAPON_TEXT = {
-    'zh-CN': { reserve: '待用储备', reserveHint: '满格物品保留在这里，不提供属性、被动或羁绊；可装备、交换或作为合成材料。', reserveEmpty: '储备为空，满格后仍可继续收集。', active: '装备', loadoutSummary: '装备 {active}/12 · 储备 {reserve}', stash: '移入储备', equip: '装备', swap: '交换装备', swapWith: '替换哪件生效装备', auto: '自动合成与同级升阶', target: '合成目标 {n}', none: '未追踪目标', forgeHint: '按目标顺序完成整条配方，重复成品自动三合一。可关闭自动化，继续手动合成。', forged: '自动完成 {count} 次合成／升阶', builds: '装备羁绊', independent: '独立成品 · 无羁绊', members: '搭配装备', buildRule: '仅生效的不同成品计数，同名重复与强化等级不额外计件。', buildActive: '已激活', buildNext: '下一档 {count} 件', stored: '已收入储备：{item}', unlock: '圣剑铸造：通关第10波解锁（{wave}/10）', unlocked: '本局圣剑已解锁：高额剑气伤害，同时增加承伤。', summary: '装备 {active}/12 · 储备 {reserve}', quality: '品级 {grade} · {name}', level: '强化 Lv.{level}', qualities: ['普通','精良','稀有','史诗','传说'] },
-    'zh-TW': { reserve: '待用儲備', reserveHint: '滿格物品保留在這裡，不提供屬性、被動或羈絆；可裝備、交換或作為合成材料。', reserveEmpty: '儲備為空，滿格後仍可繼續收集。', active: '裝備', loadoutSummary: '裝備 {active}/12 · 儲備 {reserve}', stash: '移入儲備', equip: '裝備', swap: '交換裝備', swapWith: '替換哪件生效裝備', auto: '自動合成與同級升階', target: '合成目標 {n}', none: '未追蹤目標', forgeHint: '按目標順序完成整條配方，重複成品自動三合一。可關閉自動化，繼續手動合成。', forged: '自動完成 {count} 次合成／升階', builds: '裝備羈絆', independent: '獨立成品 · 無羈絆', members: '搭配裝備', buildRule: '僅生效的不同成品計數，同名重複與強化等級不額外計件。', buildActive: '已啟用', buildNext: '下一檔 {count} 件', stored: '已收入儲備：{item}', unlock: '聖劍鑄造：通關第10波解鎖（{wave}/10）', unlocked: '本局聖劍已解鎖：高額劍氣傷害，同時增加承傷。', summary: '裝備 {active}/12 · 儲備 {reserve}', quality: '品級 {grade} · {name}', level: '強化 Lv.{level}', qualities: ['普通','精良','稀有','史詩','傳說'] },
-    en: { reserve: 'Reserve', reserveHint: 'Overflow items stay here without stats, passives or set bonuses. Equip, swap, sell or craft with them.', reserveEmpty: 'Reserve is empty. Full slots never stop collecting.', active: 'Equipment', loadoutSummary: 'Equipment {active}/12 · Reserve {reserve}', stash: 'Store in reserve', equip: 'Equip', swap: 'Swap equipment', swapWith: 'Active item to replace', auto: 'Auto craft and merge', target: 'Crafting priority {n}', none: 'No tracked target', forgeHint: 'Complete whole recipes in priority order; merge matching finished items automatically. Disable to craft manually.', forged: '{count} automatic craft / merge action(s)', builds: 'Equipment synergies', independent: 'Independent · No synergy', members: 'Matching gear', buildRule: 'Count unique active finished items. Copies and upgrade levels do not add set pieces.', buildActive: 'Active', buildNext: 'Next tier: {count} items', stored: 'Stored in reserve: {item}', unlock: 'Divine Rapier: clear wave 10 to unlock ({wave}/10)', unlocked: 'Divine Rapier unlocked for this run: powerful sword waves, with increased damage taken.', summary: 'Equipment {active}/12 · Reserve {reserve}', quality: 'Grade {grade} · {name}', level: 'Upgrade Lv.{level}', qualities: ['Common','Uncommon','Rare','Epic','Legendary'] }
+    'zh-CN': { reserve: '待用储备', reserveHint: '满格物品保留在这里，不提供属性、被动或羁绊；可装备、交换或作为合成材料。', reserveEmpty: '储备为空，满格后仍可继续收集。', active: '装备', loadoutSummary: '装备 {active}/12 · 储备 {reserve}', stash: '移入储备', storeShort: '储备', equip: '装备', swap: '交换装备', swapWith: '替换哪件生效装备', forged: '自动升阶 {count} 件装备', builds: '装备羁绊', independent: '独立成品 · 无羁绊', members: '搭配装备', buildRule: '仅生效的不同成品计数，同名重复与强化等级不额外计件。', buildActive: '已激活', buildNext: '下一档 {count} 件', stored: '已收入储备：{item}', summary: '装备 {active}/12 · 储备 {reserve}', quality: '品级 {grade} · {name}', level: '强化 Lv.{level}', qualities: ['普通','精良','稀有','史诗','传说'] },
+    'zh-TW': { reserve: '待用儲備', reserveHint: '滿格物品保留在這裡，不提供屬性、被動或羈絆；可裝備、交換或作為合成材料。', reserveEmpty: '儲備為空，滿格後仍可繼續收集。', active: '裝備', loadoutSummary: '裝備 {active}/12 · 儲備 {reserve}', stash: '移入儲備', storeShort: '儲備', equip: '裝備', swap: '交換裝備', swapWith: '替換哪件生效裝備', forged: '自動升階 {count} 件裝備', builds: '裝備羈絆', independent: '獨立成品 · 無羈絆', members: '搭配裝備', buildRule: '僅生效的不同成品計數，同名重複與強化等級不額外計件。', buildActive: '已啟用', buildNext: '下一檔 {count} 件', stored: '已收入儲備：{item}', summary: '裝備 {active}/12 · 儲備 {reserve}', quality: '品級 {grade} · {name}', level: '強化 Lv.{level}', qualities: ['普通','精良','稀有','史詩','傳說'] },
+    en: { reserve: 'Reserve', reserveHint: 'Overflow items stay here without stats, passives or set bonuses. Equip, swap, sell or craft with them.', reserveEmpty: 'Reserve is empty. Full slots never stop collecting.', active: 'Equipment', loadoutSummary: 'Equipment {active}/12 · Reserve {reserve}', stash: 'Store in reserve', storeShort: 'Store', equip: 'Equip', swap: 'Swap equipment', swapWith: 'Active item to replace', forged: 'Automatically merged {count} equipment group(s)', builds: 'Equipment synergies', independent: 'Independent · No synergy', members: 'Matching gear', buildRule: 'Count unique active finished items. Copies and upgrade levels do not add set pieces.', buildActive: 'Active', buildNext: 'Next tier: {count} items', stored: 'Stored in reserve: {item}', summary: 'Equipment {active}/12 · Reserve {reserve}', quality: 'Grade {grade} · {name}', level: 'Upgrade Lv.{level}', qualities: ['Common','Uncommon','Rare','Epic','Legendary'] }
   };
   function wt(key, values = {}) {
     return Object.entries(values).reduce((value, [name, replacement]) => value.replaceAll(`{${name}}`, replacement), WEAPON_TEXT[selectedLocale][key]);
@@ -1347,13 +1363,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function equipmentQualityName(def) {
     return t('buffRarity_' + (def.grade >= 5 ? 'legendary' : def.grade === 4 ? 'epic' : def.grade === 3 ? 'rare' : 'common'));
   }
-  function equipmentOfferMeta(def) {
-    const badges = equipmentBadges(def, { includeQuality: false });
-    return `${equipmentKind(def)}${badges ? ` · ${badges}` : ''}`;
-  }
   function allEquipment() { return [...run.equipment, ...run.equipmentReserve]; }
-  function unlockedEquipment(id) { return !EQUIPMENT[id].hidden || run.wave >= 10; }
-  function craftPlans(incomingId = null) { return availableEquipmentCrafts(allEquipment(), incomingId).filter(plan => unlockedEquipment(plan.id)); }
+  function craftPlans(incomingId = null) { return availableEquipmentCrafts(allEquipment(), incomingId); }
   function commitLoadout(next, preserveResources = true) {
     if (!next) return false;
     const hp = run.player.hp, mana = run.player.mana, delta = {}, attributeDelta = {};
@@ -1372,9 +1383,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return true;
   }
   function autoForge() {
-    if (!run.autoForge) return;
-    const targets = [...new Set(run.forgeTargets.filter(id => id && unlockedEquipment(id)))];
-    const next = automate(run.equipment, run.equipmentReserve, targets, createEquipment, run.equipmentCapacity);
+    const next = automate(run.equipment, run.equipmentReserve, [], createEquipment, run.equipmentCapacity);
     if (next?.actions.length && commitLoadout(next)) {
       showToast(wt('forged', { count: next.actions.length })); playSfx('merge');
     }
@@ -1391,14 +1400,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function addEquipment(id, silent = false) {
     const def = equipmentDef(id);
-    if (!def || !unlockedEquipment(id)) return false;
+    if (!def) return false;
     const next = acquisition(run.equipment, run.equipmentReserve, createEquipment(id), run.equipmentCapacity);
     if (!commitLoadout(next, false)) return false;
     if (!silent) showToast(next.location === 'reserve' ? wt('stored', { item: equipmentName(def) }) : t('acquired', { item: equipmentName(def) }));
     return true;
   }
   function craftEquipment(id, incomingId = null) {
-    if (!run || !['shop', 'chest'].includes(phase) || !unlockedEquipment(id)) return false;
+    if (!run || !['shop', 'chest'].includes(phase)) return false;
     const next = craftLoadout(run.equipment, run.equipmentReserve, id, createEquipment, run.equipmentCapacity, incomingId);
     if (!commitLoadout(next)) return false;
     showToast(t('merged', { item: equipmentName(equipmentDef(id)) })); playSfx('merge');
@@ -1422,14 +1431,18 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const level = equipmentLevel(item);
     if (level === 3) return `<span class="upgrade-max">${t('upgradeMax')}</span>`;
     const next = equipmentDef({ id: item.id, level: level + 1 });
-    const actual = t('upgradeActual', { crit: clamp(run.stats.crit, 0, 90), dodge: clamp(run.stats.dodge, 0, 55), haste: Number(clamp(run.stats.abilityHaste, 0, 60).toFixed(2)) });
+    const actual = t('upgradeActual', { crit: clamp(run.stats.crit, 0, 90), dodge: clamp(run.stats.dodge, 0, 55), haste: Number(clamp(effectiveHaste(), 0, 60).toFixed(2)) });
     return `<details class="upgrade-preview"><summary>${t('upgradePreview')}</summary><p><strong>${equipmentName(next)}</strong></p><p>${[equipmentUpgradeDescription(next, selectedLocale), attributeSummary(next.attributes, selectedLocale)].filter(Boolean).join(' · ')}</p>${EQUIPMENT[item.id]?.growth ? `<p>${killGrowthText(item.id, false)} · ${t('upgradeKept')}</p>` : `<p>${t('upgradeKept')}</p>`}<p>${actual}</p></details><div class="craft-actions"><button class="upgrade-button" type="button" data-upgrade="${item.uid}" ${count < 3 ? 'disabled' : ''}>${t('upgradeTo', { level: level + 1, count })}</button>${count >= 6 ? `<button class="upgrade-button" type="button" data-upgrade="${item.uid}" data-batch="true">${t('upgradeBatch', { level: level + 1, groups: Math.floor(count / 3) })}</button>` : ''}</div>`;
   }
 
   function focusCraftResult(id) {
     const target = phase === 'chest' ? '#chest-craft-list button:not(:disabled), #chest-take-button:not(:disabled), #chest-scrap-button'
-      : id ? `#quick-craft-list [data-craft="${id}"]` : '#craft-hub-summary';
-    (document.querySelector(target) || $('craft-hub-summary')).focus();
+      : id ? `#quick-craft-list [data-craft="${id}"], #recipe-list [data-recipe="${id}"] > summary` : '#quick-craft-list button:not(:disabled)';
+    const button = [...document.querySelectorAll(target)]
+      .find(element => !element.disabled && !element.closest('details:not([open])') && element.getClientRects().length);
+    if (button) button.focus();
+    else if (phase === 'chest') $('chest-scrap-button').focus();
+    else focusShopControl('#reroll-button');
   }
 
   function equipmentPool() {
@@ -1445,7 +1458,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return pool.find((_, i) => (roll -= weights[i]) < 0) || pool[pool.length - 1];
   }
   function randomEquipmentId() { return weightedEquipment(equipmentPool()); }
-  function shopRates() { return { finished: run.wave >= 10 ? .06 : run.wave >= 5 ? .04 : .02, intermediate: run.wave >= 10 ? .14 : run.wave >= 5 ? .1 : 0 }; }
+  function shopRates() {
+    const wave = Math.max(1, run.wave), multiplier = Math.max(0, 1 + run.stats.luck / 100);
+    return { finished: Math.min(.20, Math.max(0, wave - 2) * .0125 * multiplier),
+      intermediate: Math.min(.25, Math.max(0, wave - 1) * .025 * multiplier) };
+  }
   function addXp(amount) {
     run.xp += amount;
     while (run.xp >= run.xpNeed) {
@@ -1485,7 +1502,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const supply = !studioMode && run.wave <= 5
       ? paceBonus + (run.wave === 1 ? Math.max(24, 40 - run.money - paceBonus) : 10) : 0;
     run.money += supply; run.earned += supply;
-    run.enemies = []; run.enemyBullets = []; run.bullets = [];
+    run.enemies = run.enemies.filter(e => e.neutralCamp && !e.dead); run.enemyBullets = []; run.bullets = [];
     run.waveSummary = {
       wave: run.wave,
       kills: run.kills - run.waveStartKills,
@@ -1618,14 +1635,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     heal(2 + Math.round(run.player.maxHp * .16));
     showPhase('shop'); renderShop();
     $('shop-screen').querySelector('.shop-card').scrollTop = 0;
-    $('craft-hub-summary').focus({ preventScroll: true });
+    focusShopControl('#shop-offers .buy-button:not(:disabled)');
   }
   function recipeComponentHint(excluded) {
     const pool = equipmentPool().filter(id => !excluded.has(id));
     let best = null, bestProgress = 0;
     for (const def of Object.values(EQUIPMENT)) {
       if (!def.recipe) continue;
-      if (!unlockedEquipment(def.id || Object.keys(EQUIPMENT).find(id => EQUIPMENT[id] === def))) continue;
       const missing = def.recipe.filter(id => !allEquipment().some(item => item.id === id));
       const progress = (def.recipe.length - missing.length) / def.recipe.length;
       if (!progress || !missing.length) continue;
@@ -1660,12 +1676,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     const rates = shopRates(), roll = Math.random();
     const kind = hint ? 'component' : forceKind || (roll < rates.finished ? 'finished' : roll < rates.finished + rates.intermediate ? 'intermediate' : 'component');
-    const pool = (kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind && unlockedEquipment(id))).filter(id => !excluded.has(id));
+    const pool = (kind === 'component' ? equipmentPool() : EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === kind)).filter(id => !excluded.has(id));
     const id = hint || weightedEquipment(pool);
     const baseCost = EQUIPMENT[id].price + run.wave * 1.4;
     return { kind: 'equipment', id, cost: Math.round(baseCost * (1 + endlessFactor() / 5)), locked: false };
   }
-  function equipmentKind(def) { return t(def.kind); }
   function shopRerollCost() {
     const freeFirst = run.wave <= 5;
     if (freeFirst && run.rerolls === 0) return 0;
@@ -1699,19 +1714,17 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       return `<div class="quick-craft-card is-ready" ${equipmentAttributes(def)}><span class="craft-kind">${t('craftKind')}</span><strong>${equipmentIcon(plan.id)} ${equipmentName(def)}</strong><p class="craft-meta">${t('craftInputs', { items: craftSourceText(plan) })}</p>${plan.steps.length > 1 ? `<p class="craft-meta">${t('craftRoute', { items: plan.steps.map(id => equipmentName(equipmentDef(id))).join(' → ') })}</p>` : ''}<details class="upgrade-preview"><summary>${t('craftResult')}</summary><p>${equipmentDesc(def)}</p></details><div class="craft-actions"><button type="button" data-craft="${plan.id}">${t(plan.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div></div>`;
     }).join('') + upgradeGroups.filter(group => group.length >= 3).map(upgradeCard).join('');
     const incomplete = upgradeGroups.filter(group => group.length < 3);
-    $('quick-craft-list').innerHTML = (ready || `<p class="craft-empty">${t('craftEmpty')}</p>`)
+    $('quick-craft-list').innerHTML = ready
       + (incomplete.length ? `<details class="craft-progress"><summary>${t('upgradeProgress', { count: incomplete.length })}</summary><div class="quick-craft-list">${incomplete.map(upgradeCard).join('')}</div></details>` : '');
+    $('craft-hub').classList.toggle('hidden', !ready && !incomplete.length);
   }
   function renderShop() {
     sceneDirty = true;
     $('shop-wave').textContent = t('waveComplete', { wave: run.wave });
     const hasNextWave = isEndlessRun() || run.wave < MAX_WAVES;
-    const rates = shopRates();
-    $('shop-next-wave').textContent = (hasNextWave ? t('nextWaveHint', { wave: run.wave + 1 }) : t('finalWaveDone')) + ' · ' + t('shopRates', { finished: Math.round(rates.finished * 100), intermediate: Math.round(rates.intermediate * 100) });
+    $('shop-next-wave').textContent = hasNextWave ? t('nextWaveTitle', { wave: run.wave + 1 }) : t('finalWaveDone');
     $('next-wave-button').textContent = hasNextWave ? t('startWaveButton', { wave: run.wave + 1 }) : t('viewResult');
     $('shop-money').textContent = run.money;
-    const oddsLocale = selectedLocale === 'en' ? 'en-US' : selectedLocale;
-    $('buff-rarity-legend').innerHTML = `<span>${t('buffChances', { luck: run.stats.luck })}</span>` + Object.entries(buffRarityChances(run.wave, run.stats.luck)).map(([rarity, chance]) => `<span class="buff-rarity" data-buff-rarity="${rarity}">${t('buffRarity_' + rarity)} ${(chance * 100).toLocaleString(oddsLocale, { maximumFractionDigits: 2 })}%</span>`).join('');
     $('shop-offers').innerHTML = run.shopOffers.map((offer, i) => {
       if (!offer) return `<div class="offer-card" aria-label="${t('soldOut')}"><span class="tier-label">${t('soldOut')}</span></div>`;
       const isBuff = offer.kind === 'buff';
@@ -1722,19 +1735,18 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const desc = isBuff ? buffDesc(def) : equipmentDesc(def);
       const icon = isBuff ? buffIcon(def) : equipmentIcon(offer.id);
       const qualityLabel = isBuff ? '' : ` title="${equipmentQualityName(def)}" aria-label="${name} · ${equipmentQualityName(def)}"`;
-      const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : equipmentOfferMeta(def);
+      const tier = isBuff ? `${buffRarityBadge(def)} ${t('buffKind')} · ${t('buffStack', { count: buffCount(offer.id) })}` : equipmentBadges(def, { includeQuality: false });
       const plans = isBuff ? [] : craftPlans(offer.id);
       const canUpgrade = !isBuff && EQUIPMENT_UPGRADES[offer.id] && allEquipment().filter(item => item.id === offer.id && equipmentLevel(item) === 1).length >= 2;
       const craftActions = plans.map(plan => `<button type="button" data-buy="${i}" data-buy-craft="${plan.id}" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyCraft', { cost: offer.cost, item: equipmentName(equipmentDef(plan.id)) })}</button>`).join('')
         + (canUpgrade ? `<button type="button" data-buy="${i}" data-buy-upgrade="true" ${run.money < offer.cost ? 'disabled' : ''}>${t('buyUpgrade', { cost: offer.cost })}</button>` : '');
-      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : equipmentAttributes(def)}><div class="offer-head"><span class="offer-icon">${icon}</span><span class="tier-label">${tier}</span></div><strong${qualityLabel}>${name}</strong><p>${desc}</p>${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
+      return `<div class="offer-card ${isBuff ? 'buff-offer' : def.kind === 'finished' ? 'finished-equipment' : ''} ${offer.locked ? 'locked' : ''}" ${isBuff ? `data-buff-rarity="${def.rarity}"` : equipmentAttributes(def)}><div class="offer-head"><span class="offer-icon">${icon}</span><strong${qualityLabel}>${name}</strong></div>${tier ? `<span class="tier-label">${tier}</span>` : ''}<p>${desc}</p>${craftActions ? `<details class="offer-craft-actions"><summary>${t('craftChoices', { count: plans.length + Number(!!canUpgrade) })}</summary><div class="craft-actions">${craftActions}</div></details>` : ''}<div class="offer-actions"><button class="buy-button" type="button" data-buy="${i}" ${disabled ? `disabled title="${reason}"` : ''}>◇ ${offer.cost} ${t('buy')}</button><button type="button" data-lock="${i}" aria-label="${offer.locked ? t('unlock') : t('lock')} ${name}" aria-pressed="${offer.locked}">${offer.locked ? t('locked') : t('lock')}</button></div></div>`;
     }).join('');
     const rerollCost = shopRerollCost();
     $('reroll-button').textContent = rerollCost === 0 ? t('freeRefresh') : t('refresh', { cost: rerollCost });
     $('reroll-button').disabled = run.money < rerollCost;
     const groups = equipmentGroups(), plans = craftPlans();
     renderCraftHub(plans, groups);
-    renderForgeSettings();
     $('inventory').innerHTML = inventoryCards(run.equipment, false);
     $('reserve-inventory').innerHTML = inventoryCards(run.equipmentReserve, true);
     $('reserve-title').textContent = wt('reserve');
@@ -1748,13 +1760,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const def = BUFFS[id];
       const chargeNote = id === 'shallowGrave' ? `<small>${t('buffNextCharges', { count: buffCount(id) })}</small>` : '';
       return `<div class="buff-item" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)}</strong>${buffRarityBadge(def)}<small>${t('buffStack', { count: buffCount(id) })}</small>${chargeNote}<p>${buffDesc(def)}</p></div></div>`;
-    }).join('') || `<p class="buff-empty">${t('buffEmpty')}</p>`;
-    $('buff-list').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
-    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe && unlockedEquipment(id))
+    }).join('');
+    $('owned-buffs').classList.toggle('hidden', !BUFF_IDS.some(id => buffCount(id) > 0));
+    const selectedRecipe = $('recipe-list').querySelector('.recipe-card[open]')?.dataset.recipe;
+    $('recipe-list').innerHTML = EQUIPMENT_IDS.filter(id => equipmentDef(id).recipe)
       .sort((a, b) => Number(!!planEquipmentCraft(allEquipment(), b)) - Number(!!planEquipmentCraft(allEquipment(), a)) || recipeProgress(equipmentDef(b)) / EQUIPMENT[b].recipe.length - recipeProgress(equipmentDef(a)) / EQUIPMENT[a].recipe.length).map(id => {
       const def = equipmentDef(id), plan = planEquipmentCraft(allEquipment(), id), ready = !!plan;
       const parts = def.recipe.map(part => `<span class="recipe-node ${allEquipment().some(item => item.id === part) ? '' : 'missing'}">${equipmentIcon(part)} ${equipmentName(equipmentDef(part))}</span>`).join('<span class="recipe-arrow" aria-hidden="true">+</span>');
-      return `<div class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}" ${equipmentAttributes(def)}><strong>${equipmentIcon(id)} ${equipmentName(def)}</strong>${equipmentBadges(def)}<span class="recipe-chain">${parts}</span><span class="recipe-progress">${t('craftProgress', { owned: recipeProgress(def), total: def.recipe.length })}</span>${plan?.steps.length > 1 ? `<p>${t('craftRoute', { items: plan.steps.map(step => equipmentName(equipmentDef(step))).join(' → ') })}</p>` : ''}<p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t(plan?.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div>`;
+      return `<details class="recipe-card ${def.kind === 'finished' ? 'finished-equipment' : ''} ${ready ? 'is-ready' : ''}" data-recipe="${id}" ${equipmentAttributes(def)} ${selectedRecipe === id ? 'open' : ''}><summary aria-label="${equipmentName(def)}" title="${equipmentName(def)}">${equipmentIcon(id)}<strong>${equipmentName(def)}</strong></summary><div class="recipe-detail">${equipmentBadges(def)}<span class="recipe-chain">${parts}</span><span class="recipe-progress">${t('craftProgress', { owned: recipeProgress(def), total: def.recipe.length })}</span>${plan?.steps.length > 1 ? `<p>${t('craftRoute', { items: plan.steps.map(step => equipmentName(equipmentDef(step))).join(' → ') })}</p>` : ''}<p>${equipmentDesc(def)}</p><button type="button" data-craft="${id}" ${ready ? '' : 'disabled'}>${t(plan?.steps.length > 1 ? 'craftChain' : 'craftTarget', { item: equipmentName(def) })}</button></div></details>`;
     }).join('');
     $('shop-stats').textContent = statSummary();
   }
@@ -1764,7 +1777,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const item = group[0], def = equipmentDef(item);
       const swap = reserve && !equipmentCanFit() ? `<label>${wt('swapWith')}<select data-swap-for="${item.uid}">${run.equipment.map(active => `<option value="${active.uid}">${equipmentName(equipmentDef(active))}</option>`).join('')}</select></label>` : '';
       const location = reserve ? wt('reserve') : wt('active');
-      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" ${equipmentAttributes(def)} tabindex="-1"><strong title="${equipmentQualityName(def)}" aria-label="${equipmentName(def)} · ${equipmentQualityName(def)}">${equipmentIcon(item.id)} ${equipmentName(def)}</strong><span class="inventory-count" title="${location}" aria-label="${location} ×${group.length}">×${group.length}</span>${equipmentBadges(def, { includeQuality: false })}<details class="equipment-details"><summary>${t('equipmentDetails')}</summary><p>${equipmentDesc(def, item)}</p></details><div class="equipment-actions">${swap}<button type="button" data-move="${item.uid}" data-to-active="${reserve}">${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('stash')}</button><button type="button" data-sell="${item.uid}">${t('sellOne', { price: equipmentSellPrice(item) })}</button></div></div>`;
+      return `<div class="inventory-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" data-equipment-uid="${item.uid}" data-equipment-id="${item.id}" ${equipmentAttributes(def)} tabindex="-1"><details class="equipment-details"><summary title="${equipmentQualityName(def)}" aria-label="${equipmentName(def)} · ${equipmentQualityName(def)}">${equipmentIcon(item.id)}<strong>${equipmentName(def)}</strong></summary><p>${equipmentDesc(def, item)}</p></details>${group.length > 1 ? `<span class="inventory-count" title="${location}" aria-label="${location} ×${group.length}">×${group.length}</span>` : ''}${equipmentBadges(def, { includeQuality: false })}<div class="equipment-actions">${swap}<button type="button" data-move="${item.uid}" data-to-active="${reserve}" aria-label="${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('stash')} ${equipmentName(def)}">${reserve ? wt(equipmentCanFit() ? 'equip' : 'swap') : wt('storeShort')}</button><button type="button" data-sell="${item.uid}" aria-label="${t('sellOne', { price: equipmentSellPrice(item) })} ${equipmentName(def)}">${t('sell', { price: equipmentSellPrice(item) })}</button></div></div>`;
     }).join('');
   }
   function buildCards() {
@@ -1774,15 +1787,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       return `<div class="build-card" data-build-id="${build.id}" data-active="${build.tier > 0}"><strong>${buildName(build.id, selectedLocale)} · ${build.count}/${build.thresholds.at(-1)}</strong><span>${status}</span><p>${buildDescription(build.id, selectedLocale)}</p><details class="build-members"><summary>${wt('members')}</summary>${members}</details></div>`;
     }).join('');
   }
-  function renderForgeSettings() {
-    $('forge-settings').innerHTML = `<label class="forge-auto"><input type="checkbox" id="auto-forge" ${run.autoForge ? 'checked' : ''}>${wt('auto')}</label>` + run.forgeTargets.map((target, index) => `<label>${wt('target', { n: index + 1 })}<select data-forge-target="${index}"><option value="">${wt('none')}</option>${EQUIPMENT_IDS.filter(id => EQUIPMENT[id].kind === 'finished' && unlockedEquipment(id)).map(id => `<option value="${id}" ${target === id ? 'selected' : ''}>${equipmentName(equipmentDef(id))}</option>`).join('')}</select></label>`).join('') + `<p>${wt('forgeHint')}</p>`;
-    $('equipment-summary').textContent = wt('summary', { active: run.equipment.length, reserve: run.equipmentReserve.length });
-    $('forge-unlock').textContent = wt(run.wave >= 10 ? 'unlocked' : 'unlock', { wave: Math.min(10, run.wave) });
-  }
   function focusShopControl(preferred) {
-    const preferredButton = document.querySelector(preferred);
-    const nextButton = [preferredButton, ...document.querySelectorAll('#shop-offers [data-buy]'), $('reroll-button'), $('next-wave-button')]
-      .find(button => button && !button.disabled && button.getClientRects().length);
+    const nextButton = [...document.querySelectorAll(preferred), ...document.querySelectorAll('#shop-offers .buy-button'), $('reroll-button'), $('next-wave-button')]
+      .find(button => button && !button.disabled && !button.closest('details:not([open])') && button.getClientRects().length);
     nextButton?.focus({ preventScroll: true });
   }
 
@@ -1911,14 +1918,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const interval = Math.max(.26, ((early ? 1.15 : 1.35) - run.wave * .045) / spawnRate);
     const nearbyRadius = Math.max(260, Math.min(520, Math.max(viewW, viewH) * .7));
     const cam = camera();
-    let nearby = run.enemies.filter(e => !e.dead && visible(e, cam, 0) && distance(e, run.player) <= nearbyRadius).length;
+    let nearby = run.enemies.filter(e => !e.neutralCamp && canTargetEnemy(e) && visible(e, cam, 0) && distance(e, run.player) <= nearbyRadius).length;
     if (run.spawnClock <= 0) {
       run.spawnClock += interval;
-      if (run.enemies.length < enemyCap()) {
+      if (waveEnemyCount() < enemyCap()) {
         const count = Math.min(10, 1 + Math.floor((run.wave + (early ? 2 : 0)) / 5) + Math.floor((run.difficulty.spawnRate - 1) * 3) + Math.floor(endlessFactor() / 10));
         const pool = enemyPool();
         const nearbyMinimum = nearbyEnemyMinimum();
-        for (let i = 0; i < count && run.enemies.length < enemyCap(); i++) {
+        for (let i = 0; i < count && waveEnemyCount() < enemyCap(); i++) {
           const nearPlayer = i === 0 && nearby < nearbyMinimum;
           spawnEnemy(pick(pool), undefined, undefined, false, nearPlayer);
           if (nearPlayer) nearby += 1;
@@ -1926,7 +1933,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       }
     }
     run.nearbySpawnClock -= dt;
-    if (nearby < nearbyEnemyMinimum() && run.nearbySpawnClock <= 0 && run.enemies.length < enemyCap()) {
+    if (nearby < nearbyEnemyMinimum() && run.nearbySpawnClock <= 0 && waveEnemyCount() < enemyCap()) {
       const pool = enemyPool();
       spawnEnemy(pick(pool), undefined, undefined, false, true);
       run.nearbySpawnClock = .55 / spawnRate;
@@ -1940,12 +1947,16 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         run.bossFight = true;
         run.bossesRemaining = bossCount;
         const bossVariant = bossVariantForWave(run.wave);
-        for (let i = 0; i < bossCount; i++) spawnEnemy('boss', undefined, undefined, false, false, bossVariant);
+        if (!(run.biome.id === 'dota' && run.wave === MAX_WAVES)) {
+          for (let i = 0; i < bossCount; i++) spawnEnemy('boss', undefined, undefined, false, false, bossVariant);
+        }
         if (endlessBossWave && run.wave > MAX_WAVES) {
           const eliteCount = Math.floor((run.wave - MAX_WAVES) / 10);
           for (let i = 0; i < eliteCount; i++) spawnElite();
         }
-        showToast(t('warningBoss', { boss: bossDisplayName(bossVariant) })); playSfx('warning-boss');
+        showToast(run.biome.id === 'dota' && run.wave === MAX_WAVES
+          ? (selectedLocale === 'en' ? 'Roshan awakens in his lair — follow the golden minimap marker!' : selectedLocale === 'zh-TW' ? '肉山在原巢穴覺醒！前往小地圖金色標記處決戰。' : '肉山在原巢穴觉醒！前往小地图金色标记处决战。')
+          : t('warningBoss', { boss: bossDisplayName(bossVariant) })); playSfx('warning-boss');
       } else if (ELITE_WAVES.includes(run.wave) || (isEndlessRun() && run.wave > MAX_WAVES && run.wave % 5 === 0)) {
         const eliteCount = isEndlessRun() ? Math.max(1, 1 + Math.floor((run.wave - MAX_WAVES) / 10)) : 1;
         const names = [];
@@ -2092,7 +2103,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function triggerOrchid() {
     const passive = equipmentPassive('soulMark');
     if (!passive) return;
-    const target = run.enemies.filter(e => !e.dead && run.totalTime < (e.orchidUntil || 0)
+    const target = run.enemies.filter(e => canTargetEnemy(e) && run.totalTime < (e.orchidUntil || 0)
       && distance(e, run.player) <= passive.range + e.r)
       .sort((a, b) => distance(a, run.player) - distance(b, run.player))[0];
     if (!target) return;
@@ -2124,21 +2135,21 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const edge = Math.asin(clamp(enemy.r / Math.max(1, distance(enemy, origin)), 0, 1));
     return Math.abs(Math.atan2(Math.sin(delta), Math.cos(delta))) <= degrees * Math.PI / 360 + edge;
   }
-  const equipmentCombat = createEquipmentCombat({ getRun: () => run, passive: equipmentPassive, damageEnemy, blocked: terrainLineBlocked, pulse, isElite, heal, basicRange,
-    cooldown: (base, activeRun) => cooldownWithHaste(base, activeRun?.stats?.abilityHaste || 0),
+  const equipmentCombat = createEquipmentCombat({ canTarget: canTargetEnemy, getRun: () => run, passive: equipmentPassive, damageEnemy, blocked: terrainLineBlocked, pulse, isElite, heal, basicRange,
+    cooldown: (base, activeRun) => cooldownWithHaste(base, effectiveHaste(activeRun)),
     label: id => buildName(id, selectedLocale) || (EQUIPMENT[id] ? (selectedLocale === 'en' ? (EQUIPMENT[id].nameEn || EQUIPMENT[id].name) : selectedLocale === 'zh-TW' ? (EQUIPMENT[id].nameTw || EQUIPMENT[id].name) : EQUIPMENT[id].name) : id) });
   function updateEquipmentPassives(dt) {
     equipmentCombat.update(dt);
     const s = run.skills, p = run.player;
     const dagon = equipmentPassive('arcaneBurst');
     if (dagon && run.totalTime >= s.dagonReadyAt) {
-      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= dagon.range + e.r
+      const target = run.enemies.filter(e => canTargetEnemy(e) && distance(e, p) <= dagon.range + e.r
         && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
         .sort((a, b) => Number(b.id === 'boss' || isElite(b)) - Number(a.id === 'boss' || isElite(a)) || distance(a, p) - distance(b, p))[0];
       if (target) {
-        s.dagonReadyAt = run.totalTime + cooldownWithHaste(dagon.cooldown, run.stats.abilityHaste);
+        s.dagonReadyAt = run.totalTime + cooldownWithHaste(dagon.cooldown, effectiveHaste());
         const angle = Math.atan2(target.y - p.y, target.x - p.x);
-        const others = run.enemies.filter(e => e !== target && !e.dead && distance(e, p) <= dagon.range + e.r
+        const others = run.enemies.filter(e => e !== target && canTargetEnemy(e) && distance(e, p) <= dagon.range + e.r
           && inAttackFan(p, e, angle, dagon.spreadDegrees)
           && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
           .sort((a, b) => distance(a, target) - distance(b, target)).slice(0, dagon.targets - 1);
@@ -2154,10 +2165,10 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     const cyclone = equipmentPassive('cyclone');
     if (cyclone && run.totalTime >= s.cycloneReadyAt) {
-      const target = run.enemies.filter(e => !e.dead && distance(e, p) <= cyclone.range + e.r)
+      const target = run.enemies.filter(e => canTargetEnemy(e) && distance(e, p) <= cyclone.range + e.r)
         .sort((a, b) => distance(a, p) - distance(b, p))[0];
       if (target) {
-        s.cycloneReadyAt = run.totalTime + cooldownWithHaste(cyclone.cooldown, run.stats.abilityHaste);
+        s.cycloneReadyAt = run.totalTime + cooldownWithHaste(cyclone.cooldown, effectiveHaste());
         target.cycloneUntil = run.totalTime + cyclone.duration * (target.id === 'boss' ? .2 : isElite(target) ? .5 : 1);
         addEquipmentUpgradeEffect('cyclone', cyclone.level, { x: target.x, y: target.y, r: target.r + cyclone.gustRadius,
           gustRadius: cyclone.gustRadius,
@@ -2174,8 +2185,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       }
     }
     const necro = equipmentPassive('necromancy');
-    if (necro && run.totalTime >= s.necroReadyAt && s.necroUnits.length === 0 && run.enemies.some(e => !e.dead)) {
-      s.necroReadyAt = run.totalTime + cooldownWithHaste(necro.cooldown, run.stats.abilityHaste);
+    if (necro && run.totalTime >= s.necroReadyAt && s.necroUnits.length === 0 && run.enemies.some(e => canTargetEnemy(e))) {
+      s.necroReadyAt = run.totalTime + cooldownWithHaste(necro.cooldown, effectiveHaste());
       s.necroUnits = [-1, 1].map(side => ({ ...nearestWalkable(p.x + side * 32, p.y + 20, 10), r: 10,
         side, life: necro.duration, attack: .3, damage: necro.damage, attackRatio: necro.attackRatio, level: necro.level, facing: p.facing }));
       addEquipmentUpgradeEffect('necronomicon', necro.level, { x: p.x, y: p.y, r: 38,
@@ -2185,7 +2196,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       unit.life -= dt; unit.attack -= dt; unit.attackFlash = Math.max(0, (unit.attackFlash || 0) - dt);
       if (unit.life <= 0 || !necro) return false;
       const ranged = unit.side > 0, range = ranged ? 300 : 58;
-      const target = run.enemies.filter(e => !e.dead && distance(e, unit) <= 480
+      const target = run.enemies.filter(e => canTargetEnemy(e) && distance(e, unit) <= 480
         && !terrainLineBlocked(unit.x, unit.y, e.x, e.y, 4, false))
         .sort((a, b) => distance(a, unit) - distance(b, unit))[0];
       const toward = target || { x: p.x + unit.side * 32, y: p.y + 20 };
@@ -2205,7 +2216,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       run.skills.radianceClock += aura.interval;
       let affected = false;
       for (const e of run.enemies) {
-        if (e.dead || distance(e, run.player) > aura.radius + e.r) continue;
+        if (!canTargetEnemy(e) || distance(e, run.player) > aura.radius + e.r) continue;
         damageEnemy(e, aura.damage, { source: 'equipment' });
         affected = true;
       }
@@ -2217,7 +2228,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function quillSpray(active = false) {
     const p = run.player;
-    for (const e of run.enemies) if (!e.dead && distance(e, p) <= 220 + e.r) {
+    for (const e of run.enemies) if (canTargetEnemy(e) && distance(e, p) <= 220 + e.r) {
       if (run.totalTime >= (e.quillUntil || 0)) e.quillStacks = 0;
       dealSkillDamage(e, 16 + skillPower(run) * .8 + (e.quillStacks || 0) * 4, active);
       e.quillStacks = Math.min(5, (e.quillStacks || 0) + 1); e.quillUntil = run.totalTime + 10;
@@ -2228,7 +2239,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function triggerStaticField(center) {
     const power = skillPower(run);
     let affected = false;
-    for (const e of run.enemies) if (!e.dead && distance(e, center) <= 120 + e.r && run.totalTime >= (e.staticReadyAt || 0)) {
+    for (const e of run.enemies) if (canTargetEnemy(e) && distance(e, center) <= 120 + e.r && run.totalTime >= (e.staticReadyAt || 0)) {
       e.staticReadyAt = run.totalTime + 1;
       dealSkillDamage(e, Math.min(e.hp * .06, 8 + power * .4) + power * .2);
       affected = true;
@@ -2260,7 +2271,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ][tier - 1];
   }
   function juggLeapTarget(origin, excluded = new Set()) {
-    const candidates = run.enemies.filter(e => !e.dead && distance(e, origin) <= 260 + e.r
+    const candidates = run.enemies.filter(e => canTargetEnemy(e) && distance(e, origin) <= 260 + e.r
       && !terrainLineBlocked(origin.x, origin.y, e.x, e.y, run.player.radius));
     return candidates.sort((a, b) => distance(a, origin) - distance(b, origin)).find(e => !excluded.has(e)) || candidates[0] || null;
   }
@@ -2284,7 +2295,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     playSfx('passive-jugg');
   }
   function kaelNearbyTarget(range, predicate = () => true) {
-    return run.enemies.filter(e => !e.dead && predicate(e) && distance(e, run.player) <= range + e.r)
+    return run.enemies.filter(e => canTargetEnemy(e) && predicate(e) && distance(e, run.player) <= range + e.r)
       .sort((a, b) => distance(a, run.player) - distance(b, run.player))[0] || null;
   }
   function kaelPushEnemy(e, amount, angle) {
@@ -2313,7 +2324,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         break;
       }
       case 'emp': {
-        const affected = run.enemies.filter(e => !e.dead && distance(e, p) <= KAEL_EMP_RADIUS + e.r);
+        const affected = run.enemies.filter(e => canTargetEnemy(e) && distance(e, p) <= KAEL_EMP_RADIUS + e.r);
         for (const [index, e] of affected.entries()) {
           const angle = Math.atan2(e.y - p.y, e.x - p.x), originX = p.x + Math.cos(angle) * 18, originY = p.y + Math.sin(angle) * 18;
           damage(e, 22 + skillPower(run) * .65);
@@ -2375,7 +2386,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     return false;
   }
   function lunaTargetInEclipse(center, randomize = false) {
-    const targets = run.enemies.filter(e => !e.dead && distance(e, center) <= 430);
+    const targets = run.enemies.filter(e => canTargetEnemy(e) && distance(e, center) <= 430);
     return randomize ? (targets.length ? pick(targets) : null) : targets.sort((a, b) => distance(a, center) - distance(b, center))[0] || null;
   }
   function scheduleLunaBeam(eclipse) {
@@ -2397,7 +2408,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function resolveLunaBeam(eclipse, beam) {
     for (const e of run.enemies) {
-      if (e.dead || distance(e, beam) > 52 + e.r) continue;
+      if (!canTargetEnemy(e) || distance(e, beam) > 52 + e.r) continue;
       const count = eclipse.hits.get(e) || 0;
       if (count >= 2) continue;
       eclipse.hits.set(e, count + 1);
@@ -2440,7 +2451,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const activeSnapshot = equipmentCombat.activeSnapshot?.();
       if (!castKaelSpell(s.lastPassiveSpell, 'active')) { showToast(t('noTarget')); return; }
       p.mana -= cfg.manaCost;
-      s.activeCooldown = cooldownWithHaste(cfg.cooldown, run.stats.abilityHaste);
+      s.activeCooldown = cooldownWithHaste(cfg.cooldown, effectiveHaste());
       addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
       triggerOrchid(); equipmentCombat.onActive(activeSnapshot);
       updateHUD();
@@ -2463,7 +2474,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       run.effects.push({ kind: 'muzzle', heroGrowthTier: heroGrowthTier(run.level), x: p.x, y: p.y, angle, r: 22, color: '#ffe7a2', life: .2, maxLife: .2 });
     } else if (id === 'bulwark') quillSpray(true);
     else if (id === 'conductor') {
-      const targets = run.enemies.filter(e => !e.dead);
+      const targets = run.enemies.filter(e => canTargetEnemy(e));
       if (!targets.length) { showToast(t('noTarget')); return; }
       s.thunder = { time: .55, targets };
       for (const e of targets) pulse(e.x, e.y, e.r + 12, '#d5f4ff', .55, 'thunder-mark');
@@ -2482,7 +2493,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); loadHeroPoses('tb-demon', selectedSkin, { warm: true }); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
     p.skillPose = .56; p.skillClock = 0;
-    s.activeCooldown = cooldownWithHaste(cfg.cooldown, run.stats.abilityHaste);
+    s.activeCooldown = cooldownWithHaste(cfg.cooldown, effectiveHaste());
     addEquipmentUpgradeEffect('aghanim', equipmentPassive('activeAmplify')?.level);
     triggerOrchid(); equipmentCombat.onActive(activeSnapshot);
     playSfx(`skill-${id}`); playHeroVoice('active', id); updateHUD();
@@ -2506,7 +2517,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       if (dx || dy) meteor.trailAngle = Math.atan2(dy, dx);
       while (meteor.tick >= .3 - 1e-9) {
         meteor.tick -= .3;
-        for (const e of run.enemies) if (!e.dead && distance(e, meteor) <= KAEL_METEOR.radius + e.r) dealSkillDamage(e, 12 + skillPower(run) * .45, meteor.active);
+        for (const e of run.enemies) if (canTargetEnemy(e) && distance(e, meteor) <= KAEL_METEOR.radius + e.r) dealSkillDamage(e, 12 + skillPower(run) * .45, meteor.active);
         pulse(meteor.x, meteor.y, KAEL_METEOR.radius, '#ff9c65', .2, 'meteor');
       }
     }
@@ -2517,7 +2528,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         wall.tick -= .4;
         const ax = wall.x - Math.sin(wall.angle) * wall.halfLength, ay = wall.y + Math.cos(wall.angle) * wall.halfLength;
         const bx = wall.x + Math.sin(wall.angle) * wall.halfLength, by = wall.y - Math.cos(wall.angle) * wall.halfLength;
-        for (const e of run.enemies) if (!e.dead && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + wall.halfWidth) {
+        for (const e of run.enemies) if (canTargetEnemy(e) && pointSegmentDistance(e.x, e.y, { x: ax, y: ay }, { x: bx, y: by }) <= e.r + wall.halfWidth) {
           dealSkillDamage(e, 7 + skillPower(run) * .25, wall.active); e.kaelSlowUntil = run.totalTime + .55;
         }
       }
@@ -2533,7 +2544,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         wave.alpha = blast.age < wave.delay ? 0 : .9 * Math.min(1, (1 - progress) / .18);
         if (blast.age < wave.delay || previousAge >= wave.delay + blast.travelTime) continue;
         for (const e of run.enemies) {
-          if (e.dead || blast.hit.has(e)) continue;
+          if (!canTargetEnemy(e) || blast.hit.has(e)) continue;
           const dx = e.x - blast.x, dy = e.y - blast.y;
           const along = dx * Math.cos(blast.angle) + dy * Math.sin(blast.angle);
           const across = -dx * Math.sin(blast.angle) + dy * Math.cos(blast.angle);
@@ -2552,7 +2563,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       spirit.life -= dt; spirit.attack -= dt; spirit.attackFlash = Math.max(0, (spirit.attackFlash || 0) - dt);
       if (spirit.life <= 0) return false;
       spirit.returning = distance(spirit, p) > 440 || (spirit.returning && distance(spirit, p) > 100);
-      const target = !spirit.returning && run.enemies.filter(e => !e.dead && distance(e, spirit) <= 380 && distance(e, p) <= 440)
+      const target = !spirit.returning && run.enemies.filter(e => canTargetEnemy(e) && distance(e, spirit) <= 380 && distance(e, p) <= 440)
         .sort((a, b) => distance(a, spirit) - distance(b, spirit))[0];
       if (target) {
         const d = distance(target, spirit);
@@ -2572,7 +2583,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function updateSkills(dt) {
     const s = run.skills, p = run.player;
-    p.mana = Math.min(p.maxMana, p.mana + Math.max(0, run.stats.manaRegen) * dt);
+    p.mana = Math.min(p.maxMana, p.mana + Math.max(0, effectiveManaRegen()) * dt);
     updateEquipmentPassives(dt);
     updateOrbitingArray(dt);
     updateClockworkGuards(dt);
@@ -2590,7 +2601,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     const blood = equipmentPassive('bloodRage');
     if (blood && p.hp / p.maxHp < blood.threshold && s.bloodCooldown <= 0) {
-      s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, run.stats.abilityHaste);
+      s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, effectiveHaste());
       pulse(p.x, p.y, 40, '#dd4c41', .55); showToast(t('bloodRage'));
     }
     if (s.rageMorph) {
@@ -2614,7 +2625,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       moveThroughTerrain(p, jump.dx * step, jump.dy * step);
       jump.time -= dt;
       if (jump.time <= 0) {
-        const landingTargets = run.enemies.filter(e => !e.dead && distance(e, p) <= 76 + e.r
+        const landingTargets = run.enemies.filter(e => canTargetEnemy(e) && distance(e, p) <= 76 + e.r
           && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false));
         const freshTargets = landingTargets.filter(e => !jump.hitTargets.has(e));
         const targets = freshTargets.length ? freshTargets : landingTargets;
@@ -2642,7 +2653,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       s.spin.tick += Math.min(dt, s.spin.time); s.spin.time -= dt;
       while (s.spin.tick >= .2 - 1e-9) {
         s.spin.tick -= .2;
-        for (const e of run.enemies) if (!e.dead && distance(e, p) <= 138 + e.r && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
+        for (const e of run.enemies) if (canTargetEnemy(e) && distance(e, p) <= 138 + e.r && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false))
           dealSkillDamage(e, 6 + skillPower(run) * .35, true);
       }
       if (s.spin.time <= 0) s.spin = null;
@@ -2650,7 +2661,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (s.thunder) {
       s.thunder.time -= dt;
       if (s.thunder.time <= 0) {
-        for (const e of s.thunder.targets) if (!e.dead) {
+        for (const e of s.thunder.targets) if (canTargetEnemy(e)) {
           dealSkillDamage(e, (34 + skillPower(run) * 1.25) * (e.id === 'boss' ? .65 : isElite(e) ? .8 : 1), true);
           triggerStaticField(e); pulse(e.x, e.y, e.r + 10, '#e6f8ff', .35, 'thunder');
         }
@@ -2668,7 +2679,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         const travelTime = cast.travelTime ?? SF_REQUIEM.travelTime;
         const fadeTime = cast.fadeTime ?? SF_REQUIEM.fadeTime;
         const radius = Math.min(range, cast.age / travelTime * range);
-        for (const e of run.enemies) if (!e.dead && !cast.hit.has(e) && distance(e, cast) <= radius + e.r) {
+        for (const e of run.enemies) if (canTargetEnemy(e) && !cast.hit.has(e) && distance(e, cast) <= radius + e.r) {
           cast.hit.add(e); dealSkillDamage(e, 34 + skillPower(run) * .9 + cast.souls * 1.25, true);
         }
         if (cast.age >= travelTime + fadeTime) s.requiem = null;
@@ -2764,7 +2775,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       pulse(attacker.x, attacker.y, attacker.r + 8, '#a9e9ff', .25);
     }
     if (buffCount('counterHelix') && ++run.buffState.receivedHits % 4 === 0) {
-      for (const enemy of run.enemies) if (!enemy.dead && distance(enemy, p) <= 150 + enemy.r && !terrainLineBlocked(p.x, p.y, enemy.x, enemy.y, 4, false))
+      for (const enemy of run.enemies) if (canTargetEnemy(enemy) && distance(enemy, p) <= 150 + enemy.r && !terrainLineBlocked(p.x, p.y, enemy.x, enemy.y, 4, false))
         damageEnemy(enemy, 16 * buffCount('counterHelix'), { source: 'buff' });
       pulse(p.x, p.y, 150, '#ffba72', .35);
       showToast(buffName(BUFFS.counterHelix));
@@ -2804,7 +2815,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       playSfx('shooter-fire');
     } else if (e.id === 'darkTroll') {
       const alive = run.enemies.filter(child => !child.dead && child.summoner === e).length;
-      const count = Math.min(2, 4 - alive, enemyCap() - run.enemies.length);
+      const count = Math.min(2, 4 - alive, enemyCap() - waveEnemyCount());
       for (let i = 0; i < count; i++) {
         const a = Math.atan2(e.chargeY, e.chargeX) + (i ? 1 : -1) * Math.PI / 2;
         const child = spawnEnemy('runner', e.x + Math.cos(a) * 48, e.y + Math.sin(a) * 48, true);
@@ -2828,6 +2839,13 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     for (const e of run.enemies) {
       if (e.dead) continue;
+      if (e.neutralCamp) {
+        updateNeutralUnit(run, e, dt, { move: moveThroughTerrain, blocked: terrainLineBlocked, detour: detourDirection,
+          hurt: hurtPlayer, shoot: shootEnemyBullet, pulse, auraSlow: distance => buffAuraSlow(run, distance),
+          enrage: () => { showToast(t('roshanEnrage')); playSfx('warning-boss'); }, attack: () => playSfx('boss-attack') });
+        if (phase !== 'combat') break;
+        continue;
+      }
       if (run.totalTime < (e.cycloneUntil || 0)) { e.moving = false; continue; }
       const dx = p.x - e.x, dy = p.y - e.y;
       const dist = Math.max(1, Math.hypot(dx, dy));
@@ -2849,7 +2867,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const frostSlow = run.totalTime < (e.buffSlowUntil || 0) ? 1 - e.buffSlow : 1;
       const elementalSlow = run.totalTime < (e.buildSlowUntil || 0) ? (e.buildSlowRatio || 1) : 1;
       const iceDragonSlow = run.totalTime < (e.iceDragonUntil || 0) ? (e.iceDragonSlow || 1) : 1;
-      let speed = e.speed * Math.min(skadiSlow, frostSlow, elementalSlow, iceDragonSlow, auraRate) * enrageSpeed;
+      const redSlow = run.totalTime < (e.redSlowUntil || 0) ? .8 : 1;
+      let speed = e.speed * Math.min(skadiSlow, frostSlow, elementalSlow, iceDragonSlow, auraRate, redSlow) * enrageSpeed;
       if (run.character.id === 'kael' && e.kaelSlowUntil > run.totalTime) speed *= .65;
       const def = ENEMIES[e.id];
       if (def.elite && def.windup) {
@@ -2955,6 +2974,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function updateEnemyBullets(dt) {
     for (let i = run.enemyBullets.length - 1; i >= 0; i--) {
       const b = run.enemyBullets[i];
+      if (b.enemy?.neutralCamp && (b.enemy.dead || !neutralInRange(run, b.enemy))) { run.enemyBullets.splice(i, 1); continue; }
       const fromX = b.x, fromY = b.y;
       b.x += b.vx * dt; b.y += b.vy * dt; b.life -= dt;
       const wallTime = terrainHitTime(fromX, fromY, b.x, b.y, b.r);
@@ -2978,6 +2998,27 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function killEnemy(e, rewards = true) {
     if (e.dead) return;
     e.dead = true; run.kills += 1;
+    if (e.neutralCamp) {
+      const key = e.neutralCamp.key, def = JUNGLE_BUFFS[key];
+      e.camp.kills += 1;
+      e.camp.respawnAt = run.totalTime + e.neutralCamp.respawn;
+      run.jungleBuffs[key] = run.totalTime + def.duration;
+      const materials = key === 'roshan' ? 200 : 18;
+      run.money += materials; run.earned += materials;
+      if (key === 'roshan') {
+        run.pendingChests += 3;
+        run.player.hp = run.player.maxHp; run.player.mana = run.player.maxMana;
+        if (e.finalObjective) { run.bossesRemaining = 0; run.pendingVictory = true; }
+      }
+      addXp(key === 'roshan' ? 60 : 12);
+      equipmentCombat.onKill?.(e, rewards);
+      if (rewards && run.character.id === 'sf' && !e.summoned) run.skills.souls += key === 'roshan' ? 6 : 1;
+      if (rewards && run.character.id === 'scavenger' && key === 'roshan') { run.money += 10; run.earned += 10; }
+      pulse(e.x, e.y, e.r * 2, def.color, .6);
+      showToast(`${localText(def.name)} · ${def.duration}s · ◇ +${materials}`);
+      playSfx('chest'); updateHUD();
+      return;
+    }
     equipmentCombat.onKill?.(e, rewards);
     if (isElite(e) || e.id === 'boss') playHeroVoice('elite');
     if (rewards) {
@@ -3004,6 +3045,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
 
   function damageEnemy(e, amount, { source = 'equipment', hit = null, resolved = false, rewards = true, area = false } = {}) {
+    if (!canTargetEnemy(e)) return 0;
+    if (e.neutralCamp) e.neutralState = 'combat';
+    if (!resolved && jungleBuffActive(run, 'roshan')) amount *= 1.2;
     const { damage, critical, actualLostHP } = resolveDamage(run, e, amount, { source, resolved });
     if (!(damage > 0)) return 0;
     e.hp -= damage; e.hitFlash = .1;
@@ -3023,6 +3067,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     } else if (source === 'skill') restoreSkillHealth(actualLostHP, area);
     equipmentCombat.onDamage(actualLostHP);
     if (e.hp <= 0) killEnemy(e, rewards);
+    if (source === 'basic' && !e.dead && jungleBuffActive(run, 'red')) {
+      if (!(e.redBurnUntil > run.totalTime)) e.redBurnTickAt = run.totalTime + 1;
+      e.redBurnUntil = run.totalTime + 3; e.redSlowUntil = run.totalTime + 3;
+      e.redBurnDamage = 6 + attackPower(run) * .12;
+    }
     if (source === 'basic' && hit) {
       registerBaseAttackHit(e, hit);
       triggerEquipmentOnHit(e, hit);
@@ -3069,7 +3118,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
           run.effects.push({ kind: 'line', x1: from.x, y1: from.y, x2: current.x, y2: current.y, color: upgradeFx ? '#54caff' : '#c7eeff', life: .2, maxLife: .2, width: upgradeFx ? 5 : 4, upgradeLevel: upgradeFx?.level });
           if (!current.dead) damageEnemy(current, (lightning.damage + attackPower(run) * .4) * Math.pow(.7, jump), { source: 'equipment' });
           from = current;
-          current = run.enemies.filter(e => !e.dead && !struck.has(e) && distance(e, from) <= 190).sort((a, b) => distance(a, from) - distance(b, from))[0];
+          current = run.enemies.filter(e => canTargetEnemy(e) && !struck.has(e) && distance(e, from) <= 190).sort((a, b) => distance(a, from) - distance(b, from))[0];
         }
         playSfx('arc');
       }
@@ -3079,7 +3128,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       run.cleaveAttackId = hit.attackId;
       const origin = cleave.mode === 'impact' ? target : run.player;
       const angle = Math.atan2(target.y - run.player.y, target.x - run.player.x);
-      for (const e of run.enemies) if (e !== target && !e.dead && distance(e, origin) <= cleave.radius + e.r
+      for (const e of run.enemies) if (e !== target && canTargetEnemy(e) && distance(e, origin) <= cleave.radius + e.r
         && inAttackFan(origin, e, angle, cleave.arcDegrees)) {
         damageEnemy(e, hit.damage * cleave.damageRatio, { source: 'equipment' });
       }
@@ -3147,7 +3196,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function getTarget(range, ignoresTerrain = false) {
     const p = run.player;
-    const candidates = run.enemies.filter(e => !e.dead && distance(e, p) <= range
+    const candidates = run.enemies.filter(e => canTargetEnemy(e) && distance(e, p) <= range
       && (ignoresTerrain || !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false)));
     if (run.aimTarget) {
       const near = candidates.filter(e => distance(e, run.aimTarget) < 120).sort((a, b) => distance(a, run.aimTarget) - distance(b, run.aimTarget))[0];
@@ -3170,7 +3219,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function addDeadShotBounce(origin, shot, damage) {
     if (!(shot.deadShotJumps > 0)) return;
-    const target = pick(run.enemies.filter(e => !e.dead && !shot.hit.has(e)
+    const target = pick(run.enemies.filter(e => canTargetEnemy(e) && !shot.hit.has(e)
       && (!shot.hitCounts || (shot.hitCounts.get(e) || 0) < shot.maxHits)
       && distance(e, origin) <= 240
       && !terrainLineBlocked(origin.x, origin.y, e.x, e.y, shot.r, false)));
@@ -3183,7 +3232,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function addLunaBounce(origin, hitSet, damage, depth, deadShotJumps = 0) {
     if (depth >= 2) return false;
-    const target = run.enemies.filter(e => !e.dead && !hitSet.has(e)
+    const target = run.enemies.filter(e => canTargetEnemy(e) && !hitSet.has(e)
       && distance(e, origin) <= 190
       && !terrainLineBlocked(origin.x, origin.y, e.x, e.y, 4, false))
       .sort((a, b) => distance(a, origin) - distance(b, origin))[0];
@@ -3218,11 +3267,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     const animationScale = pending.duration / .42;
     if (type === 'melee') {
       for (const e of run.enemies) {
-        if (e.dead || distance(e, p) > hit.range + e.r) continue;
+        if (!canTargetEnemy(e) || distance(e, p) > hit.range + e.r) continue;
         const relative = Math.atan2(Math.sin(Math.atan2(e.y - p.y, e.x - p.x) - angle), Math.cos(Math.atan2(e.y - p.y, e.x - p.x) - angle));
         if (Math.abs(relative) < .9 && !terrainLineBlocked(p.x, p.y, e.x, e.y, 4, false)) {
           damageEnemy(e, damage, { source: 'basic', hit });
-          for (let i = 0; i < images && !e.dead; i++) damageTerrorbladeImage(e, damage * .3);
+          for (let i = 0; i < images && canTargetEnemy(e); i++) damageTerrorbladeImage(e, damage * .3);
         }
       }
       run.effects.push({ kind: 'melee-swing', character: weaponId, x: p.x, y: p.y, r: hit.range, angle, direction: attackId % 2 ? 1 : -1, color: def.color, life: .28 * animationScale, maxLife: .28 * animationScale });
@@ -3278,7 +3327,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       const top = Math.min(fromY, b.y) - b.r, bottom = Math.max(fromY, b.y) + b.r;
       const hits = [];
       for (const e of run.enemies) {
-        if (e.dead || b.hit.has(e) || e.x + e.r < left || e.x - e.r > right || e.y + e.r < top || e.y - e.r > bottom) continue;
+        if (!canTargetEnemy(e) || b.hit.has(e) || e.x + e.r < left || e.x - e.r > right || e.y + e.r < top || e.y - e.r > bottom) continue;
         const time = segmentCircleHitTime(fromX, fromY, b.x, b.y, e.x, e.y, b.r + e.r);
         if (time <= 1 && time <= wallTime) hits.push({ enemy: e, time });
       }
@@ -3314,7 +3363,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
               if (!lunaBounce) addDeadShotBounce(e, b, dealt);
             }
           }
-          if (b.kaelSpell === 'tornado' && !e.dead) kaelPushEnemy(e, 34, Math.atan2(e.y - run.player.y, e.x - run.player.x));
+          if (b.kaelSpell === 'tornado' && canTargetEnemy(e)) kaelPushEnemy(e, 34, Math.atan2(e.y - run.player.y, e.x - run.player.x));
         }
         b.pierce -= 1;
         if (b.pierce <= 0) { remove = true; break; }
@@ -3372,10 +3421,6 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (id === 'tb') return `${selectedLocale === 'en' ? 'Charge' : selectedLocale === 'zh-TW' ? '蓄影' : '蓄影'} ${s.tb.hits}/6 · ${selectedLocale === 'en' ? 'Images' : '魔影'} ${s.tb.images.length}/2`;
     return t('soulCount', { count: s.souls, attack: Number(soulAttackBonus().toFixed(2)) });
   }
-  function skillDescription(index) {
-    const skill = SKILLS[run.character.id][index];
-    return run.character.id === 'jugg' && index === 1 ? juggPassiveDescription() : skill.desc;
-  }
   function renderSkillStrip() {
     const skills = SKILLS[run.character.id];
     const ready = run.skills.activeCooldown <= 0 && run.player.mana >= ACTIVE_SKILL_CONFIG[run.character.id].manaCost && (run.character.id !== 'kael' || !!run.skills.lastPassiveSpell) && !(run.character.id === 'tb' && run.skills.tb.time > 0);
@@ -3398,27 +3443,32 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       [t('statStrength'), Number(run.attributes.strength.toFixed(2))], [t('statAgility'), Number(run.attributes.agility.toFixed(2))],
       [t('statIntelligence'), Number(run.attributes.intelligence.toFixed(2))],
       [t('statLife'), `${Math.ceil(p.hp)} / ${p.maxHp}`], [t('statArmor'), Number(s.armor.toFixed(2))], [t('statMove'), `${s.speed}%`], [t('statAttackSpeed'), `${attackSpeed().toFixed(0)}%`],
-      [t('statAttackPower'), Number(attackPower(run).toFixed(2))], [t('statSkillPower'), Number(skillPower(run).toFixed(2))], [t('statAllDamage'), `${s.damage}%`],
+      [t('statAttackPower'), Number(attackPower(run).toFixed(2))], [t('statSkillPower'), Number(skillPower(run).toFixed(2))], [t('statAllDamage'), `${Number((((1 + s.damage / 100) * (jungleBuffActive(run, 'roshan') ? 1.2 : 1) - 1) * 100).toFixed(1))}%`],
       [t('statCrit'), `${Math.min(90, s.crit)}%`], [t('statCritDamage'), `${100 + s.critDamage}%`], [t('statDodge'), `${Math.min(55, s.dodge)}%`], [t('statLifesteal'), `${Math.min(65, s.lifesteal)}%`],
       [t('statRegen5'), Number(s.regen.toFixed(2))], [t('statPickup'), 75 + s.pickup], [t('statLuck'), s.luck],
       [t('statBaseAttackRange'), basicRange()], [t('mana'), `${Math.floor(p.mana)} / ${p.maxMana}`],
-      [t('statManaRegen'), `${Number(s.manaRegen.toFixed(2))}/s`], [t('statAbilityHaste'), `${Number(clamp(s.abilityHaste, 0, 60).toFixed(2))}%`]
+      [t('statManaRegen'), `${Number(effectiveManaRegen().toFixed(2))}/s`], [t('statAbilityHaste'), `${Number(clamp(effectiveHaste(), 0, 60).toFixed(2))}%`]
     ];
     $('pause-stats').innerHTML = stats.map(([name, value]) => `<div class="pause-stat"><span>${name}</span><strong>${value}</strong></div>`).join('');
     $('pause-equipment').innerHTML = run.equipment.length ? run.equipment.map(item => {
       const def = equipmentDef(item);
-      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)}><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong>${equipmentBadges(def)}<p>${equipmentDesc(def, item)}</p></div></div>`;
+      const status = def.growth ? killGrowthText(item.id, true) : '';
+      return `<div class="equipment-item ${def.kind === 'finished' ? 'finished-equipment' : ''}" ${equipmentAttributes(def)}><span>${equipmentIcon(item.id)}</span><div><strong>${equipmentName(def)}</strong>${status ? `<small>${status}</small>` : ''}</div></div>`;
     }).join('') : `<p>${t('emptyEquipment')}</p>`;
-    $('pause-builds').innerHTML = `<h3>${wt('builds')}</h3>${buildCards()}<p class="reserve-caption">${wt('summary', { active: run.equipment.length, reserve: run.equipmentReserve.length })}</p>`;
+    const activeBuilds = (run.builds.length ? run.builds : resolveBuilds(run.equipment)).filter(build => build.tier > 0);
+    const pauseBuilds = $('pause-builds');
+    pauseBuilds.classList.toggle('hidden', !activeBuilds.length);
+    pauseBuilds.innerHTML = activeBuilds.length
+      ? `<h3>${wt('builds')}</h3><div class="pause-build-summary">${activeBuilds.map(build => `<span class="pause-build-item">${buildName(build.id, selectedLocale)} ${build.count}/${build.thresholds.at(-1)}</span>`).join('')}</div>`
+      : '';
+    $('pause-jungle-buffs').innerHTML = jungleBuffMarkup(true);
+    $('pause-jungle').classList.toggle('hidden', !jungleBuffEntries(run).length);
+    $('pause-jungle-title').textContent = selectedLocale === 'en' ? 'Jungle buffs' : selectedLocale === 'zh-TW' ? '野區增益' : '野区增益';
     $('pause-buffs').innerHTML = BUFF_IDS.filter(id => buffCount(id) > 0).map(id => {
       const def = BUFFS[id];
       const chargeNote = id === 'shallowGrave' ? `<small>${t('buffCharges', { count: run.buffState.graveCharges, total: buffCount(id) })}</small>` : '';
-      return `<div class="pause-buff" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)} ×${buffCount(id)}</strong>${buffRarityBadge(def)}${chargeNote}<p>${buffDesc(def)}</p></div></div>`;
-    }).join('') || `<p class="equipment-empty">${t('buffEmpty')}</p>`;
-    $('pause-buffs').insertAdjacentHTML('beforeend', `<p class="buff-empty">${t('buffLimits')}</p>`);
-    $('pause-skills').dataset.hero = run.character.id;
-    $('pause-skills').innerHTML = `<p>${skillGrowthText()}</p>` + SKILLS[run.character.id].map((skill, i) => `<div class="pause-skill"><strong>${t(i ? 'passive' : 'active')} · ${skill.name}</strong><p>${skillDescription(i)}</p><small>${t('current', { status: skillStatus(i) })}</small></div>`).join('')
-      + (run.character.id === 'kael' ? `<div class="pause-skill"><strong>${selectedLocale === 'en' ? 'Spell pool' : selectedLocale === 'zh-TW' ? '法術池' : '法术池'}</strong><p>${kaelVolleyText(run.skills.kaelSpellRank)}</p>${KAEL_SPELLS.map(spell => `<p${run.skills.lastPassiveSpell === spell.id ? ' class="is-current"' : ''}><strong>${kaelSpellName(spell.id)}</strong> · ${kaelSpellDesc(spell.id)}</p>`).join('')}</div>` : '');
+      return `<div class="pause-buff" data-buff-rarity="${def.rarity}">${buffIcon(def)}<div><strong>${buffName(def)} ×${buffCount(id)}</strong>${buffRarityBadge(def)}${chargeNote}</div></div>`;
+    }).join('') || `<p class="equipment-empty">${t('pauseBuffEmpty')}</p>`;
   }
   const hudWidths = new Map();
   function setHudText(id, value) {
@@ -3440,6 +3490,9 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     setHudText('wave-label', isEndlessRun() ? `${modeName('endless')} · ${t('bestWave', { wave: run.wave })}` : t('wave', { wave: run.wave, max: MAX_WAVES }));
     setHudText('time-label', run.timeLeft <= 0 && run.bossFight ? t('boss') : String(Math.max(0, Math.ceil(run.timeLeft))));
     setHudText('biome-label', run.biome.name);
+    const jungleHud = $('jungle-buffs'), jungleMarkup = jungleBuffMarkup();
+    if (jungleHud.innerHTML !== jungleMarkup) jungleHud.innerHTML = jungleMarkup;
+    jungleHud.classList.toggle('hidden', !jungleMarkup);
     setHudText('hp-label', t('hp', { hp: Math.ceil(run.player.hp), max: run.player.maxHp }));
     setHudWidth('hp-fill', `${Math.max(0, run.player.hp / run.player.maxHp * 100)}%`);
     setHudText('mana-label', t('manaValue', { mana: Math.floor(run.player.mana), max: run.player.maxMana }));
@@ -3458,6 +3511,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function updateCombat(dt) {
     run.elapsed += dt; run.totalTime += dt; run.timeLeft -= dt;
     movePlayer(dt);
+    ensureNeutralCamps();
+    for (const e of run.enemies) while (canTargetEnemy(e) && e.redBurnTickAt <= run.totalTime && e.redBurnTickAt <= e.redBurnUntil + 1e-9) {
+      e.redBurnTickAt += 1; damageEnemy(e, e.redBurnDamage, { source: 'jungle' });
+    }
+    if (run.pendingVictory) { finishWave(); return; }
     spawnWaveEnemies(dt);
     updateHazards(dt);
     if (phase !== 'combat') return;
@@ -3812,7 +3870,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function drawTerrainIndicators(cam) {
     // Health bars, telegraphs and move/aim markers stay readable above foreground canopies.
     for (const e of run.enemies) {
-      if (!visible(e, cam, e.r + 36)) continue;
+      if (!visible(e, cam, e.neutralCamp ? 140 : e.r + 36)) continue;
       if (e.id === 'elite' && e.windup > 0) {
         ctx.strokeStyle = '#ffc47c'; ctx.lineWidth = 3; ctx.globalAlpha = .95;
         if (usesPixelPresentation()) { ctx.fillStyle = '#ffc47c'; drawPixelArc(e.x, e.y, e.r + 7 + (1 - e.windup / .4) * 7, 0, TAU); }
@@ -3825,10 +3883,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         if (usesPixelPresentation()) { ctx.fillStyle = telegraphColor; drawPixelArc(e.x, e.y, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU, e.variant === 'roshan' ? 8 : 6); }
         else { ctx.beginPath(); ctx.arc(e.x, e.y, e.r + 9 + (1 - e.windup / telegraphTime) * 15, 0, TAU); ctx.stroke(); }
       }
-      if (e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
+      if (e.neutralCamp || e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
         const width = e.r * 2.2;
-        ctx.fillStyle = '#07131be0'; ctx.fillRect(e.x - width / 2, e.y - e.r - 12, width, 5);
-        ctx.fillStyle = e.id === 'boss' ? (e.variant === 'roshan' ? '#f5b65f' : '#f3a5c9') : '#ffd07c'; ctx.fillRect(e.x - width / 2, e.y - e.r - 12, width * Math.max(0, e.hp / e.maxHp), 5);
+        const barY = e.neutralCamp && e.neutralCamp.key !== 'roshan' ? e.y - 106 : e.y - e.r - 12;
+        ctx.fillStyle = '#07131be0'; ctx.fillRect(e.x - width / 2, barY, width, 5);
+        ctx.fillStyle = e.neutralState === 'returning' ? '#bbc7c0' : e.id === 'boss' ? (e.variant === 'roshan' ? '#f5b65f' : '#f3a5c9') : '#ffd07c'; ctx.fillRect(e.x - width / 2, barY, width * Math.max(0, e.hp / e.maxHp), 5);
       }
     }
     if (run.aimTarget) {
@@ -3909,6 +3968,15 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.globalAlpha = 1;
   }
   function drawEnemy(e) {
+    if (e.neutralCamp && e.neutralCamp.key !== 'roshan') {
+      drawNeutralGuardian(ctx, e, run.totalTime, motionPreference.matches);
+      if (!usesPixelPresentation()) {
+        ctx.fillStyle = '#07131b'; ctx.fillRect(e.x - 38, e.y - 106, 76, 5);
+        ctx.fillStyle = e.neutralState === 'returning' ? '#bbc7c0' : e.neutralCamp.color;
+        ctx.fillRect(e.x - 38, e.y - 106, 76 * Math.max(0, e.hp / e.maxHp), 5);
+      }
+      return;
+    }
     const def = enemyDef(e), visualId = e.variant === 'roshan' ? 'roshan' : e.id;
     ctx.save(); ctx.translate(usesPixelPresentation() ? Math.round(e.x) : e.x, usesPixelPresentation() ? Math.round(e.y) : e.y);
     ctx.fillStyle = '#0007';
@@ -3981,10 +4049,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
       ctx.beginPath(); ctx.moveTo(e.x, e.y - e.r - 25); ctx.lineTo(e.x + 5, e.y - e.r - 19);
       ctx.lineTo(e.x, e.y - e.r - 13); ctx.lineTo(e.x - 5, e.y - e.r - 19); ctx.closePath(); ctx.fill(); ctx.stroke();
     }
-    if (e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
+    if (e.neutralCamp || e.hp < e.maxHp || e.id === 'boss' || isElite(e)) {
       const width = e.r * 2.2;
-      ctx.fillStyle = '#07131be0'; ctx.fillRect(e.x - width / 2, e.y - e.r - 12, width, 5);
-      ctx.fillStyle = e.id === 'boss' ? (e.variant === 'roshan' ? '#f5b65f' : '#f3a5c9') : '#ffd07c'; ctx.fillRect(e.x - width / 2, e.y - e.r - 12, width * Math.max(0, e.hp / e.maxHp), 5);
+      const barY = e.y - e.r - 12;
+      ctx.fillStyle = '#07131be0'; ctx.fillRect(e.x - width / 2, barY, width, 5);
+      ctx.fillStyle = e.neutralState === 'returning' ? '#bbc7c0' : e.id === 'boss' ? (e.variant === 'roshan' ? '#f5b65f' : '#f3a5c9') : '#ffd07c'; ctx.fillRect(e.x - width / 2, barY, width * Math.max(0, e.hp / e.maxHp), 5);
     }
   }
 
@@ -5351,12 +5420,14 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     ctx.save();
     if (run.screenShake > 0 && phase === 'combat') ctx.translate(Math.sin(run.totalTime * 71) * run.screenShake, Math.cos(run.totalTime * 83) * run.screenShake);
     ctx.translate(usesPixelPresentation() ? -Math.round(cam.x) : -cam.x, usesPixelPresentation() ? -Math.round(cam.y) : -cam.y);
-    drawBackdrop(cam); drawTerrain(cam); drawSkillGround(); drawBuffAuras(); drawOrbitingArray(); drawPickups(cam);
+    drawBackdrop(cam); drawTerrain(cam);
+    drawNeutralCampGround(ctx, run.neutralCamps, run.totalTime, run.player, selectedLocale);
+    drawSkillGround(); drawBuffAuras(); drawOrbitingArray(); drawPickups(cam);
     if (usesPixelPresentation() || run.biome.id === 'dota') {
       const layers = run.terrain.filter(o => o.kind !== 'water' && o.x + (run.biome.id === 'dota' ? 48 : 32) >= cam.x && o.x - (run.biome.id === 'dota' ? 48 : 32) <= cam.x + viewW && o.y + 22 >= cam.y && o.y - (run.biome.id === 'dota' ? 150 : 80) <= cam.y + viewH)
         .map(o => ({ y: o.y, scenery: o }));
       if (run.biome.id === 'dota') for (const o of DOTA_SCENERY) if (visible(o, cam, 210)) layers.push({ y: o.y, dotaScenery: o });
-      for (const e of run.enemies) if (visible(e, cam, e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
+      for (const e of run.enemies) if (visible(e, cam, e.neutralCamp ? 130 : e.r + 20)) layers.push({ y: e.y + e.r * .8, enemy: e });
       for (const spirit of run.skills.kaelSpirits) if (visible(spirit, cam, 72)) layers.push({ y: spirit.y + 13, spirit });
       for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) layers.push({ y: unit.y + 12, necro: unit });
       for (const meteor of run.skills.kaelMeteors) layers.push({ y: meteor.y, meteor });
@@ -5381,7 +5452,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
         else drawPlayer();
       }
     } else {
-      for (const e of run.enemies) if (visible(e, cam, e.r + 20)) drawEnemy(e);
+      for (const e of run.enemies) if (visible(e, cam, e.neutralCamp ? 130 : e.r + 20)) drawEnemy(e);
       drawKaelSpirits();
       for (const unit of run.skills.necroUnits) if (visible(unit, cam, 32)) drawNecroUnit(unit);
       for (const meteor of run.skills.kaelMeteors) drawKaelMeteor(meteor);
@@ -5402,10 +5473,12 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     }
     ctx.shadowBlur = 0;
     drawProjectiles(cam); drawSkillAreas(); drawEffects(cam);
+    drawNeutralCampLabels(ctx, run.neutralCamps, run.totalTime, run.player, selectedLocale);
     ctx.restore();
     if (!studioMode && run.biome.id === 'dota') {
       const mini = $('minimap');
       drawDotaMinimap(mini.getContext('2d'), { x: 0, y: 0, w: mini.width, h: mini.height, player: run.player, view: { ...cam, w: viewW, h: viewH } });
+      drawNeutralMinimap(mini.getContext('2d'), run.neutralCamps, { w: mini.width, h: mini.height, time: run.totalTime, locale: selectedLocale });
     }
   }
   function drawTitleScene() {
@@ -5552,17 +5625,11 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     };
     $('inventory').addEventListener('click', inventoryClick);
     $('reserve-inventory').addEventListener('click', inventoryClick);
-    $('forge-settings').addEventListener('change', event => {
-      if (phase !== 'shop') return;
-      if (event.target.id === 'auto-forge') run.autoForge = event.target.checked;
-      else if (event.target.matches('[data-forge-target]')) {
-        const index = Number(event.target.dataset.forgeTarget), value = event.target.value;
-        run.forgeTargets[index] = value;
-        if (value && run.forgeTargets[1 - index] === value) run.forgeTargets[1 - index] = '';
-      } else return;
-      const selector = event.target.id === 'auto-forge' ? '#auto-forge' : `[data-forge-target="${event.target.dataset.forgeTarget}"]`;
-      autoForge(); renderShop(); renderEquipmentStrip(); document.querySelector(selector)?.focus({ preventScroll: true });
-    });
+    $('recipe-list').addEventListener('toggle', event => {
+      const selected = event.target;
+      if (!selected.matches('.recipe-card[open]')) return;
+      for (const card of $('recipe-list').querySelectorAll('.recipe-card[open]')) if (card !== selected) card.open = false;
+    }, true);
     const craftClick = event => {
       if (phase !== 'shop') return;
       const upgrade = event.target.closest('[data-upgrade]');
@@ -5746,7 +5813,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
     if (selection.category === 'equipment' && selection.id === 'phaseBoots' && crossed(.35)) tryDash();
     if (Math.floor(time / .8) !== Math.floor((time - dt) / .8)) {
       if ((passive && selectedCharacter === 'bulwark') || selection.category === 'buffs' || selection.category === 'equipment') {
-        if (run.player.hp > 6 && !(selection.category === 'equipment' && selection.id === 'heart' && time > 1)) hurtPlayer(3, run.enemies.find(enemy => !enemy.dead), true);
+        if (run.player.hp > 6 && !(selection.category === 'equipment' && selection.id === 'heart' && time > 1)) hurtPlayer(3, run.enemies.find(enemy => canTargetEnemy(enemy)), true);
       }
       if (passive && selectedCharacter === 'scavenger') { dropPickup(run.player.x, run.player.y, 1); updatePickups(.01); }
     }
@@ -5762,7 +5829,7 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   }
   function describeStudio(selection) {
     const p = run.player;
-    if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: run.biome.id === 'dota' ? '经典三路结构缩制；塔、兵营、商店与野怪为固定布景，河道可通行。此处不生成敌潮或地形伤害。' : '使用游戏的地形定义、绘制与工作台画面主题。此处不生成敌潮或地形伤害。' };
+    if (selection.category === 'maps') return { summary: `${run.biome.name} · ${WORLD.w} × ${WORLD.h}`, detail: run.biome.id === 'dota' ? '经典三路地形预览，河道可通行；红蓝 Buff与肉山在此仅显示营地底座，战斗行为需回到正式对局。此处不生成敌潮或地形伤害。' : '使用游戏的地形定义、绘制与工作台画面主题。此处不生成敌潮或地形伤害。' };
     if (selection.category === 'effects') return { summary: '独立效果 · 与游戏共用绘制模块', detail: '观察场景控制位置与时间；技能的伤害、碰撞和寿命由真实游戏负责。' };
     if (selection.category === 'enemies') {
       const enemy = run.enemies.find(value => value.id === selection.id), def = ENEMIES[selection.id];

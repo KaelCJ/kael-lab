@@ -584,11 +584,11 @@ export const EQUIPMENT = {
     passive: { id: "meteorStrike", cooldown: 7, range: 450, radius: 64, damage: 30, attackRatio: .6, hold: .8, afterglow: .6 }
   },
   divineRapier: {
-    kind: "finished", grade: 5, price: 140, hidden: true,
+    kind: "finished", grade: 5, price: 140,
     name: "圣剑", nameTw: "聖劍", nameEn: "Divine Rapier",
-    desc: "通关第10波解锁本局商店与铸造。攻击力 +36；每5次有效普攻释放剑气，持有时承伤增加15%。升阶强化剑气，同时增加承伤风险。",
-    descTw: "通關第10波解鎖本局商店與鑄造。攻擊力 +36；每5次有效普攻釋放劍氣，持有時承傷增加15%。升階強化劍氣，同時增加承傷風險。",
-    descEn: "Clear wave 10 to unlock this run's shop and forging access. Attack power +36; every 5 successful basics release a divine edge. Take 15% more damage while equipped; upgrades strengthen the edge and increase this risk.",
+    desc: "攻击力 +36；每5次有效普攻释放剑气，持有时承伤增加15%。升阶强化剑气，同时增加承伤风险。",
+    descTw: "攻擊力 +36；每5次有效普攻釋放劍氣，持有時承傷增加15%。升階強化劍氣，同時增加承傷風險。",
+    descEn: "Attack power +36; every 5 successful basics release a divine edge. Take 15% more damage while equipped; upgrades strengthen the edge and increase this risk.",
     stats: { attackPower: 36 },
     recipe: ["demonEdge", "claymore", "broadsword"],
     passive: { id: "divineEdge", hits: 5, range: 560, width: 16, targets: 6, damage: 40, attackRatio: .5, incomingAmp: .15 }
@@ -1126,7 +1126,7 @@ function equipmentExtensionDescription(def, locale) {
     'zh-CN': {
       monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向释放贯穿冲击，长 ${p.range}、半宽 ${p.width}，最多命中 ${p.targets} 个敌人，各造成触发普攻暴击前伤害的 ${pct(p.damageRatio)}%。同次攻击命中多敌仅计一次；多件共用计数。`,
       meteorHammer: () => `站定 ${p.hold} 秒后轰击 ${p.range} 范围内无遮挡敌人，半径 ${p.radius}，伤害 ${p.damage} + 技能伤害 × ${p.attackRatio}；释放后冷却 ${p.cooldown} 秒，余焰 ${p.afterglow} 秒。移动、冲刺或跳跃中断蓄力，没有合法目标不消耗就绪。`,
-      divineRapier: () => `通关第10波后解锁本局商店与铸造。每 ${p.hits} 次有效普攻沿命中方向释放剑气，长 ${p.range}、半宽 ${p.width}，最多 ${p.targets} 个目标，各造成 ${p.damage} + 触发普攻暴击前伤害 × ${p.attackRatio}。持有时承伤增加 ${pct(p.incomingAmp)}%，同类风险只取最高。`,
+      divineRapier: () => `每 ${p.hits} 次有效普攻沿命中方向释放剑气，长 ${p.range}、半宽 ${p.width}，最多 ${p.targets} 个目标，各造成 ${p.damage} + 触发普攻暴击前伤害 × ${p.attackRatio}。持有时承伤增加 ${pct(p.incomingAmp)}%，同类风险只取最高。`,
       bloodstone: () => `英雄技能按实际伤害回复 ${pct(p.ratio)}%；范围／持续伤害效率为 ${pct(p.areaRatio)}%，滚动 1 秒最多回复最大生命的 ${pct(p.capPerSecond)}%。装备追加、幻影和装备召唤伤害不触发此技能回血。`,
       orchid: () => `普攻标记存活敌人 ${p.duration} 秒；成功施放主动技能时引爆 ${p.range} 范围内最近的一个标记，造成 ${p.damage} + 技能伤害 × ${p.attackRatio} 基础伤害。不沉默，不自动施放 Q。`,
       bladeMail: () => `实际承伤后向存活攻击者反射 ${pct(p.ratio)}% 伤害，每击最多 ${p.cap} 点，共用 ${p.interval} 秒间隔。无来源、闪避或被护盾完全吸收时不触发。反伤不再放大全伤害。`,
@@ -1151,7 +1151,7 @@ function equipmentExtensionDescription(def, locale) {
     'zh-TW': {
       monkeyKingBar: () => `每 ${p.hits} 次有效普攻向命中方向釋放貫穿衝擊，長 ${p.range}、半寬 ${p.width}，最多命中 ${p.targets} 個敵人，各造成觸發普攻暴擊前傷害的 ${pct(p.damageRatio)}%。同次攻擊命中多敵僅計一次；多件共用計數。`,
       meteorHammer: () => `站定 ${p.hold} 秒後轟擊 ${p.range} 範圍內無遮擋敵人，半徑 ${p.radius}，傷害 ${p.damage} + 技能傷害 × ${p.attackRatio}；釋放後冷卻 ${p.cooldown} 秒，餘焰 ${p.afterglow} 秒。移動、衝刺或跳躍中斷蓄力，沒有合法目標不消耗就緒。`,
-      divineRapier: () => `通關第10波後解鎖本局商店與鑄造。每 ${p.hits} 次有效普攻沿命中方向釋放劍氣，長 ${p.range}、半寬 ${p.width}，最多 ${p.targets} 個目標，各造成 ${p.damage} + 觸發普攻暴擊前傷害 × ${p.attackRatio}。持有時承傷增加 ${pct(p.incomingAmp)}%，同類風險只取最高。`,
+      divineRapier: () => `每 ${p.hits} 次有效普攻沿命中方向釋放劍氣，長 ${p.range}、半寬 ${p.width}，最多 ${p.targets} 個目標，各造成 ${p.damage} + 觸發普攻暴擊前傷害 × ${p.attackRatio}。持有時承傷增加 ${pct(p.incomingAmp)}%，同類風險只取最高。`,
       bloodstone: () => `英雄技能按實際傷害回復 ${pct(p.ratio)}%；範圍／持續傷害效率為 ${pct(p.areaRatio)}%，滾動 1 秒最多回復最大生命的 ${pct(p.capPerSecond)}%。裝備追加、幻影和裝備召喚傷害不觸發此技能回血。`,
       orchid: () => `普攻標記存活敵人 ${p.duration} 秒；成功施放主動技能時引爆 ${p.range} 範圍內最近的一個標記，造成 ${p.damage} + 技能傷害 × ${p.attackRatio} 基礎傷害。不沉默，不自動施放 Q。`,
       bladeMail: () => `實際承傷後向存活攻擊者反射 ${pct(p.ratio)}% 傷害，每擊最多 ${p.cap} 點，共用 ${p.interval} 秒間隔。無來源、閃避或被護盾完全吸收時不觸發。反傷不再放大全傷害。`,
@@ -1176,7 +1176,7 @@ function equipmentExtensionDescription(def, locale) {
     en: {
       monkeyKingBar: () => `Every ${p.hits} successful basics release a piercing strike along the hit direction, ${p.range} long with half-width ${p.width}. Hit up to ${p.targets} enemies for ${pct(p.damageRatio)}% of pre-crit attack damage each. Multi-target basics count once; all copies share the counter.`,
       meteorHammer: () => `After standing still for ${p.hold} sec, strike an unobstructed enemy within ${p.range} in a ${p.radius}-radius area for ${p.damage} + spell power × ${p.attackRatio} damage. Cooldown after release: ${p.cooldown} sec; afterglow lasts ${p.afterglow} sec. Moving, dashing or jumping interrupts charge; stays ready without a legal target.`,
-      divineRapier: () => `Clear wave 10 to unlock this run's shop and forging access. Every ${p.hits} successful basics release a divine edge along the hit direction, ${p.range} long with half-width ${p.width}, hitting up to ${p.targets} targets for ${p.damage} + pre-crit attack damage × ${p.attackRatio} each. Take ${pct(p.incomingAmp)}% more damage while equipped; only the highest risk applies.`,
+      divineRapier: () => `Every ${p.hits} successful basics release a divine edge along the hit direction, ${p.range} long with half-width ${p.width}, hitting up to ${p.targets} targets for ${p.damage} + pre-crit attack damage × ${p.attackRatio} each. Take ${pct(p.incomingAmp)}% more damage while equipped; only the highest risk applies.`,
       bloodstone: () => `Hero skills heal for ${pct(p.ratio)}% of actual damage. Area/periodic damage heals at ${pct(p.areaRatio)}% efficiency; rolling 1 sec cap: ${pct(p.capPerSecond)}% max HP. Equipment bonus, illusion and equipment-summon damage cannot trigger this skill healing.`,
       orchid: () => `Basic attacks mark surviving enemies for ${p.duration} sec. A successful active skill detonates the nearest mark within ${p.range} for ${p.damage} + spell power × ${p.attackRatio} base damage. No silence or automatic Q.`,
       bladeMail: () => `Reflect ${pct(p.ratio)}% of actual HP lost to a living attacker, capped at ${p.cap} per hit with a shared ${p.interval} sec interval. No source, dodges and fully absorbed hits do not trigger it. All-damage bonuses do not amplify reflection.`,

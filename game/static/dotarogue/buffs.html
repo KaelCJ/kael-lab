@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0b1720">
+  <meta name="description" content="DotaRogue Buff图鉴：27件永久增益与红Buff、蓝Buff、肉山之力3种野区限时增益，查阅来源、持续时间、效果与叠层规则。">
+  <title>Buff图鉴 · DotaRogue</title>
+  <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="css/catalog.css?v=20261105-catalog1">
+  <script type="module" src="js/buffs-catalog.js?v=20261105-catalog-jungle1"></script>
+  <noscript><style>.locale-switch,.catalog-toolbar{display:none}</style></noscript>
+</head>
+<body data-catalog="buffs">
+  <a class="skip-link" href="#catalog-main" data-catalog-copy="skip">跳到Buff图鉴</a>
+  <header class="catalog-header">
+    <a class="catalog-brand" href="catalog.html">DotaRogue <span data-catalog-copy="archive">图鉴</span></a>
+    <nav aria-label="图鉴导航" data-catalog-nav>
+      <a href="catalog.html" data-catalog-copy="home">图鉴入口</a>
+      <a href="heroes.html" data-catalog-copy="heroes">角色</a>
+      <a href="equipment.html" data-catalog-copy="equipment">武器</a>
+      <a href="enemies.html" data-catalog-copy="monsters">怪物</a>
+      <a href="buffs.html" aria-current="page" data-catalog-copy="buffs">Buff</a>
+      <a href="studio.html" data-catalog-copy="studio">设计工作台</a>
+      <a href="index.html" data-catalog-copy="back">返回游戏</a>
+    </nav>
+    <div class="locale-switch" role="group" aria-label="语言 / Language">
+      <button type="button" data-locale="zh-CN" aria-pressed="true">简体</button>
+      <button type="button" data-locale="zh-TW" aria-pressed="false">繁體</button>
+      <button type="button" data-locale="en" aria-pressed="false">EN</button>
+    </div>
+  </header>
+  <main id="catalog-main" class="catalog-main">
+    <section class="page-intro" aria-labelledby="catalog-title">
+      <p class="eyebrow">DotaRogue</p>
+      <h1 id="catalog-title" data-catalog-copy="title">Buff图鉴</h1>
+      <p data-catalog-copy="lead">27件永久增益与3种野区限时增益。永久增益按购买层数叠加；野区增益从经典战场的目标获得，按战斗时间计时。</p>
+    </section>
+    <div class="catalog-toolbar">
+      <label for="catalog-search" data-catalog-copy="search">搜索Buff与效果</label>
+      <input id="catalog-search" data-catalog-search type="search" autocomplete="off">
+    </div>
+    <div id="catalog-list" class="catalog-grid"></div>
+    <p id="catalog-empty" hidden data-catalog-copy="empty">没有匹配的Buff。</p>
+    <noscript>
+      <section class="catalog-card">
+        <h2>当前永久增益</h2>
+        <p>Buff可重复购买并按层数叠加，不占装备格。白色普通、蓝色稀有、紫色史诗、橙色传说为固定品质，购买层数不提升品质。启用 JavaScript 后可查看完整效果、价格与触发条件。</p>
+        <p>弹无虚发、树枝、耐久光环、热血战魂、龙族血统、奥术光环、强袭光环、冰心、星环装置、机械护卫、祭品、薄葬、活体护甲、奔腾、血怒、贪魔的贪婪、恩赐解脱、牺牲、疯狂面具、臂章、集中火力、风行、神之力量、嗜血术、狂战士之血、霜冻护甲、反击螺旋。</p>
+        <p>薄葬按购买层数提供每波抵挡次数；臂章在战斗中每层每秒流失1生命，最低保留1。暂停冻结这些对局计时，不重新补充薄葬。</p>
+        <h2>野区限时增益</h2>
+        <ul>
+          <li>红Buff：在DotA经典战场击杀红Buff野怪获得，持续75秒。普攻灼烧3秒，每秒造成6＋攻击力12%的伤害并减速20%；重复命中刷新，不叠加。</li>
+          <li>蓝Buff：在DotA经典战场击杀蓝Buff野怪获得，持续75秒。每秒额外回复4法力；技能与法术装备冷却缩减＋15个百分点，总上限60%。</li>
+          <li>肉山之力：在DotA经典战场击杀肉山获得，持续120秒，所有伤害提高20%；击杀时恢复全部生命与法力，并获得200材料和3个待开奖励箱。</li>
+        </ul>
+        <p>限时增益只消耗战斗时间，暂停与波间菜单冻结倒计时。再次获得同种增益时，从当前时刻重新计满持续时间，不叠加效果或累加剩余时间；不同种增益可同时持有。</p>
+        <p><a href="catalog.html">返回图鉴入口</a> · <a href="index.html">返回游戏</a></p>
+      </section>
+    </noscript>
+  </main>
+</body>
+</html>

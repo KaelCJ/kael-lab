@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "recordedOn": "2026-10-27",
+  "recordedOn": "2026-11-05",
   "pathBase": "repository-root",
   "basePath": "game/static/dotarogue/assets/audio/dota1/",
   "purpose": "Small Warcraft III / DotA1-reference hero voice excerpts and game sound effects for DotaRogue.",
@@ -8,7 +8,7 @@
     "originalRightsHolder": "Blizzard Entertainment",
     "audioLicense": "Proprietary game audio; no open-source or Creative Commons media license is asserted.",
     "sourceScope": "Publicly reachable fan soundboard files; public access does not itself establish a redistribution license.",
-    "selection": "16 very short voice excerpts, 24 whitespace-delimited words total; no whole game or complete sound pack imported.",
+    "selection": "16 very short spoken excerpts (24 whitespace-delimited words total) plus six subsecond nonverbal Bristleback grunts; no whole game or complete sound pack imported.",
     "applicationSourceLicense": "ZephyrVentum/Warcraft3-Soundboard application has MPL-2.0; that is not treated as a grant covering Blizzard audio."
   },
   "sources": {
@@ -19,7 +19,9 @@
     },
     "zephyr": {
       "repository": "https://github.com/ZephyrVentum/Warcraft3-Soundboard",
-      "license": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/master/LICENSE"
+      "license": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/master/LICENSE",
+      "bristlebackGrouping": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/java/ventum/zephyr/wc3soundboard/neutral/BristlbackObject.kt",
+      "bristlebackLabels": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/values/strings.xml"
     }
   },
   "heroes": {
@@ -54,11 +56,30 @@
     "tb": {
       "select": "demon-hunter-quickly.m4a",
       "active": "demon-hunter-revenge.m4a"
+    },
+    "bulwark": {
+      "select": [
+        "bristleback-what1.mp3",
+        "bristleback-what2.mp3"
+      ],
+      "start": [
+        "bristleback-yes1.mp3",
+        "bristleback-yes2.mp3"
+      ],
+      "active": [
+        "bristleback-attack1.mp3",
+        "bristleback-attack2.mp3"
+      ],
+      "win": [
+        "bristleback-yes1.mp3",
+        "bristleback-yes2.mp3"
+      ]
     }
   },
   "fallbacks": {
     "bulwark": {
-      "reason": "No confirmed Razormane / Bristleback spoken prototype sample selected. Preserve generated audio rather than assign another unit voice."
+      "mode": "silent-for-unmapped-or-failed-events",
+      "reason": "Play original Bristleback grunts for select, start, active, elite and win. Low-health and defeat have no mapped voice; missing, late or failed recordings never use browser speech synthesis. Existing Bristleback skill effects remain enabled."
     }
   },
   "effects": {
@@ -387,6 +408,120 @@
       "bytes": 28023,
       "durationSeconds": 3.317375,
       "verification": "Source filename and local codec/duration checked with afinfo; decoded to non-silent PCM with afconvert; no listening test yet."
+    },
+    "bristleback-what1": {
+      "id": "bristleback-what1",
+      "file": "bristleback-what1.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "хрю",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackwhat1.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackwhat1.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackwhat1.mp3",
+      "sourceBlob": "c32c9a209a9cda08ed3d5005342a78e14a6ae1e0",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "51597061c8031cce6c5459a89e6ae58ee21d486deeb771eacfdc58eee6efe5e8",
+      "bytes": 5635,
+      "durationSeconds": 0.522449,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
+    },
+    "bristleback-what2": {
+      "id": "bristleback-what2",
+      "file": "bristleback-what2.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "Хрю",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackwhat2.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackwhat2.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackwhat2.mp3",
+      "sourceBlob": "5dee556ed627ae7b3dfa3a44e7554ad1286018cb",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "98fbfbf6fec97a987193dc922eac2b2aaea693fbdb84f9aac843e76661a498d2",
+      "bytes": 6889,
+      "durationSeconds": 0.679184,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
+    },
+    "bristleback-yes1": {
+      "id": "bristleback-yes1",
+      "file": "bristleback-yes1.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "хрю!",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyes1.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyes1.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackyes1.mp3",
+      "sourceBlob": "05f884b9e33704cd7fde35bc02fdcc22bc64b301",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "e43cb516fb5d519407c8aaa4de4300976f46934b340b729629bd43d997514618",
+      "bytes": 5426,
+      "durationSeconds": 0.496327,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
+    },
+    "bristleback-yes2": {
+      "id": "bristleback-yes2",
+      "file": "bristleback-yes2.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "хрю?",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyes2.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyes2.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackyes2.mp3",
+      "sourceBlob": "9676c5468f0bf524ae6e93cefe942f436833990f",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "c624763ad5a186c7f88ba1d0f4ce68eff186e4e643c3cf01daf492dda09c1d8e",
+      "bytes": 5008,
+      "durationSeconds": 0.444082,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
+    },
+    "bristleback-attack1": {
+      "id": "bristleback-attack1",
+      "file": "bristleback-attack1.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "Хрю хрю",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyesattack1.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyesattack1.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackyesattack1.mp3",
+      "sourceBlob": "e30b1c196dbd0f34a5bed3fa73da102cdd651775",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "4b54e12a43229f5df1b654e9a8667e8ebe50b1ef3072657a1d407d385ee9ef5c",
+      "bytes": 6680,
+      "durationSeconds": 0.653061,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
+    },
+    "bristleback-attack2": {
+      "id": "bristleback-attack2",
+      "file": "bristleback-attack2.mp3",
+      "kind": "voice",
+      "unit": "wc3/neutral/bristleback",
+      "sourceText": "Nonverbal grunt",
+      "sourceLabel": "Хрю хрю!",
+      "sourceUrl": "https://raw.githubusercontent.com/ZephyrVentum/Warcraft3-Soundboard/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyesattack2.mp3",
+      "sourcePage": "https://github.com/ZephyrVentum/Warcraft3-Soundboard/blob/09106ddd8f35bcdb03b8281a4920289db7f57506/app/src/main/res/raw/bristlebackyesattack2.mp3",
+      "sourceFile": "app/src/main/res/raw/bristlebackyesattack2.mp3",
+      "sourceBlob": "4f9961a224d2d7ff713b34a6fdc6449ebd5f9e5f",
+      "sourceCommit": "09106ddd8f35bcdb03b8281a4920289db7f57506",
+      "sha256": "f5cb160ec6627d5f7411ae8a31cce2b43d42ee2385de3d46aa14c25ba1f3eb77",
+      "bytes": 7307,
+      "durationSeconds": 0.731429,
+      "sampleRate": 22050,
+      "channels": 1,
+      "verification": "Pinned raw bytes match Git blob; source object and label mapping match; decoded using afconvert to non-silent 16-bit PCM; no clipping; no human listening claim. Original source bytes preserved; no pitch shifting, trimming or re-encoding."
     }
   },
   "effectsNotes": {
@@ -395,5 +530,46 @@
     "lightning": "No verified original lightning clip acquired; use generated fallback.",
     "bladestorm": "No verified original Bladestorm clip acquired; use generated fallback."
   },
-  "sourceVersion": "Warcraft III unit recordings from public fan collections; source hosts do not identify a game build. Not claimed to be extracted from a particular DotA Allstars map or version."
+  "sourceVersion": "Warcraft III unit recordings from public fan collections; source hosts do not identify a game build. Not claimed to be extracted from a particular DotA Allstars map or version.",
+  "bristlebackIdentity": {
+    "dotaMap": {
+      "repository": "ifshuaishuai/OpenDotA-6.83d",
+      "release": "Ver_01",
+      "asset": "DotA.Allstars.v6.83d.Open.Ver.0.1.w3x",
+      "sourceUrl": "https://github.com/ifshuaishuai/OpenDotA-6.83d/releases/download/Ver_01/DotA.Allstars.v6.83d.Open.Ver.0.1.w3x",
+      "sha256": "2cbf5400edff93d274b2343756f8a79938fc07a7cca24c24f60f066f4b915c5d",
+      "object": "H008",
+      "base": "Hapm",
+      "unam": "Bristleback",
+      "upro": "Rigwarl",
+      "usnd": "RazorMane",
+      "scope": "Public reconstructed editor data, not asserted to be an official unmodified map archive."
+    },
+    "unitAckSounds": {
+      "sourceUrl": "https://cdn.hiveworkshop.com/assets/wc3/war3.w3mod/ui/soundinfo/unitacksounds.slk",
+      "bytes": 495275,
+      "sha256": "9d2f9211686116e8d840fd22b0948c70e112254f5b13a76f4b895f85fb498dd6",
+      "mapping": {
+        "RazorManeWhat": "Units/Creeps/BristleBack/BristlebackWhat{1,2,3}.flac",
+        "RazorManeYes": "Units/Creeps/BristleBack/BristlebackYes{1,2,3}.flac",
+        "RazorManeYesAttack": "Units/Creeps/BristleBack/BristlebackYesAttack{1,2,3}.flac"
+      },
+      "pitch": 1,
+      "scope": "Original sound table from current CASC; shared file identity checked. MP3 fan copies are not asserted byte-identical to game FLAC or classic WAV containers."
+    },
+    "classicUnitAckSounds": {
+      "sourcePage": "https://xgm.guru/p/wc3/192737",
+      "sourceUrl": "https://xgm.guru/files/100/192737/comments/353339/UnitAckSounds.slk?cache-tag=1498324420",
+      "bytes": 282760,
+      "sha256": "aa6842e8c665364fca11e1080674bc74e6ed054e043ba0724f83e50a252a3376",
+      "rows": [
+        609,
+        610,
+        611,
+        612
+      ],
+      "directoryBase": "Units\\Creeps\\BristleBack\\",
+      "scope": "Community-provided classic war3.mpq sound table. RazorMane What/YesAttack/Yes/Ready use the same Bristleback WAV filenames as the Bristleback soundset."
+    }
+  }
 }

@@ -1,24 +1,24 @@
-import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261031-equipment19';
-import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261104-loading1';
+import { EQUIPMENT, EQUIPMENT_UPGRADES, equipmentIconPath, resolveEquipment, equipmentUpgradeDescription, equipmentResale } from './equipment.js?v=20261105-shop-mobile1';
+import { EQUIPMENT_BUILDS, equipmentBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261105-shop-mobile1';
 import { attributeSummary, attributeDerivedSummary } from './hero-attributes.js?v=20261030-attribute-contract1';
+import { readCatalogLocale, writeCatalogLocale } from './catalog-ui.js?v=20261105-catalog1';
 
-// Legacy key retained so the DotaRogue rename keeps existing browser records.
-const SAVE_KEY = 'kael-lab-starcore-survivor-v1';
 const STAGES = ['component', 'intermediate', 'finished'];
 const ITEMS = Object.entries(EQUIPMENT);
 const UI = {
   'zh-CN': {
-    back: '返回游戏', gameList: '选择游戏', title: '装备图鉴', lead: '从基础组件到中间件，再到成品。三个数字代表合成阶段；每件装备的 1～5 级另行标明。',
+    overview: '图鉴首页', heroes: '角色', equipment: '武器', enemies: '怪物', buffs: 'Buff', studio: '设计工作台',
+    observe: '在工作台观察', back: '返回游戏', gameList: '选择游戏', title: '武器图鉴（含装备）', lead: '从基础组件到中间件，再到成品。三个数字代表合成阶段；每件装备的 1～5 级另行标明。',
     itemCount: '件当前装备', recipeCount: '条固定配方', stageCount: '个合成阶段',
     component: '基础组件', intermediate: '中间件', finished: '成品',
     componentCount: '21 件 · 装备 1～2 级', intermediateCount: '5 件 · 装备 3 级', finishedCount: '48 件 · 装备 3～5 级',
     componentHelp: '合成路线的起点，持有时也提供自身属性。', intermediateHelp: '由组件合成，也能作为成品材料。', finishedHelp: '有的经过中间件，有的可由组件直接合成。',
     detailKicker: '装备档案 / 当前版本', priceLabel: '基础价格', routeTitle: '合成路线', usedForTitle: '可用于合成',
-    detailNote: '图鉴只供查阅。波间商店可手动合成，也可追踪目标自动合成；基础价格不等于当波商店售价。',
+    detailNote: '图鉴只供查阅。波间商店可手动合成，同级成品默认自动三合一；基础价格不等于当波商店售价。',
     rulesTitle: '合成与等级', rulesBody: '阶段表示组件、中间件、成品的关系；装备等级仍按游戏中的 1～5 级显示。合成消耗配方材料，结果装备的属性与效果替换材料效果。部分成品直接由组件合成。',
-    grade: '装备 {grade} 级', direct: '直接配方：{items}', noRecipe: '基础组件没有合成配方。', noUses: '当前没有后续合成配方。', pageTitle: '装备图鉴 · DotaRogue',
+    grade: '装备 {grade} 级', direct: '直接配方：{items}', noRecipe: '基础组件没有合成配方。', noUses: '当前没有后续合成配方。', pageTitle: '武器图鉴（含装备） · DotaRogue',
     upgradeTitle: '成品装备升阶', upgradeRange: '强化 Lv.1–3', upgradeLevel: '强化 Lv.{level}',
-    upgradeRules: '全部成品均可免费三合一：3 件同名同级变成 1 件高一级，最高 Lv.3。默认自动升阶，也保留手动入口和关闭开关；生效与储备共同取料。不同等级不能混用，组件与中间件不参与。',
+    upgradeRules: '全部成品均可免费三合一：3 件同名同级变成 1 件高一级，最高 Lv.3。默认自动升阶，保留手动入口；生效与储备共同取料。不同等级不能混用，组件与中间件不参与。',
     damageRules: '普通攻击只读取攻击力；英雄技能、法术型装备和装备召唤读取技能伤害，分别按自身系数获得加值。近战、远程、弹射、穿透、控制和召唤描述攻击机制。普通吸血适用于所有英雄普攻；血精石的技能吸血只由英雄技能触发。力量、敏捷、智力都会提供攻击力，只有智力额外提供技能伤害。',
     upgradeStats: '各级属性为单件贡献，按 1／3／9 倍保留投入；升阶保留三件材料的属性总和与总卖价。同类被动只取最强的一份。强化 Lv. 与装备基础等级、三个合成阶段分别计算。',
     upgradeBase: '固定配方合成或商店直购获得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
@@ -35,17 +35,18 @@ const UI = {
     growthRules: '击杀成长：普通／精英／首领各 +1／+3／+6 点；0／60／180／360 点对应初铸／聚魂／铭刻／觉醒。生效格中的同名装备共享进度，储备不增长；封神印用于普攻首击，灾星追击用于成功 Q。'
   },
   'zh-TW': {
-    back: '返回遊戲', gameList: '選擇遊戲', title: '裝備圖鑑', lead: '從基礎組件到中間件，再到成品。三個數字代表合成階段；每件裝備的 1～5 級另行標明。',
+    overview: '圖鑑首頁', heroes: '角色', equipment: '武器', enemies: '怪物', buffs: 'Buff', studio: '設計工作台',
+    observe: '在工作台觀察', back: '返回遊戲', gameList: '選擇遊戲', title: '武器圖鑑（含裝備）', lead: '從基礎組件到中間件，再到成品。三個數字代表合成階段；每件裝備的 1～5 級另行標明。',
     itemCount: '件目前裝備', recipeCount: '條固定配方', stageCount: '個合成階段',
     component: '基礎組件', intermediate: '中間件', finished: '成品',
     componentCount: '21 件 · 裝備 1～2 級', intermediateCount: '5 件 · 裝備 3 級', finishedCount: '48 件 · 裝備 3～5 級',
     componentHelp: '合成路線的起點，持有時也提供自身屬性。', intermediateHelp: '由組件合成，也能作為成品材料。', finishedHelp: '有的經過中間件，有的可由組件直接合成。',
     detailKicker: '裝備檔案 / 目前版本', priceLabel: '基礎價格', routeTitle: '合成路線', usedForTitle: '可用於合成',
-    detailNote: '圖鑑僅供查閱。波間商店可手動合成，也可追蹤目標自動合成；基礎價格不等於當波商店售價。',
+    detailNote: '圖鑑僅供查閱。波間商店可手動合成，同級成品預設自動三合一；基礎價格不等於當波商店售價。',
     rulesTitle: '合成與等級', rulesBody: '階段表示組件、中間件、成品的關係；裝備等級仍按遊戲中的 1～5 級顯示。合成消耗配方材料，結果裝備的屬性與效果取代材料效果。部分成品直接由組件合成。',
-    grade: '裝備 {grade} 級', direct: '直接配方：{items}', noRecipe: '基礎組件沒有合成配方。', noUses: '目前沒有後續合成配方。', pageTitle: '裝備圖鑑 · DotaRogue',
+    grade: '裝備 {grade} 級', direct: '直接配方：{items}', noRecipe: '基礎組件沒有合成配方。', noUses: '目前沒有後續合成配方。', pageTitle: '武器圖鑑（含裝備） · DotaRogue',
     upgradeTitle: '成品裝備升階', upgradeRange: '強化 Lv.1–3', upgradeLevel: '強化 Lv.{level}',
-    upgradeRules: '全部成品均可免費三合一：3 件同名同級變成 1 件高一級，最高 Lv.3。預設自動升階，也保留手動入口和關閉開關；生效與儲備共同取料。不同等級不能混用，組件與中間件不參與。',
+    upgradeRules: '全部成品均可免費三合一：3 件同名同級變成 1 件高一級，最高 Lv.3。預設自動升階，保留手動入口；生效與儲備共同取料。不同等級不能混用，組件與中間件不參與。',
     damageRules: '普通攻擊只讀取攻擊力；英雄技能、法術型裝備和裝備召喚讀取技能傷害，分別按自身係數獲得加值。近戰、遠程、彈射、穿透、控制和召喚描述攻擊機制。普通吸血適用於所有英雄普攻；血精石的技能吸血只由英雄技能觸發。力量、敏捷、智力都會提供攻擊力，只有智力額外提供技能傷害。',
     upgradeStats: '各級屬性為單件貢獻，按 1／3／9 倍保留投入；升階保留三件材料的屬性總和與總賣價。同類被動只取最強的一份。強化 Lv. 與裝備基礎等級、三個合成階段分別計算。',
     upgradeBase: '固定配方合成或商店直購獲得 Lv.1。', upgradeFrom: '3 件同名 Lv.{level} → 1 件 Lv.{next}',
@@ -62,17 +63,18 @@ const UI = {
     growthRules: '擊殺成長：普通／精英／首領各 +1／+3／+6 點；0／60／180／360 點對應初鑄／聚魂／銘刻／覺醒。生效格內同名裝備共享進度，儲備不成長；封神印用於普攻首擊，災星追擊用於成功 Q。'
   },
   en: {
-    back: 'Back to game', gameList: 'Choose a game', title: 'Equipment Archive', lead: 'Follow components into intermediate items and finished gear. The three numbers mark crafting stages; each item keeps its actual grade from 1 to 5.',
+    overview: 'Archive home', heroes: 'Heroes', equipment: 'Weapons', enemies: 'Enemies', buffs: 'Buffs', studio: 'Design studio',
+    observe: 'View in studio', back: 'Back to game', gameList: 'Choose a game', title: 'Weapons & Equipment', lead: 'Follow components into intermediate items and finished gear. The three numbers mark crafting stages; each item keeps its actual grade from 1 to 5.',
     itemCount: 'current items', recipeCount: 'fixed recipes', stageCount: 'crafting stages',
     component: 'Components', intermediate: 'Intermediate', finished: 'Finished gear',
     componentCount: '21 items · grades 1–2', intermediateCount: '5 items · grade 3', finishedCount: '48 items · grades 3–5',
     componentHelp: 'The start of a crafting route, with useful stats of their own.', intermediateHelp: 'Crafted from components and used in finished gear.', finishedHelp: 'Some use intermediate items; others use components directly.',
     detailKicker: 'ITEM RECORD / CURRENT BUILD', priceLabel: 'Base price', routeTitle: 'Crafting route', usedForTitle: 'Used to craft',
-    detailNote: 'For reference only. Craft manually in the between-wave shop or track a target for automatic crafting. Base price is not the current shop price.',
+    detailNote: 'For reference only. Craft manually in the between-wave shop; matching finished items merge automatically. Base price is not the current shop price.',
     rulesTitle: 'Crafting and grades', rulesBody: 'Stages describe components, intermediate items and finished gear. Actual item grades still run from 1 to 5. Crafting consumes the listed ingredients, and the result replaces their stats and effects. Some finished gear is made directly from components.',
-    grade: 'Grade {grade}', direct: 'Direct recipe: {items}', noRecipe: 'Components have no crafting recipe.', noUses: 'No further recipe currently uses this item.', pageTitle: 'Equipment Archive · DotaRogue',
+    grade: 'Grade {grade}', direct: 'Direct recipe: {items}', noRecipe: 'Components have no crafting recipe.', noUses: 'No further recipe currently uses this item.', pageTitle: 'Weapons & Equipment · DotaRogue',
     upgradeTitle: 'Finished gear upgrades', upgradeRange: 'Upgrade Lv.1–3', upgradeLevel: 'Upgrade Lv.{level}',
-    upgradeRules: 'All finished gear can merge for free: 3 matching copies at the same level become 1 at the next, up to Lv.3. Automatic merging is on by default; manual controls and an off switch remain. Active and reserve items can supply the inputs. Mixed levels, components and intermediate items cannot merge this way.',
+    upgradeRules: 'All finished gear can merge for free: 3 matching copies at the same level become 1 at the next, up to Lv.3. Automatic merging is on by default; manual controls remain. Active and reserve items can supply the inputs. Mixed levels, components and intermediate items cannot merge this way.',
     damageRules: 'Basic attacks read attack power only. Hero skills, spell gear and equipment summons read spell power with their own ratios. Melee, ranged, bounce, piercing, control and summons describe attack mechanics. Basic lifesteal works for every hero; Bloodstone skill lifesteal only triggers from hero skills. Strength, Agility and Intelligence all add attack power; only Intelligence also adds spell power.',
     upgradeStats: 'Stats are per item, scaled by 1 / 3 / 9 to preserve your investment. Merging keeps the three inputs’ total stats and resale value. Only the strongest passive of each type applies. Upgrade levels are separate from item grades and the three crafting stages.',
     upgradeBase: 'Crafting recipes and direct shop purchases provide Lv.1.', upgradeFrom: '3 matching Lv.{level} copies → 1 Lv.{next}',
@@ -90,23 +92,7 @@ const UI = {
   }
 };
 
-function savedLocale() {
-  try {
-    const value = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}')?.settings?.locale;
-    return UI[value] ? value : 'zh-CN';
-  } catch { return 'zh-CN'; }
-}
-
-function saveLocale(value) {
-  try {
-    const stored = JSON.parse(localStorage.getItem(SAVE_KEY) || '{}');
-    const save = stored && typeof stored === 'object' && !Array.isArray(stored) ? stored : {};
-    save.settings = { ...(save.settings && typeof save.settings === 'object' ? save.settings : {}), locale: value };
-    localStorage.setItem(SAVE_KEY, JSON.stringify(save));
-  } catch { /* Browsing the archive still works when storage is unavailable. */ }
-}
-
-let locale = savedLocale();
+let locale = readCatalogLocale();
 let selectedId = 'mjollnir';
 const $ = id => document.getElementById(id);
 const copy = key => UI[locale][key];
@@ -130,6 +116,7 @@ function itemButton(id, className) {
   button.setAttribute('aria-controls', 'detail-panel');
   button.setAttribute('aria-pressed', String(id === selectedId));
   const icon = document.createElement('img');
+  icon.loading = 'lazy';
   icon.src = equipmentIconPath(id);
   icon.alt = '';
   icon.width = 46;
@@ -213,6 +200,7 @@ function buildCard(build) {
 
 function renderDetail() {
   const item = resolveEquipment(selectedId);
+  $('detail-design').href = `studio.html#category=equipment&id=${selectedId}`;
   $('detail-icon').src = equipmentIconPath(selectedId);
   $('detail-stage').textContent = `${STAGES.indexOf(item.kind) + 1} · ${copy(item.kind)}`;
   $('detail-title').textContent = name(selectedId);
@@ -368,7 +356,7 @@ document.addEventListener('click', event => {
 });
 document.querySelectorAll('[data-locale]').forEach(button => button.addEventListener('click', () => {
   locale = button.dataset.locale;
-  saveLocale(locale);
+  writeCatalogLocale(locale);
   render();
 }));
 
