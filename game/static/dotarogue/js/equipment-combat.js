@@ -86,6 +86,7 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
   function strike(run, target, config, damage, color) {
     const p = run.player, angle = Math.atan2(target.y - p.y, target.x - p.x);
     const dx = Math.cos(angle), dy = Math.sin(angle);
+    const weapon = config.weapon || (config.id === 'piercingStrike' ? 'monkeyKingBar' : 'divineRapier');
     const targets = run.enemies.filter(enemy => {
       if (!canTarget(enemy)) return false;
       const x = enemy.x - p.x, y = enemy.y - p.y, along = x * dx + y * dy;
@@ -95,9 +96,11 @@ export function createEquipmentCombat({ getRun, passive, damageEnemy, blocked, p
         && !blocked(p.x, p.y, enemy.x, enemy.y, config.width, false);
     }).sort((a, b) => (a.x - b.x) * dx + (a.y - b.y) * dy).slice(0, config.targets);
     for (const enemy of targets) damageEnemy(enemy, damage, { source: 'equipment' });
-    run.effects.push({ kind: 'line', weapon: config.weapon || (config.id === 'piercingStrike' ? 'monkeyKingBar' : 'divineRapier'),
+    run.effects.push({ kind: 'line', weapon,
       level: config.level, x1: p.x, y1: p.y, x2: p.x + dx * config.range, y2: p.y + dy * config.range,
-      width: config.width * 2, color, life: .28, maxLife: .28, upgradeLevel: config.level });
+      impactX: target.x, impactY: target.y,
+      width: config.width * 2, color, life: weapon === 'monkeyKingBar' ? .72 : .28,
+      maxLife: weapon === 'monkeyKingBar' ? .72 : .28, upgradeLevel: config.level });
   }
 
   function triggerElement(run, target, elemental) {

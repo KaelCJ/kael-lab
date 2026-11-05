@@ -99,6 +99,7 @@ export function drawWeaponStrike(ctx, fx, progress, { pixel, reducedMotion }) {
     ctx.translate(fx.x1, fx.y1); ctx.rotate(Math.atan2(dy, dx));
     const half = (fx.width || 8) / 2;
     if (fx.weapon === 'monkeyKingBar') {
+      ctx.globalAlpha *= .5;
       ctx.strokeStyle = '#6c4528'; ctx.lineWidth = Math.max(6, half * .65);
       ctx.beginPath(); ctx.moveTo(8, 0); ctx.lineTo(length, 0); ctx.stroke();
       ctx.strokeStyle = '#ffd276'; ctx.lineWidth = 3; ctx.stroke();
@@ -109,6 +110,40 @@ export function drawWeaponStrike(ctx, fx, progress, { pixel, reducedMotion }) {
       }
       ctx.fillStyle = '#ffe9a2'; ctx.beginPath(); ctx.moveTo(length, 0);
       ctx.lineTo(length - 22, -half * .7); ctx.lineTo(length - 15, 0); ctx.lineTo(length - 22, half * .7); ctx.closePath(); ctx.fill();
+      ctx.restore();
+
+      const fallProgress = reducedMotion ? 1 : Math.min(1, progress / .68);
+      const lift = (1 - fallProgress * fallProgress) * (150 + level * 20);
+      const staffLength = 130 + level * 20, staffWidth = 14 + level * 3;
+      ctx.save();
+      ctx.globalAlpha = Math.min(1, (1 - progress) / .24);
+      ctx.translate(fx.impactX ?? fx.x2, (fx.impactY ?? fx.y2) - lift);
+      ctx.lineCap = pixel ? 'butt' : 'round';
+      // The resolved piercing strike remains on the ground; the staff is its falling follow-through.
+      for (const [color, width] of [['#59361f', staffWidth + 4], ['#d99632', staffWidth], ['#ffdf78', staffWidth * .4]]) {
+        ctx.strokeStyle = color; ctx.lineWidth = width;
+        ctx.beginPath(); ctx.moveTo(0, -staffLength); ctx.lineTo(0, 0); ctx.stroke();
+      }
+      for (const y of [-staffLength, -20]) {
+        ctx.fillStyle = '#f2bf55'; ctx.strokeStyle = '#825020'; ctx.lineWidth = 2;
+        ctx.fillRect(-staffWidth * .7, y, staffWidth * 1.4, 20);
+        ctx.strokeRect(-staffWidth * .7, y, staffWidth * 1.4, 20);
+        ctx.fillStyle = '#fff0a8'; ctx.fillRect(-staffWidth * .45, y + 3, staffWidth * .22, 14);
+      }
+      ctx.restore();
+      if (progress >= .68 && !reducedMotion) {
+        const impact = Math.min(1, (progress - .68) / .32);
+        ctx.save(); ctx.translate(fx.impactX ?? fx.x2, fx.impactY ?? fx.y2);
+        ctx.globalAlpha = (1 - impact) * .85;
+        ctx.strokeStyle = '#ffe7a0'; ctx.lineWidth = 3;
+        for (let i = 0; i < 6; i++) {
+          const angle = i * TAU / 6, reach = 12 + impact * (22 + level * 5);
+          ctx.beginPath(); ctx.moveTo(Math.cos(angle) * 5, Math.sin(angle) * 3);
+          ctx.lineTo(Math.cos(angle) * reach, Math.sin(angle) * reach * .6); ctx.stroke();
+        }
+        ctx.restore();
+      }
+      return true;
     } else {
       ctx.fillStyle = '#b58b42'; ctx.globalAlpha *= .65;
       ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(length * .48, -half); ctx.lineTo(length, 0);

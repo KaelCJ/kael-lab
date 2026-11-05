@@ -15,7 +15,7 @@ import { acquisition, craft as craftLoadout, upgrade as upgradeLoadout, move as 
 import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './equipment-builds.js?v=20261105-shop-mobile1';
 import { createEquipmentCombat } from './equipment-combat.js?v=20261105-neutral-camps1';
 import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261031-luna-eclipse2';
-import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261030-equipment18';
+import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261105-monkey-fall1';
 import { createWindRenderer } from './effects/wind.js?v=20261103-mobile-performance1';
 import { createMeteorRenderer } from './effects/meteor.js';
 import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem5';
@@ -4809,7 +4809,8 @@ import { ATTRIBUTE_KEYS, attributeContribution, attributeSummary, attributeDeriv
   function drawEffects(cam) {
     let emphasized = 0;
     for (const fx of run.effects) {
-      const inView = ['line', 'orbit-bolt'].includes(fx.kind) ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) <= cam.y + viewH : visible(fx, cam, (fx.r || 30) + 180);
+      const rise = fx.weapon === 'monkeyKingBar' ? 400 : 0;
+      const inView = ['line', 'orbit-bolt'].includes(fx.kind) ? Math.max(fx.x1, fx.x2) >= cam.x && Math.min(fx.x1, fx.x2) <= cam.x + viewW && Math.max(fx.y1, fx.y2) >= cam.y && Math.min(fx.y1, fx.y2) - rise <= cam.y + viewH : visible(fx, cam, (fx.r || 30) + 180);
       if (!inView) continue;
       if (selectedSkin === 'dota1' && fx.kind === 'muzzle' && ['rover', 'conductor', 'kael', 'luna', 'tb'].includes(run.character.id)) continue;
       const progress = 1 - fx.life / fx.maxLife;
