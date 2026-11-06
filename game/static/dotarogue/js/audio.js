@@ -55,8 +55,8 @@ const SFX_CLIPS = {
 
 const VOICE_LANG = { 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', en: 'en-US' };
 
-export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN', heroId = () => null } = {}) {
-  let audio = null;
+export function createAudioSystem({ context = null, enabled = () => true, locale = () => 'zh-CN', heroId = () => null } = {}) {
+  let audio = typeof context === 'function' ? context() : context;
   let audioNoise = null;
   let lastCombatSound = -Infinity;
   let lastVoiceAt = -Infinity;
@@ -73,6 +73,7 @@ export function createAudioSystem({ enabled = () => true, locale = () => 'zh-CN'
   function ensureAudio() {
     const AudioCtor = window.AudioContext || window.webkitAudioContext;
     if (!AudioCtor) return null;
+    audio ||= typeof context === 'function' ? context() : context;
     if (!audio || audio.state === 'closed') audio = new AudioCtor();
     if (audio.state === 'suspended') audio.resume().catch(() => {});
     return audio;

@@ -8,8 +8,8 @@
   <link rel="icon" href="../../../shared/static/assets/favicon.svg" type="image/svg+xml">
   <meta name="description" content="DotaRogue：受 Dota 启发的网页生存肉鸽游戏。桌面与手机横竖屏都能游玩，在 20 波远征或无尽敌潮中移动、自动攻击、升级和购物。">
   <title>DotaRogue · Kael Lab</title>
-  <link rel="stylesheet" href="css/game.css?v=20261105-neutral-camps1">
-  <script type="module" src="js/game.js?v=20261105-neutral-camps1-bristleback-original1-inventory-count1-catalog1"></script>
+  <link rel="stylesheet" href="css/game.css?v=20261106-title1">
+  <script type="module" src="js/title.js?v=20261106-title1"></script>
 </head>
 <body>
   <main id="game" class="game-shell" data-skin="pixel">
@@ -42,11 +42,32 @@
     <section id="title-screen" class="screen title-screen" aria-labelledby="game-title">
       <div class="title-heading"><a class="home-link" data-i18n="home" href="../index.html">← 选择游戏</a><div class="eyebrow" data-i18n="eyebrow">KAEL LAB · BROWSER GAME</div><h1 id="game-title">Dota<span>Rogue</span></h1><p data-i18n="titleLead">在敌潮中活过 20 波，或进入无尽模式。选择英雄、升级和装备，打造你的构筑。</p><a class="equipment-catalog-link" href="catalog.html" data-i18n="catalog">查看图鉴</a> <a class="equipment-catalog-link" href="studio.html" lang="zh-CN">设计工作台</a></div>
       <div class="setup-panel">
-        <div class="setup-column hero-picker"><h2 data-i18n="chooseCharacter">选择英雄</h2><h3 class="hero-group-title" data-i18n="availableHeroes">可玩英雄</h3><div id="character-list" class="hero-grid"></div><div id="hero-details" class="hero-details" aria-live="polite" aria-atomic="true"></div></div>
+        <div class="setup-column hero-picker"><h2 data-i18n="chooseCharacter">选择英雄</h2><h3 class="hero-group-title" data-i18n="availableHeroes">可玩英雄</h3>
+          <div id="character-list" class="hero-grid">
+            <button class="hero-tile" type="button" data-character="rover" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/rover.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">矮人火枪手</span></button>
+            <button class="hero-tile" type="button" data-character="bulwark" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/bulwark.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">刚背兽</span></button>
+            <button class="hero-tile" type="button" data-character="conductor" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/conductor.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">众神之王</span></button>
+            <button class="hero-tile" type="button" data-character="scavenger" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/scavenger.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">炼金术士</span></button>
+            <button class="hero-tile" type="button" data-character="jugg" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/jugg.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">剑圣</span></button>
+            <button class="hero-tile" type="button" data-character="sf" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/sf.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">影魔</span></button>
+            <button class="hero-tile" type="button" data-character="kael" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/kael.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">召唤师</span></button>
+            <button class="hero-tile" type="button" data-character="luna" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/luna.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">月之骑士</span></button>
+            <button class="hero-tile" type="button" data-character="tb" aria-pressed="false" aria-controls="hero-details" disabled><span class="hero-avatar"><img class="art-icon" src="assets/art/dota1/heroes/tb.png" alt="" width="64" height="64" loading="eager" decoding="async" fetchpriority="high"></span><span class="hero-tile-name">灵魂守卫</span></button>
+          </div><div id="hero-details" class="hero-details" aria-live="polite" aria-atomic="true"></div></div>
         <div class="setup-column"><h2 data-i18n="chooseBiome">选择战场</h2><div id="biome-list" class="selection-grid biome-grid"></div><div class="setting-row"><span data-i18n="difficulty">难度</span><div id="difficulty-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="pace">节奏</span><div id="pace-list" class="segmented"></div></div><div class="setting-row"><span data-i18n="mode">模式</span><div id="mode-list" class="segmented"></div></div><div class="setting-row skin-setting"><span data-i18n="visuals">角色皮肤</span><div id="skin-list" class="segmented" role="group" aria-label="角色皮肤" data-i18n-attr="aria-label:visuals"></div></div><div class="setting-row"><span data-i18n="sound">音效</span><button id="sound-button" class="small-button" type="button"></button></div><div class="setting-row locale-row"><span id="locale-label" data-i18n="language">语言</span><div class="segmented locale-switch"><button id="locale-zh-CN" type="button" data-locale="zh-CN">简体中文</button><button id="locale-zh-TW" type="button" data-locale="zh-TW">繁體中文</button><button id="locale-en" type="button" data-locale="en">English</button></div></div></div>
-        <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button" data-i18n="start">开始挑战 <span aria-hidden="true">➜</span></button></div>
+        <div class="setup-footer"><p id="record-label">最佳记录：暂无</p><button id="start-button" class="primary-button" type="button" data-i18n="start" disabled>开始挑战 <span aria-hidden="true">➜</span></button></div>
       </div>
       <p class="controls-note" data-i18n="controls">电脑：WASD / 方向键移动，右键点击目的地自动前往，Q 主动技能、空格冲刺、Esc 暂停。手机使用摇杆和技能、冲刺按钮。角色自动普攻；主动技能需要蓝量且受冷却限制。</p>
+    </section>
+
+    <section id="loading-screen" class="screen modal-screen loading-screen hidden" aria-labelledby="loading-title" aria-busy="true">
+      <div class="modal-card loading-card">
+        <h2 id="loading-title" tabindex="-1">正在准备战场</h2>
+        <p id="loading-status" role="status" aria-live="polite">正在加载游戏代码…</p>
+        <progress id="loading-progress" aria-labelledby="loading-status"></progress>
+        <p id="loading-detail"></p>
+        <div class="loading-actions"><button id="loading-retry" class="primary-button hidden" type="button">重试</button><button id="loading-cancel" class="secondary-button" type="button">返回选人</button></div>
+      </div>
     </section>
 
     <section id="level-screen" class="screen modal-screen hidden" aria-labelledby="level-title">

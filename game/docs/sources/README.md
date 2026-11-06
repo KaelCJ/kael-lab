@@ -16,6 +16,12 @@
 
 六名早期角色 manifest 中的 `character`、`skillIcons`、`activeEffect` 保留旧 Concept 命名，`audio.voiceDir`／`skillDir` 保留计划目录；它们不表示已有对应文件或当前运行消费者。当前角色帧以 `assets.runtime` 为准，声音来源与事件以[声音系统](../core/声音系统.md)为准。灵魂守卫四张全身图和 36 张帧由 `characters/tb/build_art.py` 的路径几何生成，正式文件全部归静态目录。
 
+## 经典战场静态选人预览（2026-11-06）
+
+正式素材为 `game/static/dotarogue/assets/art/pixel/map-dota-preview.jpg`，JPEG、33×33；用途仅为轻量 `game/static/dotarogue/js/title.js` 的经典战场选择卡缩略图。2026-11-06 从本作真实选人界面导出：`game/static/dotarogue/js/dota-map.js` 的 `drawDotaMinimap()` 与 `game/static/dotarogue/js/neutral-camp-art.js` 的 `drawNeutralMinimap()` 共同绘制现有选人 Canvas，按它在实际 UI 的33×33显示尺寸截图导出。来源是仓库已有绘制，不新增第三方图片来源；战斗地图与碰撞仍消费原模块，不读取这张缩略图。
+
+SHA-256：`5a49a9e7d8ec15ccb03db8ad03ba2dcbcfbb6cd3cf678c27fb0e34a5a15d61b0`。标题直接加载静态图，避免为一张缩略图下载或初始化地图绘制；它是公开派生快照，不是可编辑地图源。地图结构、固定场景或中立营地标记变更后须从当前真实 UI 重新导出，并更新尺寸、哈希与选人消费者的实际显示验证；不得用旧快照证明新地图已同步。
+
 ## 输入与输出
 
 从仓库根目录运行以下命令。脚本通过自身文件位置定位默认输出，从其他目录以脚本的完整地址运行也得到同一正式目录。

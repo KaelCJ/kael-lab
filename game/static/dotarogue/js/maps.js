@@ -2,12 +2,7 @@ import { buildDotaTerrain } from './dota-map.js?v=20261105-neutral-camps1';
 
 export const WORLD = { w: 2600, h: 1700 };
 
-export const BIOMES = [
-  { id: 'dota', name: 'DotA 经典战场', icon: '', desc: '近卫与天灾 · 三路、河道与野区', ground: '#344330', grid: '#59604c', accent: '#a8dd94', hazard: '远古裂隙' },
-  { id: 'docks', name: '赤沙废港', icon: '◈', desc: '灼热沙尘与失控机械', ground: '#263238', grid: '#40515a', accent: '#ffba72', hazard: '热流喷口' },
-  { id: 'grove', name: '荧菌裂谷', icon: '✿', desc: '发光菌簇与腐蚀孢雾', ground: '#26303c', grid: '#3f4c61', accent: '#d6a0f1', hazard: '孢雾爆发' },
-  { id: 'frost', name: '蓝霜残骸', icon: '❄', desc: '冻结碎片与寒流裂缝', ground: '#1e3440', grid: '#3b5967', accent: '#9fdcf5', hazard: '寒流爆裂' }
-];
+export { BIOMES } from './game-settings.js?v=20261106-title1';
 
 export const RIVER_CURVES = {
   docks: [
