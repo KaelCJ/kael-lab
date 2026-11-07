@@ -159,7 +159,10 @@ function riverSide(x, y) {
   return y - (1000 + x * .442);
 }
 
+let dotaTerrain = null;
+
 export function buildDotaTerrain() {
+  if (dotaTerrain) return dotaTerrain;
   const terrain = [];
   const step = 138;
   const laneClearance = 168;
@@ -209,6 +212,7 @@ export function buildDotaTerrain() {
       terrain.push({ x: Math.round(x), y: Math.round(y), kind: i === 3 ? 'rock' : 'tree', r: i === 3 ? 27 : 22, faction });
     }
   }
+  dotaTerrain = terrain;
   return terrain;
 }
 

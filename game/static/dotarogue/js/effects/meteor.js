@@ -1,4 +1,4 @@
-import { createFireRenderer } from './fire.js';
+import { createFireRenderer } from './fire.js?v=20261107-resource-packs1';
 
 const TAU = Math.PI * 2;
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
@@ -14,8 +14,8 @@ const fissures = [
   [[-7, -10], [-12, -20]]
 ];
 
-export async function createMeteorRenderer() {
-  const fire = await createFireRenderer();
+export async function createMeteorRenderer({ loadImage } = {}) {
+  const fire = await createFireRenderer({ loadImage });
   const rock = new Path2D();
   outline.forEach(([x, y], i) => i ? rock.lineTo(x, y) : rock.moveTo(x, y));
   rock.closePath();

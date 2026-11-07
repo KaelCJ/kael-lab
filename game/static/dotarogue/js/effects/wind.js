@@ -3,12 +3,15 @@ const TAU = Math.PI * 2;
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const fract = value => value - Math.floor(value);
 
-async function loadSprite(path) {
+async function loadSprite(path, loadImage) {
   const url = new URL(`../../assets/art/effects/wind/${path}`, import.meta.url);
-  const image = new Image();
-  image.src = url.href;
-  try { await image.decode(); }
-  catch { throw new Error(`风特效素材加载失败：${url.pathname}`); }
+  let image;
+  if (loadImage) image = await loadImage(url.href);
+  else {
+    image = new Image(); image.src = url.href;
+    try { await image.decode(); }
+    catch { throw new Error(`风特效素材加载失败：${url.pathname}`); }
+  }
   // Rasterize SVGs once; no SVG parsing or blur filters in the frame loop.
   const sprite = document.createElement('canvas');
   sprite.width = image.naturalWidth; sprite.height = image.naturalHeight;
@@ -16,9 +19,9 @@ async function loadSprite(path) {
   return sprite;
 }
 
-export async function createWindRenderer() {
+export async function createWindRenderer({ loadImage } = {}) {
   const [leaf, wisp, dust] = await Promise.all([
-    loadSprite('svg/leaf.svg'), loadSprite('svg/wisp.svg'), loadSprite('png/dust.png')
+    loadSprite('svg/leaf.svg', loadImage), loadSprite('svg/wisp.svg', loadImage), loadSprite('png/dust.png', loadImage)
   ]);
   // Stable offsets keep repeated draws, pause and seeking deterministic.
   const motes = Array.from({ length: 60 }, (_, i) => ({

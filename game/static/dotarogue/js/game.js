@@ -1,3 +1,7 @@
+import { createImageLoader } from './resource-loading.js?v=20261107-resource-packs1';
+import { createCombatResources, COMBAT_ART, DRAFT_ART, UPGRADE_ART, ENEMY_POSES } from './combat-resources.js?v=20261107-resource-packs1';
+import { createHeroResources, HERO_ART, HERO_DOTA1_ART, HERO_POSE_ART, HERO_POSE_DOTA1_ART, DOTA1_MODEL_DISPLAY } from './hero-resources.js?v=20261107-resource-packs1';
+import { createMapResources, MAP_ART } from './map-resources.js?v=20261107-resource-packs1';
 import { DIFFICULTIES, PACES, SUPPORTED_LOCALES, DEFAULT_LOCALE, loadSave, saveGame } from './game-settings.js?v=20261106-title1';
 import { LOCALES, UPGRADE_TEXT, translate, modeName as localizedModeName } from './game-i18n.js?v=20261106-title1';
 import { NEUTRAL_CAMP_DEFS } from './neutral-camp-defs.js?v=20261105-catalog1';
@@ -5,9 +9,9 @@ import { JUNGLE_BUFFS } from './jungle-buffs.js?v=20261105-catalog1';
 import { ENEMIES, BOSS_VARIANTS, BOSS_VARIANT_NAMES, ELITE_ROTATION, ELITE_WAVES, ENEMY_NAMES } from './enemies.js?v=20261105-catalog1';
 import { createNeutralCamps, neutralInRange, spawnNeutralCamp, updateNeutralUnit, clearNeutralEffects, jungleBuffActive, jungleBuffEntries } from './neutral-camps.js?v=20261105-catalog1';
 import { drawNeutralGuardian, drawNeutralCampGround, drawNeutralCampLabels, drawNeutralMinimap } from './neutral-camp-art.js?v=20261105-neutral-camps1';
-import { createFireRenderer } from './effects/fire.js';
-import { WORLD, BIOMES, buildTerrain, SCENERY_COLORS } from './maps.js?v=20261106-title1';
-import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261105-neutral-camps1';
+import { createFireRenderer } from './effects/fire.js?v=20261107-resource-packs1';
+import { WORLD, BIOMES, SCENERY_COLORS } from './maps.js?v=20261107-resource-packs1';
+import { DOTA_SIZE, DOTA_SPAWN, DOTA_SCENERY, drawDotaGround, drawDotaScenery, drawDotaTree, drawDotaMinimap } from './dota-map.js?v=20261107-resource-packs1';
 import { CHARACTERS, BASE_ATTACKS, TB_DEMON_ATTACK, ACTIVE_SKILL_CONFIG, HERO_TEXT, KAEL_SPELLS } from './heroes.js?v=20261031-sf-requiem5';
 import { createTerrorbladeState, updateTerrorblade, registerTerrorbladeHit } from './terrorblade.js?v=20261014-tb1';
 import { BUFFS, BUFF_IDS, randomBuff, resetBuffWave, absorbBuffDamage, buffAttackSpeed, buffMoveSpeed, buffAuraSlow, buffDamageAmp } from './buffs.js?v=20261031-positive1-tree-attributes1';
@@ -18,10 +22,6 @@ import { equipmentBuilds, resolveBuilds, buildName, buildDescription } from './e
 import { createEquipmentCombat } from './equipment-combat.js?v=20261105-neutral-camps1';
 import { heroGrowthTier, drawHeroGrowthAreas, drawHeroGrowthEffect, drawHeroGrowthProjectile, drawHeroGrowthKaelBody } from './effects/hero-growth.js?v=20261031-luna-eclipse2';
 import { drawWeaponStrike, drawBuildFeedback } from './effects/weapon-builds.js?v=20261105-monkey-fall1';
-import { createWindRenderer } from './effects/wind.js?v=20261103-mobile-performance1';
-import { createMeteorRenderer } from './effects/meteor.js';
-import { createRequiemRenderer } from './effects/requiem.js?v=20261031-sf-requiem5';
-import { createEclipseRenderer } from './effects/eclipse.js?v=20261031-luna-eclipse2';
 import { drawEvolutionEquipment, drawEvolutionCleave, drawDagonFork, drawMirrorStrike, onEquipmentImagesReady } from './effects/equipment-evolution.js?v=20261104-loading1';
 import { createAudioSystem } from './audio.js?v=20261106-title1';
 import { attackPower, skillPower, resolveDamage } from './combat-damage.js?v=20261031-buff-positive1-tree-attributes1';
@@ -51,13 +51,6 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   const rand = (a, b) => a + Math.random() * (b - a);
   const pick = list => list[Math.floor(Math.random() * list.length)];
   const distance = (a, b) => Math.hypot(a.x - b.x, a.y - b.y);
-  const ART_PATHS = {
-    crawler: './assets/art/crawler.svg',
-    'crawler-step': './assets/art/crawler-step.svg', 'crawler-attack': './assets/art/crawler-attack.svg',
-    elite: './assets/art/elite.svg', boss: './assets/art/boss.svg',
-    roshan: './assets/art/roshan.svg', 'roshan-windup': './assets/art/roshan-windup.svg', 'roshan-attack': './assets/art/roshan-attack.svg',
-    blade: './assets/art/blade.svg'
-  };
 
   // Each river is a centerline with a local radius. The same curve drives both
   // the rounded water silhouette and the capsule collision used by movement.
@@ -200,268 +193,39 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   function setSkin(skin) {
     const next = skin === 'dota1' ? 'dota1' : 'pixel';
     if (selectedSkin === next) return;
-    cancelHeroPreparation();
     selectedSkin = next;
     $('game').dataset.skin = selectedSkin;
-    loadHeroPoses(run?.character?.id || selectedCharacter, selectedSkin);
     persist();
     if (phase === 'pause' && run) renderPauseDetails();
     if (run) { renderEquipmentStrip(); renderSkillStrip(); }
   }
-  const ENEMY_POSES = {
-    crawler: ['step', 'attack'], runner: ['step'], tank: ['step'], shooter: ['attack'],
-    centaur: ['step', 'windup', 'attack'], satyr: ['step', 'windup', 'attack'],
-    hellbear: ['step', 'windup', 'attack'], darkTroll: ['step', 'windup', 'attack'],
-    frostWraith: ['step', 'windup', 'attack'], thunderLizard: ['step', 'windup', 'attack'],
-    charger: ['windup', 'charge'], splitter: ['step'], elite: ['windup', 'charge'], boss: ['windup', 'attack'], roshan: ['windup', 'attack']
-  };
-
-  const PIXEL_ART_IDS = [
-    ...Object.keys(ENEMIES).flatMap(id => [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)]),
-    'roshan', 'roshan-windup', 'roshan-attack',
-    ...UPGRADES.slice(0, 14).map((_, index) => `upgrade-${index}`),
-    ...BIOMES.filter(b => b.id !== 'dota').flatMap(({ id }) => ['ground', 'tree', 'rock', 'water', 'trap', 'preview'].map(kind => `map-${id}-${kind}`))
-  ];
-  const HERO_ART_VERSION = '?v=20261013-kael-elf1';
-  const LUNA_ART_VERSION = '?v=20261013-luna-glaive1';
-  const HERO_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
-    [id, `./assets/characters/${id}/${id}-idle-a.svg${id === 'luna' ? LUNA_ART_VERSION : HERO_ART_VERSION}`]));
-  const DOTA1_MODEL_DISPLAY = {"rover": {"height": 149.7765, "bottomRatio": 0.32574031890660593}, "bulwark": {"height": 99.3129, "bottomRatio": 0.19718309859154926}, "conductor": {"height": 118.4795, "bottomRatio": 0.28673835125448033}, "scavenger": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}, "jugg": {"height": 352.9231, "bottomRatio": 0.19729729729729728}, "kael": {"height": 157.2289, "bottomRatio": 0.30000000000000004}, "luna": {"height": 138, "bottomRatio": 0.23206751054852326}, "tb": {"height": 193.3362, "bottomRatio": 0.27813163481953296}, "tb-demon": {"height": 208.8462, "bottomRatio": 0.2762430939226519}, "sf": {"height": 120, "bottomRatio": 0.21666666666666667}, "scavenger-rage": {"height": 175.48586118251927, "bottomRatio": 0.39892183288409705}};
-  const HERO_DOTA1_ART = Object.fromEntries(CHARACTERS.map(({ id }) =>
-    [id, `./assets/characters/dota1/${id}/${id}-idle-a.webp?v=20261031-lossless1`]));
-  const HERO_POSE_ART = Object.fromEntries(Object.keys(HERO_ART).flatMap(id =>
-    ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
-      'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
-      'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
-      [`${id}-${pose}`, `./assets/characters/${id}/${id}-${pose}.svg${id === 'luna' ? LUNA_ART_VERSION : HERO_ART_VERSION}`])));
-  HERO_POSE_ART['luna-glaive'] = `./assets/characters/luna/luna-glaive.svg${LUNA_ART_VERSION}`;
-  const HERO_POSE_DOTA1_ART = Object.fromEntries(Object.keys(HERO_DOTA1_ART).flatMap(id =>
-    ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
-      'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
-      'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose =>
-      [`${id}-${pose}`, `./assets/characters/dota1/${id}/${id}-${pose}.webp?v=20261031-lossless1`])));
-  HERO_POSE_DOTA1_ART['luna-glaive'] = './assets/characters/dota1/luna/luna-glaive.svg?v=20261028-dota1-reference1';
-  for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-    for (const side of ['', 'side-']) HERO_POSE_DOTA1_ART[`tb-demon-${side}${pose}`] = `./assets/characters/dota1/tb/tb-demon-${side}${pose}.webp?v=20261031-lossless1`;
-  }
-  for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-    for (const side of ['', 'side-']) HERO_POSE_ART[`tb-demon-${side}${pose}`] = `./assets/characters/tb/tb-demon-${side}${pose}.svg?v=20261014-tb1`;
-  }
-  for (const [poses, root, extension] of [[HERO_POSE_ART, './assets/characters/scavenger', 'svg'], [HERO_POSE_DOTA1_ART, './assets/characters/dota1/scavenger', 'webp']]) {
-    for (const side of ['', 'side-']) {
-      for (const pose of ['idle-a', 'idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill']) {
-        poses[`scavenger-rage-${side}${pose}`] = `${root}/scavenger-rage-${side}${pose}.${extension}?v=20261030-rage1`;
-      }
-      for (const direction of ['in', 'out']) for (let frame = 0; frame < 3; frame++) {
-        poses[`scavenger-${side}morph-${direction}-${frame}`] = `${root}/scavenger-${side}morph-${direction}-${frame}.${extension}?v=20261030-rage1`;
-      }
-    }
-  }
   const LUNA_GLAIVE_BLADE = new Path2D('M-9-7C-24-16-22-34-5-44C-12-29-6-22 8-21C22-20 32-11 33 3C24-7 15-9 5-5L0 7Z');
   const EQUIPMENT_ART = Object.fromEntries(EQUIPMENT_IDS.map(id => [`equipment-${id}`, equipmentIconPath(id)]));
   const SKIN_ART = {
-    draft: { ...ART_PATHS, ...HERO_ART, ...EQUIPMENT_ART,
+    draft: { ...DRAFT_ART, ...HERO_ART, ...EQUIPMENT_ART,
       ...Object.fromEntries(ELITE_ROTATION.filter(id => id !== 'elite').flatMap(id =>
-        [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)].map(pose => [pose, `./assets/art/pixel/${pose}.svg`]))) },
-    pixel: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_ART, ...EQUIPMENT_ART },
-    dota1: { ...Object.fromEntries(PIXEL_ART_IDS.map(id => [id, `./assets/art/pixel/${id}.svg`])), ...HERO_DOTA1_ART, ...EQUIPMENT_ART }
+        [id, ...ENEMY_POSES[id].map(pose => `${id}-${pose}`)].map(pose => [pose, COMBAT_ART[pose]]))) },
+    pixel: { ...COMBAT_ART, ...MAP_ART, ...UPGRADE_ART, ...HERO_ART, ...EQUIPMENT_ART },
+    dota1: { ...COMBAT_ART, ...MAP_ART, ...UPGRADE_ART, ...HERO_DOTA1_ART, ...EQUIPMENT_ART }
   };
-  // Keep the catalog of paths cheap on the title screen. Creating an Image and
-  // assigning src for every skin, enemy, map and equipment icon here makes a
-  // fresh visit download the whole art library before the player has started a
-  // run. Images are now created only when a renderer actually needs them.
-  const imagesByPath = {};
-  const failedImages = new Set();
-  const imageLoads = new WeakMap();
-  const pendingImages = new Map();
-  function imageForPath(path, priority = 'low') {
-    if (!path) return null;
-    if (!imagesByPath[path]) {
-      const image = new Image();
-      image.decoding = 'async';
-      image.fetchPriority = priority;
-      const ready = new Promise((resolve, reject) => {
-        let settled = false;
-        const finish = (error, cancelled = false) => {
-          if (settled) return;
-          settled = true;
-          image.removeEventListener('load', loaded);
-          image.removeEventListener('error', unavailable);
-          pendingImages.delete(image);
-          if (imagesByPath[path] === image) {
-            if (error && !cancelled) failedImages.add(path);
-            else failedImages.delete(path);
-          }
-          sceneDirty = true;
-          if (error) reject(error); else resolve(image);
-        };
-        const loaded = () => image.decode().then(() => finish(), error => finish(error));
-        const unavailable = () => {
-          if (settled) return;
-          // Keep the accepted PNGs usable when WebP is unavailable.
-          if (/\.webp(?:\?|$)/.test(image.src)) {
-            image.src = path.replace(/\.webp(?:\?.*)?$/, '.png?v=20261030-model-static1');
-          } else finish(new Error('Image unavailable'));
-        };
-        image.addEventListener('load', loaded);
-        image.addEventListener('error', unavailable);
-        pendingImages.set(image, reason => {
-          if (settled) return;
-          finish(reason, true);
-          if (imagesByPath[path] === image) delete imagesByPath[path];
-          for (const key of Object.keys(heroPoseImages)) if (heroPoseImages[key] === image) delete heroPoseImages[key];
-          image.removeAttribute('src');
-        });
-      });
-      imageLoads.set(image, ready);
-      ready.catch(() => {}); // Most decorative images have no waiting caller.
-      image.src = path;
-      imagesByPath[path] = image;
-    }
-    if (priority === 'high') imagesByPath[path].fetchPriority = 'high';
-    return imagesByPath[path];
-  }
-  let windRenderer = null, meteorRenderer = null;
-  let windRendererPromise = null, meteorRendererPromise = null;
+  const images = createImageLoader({ onChange: () => { sceneDirty = true; } });
+  const commonResources = createCombatResources(images);
+  const heroResources = createHeroResources(images, () => { sceneDirty = true; });
+  const mapResources = createMapResources(images, prepareMapGeometry);
   const motionPreference = window.matchMedia('(prefers-reduced-motion: reduce)');
-  let requiemRenderer = null, eclipseRenderer = null;
-  function ensureWindRenderer() {
-    if (windRenderer) return Promise.resolve(windRenderer);
-    if (!windRendererPromise) {
-      windRendererPromise = createWindRenderer().then(renderer => {
-        windRenderer = renderer;
-        sceneDirty = true;
-        return renderer;
-      }).catch(error => {
-        windRendererPromise = Promise.resolve(null);
-        console.warn('Wind sprites unavailable; using the projectile fallback.', error);
-        return null;
-      });
-    }
-    return windRendererPromise;
-  }
-  function ensureMeteorRenderer() {
-    if (meteorRenderer) return Promise.resolve(meteorRenderer);
-    if (!meteorRendererPromise) {
-      meteorRendererPromise = createMeteorRenderer().then(renderer => {
-        meteorRenderer = renderer;
-        sceneDirty = true;
-        return renderer;
-      }).catch(error => {
-        meteorRendererPromise = Promise.resolve(null);
-        console.warn('Meteor sprites unavailable; using the rock fallback.', error);
-        return null;
-      });
-    }
-    return meteorRendererPromise;
-  }
-  const heroPoseImages = {};
-  let heroPreloadVersion = 0, heroWarmup = null;
-  let heroCacheKey = '', heroEffectsWarmup = null;
-  function trimHeroImages(id, skin) {
-    const hero = id.replace(/-(demon|rage)$/, ''), key = `${skin}:${hero}`;
-    if (heroCacheKey === key) return;
-    heroCacheKey = key;
-    heroPreloadVersion += 1; heroWarmup = null;
-    const root = `./assets/characters/${skin === 'dota1' ? 'dota1/' : ''}${hero}/`;
-    for (const path of Object.keys(imagesByPath)) {
-      if (path.startsWith('./assets/characters/') && !path.startsWith(root)) delete imagesByPath[path];
-    }
-    for (const key of Object.keys(heroPoseImages)) {
-      if (!key.startsWith(`${skin}:${hero}-`)) delete heroPoseImages[key];
-    }
-  }
-  function cancelHeroEffectsWarmup() {
-    if (!heroEffectsWarmup) return;
-    const { timer, idle } = heroEffectsWarmup;
-    if (idle) window.cancelIdleCallback?.(timer); else clearTimeout(timer);
-    heroEffectsWarmup = null;
-  }
-  function warmHeroEffects(id) {
-    if (studioMode) return;
-    const hero = id.replace(/-(demon|rage)$/, '');
-    if (heroEffectsWarmup?.hero === hero) return;
-    cancelHeroEffectsWarmup();
-    const jobs = hero === 'kael' ? [ensureWindRenderer, ensureMeteorRenderer]
-      : hero === 'sf' ? [() => { requiemRenderer ||= createRequiemRenderer(); sceneDirty = true; }]
-      : hero === 'luna' ? [() => { eclipseRenderer ||= createEclipseRenderer(); sceneDirty = true; }] : [];
-    if (!jobs.length) return;
-    const warming = { hero, timer: null, idle: !!window.requestIdleCallback };
-    heroEffectsWarmup = warming;
-    const schedule = () => {
-      if (heroEffectsWarmup !== warming || !jobs.length) return;
-      const prepare = () => {
-        warming.timer = null;
-        if (heroEffectsWarmup !== warming || document.hidden || phase === 'title' || run?.character.id !== hero) return;
-        Promise.resolve().then(jobs.shift()).catch(error => console.warn('Skill graphics warmup unavailable.', error)).then(schedule);
-      };
-      warming.timer = warming.idle ? window.requestIdleCallback(prepare) : setTimeout(prepare, 120);
-    };
-    schedule();
-  }
-  function cancelHeroPreparation() {
-    heroPreloadVersion += 1; heroWarmup = null; cancelHeroEffectsWarmup();
-  }
-  function loadHeroPoses(id, skin = selectedSkin, { retry = false, warm = false } = {}) {
-    trimHeroImages(id, skin);
-    const key = `${skin}:${id}`;
-    if (heroWarmup && heroWarmup.key !== key) { heroPreloadVersion += 1; heroWarmup = null; }
-    const poseArt = skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
-    const path = poseArt[`${id}-idle-a`] || SKIN_ART[skin][id];
-    if (retry && imagesByPath[path]?.complete && !imagesByPath[path].naturalWidth) {
-      delete imagesByPath[path];
-      delete heroPoseImages[`${skin}:${id}-idle-a`];
-    }
-    const idle = imageForPath(path, 'high');
-    const ready = imageLoads.get(idle);
-    // The title needs one idle, not every animation or transformation. Warm
-    // only the current form once a run begins; keep a small fallback ready for Q.
-    if (warm && !heroWarmup) {
-      const version = ++heroPreloadVersion;
-      heroWarmup = { key };
-      ready.then(() => {
-        if (version !== heroPreloadVersion) return;
-        const poses = ['idle-alt', 'walk-a', 'walk-b', 'dash', 'attack-windup', 'attack', 'attack-release', 'skill',
-          'side-idle-a', 'side-idle-alt', 'side-walk-a', 'side-walk-b', 'side-dash',
-          'side-attack-windup', 'side-attack', 'side-attack-release', 'side-skill'].map(pose => `${id}-${pose}`);
-        if (id === 'tb') poses.unshift('tb-demon-idle-a');
-        if (id === 'scavenger') poses.unshift('scavenger-rage-idle-a', 'scavenger-morph-in-0', 'scavenger-side-morph-in-0');
-        if (id === 'scavenger-rage') {
-          const transitions = [];
-          for (const side of ['', 'side-']) for (const direction of ['in', 'out']) for (let frame = 0; frame < 3; frame++) {
-            transitions.push(`scavenger-${side}morph-${direction}-${frame}`);
-          }
-          poses.unshift(...transitions);
-        }
-        let next = 0;
-        const warmNext = async () => {
-          while (version === heroPreloadVersion && next < poses.length) {
-            const image = poseImage(skin, poses[next++]);
-            if (image) await imageLoads.get(image).catch(() => {});
-          }
-        };
-        warmNext(); warmNext();
-        warmHeroEffects(id);
-      }).catch(() => { if (version === heroPreloadVersion) heroWarmup = null; });
-    }
-    return ready;
-  }
   const artIcon = (id, fallback) => {
     const path = SKIN_ART[selectedSkin][id];
     return path ? `<img class="art-icon" src="${path}" alt="" decoding="async" loading="lazy" fetchpriority="low">` : (fallback || '');
   };
   function poseImage(skin, id) {
-    const key = `${skin}:${id}`;
-    if (heroPoseImages[key]) return heroPoseImages[key];
     const path = (skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART)[id];
-    if (!path) return null;
-    return (heroPoseImages[key] = imageForPath(path));
+    return images.get(path);
   }
   function artImage(id) {
-    const primary = poseImage(selectedSkin, id) || imageForPath(SKIN_ART[selectedSkin]?.[id]);
+    const primary = poseImage(selectedSkin, id) || images.get(SKIN_ART[selectedSkin]?.[id]);
     if (primary && !primary.complete) return null;
     if (primary?.naturalWidth) return primary;
-    const fallback = poseImage('pixel', id) || imageForPath(SKIN_ART.pixel?.[id]);
+    const fallback = poseImage('pixel', id) || images.get(SKIN_ART.pixel?.[id]);
     return fallback?.complete && fallback.naturalWidth ? fallback : null;
   }
 
@@ -495,6 +259,10 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
 
   function terrainCandidates(x1, y1, x2, y2, radius) {
     const cell = 256;
+    if (terrainIndex?.terrain !== run.terrain || terrainIndex?.w !== WORLD.w || terrainIndex?.h !== WORLD.h) {
+      const owner = mapResources.get(run.biome.id);
+      terrainIndex = owner.terrain === run.terrain ? owner.collision : null;
+    }
     if (!terrainIndex || terrainIndex.terrain !== run.terrain || terrainIndex.w !== WORLD.w || terrainIndex.h !== WORLD.h) {
       const cols = Math.ceil(WORLD.w / cell), rows = Math.ceil(WORLD.h / cell);
       const buckets = Array.from({ length: cols * rows }, () => []);
@@ -519,6 +287,8 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
         return entry;
       });
       terrainIndex = { terrain: run.terrain, w: WORLD.w, h: WORLD.h, cols, rows, buckets, entries, candidates: [], stamp: 0 };
+      const owner = mapResources.get(run.biome.id);
+      if (owner.terrain === run.terrain) owner.collision = terrainIndex;
     }
     const cache = terrainIndex, left = Math.min(x1, x2) - radius, right = Math.max(x1, x2) + radius;
     const top = Math.min(y1, y2) - radius, bottom = Math.max(y1, y2) + radius;
@@ -644,7 +414,8 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     // Trees, rocks and rivers stay fixed for a terrain array. Cache their grid
     // and tested edges, rather than scanning every obstacle on each .35s tick.
     if (!navigationCache || navigationCache.terrain !== run.terrain || navigationCache.w !== WORLD.w || navigationCache.h !== WORLD.h) {
-      navigationCache = { terrain: run.terrain, w: WORLD.w, h: WORLD.h, radii: new Map() };
+      const owner = mapResources.get(run.biome.id);
+      navigationCache = { terrain: run.terrain, w: WORLD.w, h: WORLD.h, radii: owner.terrain === run.terrain ? owner.navGrids : new Map() };
     }
     const size = NAV_COLS * NAV_ROWS;
     let grid = navigationCache.radii.get(radius);
@@ -654,16 +425,18 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
         const point = navPoint(i);
         free[i] = terrainCollision(point.x, point.y, radius) ? 0 : 1;
       }
-      grid = { free, checked: new Uint8Array(size), links: new Uint8Array(size), goal: -2, flow: null };
+      grid = { free, checked: new Uint8Array(size), links: new Uint8Array(size) };
       navigationCache.radii.set(radius, grid);
     }
     const { free, checked, links } = grid;
     const goal = closestNavIndex(x, y, free, radius, false);
-    if (grid.goal === goal) return grid.flow;
+    const target = run.navigationFlows.get(radius);
+    if (target?.goal === goal) return target.flow;
     const distanceMap = new Int16Array(size);
     distanceMap.fill(-1);
-    grid.goal = goal; grid.flow = { free, distanceMap };
-    if (goal < 0) return grid.flow;
+    const flow = { free, distanceMap };
+    run.navigationFlows.set(radius, { goal, flow });
+    if (goal < 0) return flow;
     const queue = new Int16Array(size);
     let head = 0, tail = 0;
     queue[tail++] = goal; distanceMap[goal] = 0;
@@ -686,7 +459,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
         queue[tail++] = next;
       }
     }
-    return grid.flow;
+    return flow;
   }
   function flowDirection(flow, x, y, radius) {
     const index = closestNavIndex(x, y, flow.free, radius);
@@ -807,7 +580,6 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   }
   function createBaseAttack(id) { return { id, uid: ++uid, cool: 0 }; }
   function createRun() {
-    loadHeroPoses(selectedCharacter, selectedSkin, { warm: true });
     resetStick(); keys.clear(); moveTarget = null; moveFlow = null;
     const character = CHARACTERS.find(c => c.id === selectedCharacter);
     const biome = BIOMES.find(b => b.id === selectedBiome);
@@ -836,7 +608,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
         kaelMeteors: [], kaelIceWalls: [], kaelBlasts: [], kaelSpirits: [],
         eclipse: null, tb: createTerrorbladeState(), dagonReadyAt: 6, cycloneReadyAt: 9, necroReadyAt: 12,
         necroUnits: [], skillHeals: [], lastHurtAt: 0, phaseSpeedUntil: 0, phaseAttackUntil: 0, returnReadyAt: 0 },
-      terrain: buildTerrain(biome.id), enemyFlow: null, enemyFlowClock: 0,
+      terrain: mapResources.get(biome.id).terrain, navigationFlows: new Map(), enemyFlow: null, enemyFlowClock: 0,
       neutralCamps: biome.id === 'dota' && !studioMode ? createNeutralCamps() : [], jungleBuffs: {},
       enemies: [], bullets: [], enemyBullets: [], pickups: [], effects: [], hazards: [],
       spawnClock: 0, nearbySpawnClock: 0, hazardClock: 8, specialSpawned: false, eliteIndex: 0, normalChestDropped: false, regenClock: 0, lifeClock: 0,
@@ -850,18 +622,38 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     return { character: selectedCharacter, biome: selectedBiome, difficulty: selectedDifficulty,
       pace: selectedPace, mode: selectedMode, skin: selectedSkin, sound: soundEnabled, locale: selectedLocale };
   }
-  async function prepareRun(selection, { signal, onProgress, resume = false }) {
-    let stopped = false;
-    const touchedImages = new Set();
-    const stop = reason => {
-      stopped = true;
-      for (const image of touchedImages) pendingImages.get(image)?.(reason);
-    };
-    const aborted = () => stop(signal.reason || new DOMException('Cancelled', 'AbortError'));
-    const check = () => { if (signal.aborted || stopped) throw signal.reason || new DOMException('Cancelled', 'AbortError'); };
+  function resourcesReady(selection) {
+    return commonResources.ready && heroResources.isReady(selection.character, selection.skin) && mapResources.isReady(selection.biome);
+  }
+  async function prepareMapGeometry(record, signal) {
+    const activeRun = run;
+    const check = () => { signal.throwIfAborted(); if (run !== activeRun || run.terrain !== record.terrain) throw new Error('Battlefield preparation changed'); };
+    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); check();
+    if (record.id === 'dota') {
+      const mini = $('minimap');
+      const preview = document.createElement('canvas'); preview.width = mini.width; preview.height = mini.height;
+      drawDotaGround(preview.getContext('2d'));
+      drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: mini.width, h: mini.height, player: run.player });
+    }
+    for (const radius of [17, 54]) {
+      await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); check();
+      makeFlow(run.player.x, run.player.y, radius);
+      record.spawnFlows.set(radius, run.navigationFlows.get(radius));
+    }
     check();
-    cancelHeroPreparation(); audioSystem.setPaused(true); keys.clear(); resetStick();
-    showPhase('loading');
+  }
+  function bindRunNavigation(resume) {
+    const record = mapResources.get(selectedBiome), p = run.player;
+    if (!resume) for (const [radius, target] of record.spawnFlows) {
+      run.navigationFlows.set(radius, { ...target });
+    }
+    run.enemyFlow = makeFlow(p.x, p.y, 54);
+    run.enemyFlowCell = navIndex(p.x, p.y);
+    run.enemyFlowClock = .35;
+  }
+  async function prepareRun(selection, { signal, onProgress, resume = false }) {
+    signal.throwIfAborted();
+    audioSystem.setPaused(true); keys.clear(); resetStick(); phase = 'loading';
     save = loadSave();
     selectedCharacter = CHARACTERS.some(c => c.id === selection.character) ? selection.character : CHARACTERS[0].id;
     selectedBiome = BIOMES.some(b => b.id === selection.biome) ? selection.biome : BIOMES[0].id;
@@ -873,73 +665,26 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     selectedLocale = SUPPORTED_LOCALES.includes(selection.locale) ? selection.locale : DEFAULT_LOCALE;
     applyLocaleData(); applyStaticLocale(); persist();
     $('game').dataset.skin = selectedSkin;
-    trimHeroImages(selectedCharacter, selectedSkin);
-    for (const path of failedImages) delete imagesByPath[path];
-    for (const key of Object.keys(heroPoseImages)) if (failedImages.has((selectedSkin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART)[key.slice(key.indexOf(':') + 1)])) delete heroPoseImages[key];
-    failedImages.clear();
-    const root = `./assets/characters/${selectedSkin === 'dota1' ? 'dota1/' : ''}${selectedCharacter}/`;
-    const poses = selectedSkin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART;
-    const paths = new Set([SKIN_ART[selectedSkin][selectedCharacter], ...Object.values(poses).filter(path => path.startsWith(root))]);
-    for (const [id, names] of Object.entries(ENEMY_POSES)) for (const name of [id, ...names.map(pose => `${id}-${pose}`)]) {
-      if (SKIN_ART[selectedSkin][name]) paths.add(SKIN_ART[selectedSkin][name]);
+    if (!resume) { audioSystem.reset(); createRun(); }
+    const hero = heroResources.get(selectedCharacter, selectedSkin), map = mapResources.get(selectedBiome);
+    const pending = [commonResources, hero.frames, ...hero.skills, map.pack].filter(pack => !pack.ready);
+    const total = pending.reduce((count, pack) => count + pack.remaining, 0);
+    if (!total) {
+      bindRunNavigation(resume);
+      return { cached: true, total: 0 };
     }
-    if (selectedBiome !== 'dota') for (const kind of ['ground', 'tree', 'rock', 'water', 'trap']) paths.add(SKIN_ART[selectedSkin][`map-${selectedBiome}-${kind}`]);
-    const tasks = [...paths].map(path => async () => {
-      check();
-      const image = imageForPath(path, 'high');
-      touchedImages.add(image);
-      await imageLoads.get(image);
-    });
-    if (selectedCharacter === 'kael') {
-      if (!windRenderer) windRendererPromise = null;
-      if (!meteorRenderer) meteorRendererPromise = null;
-      tasks.push(async () => { if (!await ensureWindRenderer()) throw new Error('Wind graphics unavailable'); });
-      tasks.push(async () => { if (!await ensureMeteorRenderer()) throw new Error('Meteor graphics unavailable'); });
-    } else if (selectedCharacter === 'sf') tasks.push(async () => { requiemRenderer ||= createRequiemRenderer(); });
-    else if (selectedCharacter === 'luna') tasks.push(async () => { eclipseRenderer ||= createEclipseRenderer(); });
-    let next = 0, completed = 0;
-    const total = tasks.length + 3;
+    let completed = 0;
     onProgress({ stage: 'assets', completed, total });
-    const worker = async () => {
-      while (next < tasks.length) {
-        check();
-        const task = tasks[next++];
-        await task(); check();
-        onProgress({ stage: 'assets', completed: ++completed, total });
-      }
-    };
-    signal.addEventListener('abort', aborted, { once: true });
-    try {
-      await Promise.all(Array.from({ length: 4 }, worker));
-      check(); onProgress({ stage: 'world', completed, total });
-      const worldTasks = [
-        () => {
-          if (!resume) { audioSystem.reset(); createRun(); }
-          if (selectedBiome === 'dota') {
-            const mini = $('minimap');
-            const preview = document.createElement('canvas'); preview.width = mini.width; preview.height = mini.height;
-            drawDotaGround(preview.getContext('2d'));
-            drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: mini.width, h: mini.height, player: run.player });
-          }
-        },
-        () => { makeFlow(run.player.x, run.player.y, run.player.radius); },
-        () => {
-          run.enemyFlow = makeFlow(run.player.x, run.player.y, 54);
-          run.enemyFlowCell = navIndex(run.player.x, run.player.y);
-          run.enemyFlowClock = .35;
-        }
-      ];
-      for (const task of worldTasks) {
-        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
-        check(); task(); check();
-        onProgress({ stage: ++completed === total ? 'ready' : 'world', completed, total });
-      }
-    } catch (error) {
-      stop(error);
-      throw error;
-    } finally {
-      signal.removeEventListener('abort', aborted);
+    for (const pack of pending) {
+      const stage = pack === map.pack ? 'world' : 'assets';
+      onProgress({ stage, completed, total });
+      await pack.prepare({ signal, onComplete: () => { onProgress({ stage, completed: ++completed, total }); } });
+      signal.throwIfAborted();
     }
+    bindRunNavigation(resume);
+    signal.throwIfAborted();
+    onProgress({ stage: 'ready', completed, total });
+    return { cached: false, total };
   }
   function startPreparedRun(resume = false) {
     lastFrame = 0;
@@ -950,7 +695,6 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     } else startWave();
   }
   function cancelPreparedRun(resume = false) {
-    cancelHeroPreparation();
     if (resume && run) { showPhase('pause'); $('resume-button').focus({ preventScroll: true }); }
     else goTitle();
   }
@@ -2299,7 +2043,6 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     } else if (id === 'scavenger') {
       s.rageTime = 6; s.rageAmp = activeAmplify() * skillGrowthMultiplier();
       s.rageMorph = { direction: 'in', time: RAGE_MORPH_DURATION };
-      loadHeroPoses('scavenger-rage', selectedSkin, { warm: true });
       pulse(p.x, p.y, 65, '#a4ec6b', .6);
     }
     else if (id === 'jugg') s.spin = { time: 3, tick: 0 };
@@ -2308,7 +2051,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
       travelTime: SF_REQUIEM.travelTime, fadeTime: SF_REQUIEM.fadeTime,
       souls: Math.min(36, s.souls), hit: new Set() };
     else if (id === 'luna' && !beginLunaEclipse()) return;
-    else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); loadHeroPoses('tb-demon', selectedSkin, { warm: true }); pulse(p.x, p.y, 52, '#a7f07a', .45); }
+    else if (id === 'tb') { s.tb.time = 8; s.tb.amp = 1 + .4 * activeAmplify() * skillGrowthMultiplier(); pulse(p.x, p.y, 52, '#a7f07a', .45); }
     p.mana -= cfg.manaCost;
     p.skillPose = .56; p.skillClock = 0;
     s.activeCooldown = cooldownWithHaste(cfg.cooldown, effectiveHaste());
@@ -2412,11 +2155,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     s.bloodTime = Math.max(0, s.bloodTime - dt);
     updateKaelSkills(dt);
     updateLunaSkills(dt);
-    if (run.character.id === 'tb') {
-      const wasDemon = s.tb.time > 0;
-      updateTerrorblade(s.tb, dt);
-      if (wasDemon && s.tb.time === 0) loadHeroPoses('tb', selectedSkin, { warm: true });
-    }
+    if (run.character.id === 'tb') updateTerrorblade(s.tb, dt);
     const blood = equipmentPassive('bloodRage');
     if (blood && p.hp / p.maxHp < blood.threshold && s.bloodCooldown <= 0) {
       s.bloodTime = blood.duration; s.bloodCooldown = cooldownWithHaste(blood.cooldown, effectiveHaste());
@@ -2425,9 +2164,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     if (s.rageMorph) {
       s.rageMorph.time = Math.max(0, s.rageMorph.time - dt);
       if (s.rageMorph.time === 0) {
-        const restored = s.rageMorph.direction === 'out';
         s.rageMorph = null;
-        if (restored) loadHeroPoses('scavenger', selectedSkin, { warm: true });
       }
     }
     if (s.rageTime > 0) {
@@ -4102,11 +3839,11 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   function drawProjectiles(cam) {
     for (const b of run.bullets) {
       if (!visible(b, cam, b.kaelSpell === 'tornado' ? 220 : 100)) continue;
-      if (b.kaelSpell === 'tornado' && !windRenderer) ensureWindRenderer();
-      if (b.kaelSpell === 'tornado' && windRenderer) {
+      if (b.kaelSpell === 'tornado' && !heroResources.effects.wind) heroResources.loadEffect('wind');
+      if (b.kaelSpell === 'tornado' && heroResources.effects.wind) {
         const age = run.totalTime - b.startedAt;
         // The foot follows the projectile; the upright funnel uses the paused game clock.
-        windRenderer.draw(ctx, { x: b.x, y: b.y, time: motionPreference.matches ? 1.4 : age,
+        heroResources.effects.wind.draw(ctx, { x: b.x, y: b.y, time: motionPreference.matches ? 1.4 : age,
           scale: b.scale, opacity: Math.min(1, age / .06, b.life / .1), detail: motionPreference.matches ? 0 : .6 });
         drawHeroGrowthKaelBody(ctx, 'tornado', { ...b, age }, { level: run.level, pixel: usesPixelPresentation(), reducedMotion: motionPreference.matches });
         continue;
@@ -4871,11 +4608,13 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
 
   function drawRequiem(layer) {
     const cast = run.skills.requiem;
-    if (cast) (requiemRenderer ||= createRequiemRenderer()).draw(ctx, { cast, player: run.player, level: run.level,
+    if (cast && !heroResources.effects.requiem) heroResources.loadEffect('requiem');
+    if (cast && heroResources.effects.requiem) heroResources.effects.requiem.draw(ctx, { cast, player: run.player, level: run.level,
       reducedMotion: motionPreference.matches, layer });
   }
   function drawEclipse(layer) {
-    if (run.skills.eclipse) (eclipseRenderer ||= createEclipseRenderer()).draw(ctx, { cast: run.skills.eclipse,
+    if (run.skills.eclipse && !heroResources.effects.eclipse) heroResources.loadEffect('eclipse');
+    if (run.skills.eclipse && heroResources.effects.eclipse) heroResources.effects.eclipse.draw(ctx, { cast: run.skills.eclipse,
       level: run.level, reducedMotion: motionPreference.matches, layer });
   }
   function drawSkillGround() {
@@ -5268,9 +5007,9 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     const age = clamp(meteor.maxLife - meteor.life, 0, meteor.maxLife), reduced = motionPreference.matches;
     // Ground position, lifetime and damage still belong to the existing skill.
     const lift = reduced ? 0 : 72 * Math.max(0, 1 - age / .15) ** 2;
-    if (!meteorRenderer) ensureMeteorRenderer();
-    if (meteorRenderer) {
-      meteorRenderer.draw(ctx, { x: meteor.x, y: meteor.y, angle: meteor.trailAngle,
+    if (!heroResources.effects.meteor) heroResources.loadEffect('meteor');
+    if (heroResources.effects.meteor) {
+      heroResources.effects.meteor.draw(ctx, { x: meteor.x, y: meteor.y, angle: meteor.trailAngle,
         time: reduced ? 1.4 : age, travel: reduced ? 0 : meteor.travel / meteor.scale, lift, scale: meteor.scale,
         opacity: Math.min(1, age / .04, meteor.life / .12), detail: reduced ? 0 : .6 });
     } else {
@@ -5389,7 +5128,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     if (phase === 'pause') onResume();
   }
   function goTitle() {
-    cancelHeroPreparation(); audioSystem.reset(); run = null; moveFlow = null; keys.clear(); resetStick();
+    audioSystem.reset(); run = null; moveFlow = null; keys.clear(); resetStick();
     clearTimeout(toastTimer); $('toast').classList.remove('show');
     showPhase('title'); ctx.clearRect(0, 0, viewW, viewH);
     onTitle(currentSelection());
@@ -5482,8 +5221,8 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
       keys.add(key);
     });
     window.addEventListener('keyup', event => { keys.delete(event.key.length === 1 ? event.key.toLowerCase() : event.key); });
-    window.addEventListener('blur', () => { cancelHeroPreparation(); keys.clear(); pause(); });
-    document.addEventListener('visibilitychange', () => { if (document.hidden) { cancelHeroPreparation(); pause(); } });
+    window.addEventListener('blur', () => { keys.clear(); pause(); });
+    document.addEventListener('visibilitychange', () => { if (document.hidden) { pause(); } });
     const joystick = $('joystick');
     joystick.addEventListener('pointerdown', event => { if (phase !== 'combat') return; event.preventDefault(); stick.pointerId = event.pointerId; joystick.setPointerCapture(event.pointerId); moveStick(event); });
     joystick.addEventListener('pointermove', event => { if (event.pointerId === stick.pointerId) { event.preventDefault(); moveStick(event); } });
@@ -5512,6 +5251,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
 
   // The studio controls scenarios; combat rules and rendering stay in this runtime.
   let studioFire = null, studioAttack = false, studioSelection = null;
+  let studioResources = null;
   function studioCatalog() {
     return [
       { id: 'heroes', label: '英雄', items: CHARACTERS.map(hero => {
@@ -5553,6 +5293,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     ];
   }
   function resetStudio(selection) {
+    studioResources?.abort(); studioResources = new AbortController();
     studioSelection = selection; studioAttack = false;
     selectedCharacter = selection.category === 'heroes' ? selection.id : selection.category === 'equipment' && selection.id === 'battlefury' ? 'jugg'
       : selection.category === 'equipment' && selection.id === 'bloodstone' ? 'conductor'
@@ -5603,7 +5344,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     studioSelection = selection; selectedSkin = selection.skin;
     $('game').dataset.skin = selectedSkin;
     if (!run) return;
-    loadHeroPoses(run.character.id, selectedSkin, { warm: true });
+    heroResources.get(run.character.id, selectedSkin).frames.prepare({ signal: studioResources.signal }).catch(() => {});
     const p = run.player, reverse = Math.cos(p.facing) * Math.cos(selection.direction) < 0;
     if (reverse) for (const enemy of run.enemies) enemy.x = p.x - (enemy.x - p.x);
     p.facing = p.attackFacing = selection.direction;
@@ -5668,9 +5409,9 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   }
   function drawStudioEffect(context, width, height, selection, time) {
     if (selection.category !== 'effects') return;
-    if (selection.id === 'wind' && !windRenderer) ensureWindRenderer();
-    if (selection.id === 'meteor' && !meteorRenderer) ensureMeteorRenderer();
-    const renderer = selection.id === 'fire' ? studioFire : selection.id === 'wind' ? windRenderer : meteorRenderer;
+    if (selection.id === 'wind' && !heroResources.effects.wind) heroResources.loadEffect('wind');
+    if (selection.id === 'meteor' && !heroResources.effects.meteor) heroResources.loadEffect('meteor');
+    const renderer = selection.id === 'fire' ? studioFire : selection.id === 'wind' ? heroResources.effects.wind : heroResources.effects.meteor;
     const scale = Math.min(width / 420, height / 360, 1.4) * selection.zoom;
     renderer?.draw(context, { x: width * .5, y: height * .78, time: time + .8,
       scale: selection.id === 'meteor' ? scale * 1.4 : scale, angle: selection.direction,
@@ -5712,5 +5453,5 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     bindEvents();
     requestAnimationFrame(loop);
   }
-  return { prepare: prepareRun, start: startPreparedRun, cancel: cancelPreparedRun, selection: currentSelection };
+  return { ready: resourcesReady, prepare: prepareRun, start: startPreparedRun, cancel: cancelPreparedRun, selection: currentSelection };
 }

@@ -165,6 +165,11 @@ function resetTimeout(current) {
 
 function progress(current, value) {
   if (attempt !== current || current.controller.signal.aborted) return;
+  if (current.cached && value.stage === 'assets' && Number(value.total) > 0) {
+    current.cached = false;
+    showLoading(current);
+    $('loading-title').focus({ preventScroll: true });
+  }
   const key = `${value.stage}:${value.completed}:${value.total}`;
   if (key !== current.progressKey) { current.progressKey = key; resetTimeout(current); }
   const copy = LOADING_COPY[current.selection.locale];
@@ -189,7 +194,7 @@ function progress(current, value) {
 
 async function ensureRuntime(current) {
   if (runtime) return runtime;
-  if (!modulePromise) modulePromise = import('./game.js?v=20261107-loading2').catch(error => { modulePromise = null; throw error; });
+  if (!modulePromise) modulePromise = import('./game.js?v=20261107-resource-packs1').catch(error => { modulePromise = null; throw error; });
   const module = await modulePromise;
   if (current.controller.signal.aborted || attempt !== current) throw new DOMException('Loading cancelled', 'AbortError');
   runtime = module.createGame({
@@ -205,28 +210,34 @@ async function loading(next, resume = false) {
   if (attempt && !attempt.failed) return;
   if (attempt) { clearTimeout(attempt.timer); attempt.controller.abort(); }
   const current = { selection: normalizeSelection(next), resume, controller: new AbortController(), timer: null, failed: false };
+  current.cached = !!runtime?.ready(current.selection);
   unlockAudio(current.selection.sound);
   attempt = current;
-  showLoading(current);
   const copy = LOADING_COPY[current.selection.locale];
-  $('loading-status').textContent = runtime ? copy.assets : copy.modules;
-  $('loading-detail').textContent = runtime ? '' : copy.downloading;
-  $('loading-progress').removeAttribute('value');
-  $('loading-progress').removeAttribute('aria-valuetext');
-  $('loading-percent').textContent = '';
-  $('loading-percent').classList.add('hidden');
-  $('loading-title').focus({ preventScroll: true });
+  if (current.cached) $('loading-screen').classList.add('hidden');
+  else {
+    showLoading(current);
+    $('loading-status').textContent = runtime ? copy.assets : copy.modules;
+    $('loading-detail').textContent = runtime ? '' : copy.downloading;
+    $('loading-progress').removeAttribute('value');
+    $('loading-progress').removeAttribute('aria-valuetext');
+    $('loading-percent').textContent = '';
+    $('loading-percent').classList.add('hidden');
+    $('loading-title').focus({ preventScroll: true });
+  }
   resetTimeout(current);
   const interrupted = new Promise((_, reject) => current.controller.signal.addEventListener('abort', () => reject(current.controller.signal.reason), { once: true }));
   try {
     const game = await Promise.race([ensureRuntime(current), interrupted]);
     if (attempt !== current || current.controller.signal.aborted) return;
-    progress(current, { stage: 'assets', completed: 0, total: 0 });
-    await Promise.race([game.prepare(current.selection, { signal: current.controller.signal, onProgress: value => progress(current, value), resume }), interrupted]);
+    if (!current.cached) progress(current, { stage: 'assets', completed: 0, total: 0 });
+    const prepared = await Promise.race([game.prepare(current.selection, { signal: current.controller.signal, onProgress: value => progress(current, value), resume }), interrupted]);
     if (attempt !== current || current.controller.signal.aborted) return;
     if (document.hidden) { cancelLoading(); return; }
-    if (!current.ready) throw new Error('Game preparation did not complete');
-    await Promise.race([new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))), interrupted]);
+    if (prepared?.cached !== true) {
+      if (!current.ready) throw new Error('Game preparation did not complete');
+      await Promise.race([new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))), interrupted]);
+    }
     if (attempt !== current || current.controller.signal.aborted) return;
     if (document.hidden) { cancelLoading(); return; }
     clearTimeout(current.timer);
@@ -271,7 +282,7 @@ function bindTitle() {
 }
 
 if (new URLSearchParams(location.search).get('studio') === '1') {
-  import('./game.js?v=20261107-loading2').then(module => module.createGame({ onTitle: showTitle, onRestart: () => {}, onResume: () => {} })).catch(error => {
+  import('./game.js?v=20261107-resource-packs1').then(module => module.createGame({ onTitle: showTitle, onRestart: () => {}, onResume: () => {} })).catch(error => {
     parent.postMessage({ source: 'dotarogue-runtime', type: 'error', message: error.message }, location.origin);
   });
 } else {

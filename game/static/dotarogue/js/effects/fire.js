@@ -2,8 +2,9 @@
 const clamp = (value, low, high) => Math.max(low, Math.min(high, value));
 const fract = value => value - Math.floor(value);
 
-async function loadSmoke() {
+async function loadSmoke(loadImage) {
   const url = new URL('../../assets/art/effects/fire/png/smoke.png', import.meta.url);
+  if (loadImage) return loadImage(url.href);
   const image = new Image();
   image.src = url.href;
   try { await image.decode(); }
@@ -11,8 +12,8 @@ async function loadSmoke() {
   return image;
 }
 
-export async function createFireRenderer() {
-  const smoke = await loadSmoke();
+export async function createFireRenderer({ loadImage } = {}) {
+  const smoke = await loadSmoke(loadImage);
   const glow = document.createElement('canvas');
   glow.width = 256; glow.height = 256;
   const glowContext = glow.getContext('2d');

@@ -154,7 +154,7 @@ def check_rendering(game: str, display: dict) -> None:
     for name in ("drawModelBladeTipTrail", "drawWeaponSwing", "drawShadowAttack", "drawHeroAttack"):
         require(re.search(r"function " + name + r"\(fx\) \{\s*if \(selectedSkin !== 'dota1'", game) is not None, f"{name} must preserve the ordinary skin")
     require("skin === 'dota1' ? HERO_POSE_DOTA1_ART : HERO_POSE_ART" in game, "skin pose selection missing")
-    require("poseImage('pixel', id) || imageForPath(SKIN_ART.pixel?.[id])" in game, "ordinary missing-frame fallback missing")
+    require("poseImage('pixel', id) || images.get(SKIN_ART.pixel?.[id])" in game, "ordinary missing-frame fallback missing")
     require("path.replace(/\\.webp(?:\\?.*)?$/, '.png?v=20261030-model-static1')" in game, "accepted PNG format fallback missing")
     for skin, expected_map in [("pixel", "HERO_ART"), ("dota1", "HERO_DOTA1_ART")]:
         consumer = match(r"\b" + skin + r": \{([^\n]+)\}", game, skin + " skin consumer").group(1)
@@ -165,11 +165,15 @@ def check_rendering(game: str, display: dict) -> None:
 
 def main() -> int:
     game = (SITE / "js/game.js").read_text(encoding="utf-8")
+    # Hero mappings and image decoding belong to their resource owners.
+    resource_source = (SITE / "js/hero-resources.js").read_text(encoding="utf-8")
+    resource_source += "\n" + (SITE / "js/resource-loading.js").read_text(encoding="utf-8")
+    delivery = resource_source + "\n" + game
     heroes = (SITE / "js/heroes.js").read_text(encoding="utf-8")
     playable = section(heroes, "export const CHARACTERS =", "\n];")
     require(set(re.findall(r"\bid:\s*'([a-z0-9-]+)'", playable)) == HERO_IDS, "playable hero set changed; update the frame delivery contract")
     manifest = json.loads(MANIFEST.read_text(encoding="utf-8"))
-    model_paths, ordinary_paths = frame_maps(game)
+    model_paths, ordinary_paths = frame_maps(delivery)
     source_paths = {str(Path(path).with_suffix(".png")) for path in model_paths}
     assets = manifest["assets"]
     require(len(model_paths) == 210 and len(assets) == 210, "expected 210 static model frames")
@@ -207,7 +211,7 @@ def main() -> int:
     require(len(ordinary_paths) == 210 and not ordinary_paths & model_paths, "ordinary skin frame set changed")
     for path in ordinary_paths | {"game/static/dotarogue/assets/characters/luna/luna-glaive.svg"}:
         require(path.endswith(".svg") and ET.parse(ROOT / path).getroot().tag.endswith("svg"), f"ordinary SVG unavailable: {path}")
-    check_rendering(game, manifest["display"])
+    check_rendering(delivery, manifest["display"])
     for path in SITE.rglob("*"):
         if path.suffix not in {".js", ".html", ".css", ".svg"}:
             continue

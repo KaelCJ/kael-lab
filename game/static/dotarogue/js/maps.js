@@ -1,4 +1,4 @@
-import { buildDotaTerrain } from './dota-map.js?v=20261105-neutral-camps1';
+import { buildDotaTerrain } from './dota-map.js?v=20261107-resource-packs1';
 
 export const WORLD = { w: 2600, h: 1700 };
 
@@ -37,10 +37,13 @@ export const TERRAIN_LAYOUTS = {
   }
 };
 
+const terrainCache = new Map();
+
 export function buildTerrain(id) {
   if (id === 'dota') return buildDotaTerrain();
+  if (terrainCache.has(id)) return terrainCache.get(id);
   const layout = TERRAIN_LAYOUTS[id];
-  return [
+  const terrain = [
     ...layout.water.map(([x, y, w, h], index) => ({
       kind: 'water', x, y, w, h,
       curve: RIVER_CURVES[id][index].points.map(([px, py], pointIndex) => ({
@@ -51,6 +54,8 @@ export function buildTerrain(id) {
     ...layout.tree.map(([x, y]) => ({ kind: 'tree', x, y, r: 22 })),
     ...layout.rock.map(([x, y]) => ({ kind: 'rock', x, y, r: 22 }))
   ];
+  terrainCache.set(id, terrain);
+  return terrain;
 }
 
 export const SCENERY_COLORS = {
