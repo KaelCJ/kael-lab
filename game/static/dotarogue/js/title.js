@@ -139,6 +139,7 @@ function showLoading(current) {
   $('loading-retry').hidden = !current.failed;
   $('loading-retry').classList.toggle('hidden', !current.failed);
   $('loading-progress').classList.toggle('hidden', current.failed);
+  $('loading-percent').classList.toggle('hidden', current.failed || current.percent == null);
   $('loading-cancel').textContent = current.resume ? copy.cancelResume : copy.cancel;
 }
 
@@ -170,17 +171,25 @@ function progress(current, value) {
   $('loading-status').textContent = copy[value.stage] || copy.assets;
   const total = Number(value.total), completed = Number(value.completed), bar = $('loading-progress');
   if (Number.isFinite(total) && total > 0 && Number.isFinite(completed)) {
-    bar.max = total; bar.value = Math.max(0, Math.min(total, completed));
-    $('loading-detail').textContent = copy.count.replace('{completed}', String(Math.max(0, Math.min(total, completed)))).replace('{total}', String(total));
-  } else {
+    const count = Math.max(0, Math.min(total, completed));
+    current.ready = value.stage === 'ready' && completed === total;
+    current.percent = Math.max(current.percent || 0, Math.min(current.ready ? 100 : 99, Math.floor(count / total * 100)));
+    bar.max = 100; bar.value = current.percent;
+    bar.setAttribute('aria-valuetext', `${count} / ${total} · ${current.percent}%`);
+    $('loading-detail').textContent = copy.count.replace('{completed}', String(count)).replace('{total}', String(total));
+    $('loading-percent').textContent = `${current.percent}%`;
+    $('loading-percent').classList.remove('hidden');
+  } else if (current.percent == null) {
     bar.removeAttribute('value');
+    bar.removeAttribute('aria-valuetext');
+    $('loading-percent').classList.add('hidden');
     $('loading-detail').textContent = '';
   }
 }
 
 async function ensureRuntime(current) {
   if (runtime) return runtime;
-  if (!modulePromise) modulePromise = import('./game.js?v=20261106-title1').catch(error => { modulePromise = null; throw error; });
+  if (!modulePromise) modulePromise = import('./game.js?v=20261107-loading2').catch(error => { modulePromise = null; throw error; });
   const module = await modulePromise;
   if (current.controller.signal.aborted || attempt !== current) throw new DOMException('Loading cancelled', 'AbortError');
   runtime = module.createGame({
@@ -203,6 +212,9 @@ async function loading(next, resume = false) {
   $('loading-status').textContent = runtime ? copy.assets : copy.modules;
   $('loading-detail').textContent = runtime ? '' : copy.downloading;
   $('loading-progress').removeAttribute('value');
+  $('loading-progress').removeAttribute('aria-valuetext');
+  $('loading-percent').textContent = '';
+  $('loading-percent').classList.add('hidden');
   $('loading-title').focus({ preventScroll: true });
   resetTimeout(current);
   const interrupted = new Promise((_, reject) => current.controller.signal.addEventListener('abort', () => reject(current.controller.signal.reason), { once: true }));
@@ -211,6 +223,10 @@ async function loading(next, resume = false) {
     if (attempt !== current || current.controller.signal.aborted) return;
     progress(current, { stage: 'assets', completed: 0, total: 0 });
     await Promise.race([game.prepare(current.selection, { signal: current.controller.signal, onProgress: value => progress(current, value), resume }), interrupted]);
+    if (attempt !== current || current.controller.signal.aborted) return;
+    if (document.hidden) { cancelLoading(); return; }
+    if (!current.ready) throw new Error('Game preparation did not complete');
+    await Promise.race([new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))), interrupted]);
     if (attempt !== current || current.controller.signal.aborted) return;
     if (document.hidden) { cancelLoading(); return; }
     clearTimeout(current.timer);
@@ -226,6 +242,7 @@ async function loading(next, resume = false) {
     $('loading-status').textContent = copy.failed;
     $('loading-detail').textContent = current.timedOut ? copy.timeout : copy.failedDetail;
     $('loading-progress').removeAttribute('value');
+    $('loading-progress').removeAttribute('aria-valuetext');
     $('loading-title').focus({ preventScroll: true });
   }
 }
@@ -254,7 +271,7 @@ function bindTitle() {
 }
 
 if (new URLSearchParams(location.search).get('studio') === '1') {
-  import('./game.js?v=20261106-title1').then(module => module.createGame({ onTitle: showTitle, onRestart: () => {}, onResume: () => {} })).catch(error => {
+  import('./game.js?v=20261107-loading2').then(module => module.createGame({ onTitle: showTitle, onRestart: () => {}, onResume: () => {} })).catch(error => {
     parent.postMessage({ source: 'dotarogue-runtime', type: 'error', message: error.message }, location.origin);
   });
 } else {

@@ -273,6 +273,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
   const imagesByPath = {};
   const failedImages = new Set();
   const imageLoads = new WeakMap();
+  const pendingImages = new Map();
   function imageForPath(path, priority = 'low') {
     if (!path) return null;
     if (!imagesByPath[path]) {
@@ -280,13 +281,36 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
       image.decoding = 'async';
       image.fetchPriority = priority;
       const ready = new Promise((resolve, reject) => {
-        const unavailable = error => { failedImages.add(path); sceneDirty = true; reject(error); };
-        image.addEventListener('load', () => image.decode().then(() => { failedImages.delete(path); sceneDirty = true; resolve(image); }, unavailable), { once: true });
-        image.addEventListener('error', () => {
+        let settled = false;
+        const finish = (error, cancelled = false) => {
+          if (settled) return;
+          settled = true;
+          image.removeEventListener('load', loaded);
+          image.removeEventListener('error', unavailable);
+          pendingImages.delete(image);
+          if (imagesByPath[path] === image) {
+            if (error && !cancelled) failedImages.add(path);
+            else failedImages.delete(path);
+          }
+          sceneDirty = true;
+          if (error) reject(error); else resolve(image);
+        };
+        const loaded = () => image.decode().then(() => finish(), error => finish(error));
+        const unavailable = () => {
+          if (settled) return;
           // Keep the accepted PNGs usable when WebP is unavailable.
           if (/\.webp(?:\?|$)/.test(image.src)) {
             image.src = path.replace(/\.webp(?:\?.*)?$/, '.png?v=20261030-model-static1');
-          } else unavailable(new Error('Image unavailable'));
+          } else finish(new Error('Image unavailable'));
+        };
+        image.addEventListener('load', loaded);
+        image.addEventListener('error', unavailable);
+        pendingImages.set(image, reason => {
+          if (settled) return;
+          finish(reason, true);
+          if (imagesByPath[path] === image) delete imagesByPath[path];
+          for (const key of Object.keys(heroPoseImages)) if (heroPoseImages[key] === image) delete heroPoseImages[key];
+          image.removeAttribute('src');
         });
       });
       imageLoads.set(image, ready);
@@ -827,7 +851,14 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
       pace: selectedPace, mode: selectedMode, skin: selectedSkin, sound: soundEnabled, locale: selectedLocale };
   }
   async function prepareRun(selection, { signal, onProgress, resume = false }) {
-    const check = () => { if (signal.aborted) throw signal.reason || new DOMException('Cancelled', 'AbortError'); };
+    let stopped = false;
+    const touchedImages = new Set();
+    const stop = reason => {
+      stopped = true;
+      for (const image of touchedImages) pendingImages.get(image)?.(reason);
+    };
+    const aborted = () => stop(signal.reason || new DOMException('Cancelled', 'AbortError'));
+    const check = () => { if (signal.aborted || stopped) throw signal.reason || new DOMException('Cancelled', 'AbortError'); };
     check();
     cancelHeroPreparation(); audioSystem.setPaused(true); keys.clear(); resetStick();
     showPhase('loading');
@@ -856,6 +887,7 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     const tasks = [...paths].map(path => async () => {
       check();
       const image = imageForPath(path, 'high');
+      touchedImages.add(image);
       await imageLoads.get(image);
     });
     if (selectedCharacter === 'kael') {
@@ -866,26 +898,48 @@ export function createGame({ onTitle, onRestart, onResume, audioContext = null }
     } else if (selectedCharacter === 'sf') tasks.push(async () => { requiemRenderer ||= createRequiemRenderer(); });
     else if (selectedCharacter === 'luna') tasks.push(async () => { eclipseRenderer ||= createEclipseRenderer(); });
     let next = 0, completed = 0;
-    onProgress({ stage: 'assets', completed, total: tasks.length });
+    const total = tasks.length + 3;
+    onProgress({ stage: 'assets', completed, total });
     const worker = async () => {
       while (next < tasks.length) {
         check();
         const task = tasks[next++];
         await task(); check();
-        onProgress({ stage: 'assets', completed: ++completed, total: tasks.length });
+        onProgress({ stage: 'assets', completed: ++completed, total });
       }
     };
-    await Promise.all(Array.from({ length: 4 }, worker));
-    check(); onProgress({ stage: 'world' });
-    await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve))); check();
-    if (!resume) { audioSystem.reset(); createRun(); }
-    if (selectedBiome === 'dota') {
-      const preview = document.createElement('canvas'); preview.width = preview.height = 1;
-      drawDotaGround(preview.getContext('2d'));
-      drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: 1, h: 1, player: DOTA_SPAWN });
+    signal.addEventListener('abort', aborted, { once: true });
+    try {
+      await Promise.all(Array.from({ length: 4 }, worker));
+      check(); onProgress({ stage: 'world', completed, total });
+      const worldTasks = [
+        () => {
+          if (!resume) { audioSystem.reset(); createRun(); }
+          if (selectedBiome === 'dota') {
+            const mini = $('minimap');
+            const preview = document.createElement('canvas'); preview.width = mini.width; preview.height = mini.height;
+            drawDotaGround(preview.getContext('2d'));
+            drawDotaMinimap(preview.getContext('2d'), { x: 0, y: 0, w: mini.width, h: mini.height, player: run.player });
+          }
+        },
+        () => { makeFlow(run.player.x, run.player.y, run.player.radius); },
+        () => {
+          run.enemyFlow = makeFlow(run.player.x, run.player.y, 54);
+          run.enemyFlowCell = navIndex(run.player.x, run.player.y);
+          run.enemyFlowClock = .35;
+        }
+      ];
+      for (const task of worldTasks) {
+        await new Promise(resolve => requestAnimationFrame(() => requestAnimationFrame(resolve)));
+        check(); task(); check();
+        onProgress({ stage: ++completed === total ? 'ready' : 'world', completed, total });
+      }
+    } catch (error) {
+      stop(error);
+      throw error;
+    } finally {
+      signal.removeEventListener('abort', aborted);
     }
-    makeFlow(run.player.x, run.player.y, run.player.radius);
-    check(); onProgress({ stage: 'ready' });
   }
   function startPreparedRun(resume = false) {
     lastFrame = 0;

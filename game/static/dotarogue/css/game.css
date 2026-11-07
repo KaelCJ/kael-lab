@@ -613,6 +613,13 @@ details.offer-craft-actions{display:block}
 .loading-card{width:min(100%,460px);font-size:var(--game-body-size);line-height:var(--game-body-line)}
 .loading-card h2{margin:0 0 16px;font-size:var(--game-title-size);line-height:var(--game-title-line)}
 .loading-card p{margin:12px 0;color:var(--ink);font-size:var(--game-body-size);line-height:var(--game-body-line);overflow-wrap:anywhere}
-.loading-card progress{display:block;width:100%;height:16px;accent-color:var(--mint)}
+.loading-card progress{display:block;width:100%;height:16px;overflow:hidden;border:1px solid var(--edge);border-radius:3px;background:#0b1720;accent-color:var(--mint)}
+.loading-card progress[value]{appearance:none;-webkit-appearance:none}
+.loading-card progress[value]::-webkit-progress-bar{background:#0b1720}
+.loading-card progress[value]::-webkit-progress-value{background:var(--mint)}
+.loading-card progress[value]::-moz-progress-bar{background:var(--mint)}
+.loading-count{display:flex;align-items:baseline;justify-content:space-between;gap:12px}
+.loading-count p{min-width:0}
+#loading-percent{flex:none;color:var(--mint);font-size:var(--game-body-size);line-height:var(--game-body-line);font-weight:600;font-variant-numeric:tabular-nums}
 .loading-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:24px}
 .loading-actions button{min-height:44px;font-size:var(--game-body-size);line-height:var(--game-body-line)}
